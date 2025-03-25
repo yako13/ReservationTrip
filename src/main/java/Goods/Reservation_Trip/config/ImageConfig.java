@@ -8,7 +8,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class ImageConfig implements WebMvcConfigurer {
 
-    @Value("${image-path}")
+    @Value("${image.path}")
     private String imagePath;
 
     @Value("${image.path.directory}")
