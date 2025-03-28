@@ -22,11 +22,11 @@ public class PackageImage extends BaseTime {
     @Column(name = "package_image_id")
     private Long id;
 
-    @JoinColumn(name = "package_id", nullable = false)
     @ManyToOne
+    @JoinColumn(name = "package_id", nullable = false)
     private Package aPackage;
 
-    @Column(name = "package_image_type", nullable = false)
+    @Column(name = "package_image_type", nullable = false, columnDefinition = "VARCHAR(50)")
     @Enumerated(EnumType.STRING)
     @Comment("이미지 타입")
     private PackageImageType packageImageType;

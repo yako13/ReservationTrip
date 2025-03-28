@@ -12,6 +12,7 @@ import org.hibernate.annotations.Comment;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Table(name = "package")
 @Getter
@@ -57,8 +58,9 @@ public class Package extends BaseTime {
     @Comment("아동 인원수")
     private int babyNumber;
 
-    @Column(name = "main_image", nullable = false)
     @Comment("대표 이미지")
+    @OneToOne
+    @JoinColumn(name = "main_image", nullable = false)
     private PackageImage mainImage;
 
     @Column(name = "package_category", nullable = false)
@@ -70,7 +72,7 @@ public class Package extends BaseTime {
     private LocalDate startDate;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "starting_point", nullable = false)
+    @Column(name = "starting_point", nullable = false, columnDefinition = "VARCHAR(50)")
     @Comment("출발지")
     private StartingPoint startingPoint;
 
@@ -98,7 +100,11 @@ public class Package extends BaseTime {
     @Comment("호텔 명")
     private String hotelName;
 
-    @Column(name = "package_image", nullable = false)
+    @JoinColumn(name = "package_image", nullable = false)
+    @OneToOne
     @Comment("일정 사진")
     private PackageImage scheduleImage;
+
+    @OneToMany(mappedBy = "aPackage", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PackageImage> packageImages;
 }

@@ -42,7 +42,7 @@ public class PackageSchedule {
     private int seatsAvailable;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "package_status", nullable = false)
+    @Column(name = "package_status", nullable = false, columnDefinition = "VARCHAR(50)")
     @Comment("예약 가능 상태")
     private PackageStatus packageStatus;
 }

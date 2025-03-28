@@ -23,9 +23,9 @@ public class Member extends BaseTime {
     @Column(name = "member_id")
     private Long id;
 
-    @Column(name = "member_id", nullable = false)
+    @Column(name = "email", nullable = false)
     @Comment(value = "회원 아이디")
-    private String memberId;
+    private String email;
 
     @Column(nullable = true)
     @Comment(value = "비밀번호")
@@ -59,7 +59,7 @@ public class Member extends BaseTime {
     @Comment(value = "탈퇴 날짜")
     private LocalDateTime withdrawalAt;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "VARCHAR(50)")
     @Enumerated(EnumType.STRING)
     @Comment(value = "권한")
     private MemberRole role;
