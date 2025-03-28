@@ -55,6 +55,18 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String providerId = oAuth2UserInfo.getProviderId();
         String loginId = oAuth2UserInfo.getEmail();
         String name = "";
+        String birth = "";
+        boolean gender = true;
+
+
+
+        if(oAuth2UserInfo.getBirth() !=null && oAuth2UserInfo.getBirth().contains("-") ){
+            birth = oAuth2UserInfo.getBirth().replace("-","");
+        }
+
+        if (oAuth2UserInfo.getGender().equals("F")) {
+            gender = false;
+        }
 
         //이름이 등록 안되어있을 경우
         if(oAuth2UserInfo.getName()==null || oAuth2UserInfo.getName().equals("")){
@@ -83,6 +95,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
             member = Member.builder()
                     .name(name)
+                    .birth(birth)
+                    .gender(gender)
                     .email(loginId)
                     .provider(provider)
                     .providerId(providerId)

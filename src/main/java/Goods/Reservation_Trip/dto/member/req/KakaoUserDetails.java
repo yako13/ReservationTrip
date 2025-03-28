@@ -37,4 +37,12 @@ public class KakaoUserDetails implements OAuth2UserInfo {
     public String getPhoneNumber() {
         return "";
     }
+
+    @Override
+    public String getGender(){ return null;}
+
+    @Override
+    public String getBirth(){
+        return null;
+    }
 }

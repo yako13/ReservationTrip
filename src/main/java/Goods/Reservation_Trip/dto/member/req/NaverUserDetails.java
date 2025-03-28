@@ -35,4 +35,12 @@ public class NaverUserDetails implements OAuth2UserInfo {
     public String getPhoneNumber(){
         return (String) attributes.get("mobile");
     }
+
+    @Override
+    public String getGender(){ return (String) attributes.get("gender");}
+
+    @Override
+    public String getBirth(){
+        return (String)attributes.get("birthyear")+ (String)attributes.get("birthday");
+    }
 }

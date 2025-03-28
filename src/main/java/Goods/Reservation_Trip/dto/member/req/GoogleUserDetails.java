@@ -36,5 +36,13 @@ public class GoogleUserDetails implements OAuth2UserInfo {
     public String getPhoneNumber() {
         return null;
     }
+
+    @Override
+    public String getGender(){return  (String) attributes.get("gender");}
+
+    @Override
+    public String getBirth(){
+        return (String) attributes.get("birthdate");
+    }
 }
 
