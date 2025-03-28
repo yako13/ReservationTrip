@@ -4,6 +4,7 @@ import Goods.Reservation_Trip.base.BaseTime;
 import Goods.Reservation_Trip.enums.MemberRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Builder
 public class Member extends BaseTime {
 
     @Id
@@ -23,9 +25,9 @@ public class Member extends BaseTime {
     @Column(name = "member_id")
     private Long id;
 
-    @Column(name = "member_id", nullable = false)
-    @Comment(value = "회원 아이디")
-    private String memberId;
+    @Column(name = "email", nullable = false)
+    @Comment(value = "회원 이메일")
+    private String email;
 
     @Column(nullable = true)
     @Comment(value = "비밀번호")
