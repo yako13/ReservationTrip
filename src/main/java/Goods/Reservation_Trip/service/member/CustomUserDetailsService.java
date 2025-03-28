@@ -24,9 +24,9 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final HttpServletRequest httpServletRequest;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-        Optional<Member> optionalMember = memberRepository.findByUserId(username);
+        Optional<Member> optionalMember = memberRepository.findByEmail(email);
 
         if (optionalMember.isPresent()) {
             Member member = optionalMember.get();

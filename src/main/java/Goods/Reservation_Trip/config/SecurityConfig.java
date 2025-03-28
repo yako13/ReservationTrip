@@ -43,8 +43,8 @@ public class SecurityConfig {
                 .loginPage("/login")
                 .loginProcessingUrl("/login")
                 .failureUrl("/login?error")
-                .usernameParameter("userId")
-                .passwordParameter("userPassword")
+                .usernameParameter("email")
+                .passwordParameter("password")
                 .successHandler(authenticationSuccessHandler)
                 .permitAll()
         );

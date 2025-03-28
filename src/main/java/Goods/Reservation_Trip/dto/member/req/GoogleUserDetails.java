@@ -1,7 +1,6 @@
 package Goods.Reservation_Trip.dto.member.req;
 
 import Goods.Reservation_Trip.inter.OAuth2UserInfo;
-import Spring.Goods_Shop.inter.OAuth2UserInfo;
 
 import java.util.Map;
 

@@ -61,7 +61,7 @@ public class Member extends BaseTime {
     @Comment(value = "탈퇴 날짜")
     private LocalDateTime withdrawalAt;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "VARCHAR(50)")
     @Enumerated(EnumType.STRING)
     @Comment(value = "권한")
     private MemberRole role;

@@ -71,7 +71,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             phoneNumber = phoneNumber.replace("-","");
         }
 
-        Optional<Member> findMember = memberRepository.findByUserIdAndProvider(loginId,provider);
+        Optional<Member> findMember = memberRepository.findByEmailAndProvider(loginId,provider);
 
         Member member;
         if (findMember.isEmpty()) {

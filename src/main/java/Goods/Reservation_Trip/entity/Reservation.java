@@ -10,6 +10,7 @@ import org.hibernate.annotations.Comment;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+
 @Table(name = "reservation")
 @Getter
 @NoArgsConstructor
@@ -39,7 +40,7 @@ public class Reservation {
     private LocalDate endDate;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "reservation_state", nullable = false)
+    @Column(name = "reservation_state", nullable = false, columnDefinition = "VARCHAR(50)")
     @Comment("예약 상태")
     private ReservationState reservationState;
 
@@ -75,3 +76,4 @@ public class Reservation {
     @Comment("카드사 승인 번호")
     private String approved;
 }
+
