@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+
+.HanCkSubmitA {
+width: 500px;
+margin: 0;
+margin-top: 20px;
+padding-bottom: 30px;
+display: flex;
+justify-content: space-between;
+gap: 30px;
+
+}
+
+.HanCkSubmitA a {
+width: 240px;
+padding: 20px 0;
+box-sizing: border-box;
+display: flex;
+align-items: center;
+justify-content: center;
+
+border: none;
+border-radius: 7px;
+cursor: pointer;
+font-size: 15px;
+transition: all 0.3s ease;
+font-weight: bolder;
+text-decoration: none;
+}
+
+.HanCkSubmitA .HanCheckoutList {
+background-color: #43bff8;
+color: #ffffff;
+}
+
+
+.HanCkSubmitA .HanHome {
+background-color: #ececec;
+color: #333;
+}
+
+.HanCkSubmitA .HanCheckoutList:hover {
+background-color: #3e8cf1;
+color: #ebebeb;
+transform: scale(0.98);
+}
+
+.HanCkSubmitA .HanHome:hover {
+background-color: #e0e0e0;
+color: #333;
+transform: scale(0.98);
+}
+
+    </style>
+</head>
+<body>
+    <div class="HanCkSubmitA">
+
+        <a class="HanCheckoutList" th:href="@{/member/checkout/list}">예약내역 보기</a>
+        <a class="HanHome" th:href="@{/}">홈으로 가기</a>
+    
+    </div>
+</body>
+</html>
+

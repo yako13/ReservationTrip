@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <style>
+        .container {
+            box-sizing: border-box;
+            margin: 5rem auto;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            width: 70%;
+            background-color: white;
+            /* border: 1px solid #ccc; */
+            padding: 5rem;
+            /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.295); */
+        }
+
+        .formArea {
+            display: flex;
+            justify-content: center;
+
+            form {
+                width: 100%;
+            }
+        }
+
+        .bar {
+            margin: 2rem auto;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            font-size: 1.2rem;
+
+            div {
+                border: #818181 1px solid;
+                width: 33%;
+                background-color: #ccc;
+
+                &:first-child {
+                    border-right: none;
+                }
+
+                &:nth-child(2) {
+                    background-color: #818181;
+                    color: white;
+                }
+
+                &:last-child {
+                    border-left: none;
+                }
+            }
+        }
+
+
+        .joinTable th {
+            text-align: start;
+            width: 12rem;
+        }
+
+        .joinTable td {
+            text-align: start;
+        }
+
+        .joinTable {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 50rem;
+
+            input[type="text"],
+            input[type="password"] {
+                width: 20rem;
+                height: 2rem;
+                border: 1px #ccc solid;
+                border-radius: 4px;
+                padding-left: 0.5rem;
+
+                &:focus {
+                    outline: none;
+                    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.122);
+                }
+            }
+
+            label {
+                margin-right: 1rem;
+            }
+
+        }
+
+        .joinTable tr {
+            border-top: 1px solid #ccc;
+            height: 5rem;
+
+            &:last-child {
+                border-bottom: 1px solid #ccc;
+            }
+        }
+
+
+
+        [type="radio"] {
+            appearance: none;
+            border: max(2px, 0.1em) solid gray;
+            border-radius: 50%;
+            width: 1.2em;
+            height: 1.2em;
+            transition: border 0.2s ease-in-out;
+        }
+
+        [type="radio"]:checked {
+            border: 0.6em solid #3e82ff;
+        }
+
+        [type="radio"]:focus-visible {
+            outline-offset: max(4px, 0.1em);
+            outline: max(2px, 0.1em) dotted #3e82ff;
+        }
+
+        [type="radio"]:hover {
+            box-shadow: 0 0 0 max(2px, 0.2em) lightgray;
+            cursor: pointer;
+        }
+
+        [type="radio"]:hover+span {
+            cursor: pointer;
+        }
+
+        [type="radio"]:disabled {
+            background-color: lightgray;
+            box-shadow: none;
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        [type="radio"]:disabled+span {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        #authBtn,
+        #authCodeBtn {
+            border: none;
+            border-radius: 4px;
+            height: 2rem;
+            background-color: #171668;
+            color: white;
+
+            &:hover {
+                box-shadow:
+                    7px 7px 20px 0px #0002,
+                    4px 4px 5px 0px #0001;
+            }
+
+        }
+
+
+
+        .btn,
+        .resetBtn {
+            margin: 0 auto;
+            width: 7rem;
+            height: 2rem;
+            background-color: black;
+            color: white;
+            font-size: 1.2rem;
+            border-radius: 4px;
+
+            &:hover {
+                box-shadow:
+                    7px 7px 20px 0px #0002,
+                    4px 4px 5px 0px #0001;
+            }
+        }
+
+        .resetBtn {
+            margin-left: 2rem;
+            border: none;
+            background-color: #818181;
+        }
+
+        .info {
+            font-size: 0.8rem;
+        }
+
+        .radioArea {
+            display: flex;
+            margin: 2rem 0;
+        }
+
+        .btnArea {
+            margin: 2rem 0;
+        }
+
+        .essential {
+            text-align: end;
+            margin: 0.5rem 0;
+        }
+
+        .red {
+            color: red;
+            font-weight: bolder;
+        }
+
+        #timer {
+            margin-left: 2rem;
+            color: red;
+        }
+
+        .inputRed {
+            border: red solid 1px !important;
+        }
+    </style>
+</head>
+
+<body>
+<main>
+    <div class="container">
+        <div class="titleArea">
+            <h1>회원가입</h1>
+        </div>
+        <div class="bar">
+            <div>
+                <p>약관동의</p>
+            </div>
+            <div>
+                <p>정보 입력</p>
+            </div>
+            <div>
+                <p>가입 완료</p>
+            </div>
+        </div>
+        <div class="essential">
+            <span class="red">*</span>
+            <span>필수입력사항</span>
+        </div>
+        <div class="formArea">
+            <form th:action="@{/join}" th:method="post" id="joinForm">
+                <table class="joinTable">
+                    <tr>
+                        <th><span class="red">*</span>이메일</th>
+                        <td><input type="text" placeholder="nyangmanTravel@gmail.com" name="email" id="email"
+                                   class="joinInput" th:value="${email}"></td>
+                        <td>
+                            <button id="authBtn" type="button">인증하기</button>
+                            <span id="timer"></span></td>
+                    </tr>
+                    <tr class="authArea">
+                        <th><span class="red">*</span>이메일 인증번호</th>
+                        <td><input type="text" id="authCode" name="authCode" class="joinInput"></td>
+                        <td>
+                            <button id="authCodeBtn" type="button">인증확인</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><span class="red">*</span>비밀번호 <i class="fa-solid fa-eye-slash" id="eye"></i></th>
+                        <td><input type="password" name="password" id="userPassword" class="joinInput" th:value="${password}"></td>
+                        <td class="info" id="passwordError">비밀번호는 대소문자, 숫자, 특수문자 조합으로 8~15자리여야합니다.</td>
+                    </tr>
+                    <tr>
+                        <th><span class="red">*</span>비밀번호 확인</th>
+                        <td><input type="password" id="userPasswordCheck" class="joinInput" th:value="${password}"></td>
+                        <td id="passwordAgain" class="info">비밀번호를 재입력해주세요.</td>
+                    </tr>
+                    <tr>
+                        <th><span class="red">*</span>이름</th>
+                        <td><input type="text" placeholder="홍길동" name="name" class="joinInput" id="userName" th:value="${name}"></td>
+                        <td class="info" id="nameError">이름은 한글 2~5자 또는 성과 이름을 구분하여 영문 1~10자리씩이여야 합니다.</td>
+                    </tr>
+                    <tr>
+                        <th><span class="red">*</span>생년월일</th>
+                        <td><input type="text" placeholder="20000101" name="birth" maxlength="8"
+                                   oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="joinInput"
+                                   id="birth" th:value="${birth}"></td>
+                        <td class="info" id="birthError">생년월일은 8자리 숫자여야합니다.</td>
+                    </tr>
+                    <tr>
+                        <th><span class="red">*</span>휴대전화번호</th>
+                        <td><input type="text" placeholder="01012341234" name="phoneNumber" maxlength="11"
+                                   oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="joinInput"
+                                   id="phoneNumber" th:value="${phoneNumber}"></td>
+                        <td class="info" id="phoneError">휴대전화번호는 010, 011, 016, 017, 018, 019로 시작하며, 숫자 10~11자리여야
+                            합니다.
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><span class="red">*</span>성별</th>
+                        <td class="radioArea">
+                            <input type="radio" name="gender" id="male" checked value="true" th:checked="${gender == true}">
+                            <label for="male" id="maleLabel">남자</label>
+                            <input type="radio" name="gender" id="female" value="false" th:checked="${gender == false}">
+                            <label for="female" id="femaleLabel">여자</label>
+                        </td>
+                    </tr>
+                </table>
+                <div class="btnArea">
+                    <button type="submit" class="btn">확인</button>
+                    <button type="reset" class="resetBtn">취소</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script>
+    window.onload = function () {
+        const agreed = sessionStorage.getItem("agreedToTerms");
+        if (agreed !== "true") {
+            alert("이용약관에 동의해야 회원가입이 가능합니다.");
+            window.location.href = "/terms/agree"; // 이용약관 페이지로 되돌리기
+        }
+    };
+
+
+            // 메일 인증
+            var timerInterval; // 전역 변수로 선언하여 어디서든 접근 가능
+
+            function startTimer(duration, display) {
+                var timer = duration, minutes, seconds;
+                timerInterval = setInterval(function () {
+                    minutes = parseInt(timer / 60, 10);
+                    seconds = parseInt(timer % 60, 10);
+
+                    minutes = minutes < 10 ? "0" + minutes : minutes;
+                    seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                    display.textContent = minutes + ":" + seconds;
+
+                    if (--timer < 0) {
+                        alert("인증 시간이 만료되었습니다. 다시 인증하여 주십시오.");
+                        clearInterval(timerInterval); // 타이머 정지
+                        document.getElementById("authBtn").disabled = false;
+                    }
+                }, 1000);
+            }
+
+            //메일 전송
+            $("#authBtn").click(function () {
+                alert("이메일을 전송중입니다. 잠시만 기다려주십시오.");
+                var params = { email: $("#email").val() }
+
+                $.ajax({
+                    type: "POST",
+                    url: "/send/mail",
+                    data: params,
+                    success: function (res) {
+                        if (res == 1000) {
+                            var fiveMinutes = 60 * 5,
+                                display = document.querySelector('#timer');
+                            startTimer(fiveMinutes, display);
+                            document.getElementById("authBtn").disabled = true;
+                            alert("인증번호가 발송되었습니다. 이메일을 확인하여 주십시오.");
+                        } else {
+                            alert("인증번호가 전송되지 않았습니다. 작성한 이메일을 다시 확인하여 주십시오.");
+                        }
+                    },
+                    error: function () {
+                        alert("통신 실패.");
+                    }
+                });
+            });
+
+            let bol_auth = 0;
+            //인증 번호
+            $("#authCodeBtn").click(function () {
+                bol_auth = 0;
+                var params = {
+                    email: $("#email").val(),
+                    authCode: $("#authCode").val()
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "/check/authCode",
+                    data: params,
+                    success: function (res) {
+                        if (res == 1000) {
+                            clearInterval(timerInterval); // 인증 성공 시 타이머 정지
+                            alert("인증이 완료되었습니다.");
+                            bol_auth = 1;
+                        } else {
+                            alert("인증번호가 일치하지 않습니다.");
+                            document.getElementById("authBtn").disabled = false;
+                        }
+                    },
+                    error: function () {
+                        alert("통신 실패.");
+                    }
+                });
+            });
+
+            let eye = document.getElementById("eye");
+
+            let userPassword = document.getElementById("userPassword");
+            let userPasswordCheck = document.getElementById("userPasswordCheck");
+            let passwordAgain = document.getElementById("passwordAgain");
+            let passwordError = document.getElementById("passwordError");
+            let nameError = document.getElementById("nameError");
+            let phoneError = document.getElementById("phoneError");
+            let birthError = document.getElementById("birthError");
+
+            let checkEye = true;
+
+            function clickEye() {
+                checkEye = !checkEye;
+            }
+
+            //눈 클릭 했을 경우
+            eye.addEventListener("click", () => {
+                if (checkEye) {
+                    eye.className = "fa-solid fa-eye";
+                    userPassword.type = "text";
+                    userPasswordCheck.type = "text";
+                    clickEye();
+                }
+                else {
+                    eye.className = "fa-solid fa-eye-slash"
+                    userPassword.type = "password";
+                    userPasswordCheck.type = "password";
+                    clickEye();
+                }
+            })
+
+            bol_check_password = 0;
+
+            //비밀번호 일치 여부
+            function checkPassword() {
+                if (userPassword.value !== userPasswordCheck.value) {
+                    passwordAgain.innerText = "비밀번호가 일치하지 않습니다.";
+                    passwordAgain.style.color = "red";
+                    bol_check_password = 0;
+                }
+                else {
+                    passwordAgain.innerText = "비밀번호를 재입력해주세요.";
+                    passwordAgain.style.color = "black";
+                    bol_check_password = 1;
+                }
+            }
+
+            userPassword.addEventListener("keydown", () => {
+                checkPassword();
+            })
+
+            userPassword.addEventListener("keyup", () => {
+                checkPassword();
+            })
+
+            userPasswordCheck.addEventListener("keydown", () => {
+                checkPassword();
+            })
+
+            userPasswordCheck.addEventListener("keyup", () => {
+                checkPassword();
+            })
+
+            const joinInput = document.querySelectorAll(".joinInput");
+
+            // 필수 입력칸에 값이 다 있는지 모두 체크하는 함수
+            function SignUpValueCheckAll() {
+                let value1 = 0;
+                for (let i = 0; i < joinInput.length; i++) {
+                    if (joinInput[i].value === "") {
+                        //input박스를 빨간색으로 보여주고
+                        joinInput[i].classList.add("inputRed");
+                        value1 = value1 + 1;
+                    } else {
+                        //input박스의 빨간색제거
+                        joinInput[i].classList.remove("inputRed");
+                    }
+                }
+
+                return value1;
+            }
+
+            //창 로드시 필수 입력칸에 이벤트 걸어준다
+            window.addEventListener("load", focusEvent);
+
+            function focusEvent() {
+                // 필수 입력칸에 focusout시 값이 다 있는지 체크
+                for (let i = 0; i < joinInput.length; i++) {
+                    joinInput[i].addEventListener("focusout", function () {
+                        signUpValueCheck(i);
+                    });
+                }
+            }
+
+            function signUpValueCheck(i) {
+                if (joinInput[i].value === "") {
+                    joinInput[i].classList.add("inputRed");
+                } else {
+                    joinInput[i].classList.remove("inputRed");
+                }
+            }
+
+            //가입하기 버튼(확인 버튼)
+
+
+
+
+            const password_check = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$/; //대소문자, 숫자, 특수문자 조합으로 8~15자
+            const name_check = /^[가-힣]{2,5}$|^[a-zA-Z]{1,10}\s[a-zA-Z]{1,10}$/; //한글 2~5자 또는 영문 이름 2~10자 이내 : 띄어쓰기(\s)가 들어가며 First, Last Name 형식
+            const phone_check = /^(010|011|016|017|018|019)[0-9]{7,8}$/;
+            const birth_check = /^(19|20)\d{2}(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])$/;
+
+
+
+            let userName = document.getElementById("userName");
+            let birth = document.getElementById("birth");
+            let joinBtn = document.querySelector(".btn");
+            let phone = document.getElementById("phoneNumber");
+
+            joinBtn.addEventListener("click", submitBtn);
+
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, "0"); // 월은 0부터 시작하므로 +1
+            const dd = String(today.getDate()).padStart(2, "0");
+
+            const formattedDate = `${yyyy}${mm}${dd}`;
+
+            function submitBtn(e) {
+                e.preventDefault();
+                let ValueCheck = SignUpValueCheckAll();
+                let valid = true;
+                if (bol_auth == 0) {
+                    alert("이메일 인증을 해주십시오.");
+                }
+
+                if (password_check.test(userPassword.value)) {
+                    userPassword.classList.remove("inputRed");
+                    passwordError.classList.remove("red");
+                }
+                else {
+                    userPassword.classList.add("inputRed");
+                    passwordError.classList.add("red");
+                    valid = false;
+                }
+                if (name_check.test(userName.value)) {
+                    userName.classList.remove("inputRed");
+                    nameError.classList.remove("red");
+                }
+                else {
+                    userName.classList.add("inputRed");
+                    nameError.classList.add("red");
+                    valid = false;
+                }
+
+                //현재날짜보단 작고 1925년생보단 많아야함
+                if (birth_check.test(birth.value) && parseInt(birth.value) < parseInt(formattedDate) && parseInt(birth.value) > 19250328) {
+                    birth.classList.remove("inputRed");
+                    birthError.classList.remove("red");
+                }
+                else {
+                    birth.classList.add("inputRed");
+                    birthError.classList.add("red");
+                    valid = false;
+                }
+
+                if (phone_check.test(phone.value)) {
+                    phone.classList.remove("inputRed");
+                    phoneError.classList.remove("red");
+                }
+                else {
+                    phone.classList.add("inputRed");
+                    phoneError.classList.add("red");
+                    valid = false;
+                }
+                if (document.getElementById("male").checked || document.getElementById("female").checked) { }
+                else {
+                    valid = false;
+                }
+
+                if (ValueCheck === 0 && valid === true && bol_auth === 1 && bol_check_password === 1) {
+                    document.getElementById("joinForm").submit();
+                }
+            }
+
+</script>
+</body>
+
+</html>
