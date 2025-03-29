@@ -87,4 +87,16 @@ public class MemberController {
         return "member/joinSuccess";
     }
 
+    @GetMapping("/find/id")
+    public String findIdPage(){
+        return "member/findId";
+    }
+
+    @PostMapping("/find/id")
+    @ResponseBody
+    public String findId(JoinDto joinDto){
+        return memberService.findId(joinDto.getName(),joinDto.getPhoneNumber(),null);
+    }
+
+
 }

@@ -45,4 +45,18 @@ public class MemberService {
         memberRepository.save(member);
     }
 
+    //아이디찾기
+    public String findId(String name , String phoneNumber,String provider){
+      Optional<Member> optionalMember =  memberRepository.findByNameAndPhoneNumberAndProvider(name, phoneNumber, provider);
+      if(optionalMember.isEmpty()) return null;
+      Member member = optionalMember.get();
+
+      String memberMail = member.getEmail();
+
+      //메일 변환
+      String newMail = memberMail.substring(0,memberMail.indexOf("@")-3) + "***" + memberMail.substring(memberMail.indexOf("@"));
+
+      return newMail;
+    }
+
 }
