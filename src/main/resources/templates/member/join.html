@@ -339,7 +339,11 @@
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script>
         window.onload = function () {
+            //인증확인버튼 비활성화 
+            document.getElementById("authCodeBtn").disabled = true;
+
             const agreed = sessionStorage.getItem("agreedToTerms");
+
             if (agreed !== "true") {
                 alert("이용약관에 동의해야 회원가입이 가능합니다.");
                 window.location.href = "/terms/agree"; // 이용약관 페이지로 되돌리기
@@ -371,6 +375,9 @@
         let bol_auth = 0;
         //메일 전송
         $("#authBtn").click(function () {
+
+            //인증확인버튼 활성화
+            document.getElementById("authCodeBtn").disabled = false;
             alert("이메일을 전송중입니다. 잠시만 기다려주십시오.");
             var params = { email: $("#email").val() }
 
@@ -387,9 +394,11 @@
                         alert("인증번호가 발송되었습니다. 이메일을 확인하여 주십시오.");
                     } else if (res == 600) {
                         alert("중복된 이메일입니다. 작성한 이메일을 다시 확인하여 주십시오.");
+                        document.getElementById("authCodeBtn").disabled = true;
                     }
                     else {
                         alert("인증번호가 전송되지 않았습니다. 작성한 이메일을 다시 확인하여 주십시오.");
+                        document.getElementById("authCodeBtn").disabled = true;
                     }
                 },
                 error: function () {
@@ -416,6 +425,7 @@
                         clearInterval(timerInterval); // 인증 성공 시 타이머 정지
                         alert("인증이 완료되었습니다.");
                         bol_auth = 1;
+                        document.getElementById("authCodeBtn").disabled = true;
                     } else {
                         alert("인증번호가 일치하지 않습니다.");
                         document.getElementById("authBtn").disabled = false;

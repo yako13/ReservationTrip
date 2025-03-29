@@ -73,4 +73,8 @@ public class Member extends BaseTime {
     @Column(name = "privacy_agreement", nullable = false)
     @Comment(value = "개인정보 수집 동의 여부")
     private boolean privacyAgreement;
+
+    public void setPassword(String password){
+        this.password = password;
+    }
 }

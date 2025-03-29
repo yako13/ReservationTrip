@@ -59,8 +59,12 @@ public class MailService {
        message.setSubject("[냥만여행]인증코드가 발송되었습니다.");
        message.setText(content);
 
-       mailSender.send(message);
-
+       try {
+           mailSender.send(message);
+       }
+       catch (Exception e){
+           throw new RuntimeException("인증코드 전송을 실패했습니다.");
+       }
        return code.toString();
    }
 
@@ -73,6 +77,33 @@ public class MailService {
    public boolean validationAuthCode(String email, String authCode) throws AuthenticationException{
         String savedCode = getCode(email);
         return authCode.equals(savedCode); //인증번호가 일치하는지 확인
+   }
+
+   public String sendMailToChangePassword(String email){
+       StringBuilder randomPassword = new StringBuilder();
+       Random word = new Random();
+
+       //8자리의 랜던 영문자 만듦
+       for(int i=0;i<8;i++){
+           randomPassword.append((char)(word.nextInt(26)+65));
+       }
+
+       SimpleMailMessage message = new SimpleMailMessage();
+       message.setTo(email);
+       message.setFrom(fromEmail);
+       message.setSubject("[냥만여행]임시비밀번호가 발송되었습니다.");
+       message.setText("임시비밀번호 : "+ randomPassword.toString());
+
+       try {
+           mailSender.send(message);
+       }
+       catch (Exception e){
+           throw new RuntimeException("인증코드 전송을 실패했습니다.");
+       }
+        
+       //랜덤으로 만들어진 비밀번호 반환
+       return randomPassword.toString();
+
    }
 
 

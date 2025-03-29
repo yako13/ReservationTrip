@@ -87,16 +87,54 @@ public class MemberController {
         return "member/joinSuccess";
     }
 
+    //아이디 찾기 페이지
     @GetMapping("/find/id")
     public String findIdPage(){
         return "member/findId";
     }
 
+    //아이디찾기
     @PostMapping("/find/id")
     @ResponseBody
     public String findId(JoinDto joinDto){
+        //아이디를 찾으면 String으로 보내줌
         return memberService.findId(joinDto.getName(),joinDto.getPhoneNumber(),null);
     }
 
+    //비밀번호 찾기 페이지
+    @GetMapping("/find/password")
+    public String findPasswordPage(){
+        return "member/findPassword";
+    }
 
+    //비밀번호 찾기
+    @PostMapping("/find/password")
+    @ResponseBody
+    public String findPassword(JoinDto joinDto) throws MessagingException {
+        //해당 이메일이 존재하지 않을 때
+        if(memberService.duplicatedEmail(joinDto.getEmail())) return "500";
+
+        //이메일이 존재하면 메일로 인증번호 보냄
+        mailService.sendAuthCode(joinDto.getEmail());
+
+        return "1000";
+    }
+
+    @PostMapping("/found/password")
+    @ResponseBody
+    public String foundPassword(JoinDto joinDto) throws AuthenticationException {
+
+        //인증번호가 일치하지 않을 때
+        if(!mailService.validationAuthCode(joinDto.getEmail(),joinDto.getAuthCode())) {
+            return "500";
+       }
+
+        //일치하면 임시 비밀번호 발급
+        String password  =  mailService.sendMailToChangePassword(joinDto.getEmail());
+
+        //임시비밀번호로 DB 변경
+        memberService.changePassword(password,joinDto.getEmail());
+
+        return "1000";
+    }
 }
