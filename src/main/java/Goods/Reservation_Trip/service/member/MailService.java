@@ -2,6 +2,7 @@ package Goods.Reservation_Trip.service.member;
 
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.mail.SimpleMailMessage;
@@ -17,6 +18,9 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 @Transactional
 public class MailService {
+
+    @Value("${spring.mail.username}")
+    private String fromEmail;
 
     private final JavaMailSender mailSender;
 
@@ -51,6 +55,7 @@ public class MailService {
        String content = "인증번호 : " + code;
        SimpleMailMessage message = new SimpleMailMessage();
        message.setTo(email);
+       message.setFrom(fromEmail);
        message.setSubject("[냥만여행]인증코드가 발송되었습니다.");
        message.setText(content);
 
