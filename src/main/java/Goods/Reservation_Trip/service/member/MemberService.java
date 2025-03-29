@@ -5,6 +5,7 @@ import Goods.Reservation_Trip.entity.Member;
 import Goods.Reservation_Trip.enums.MemberRole;
 import Goods.Reservation_Trip.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +17,8 @@ import java.util.Optional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+
+    private final PasswordEncoder passwordEncoder;
 
     //이메일 중복 확인
     public boolean duplicatedEmail(String email){
@@ -29,7 +32,7 @@ public class MemberService {
     public void join(JoinDto joinDto){
         Member member = Member.builder()
                 .email(joinDto.getEmail())
-                .password(joinDto.getPassword())
+                .password(passwordEncoder.encode(joinDto.getPassword()))
                 .name(joinDto.getName())
                 .birth(joinDto.getBirth())
                 .gender(joinDto.isGender())

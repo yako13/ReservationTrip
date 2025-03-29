@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
@@ -11,7 +11,7 @@
             padding: 0;
         }
 
-        .frontContainer{
+        .frontContainer {
             background-color: #f1f0f1;
             padding: 10rem 0;
         }
@@ -68,12 +68,16 @@
         .loginBtn {
             height: 3rem;
             width: 100%;
-            background-color: black;
-            color: white;
-            border-radius: 4px;
+            background-color: #43bff8;
+            color: #ffffff;
+            border: none;
+            border-radius: 7px;
+            transition: all 0.3s ease;
 
             &:hover {
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                background-color: #3e8cf1;
+                color: #ebebeb;
+                transform: scale(0.98);
             }
         }
 
@@ -132,54 +136,55 @@
             }
         }
 
-        a{
-        text-decoration : none;
-        color : gray;
+        a {
+            text-decoration: none;
+            color: gray;
         }
     </style>
 </head>
 
 <body>
-<main>
-    <div class="frontContainer">
-        <div class="container">
-
-            <div class="logoArea">
-            </div>
-            <div class="loginText">
-                <h2>로그인</h2>
-                <p>모든 순간 두근두근, 여행은 냥만여행</p>
-            </div>
-            <div class="formArea">
-                <form th:action="@{/login}" th:method="post" class="form">
-                    <div class="inputArea">
-                        <input type="email" placeholder="이메일" required id="emailInput" name="email">
-                        <input type="password" placeholder="비밀번호" name="password" required id="passwordInput">
-                    </div>
-                    <div class="btnArea">
-                        <button class="loginBtn">로그인</button>
-                    </div>
-                </form>
-            </div>
-            <div class="linkArea">
-                <a th:href="@{/find/id}">아이디 찾기</a>
-                <span>·</span>
-                <a th:href="@{/find/password}">비밀번호 찾기</a>
-                <span>·</span>
-                <a th:href="@{/join}">회원가입</a>
-            </div>
-            <div class="separator">
-                <p>OR</p>
-            </div>
-            <div class="snsLoginArea">
-                <p>소설 계정으로 간편 로그인</p>
-                <a href="/oauth2/authorization/google"><img src="images/google.png"></a>
-                <a href="/oauth2/authorization/naver"><img src="images/naver2.png"></a>
-                <a href="/oauth2/authorization/kakao"><img src="images/kakao.png"></a>
+    <main>
+        <div class="frontContainer">
+            <div class="container">
+                <input type="hidden" th:if="${param.error}" value="로그인에 실패하였습니다." id="dataAlert">
+                <div class="logoArea">
+                </div>
+                <div class="loginText">
+                    <h2>로그인</h2>
+                    <p>모든 순간 두근두근, 여행은 냥만여행</p>
+                </div>
+                <div class="formArea">
+                    <form th:action="@{/login}" th:method="post" class="form">
+                        <div class="inputArea">
+                            <input type="email" placeholder="이메일" required id="emailInput" name="email">
+                            <input type="password" placeholder="비밀번호" name="password" required id="passwordInput">
+                        </div>
+                        <div class="btnArea">
+                            <button class="loginBtn">로그인</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="linkArea">
+                    <a th:href="@{/find/id}">아이디 찾기</a>
+                    <span>·</span>
+                    <a th:href="@{/find/password}">비밀번호 찾기</a>
+                    <span>·</span>
+                    <a th:href="@{/join}">회원가입</a>
+                </div>
+                <div class="separator">
+                    <p>OR</p>
+                </div>
+                <div class="snsLoginArea">
+                    <p>소설 계정으로 간편 로그인</p>
+                    <a href="/oauth2/authorization/google"><img th:src="@{/images/google.png}"></a>
+                    <a href="/oauth2/authorization/naver"><img th:src="@{/images/naver2.png}"></a>
+                    <a href="/oauth2/authorization/kakao"><img th:src="@{/images/kakao.png}"></a>
+                </div>
             </div>
         </div>
-    </div>
-</main>
+        <script th:src="@{/js/alert.js}"></script>
+    </main>
 </body>
 
 </html>

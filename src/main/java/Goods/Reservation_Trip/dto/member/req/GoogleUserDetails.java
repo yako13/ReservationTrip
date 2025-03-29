@@ -38,11 +38,11 @@ public class GoogleUserDetails implements OAuth2UserInfo {
     }
 
     @Override
-    public String getGender(){return  (String) attributes.get("gender");}
+    public String getGender(){return  null;}
 
     @Override
     public String getBirth(){
-        return (String) attributes.get("birthdate");
+        return null;
     }
 }
 

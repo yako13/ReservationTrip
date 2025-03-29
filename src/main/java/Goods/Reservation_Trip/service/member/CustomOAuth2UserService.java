@@ -43,11 +43,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         }
 
         //네이버로 로그인 한 경우
-        else if(provider.equals("naver")){
+        else if (provider.equals("naver")) {
             oAuth2UserInfo = new NaverUserDetails(oAuth2User.getAttributes());
-        }
-
-        else if (provider.equals("kakao")) {
+        } else if (provider.equals("kakao")) {
             oAuth2UserInfo = new KakaoUserDetails(oAuth2User.getAttributes());
         }
 
@@ -58,40 +56,39 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String birth = "";
         boolean gender = true;
 
-
-
-        if(oAuth2UserInfo.getBirth() !=null && oAuth2UserInfo.getBirth().contains("-") ){
-            birth = oAuth2UserInfo.getBirth().replace("-","");
+        //네이버에서 생일 가져올때 -가 포함되어있음
+        if (oAuth2UserInfo.getBirth() != null && oAuth2UserInfo.getBirth().contains("-")) {
+            birth = oAuth2UserInfo.getBirth().replace("-", "");
         }
 
-        if (oAuth2UserInfo.getGender().equals("F")) {
+        //네이버에서 성별 가져올때 남자 M 여자 F 모름 N
+        if (oAuth2UserInfo.getGender() != null && oAuth2UserInfo.getGender().equals("F")) {
             gender = false;
         }
 
         //이름이 등록 안되어있을 경우
-        if(oAuth2UserInfo.getName()==null || oAuth2UserInfo.getName().equals("")){
+        if (oAuth2UserInfo.getName() == null || oAuth2UserInfo.getName().equals("")) {
             name = provider + "회원";
-        }
-        else {
-            name =oAuth2UserInfo.getName();
+        } else {
+            name = oAuth2UserInfo.getName();
         }
 
         String phoneNumber = oAuth2UserInfo.getPhoneNumber();
 
         //네이버로 회원가입 시 휴대전화번호에 "-"가 포함되어 있어서 나중에 formatter 에서 오류날 수 있음
-        if(phoneNumber!=null && phoneNumber.contains("-")){
-            phoneNumber = phoneNumber.replace("-","");
+        if (phoneNumber != null && phoneNumber.contains("-")) {
+            phoneNumber = phoneNumber.replace("-", "");
         }
 
-        Optional<Member> findMember = memberRepository.findByEmailAndProvider(loginId,provider);
+        Optional<Member> findMember = memberRepository.findByEmail(loginId);
 
         Member member;
         if (findMember.isEmpty()) {
 
             //소셜 로그인 계정이 아니며 이름과 휴대폰 번호가 중복인 회원이 있을 경우 가입 안됨
-            Optional<Member> optionalMember = memberRepository.findByNameAndPhoneNumberAndProvider(name,phoneNumber,null);
+            Optional<Member> optionalMember = memberRepository.findByNameAndPhoneNumberAndProvider(name, phoneNumber, null);
 
-            if(optionalMember.isPresent()) throw new RuntimeException("이름과 휴대전화번호가 중복되어 가입이 불가합니다.");
+            if (optionalMember.isPresent()) throw new RuntimeException("이름과 휴대전화번호가 중복되어 가입이 불가합니다.");
 
             member = Member.builder()
                     .name(name)
@@ -109,9 +106,14 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             memberRepository.save(member);
         } else {
             member = findMember.get();
+
+            // 이메일은 존재하지만, provider가 다르면 중복된 계정으로 간주하여 로그인 불가 처리
+            if (!member.getProvider().equals(provider)) {
+                throw new RuntimeException("이메일이 중복되어 가입이 불가합니다.");
+            }
         }
 
-        httpSession.setAttribute("memberId",member.getId());
+        httpSession.setAttribute("memberId", member.getId());
 
         return new CustomOauth2UserDetails(member, oAuth2User.getAttributes());
 

@@ -30,12 +30,12 @@ public class KakaoUserDetails implements OAuth2UserInfo {
 
     @Override
     public String getName() {
-        return "";
+        return null;
     }
 
     @Override
     public String getPhoneNumber() {
-        return "";
+        return null;
     }
 
     @Override
