@@ -59,6 +59,7 @@ public class Package extends BaseTime {
 
     @Column(name = "package_category", nullable = true)
     @Comment("카테고리")
+    @Enumerated(EnumType.STRING)
     private PackageCategory packageCategory;
 
     @Column(name = "fuel_surcharge", nullable = false)
