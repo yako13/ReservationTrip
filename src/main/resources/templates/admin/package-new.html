@@ -140,16 +140,24 @@
               </div>
               <div>
                 <label>도시 카테고리</label>
-                <select>
-                  <option>일본</option>
+                <select id="mainCategory">
+                  <option value="#" selected>카테고리를 선택하세요</option>
+                  <option value="JAPAN">일본</option>
+                  <option value="CENTRAL_ASIA">
+                    중국 / 홍콩 / 몽골 / 중앙아시아
+                  </option>
+                  <option value="SOUTHEAST_ASIA">동남아 / 대만 / 서남아</option>
+                  <option value="EUROPA">유럽 / 아프리카</option>
+                  <option value="LATIN_AMERICA">
+                    미주 / 하와이 / 캐나다 / 중남미
+                  </option>
+                  <option value="OCEANIA">괌/ 사이판 / 뉴질랜드 / 호주</option>
                 </select>
-                <select>
-                  <option>관동</option>
-                  <option>간사이</option>
+                <select id="subCategory">
+                  <option value=""></option>
                 </select>
-                <select>
-                  <option>도쿄</option>
-                  <option>오사카</option>
+                <select id="smallCategory">
+                  <option value=""></option>
                 </select>
               </div>
               <div class="input__flex">
@@ -180,31 +188,75 @@
               <input type="text" name="period" />
             </div>
             <div>
-              <div class="a7">
+              <div class="a8">
                 <span>출국일정</span>
-                <div>
-                  <label>출발지</label>
-                  <select name="departurePointOut">
-                    <option value="GIMPO">김포국제공항</option>
-                    <option>인천국제공항</option>
-                    <option>대구국제공항</option>
-                    <option>부산국제공항</option>
-                  </select>
-                </div>
-                <div>
-                  <label>항공사</label>
-                  <select name="AirlineOut">
-                    <option value="AIRSEOUL">에어서울</option>
-                    <option>티웨이항공</option>
-                    <option>에어부산</option>
-                    <option>제주항공</option>
-                  </select>
-                  <label for="departure">출발시간</label>
-                  <input type="datetime-local" id="departure" />
-                  <label for="arrive">도착시간</label>
-                  <input type="datetime-local" id="arrive" />
+                <div class="b2">
+                  <div class="b3">
+                    <div>
+                      <label>출발지</label>
+                      <select name="departurePointOut">
+                        <option value="GIMPO">김포국제공항</option>
+                        <option>인천국제공항</option>
+                        <option>대구국제공항</option>
+                        <option>부산국제공항</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label>도착지</label>
+                      <select name="arrivalPointOut">
+                        <option value="NARITA">나리타국제공항</option>
+                        <option>간사이국제공항</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label>항공사</label>
+                      <select name="airlineOut">
+                        <option value="AIRSEOUL">에어서울</option>
+                        <option>티웨이항공</option>
+                        <option>에어부산</option>
+                        <option>제주항공</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="input__flex plane-time">
+                    <div>
+                      <label for="departureDateOut">출발날짜</label>
+                      <input
+                        type="date"
+                        id="departureDateOut"
+                        name="departureDateOut" />
+                    </div>
+                    <div>
+                      <label for="arrivalDateOut">도착날짜</label>
+                      <input
+                        type="date"
+                        id="arrivalDateOut"
+                        name="arrivalDateOut" />
+                    </div>
+                    <div>
+                      <label>항공기 번호</label>
+                      <input type="text" name="flightNumberOut" />
+                    </div>
+                  </div>
+                  <div class="input__flex plane-time">
+                    <div>
+                      <label for="departureTimeOut">출발시간</label>
+                      <input
+                        type="time"
+                        id="departureTimeOut"
+                        name="departureTimeOut" />
+                    </div>
+                    <div>
+                      <label for="arrivalTimeOut">도착시간</label>
+                      <input
+                        type="time"
+                        id="arrivalTimeOut"
+                        name="arrivalTimeOut" />
+                    </div>
+                  </div>
                 </div>
               </div>
+              <!-- 귀국일정 -->
               <div class="a8">
                 <span>귀국일정</span>
                 <div class="b2">
@@ -237,20 +289,43 @@
                   </div>
                   <div class="input__flex plane-time">
                     <div>
-                      <label for="return-departure">출발시간</label>
-                      <input type="datetime-local" id="return-departure" />
+                      <label for="return-departure">출발날짜</label>
+                      <input
+                        type="date"
+                        id="return-departure"
+                        name="departureDateReturn" />
                     </div>
                     <div>
-                      <label for="return-arrive">도착시간</label>
-                      <input type="datetime-local" id="return-arrive" />
+                      <label for="return-arrive">도착날짜</label>
+                      <input
+                        type="date"
+                        id="return-arrive"
+                        name="arrivalDateReturn" />
                     </div>
                     <div>
                       <label>항공기 번호</label>
                       <input type="text" name="flightNumberReturn" />
                     </div>
                   </div>
+                  <div class="input__flex plane-time">
+                    <div>
+                      <label for="return-departure-time">출발시간</label>
+                      <input
+                        type="time"
+                        id="return-departure-time"
+                        name="departureTimeReturn" />
+                    </div>
+                    <div>
+                      <label for="return-arrive-time">도착시간</label>
+                      <input
+                        type="time"
+                        id="return-arrive-time"
+                        name="arrivalTimeReturn" />
+                    </div>
+                  </div>
                 </div>
               </div>
+              <!-- /귀국일정 -->
               <button type="button">항공편 자동 추가</button>
               <button type="button">항공편 단일 추가</button>
               <!-- 팝업창에서 입력과 등록 처리를 하고 확인 하는 방법? -->
@@ -281,10 +356,102 @@
           </div>
           <button type="submit">등록하기</button>
           <button type="button">돌아가기</button>
-          <input type="date" />
-          <input type="time" />
         </form>
       </div>
     </main>
   </body>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const mainCategorySelect = document.getElementById("mainCategory");
+      const subCategorySelect = document.getElementById("subCategory");
+      const smallCategorySelect = document.getElementById("smallCategory");
+
+      // 대분류를 fetch하여 select 요소에 추가
+      fetch("/api/categories")
+        .then((response) => response.json())
+        .then((categories) => {
+          categories.forEach((category) => {
+            const option = document.createElement("option");
+            option.value = category.name;
+            option.textContent = category.name;
+            mainCategorySelect.appendChild(option);
+          });
+        });
+
+      // 대분류가 선택되면 중분류를 업데이트
+      // 대분류가 선택되었을 때 중분류를 업데이트
+      mainCategorySelect.addEventListener("change", function () {
+        const mainCategory = mainCategorySelect.value;
+
+        if (mainCategory) {
+          // 중분류를 빈 값으로 초기화
+          subCategorySelect.innerHTML =
+            '<option value="">중분류를 선택하세요</option>';
+          smallCategorySelect.innerHTML =
+            '<option value="">소분류를 선택하세요</option>'; // 소분류도 초기화
+
+          fetch(`/api/categories/${mainCategory}`)
+            .then((response) => response.json())
+            .then((subCategories) => {
+              if (Array.isArray(subCategories)) {
+                subCategories.forEach((subCategory) => {
+                  const option = document.createElement("option");
+                  option.value = subCategory.name;
+                  option.textContent = subCategory.name;
+                  subCategorySelect.appendChild(option);
+                });
+              } else {
+                console.log("중분류 데이터가 배열이 아닙니다.");
+              }
+            })
+            .catch((error) => {
+              console.error(
+                "중분류 데이터를 가져오는 데 오류가 발생했습니다:",
+                error
+              );
+            });
+        } else {
+          // 대분류 선택이 없을 때 중분류 초기화
+          subCategorySelect.innerHTML =
+            '<option value="">중분류를 선택하세요</option>';
+          smallCategorySelect.innerHTML =
+            '<option value="">소분류를 선택하세요</option>';
+        }
+      });
+
+      // 중분류가 선택되면 소분류를 업데이트
+      subCategorySelect.addEventListener("change", function () {
+        const mainCategory = mainCategorySelect.value;
+        const subCategory = subCategorySelect.value;
+
+        if (mainCategory && subCategory) {
+          fetch(`/api/categories/${mainCategory}/${subCategory}`)
+            .then((response) => response.json())
+            .then((smallCategories) => {
+              if (Array.isArray(smallCategories)) {
+                smallCategorySelect.innerHTML =
+                  '<option value="">소분류를 선택하세요</option>';
+                smallCategories.forEach((smallCategory) => {
+                  const option = document.createElement("option");
+                  option.value = smallCategory.name;
+                  option.textContent = smallCategory.name;
+                  smallCategorySelect.appendChild(option);
+                });
+              } else {
+                console.error(
+                  "Expected an array, but received:",
+                  smallCategories
+                );
+              }
+            })
+            .catch((error) => {
+              console.error("Error fetching small categories:", error);
+            });
+        } else {
+          smallCategorySelect.innerHTML =
+            '<option value="">소분류를 선택하세요</option>';
+        }
+      });
+    });
+  </script>
 </html>

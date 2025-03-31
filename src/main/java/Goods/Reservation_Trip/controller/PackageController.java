@@ -1,6 +1,7 @@
 package Goods.Reservation_Trip.controller;
 
 import Goods.Reservation_Trip.dto.PackageRequestDto;
+import Goods.Reservation_Trip.enums.Airline;
 import Goods.Reservation_Trip.service.PackageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -25,7 +26,6 @@ public class PackageController {
 
     @PostMapping("/admin/package/save")
     public String PackageSave(PackageRequestDto requestDto) {
-        // 저장 로직
         packageService.save(requestDto);
         return "redirect:/Q";
     }

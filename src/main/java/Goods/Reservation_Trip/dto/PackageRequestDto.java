@@ -1,14 +1,19 @@
 package Goods.Reservation_Trip.dto;
 
 import Goods.Reservation_Trip.enums.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
 
@@ -28,7 +33,7 @@ public class PackageRequestDto {
     /**
      * 최대 에약 가능 인원
      */
-    private int maximumSeats;
+    private int maximumMember;
 
     /**
      * 출발에 필요한 최소 예약 인원
@@ -118,12 +123,30 @@ public class PackageRequestDto {
     /**
      * 출국 일자
      */
-    private Date departureDate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private String departureDateOut;
+
+    /**
+     * 출국 도착 일자
+     */
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private String arrivalDateOut;
 
     /**
      * 귀국 일자
      */
-    private Date returnDate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private String departureDateReturn;
+
+    /**
+     * 귀국 도착 일자
+     */
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private String arrivalDateReturn;
 
     /**
      * 출국 출발지
@@ -138,12 +161,16 @@ public class PackageRequestDto {
     /**
      * 출국 출발 시간
      */
-    private LocalDateTime departureTimeOut;
+    @DateTimeFormat(pattern = "HH:mm")
+    @JsonFormat(pattern = "HH:mm")
+    private LocalTime departureTimeOut;
 
     /**
      * 출국 도착 시간
      */
-    private LocalDateTime arrivalTimeOut;
+    @DateTimeFormat(pattern = "HH:mm")
+    @JsonFormat(pattern = "HH:mm")
+    private LocalTime arrivalTimeOut;
 
     /**
      * 귀국 출발지
@@ -158,12 +185,16 @@ public class PackageRequestDto {
     /**
      * 귀국 출발 시간
      */
-    private LocalDateTime departureTimeReturn;
+    @DateTimeFormat(pattern = "HH;mm")
+    @JsonFormat(pattern = "HH:mm")
+    private LocalTime departureTimeReturn;
 
     /**
      * 귀국 도착 시간
      */
-    private LocalDateTime arrivalTimeReturn;
+    @DateTimeFormat(pattern = "HH:mm")
+    @JsonFormat(pattern = "HH:mm")
+    private LocalTime arrivalTimeReturn;
 
     /**
      * 호텔명 리스트
@@ -190,3 +221,4 @@ public class PackageRequestDto {
      */
     private boolean shopping;
 }
+//34
