@@ -74,10 +74,13 @@ public class Formatter {
     }
 
     //주문 번호 만드는 함수
-    public static String getCheckoutCode(LocalDateTime localDateTime) {
-        String dateTimePart = localDateTime.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
-        String counterPart = IncrementalCounter.getNextNumber(); // 3자리 숫자 추가
-        return dateTimePart + counterPart;
+    public static String getReservationCode(LocalDateTime localDateTime) {
+        if(localDateTime !=null) {
+            String dateTimePart = localDateTime.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+            String counterPart = IncrementalCounter.getNextNumber(); // 3자리 숫자 추가
+            return dateTimePart + counterPart;
+        }
+        return null;
     }
 
     //운송장 번호 만드는 함수

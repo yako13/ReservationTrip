@@ -83,6 +83,9 @@ public class Package extends BaseTime {
     private List<PackageImage> packageImageList;
 
     @OneToMany(mappedBy = "aPackage", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Reservation> reservationList;
+
+    @OneToMany(mappedBy = "aPackage", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PackageSchedule> packageScheduleList;
 
 }

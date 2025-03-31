@@ -1,5 +1,6 @@
 package Goods.Reservation_Trip.entity;
 
+import Goods.Reservation_Trip.base.BaseTime;
 import Goods.Reservation_Trip.enums.ReservationState;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,6 +10,7 @@ import org.hibernate.annotations.Comment;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 
 @Table(name = "reservation")
@@ -16,19 +18,23 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Reservation {
+public class Reservation extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "reservation_id")
     private Long id;
 
+    @Column(name="reservation_code")
+    @Comment("예약번호")
+    private String code;
+
     @JoinColumn(name = "package_id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Package aPackage;
 
     @JoinColumn(name = "member_id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Member member;
 
     @Column(name = "start_date", nullable = false)
@@ -75,5 +81,6 @@ public class Reservation {
     @Column(nullable = false)
     @Comment("카드사 승인 번호")
     private String approved;
+
 }
 

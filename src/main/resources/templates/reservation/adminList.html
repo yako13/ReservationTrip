@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>판매자 헤더</title>
+    <style>
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css');
+
+        @font-face {
+            font-family: 'NanumSquareRound';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NanumSquareRound.woff') format('woff');
+        }
+
+        @font-face {
+            font-family: 'Ownglyph_jiwoosonang';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2408@1.0/Ownglyph_jiwoosonang.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        * {
+            font-family: NanumSquareRound;
+
+        }
+
+        a {
+            text-decoration: none;
+
+        }
+
+        /*헤더시작  */
+        header {
+            margin: 0;
+            padding: 0;
+            gap: 0;
+        }
+
+        .siteName {
+            font-family: 'Ownglyph_jiwoosonang';
+        }
+
+        .masterHeader {
+            box-sizing: border-box;
+            padding: 20px 30px;
+            background-color: #f7dad9;
+            height: 50px;
+            display: flex;
+            justify-content: space-between;
+            gap: 0;
+            align-items: center;
+            line-height: 50px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+        }
+
+
+        .headerTitle {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            width: 400px;
+        }
+
+        .headerTitleMenu {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 40px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+
+        }
+
+
+        .headerTitleMenu .fa-user-tie {
+            font-size: 22px;
+        }
+
+        .headerTitle p {
+            display: inline-block;
+            font-size: 22px;
+        }
+
+        p {
+            margin: 0;
+        }
+
+
+        .headerTitleADiv {
+            width: 280px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease-in-out;
+        }
+
+
+        .homePage i {
+            margin-bottom: -6px;
+            margin-right: 3px;
+            width: 22px;
+            height: auto;
+        }
+
+        .homePage a {
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            color: white;
+            background-color: #333333;
+        }
+
+        .homePage a:hover {
+            font-weight: 600;
+        }
+
+
+        .logout a {
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            color: white;
+        }
+
+        .logout {
+            i {
+                margin-right: 5px;
+            }
+
+        }
+
+
+        .logout a:hover {
+            font-weight: 600;
+        }
+
+
+
+        .headerLogoArea {
+            display: flex;
+            justify-content: end;
+            width: 140px;
+        }
+
+        body {
+            margin: 0;
+        }
+
+
+        p {
+            margin: 0;
+        }
+
+
+
+        .headerLogoArea {
+            display: flex;
+            justify-content: end;
+            width: 120px;
+            margin-left: 20px;
+        }
+
+        .masterHeader {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .adminText {
+            font-weight: 600;
+            margin-top: 5px;
+
+        }
+
+        #mainLogo {
+            img {
+                margin-top: 20px;
+            }
+        }
+
+        /* 헤더 끝 */
+
+        /* 네비 시작 */
+        .SlideNavBody {
+            position: relative;
+        }
+
+        .sidenav {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 1;
+            top: 50px;
+            left: 0;
+            background-color: #adb5bd;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .sidenav a,
+        .dropdown-btn {
+            width: 200px;
+            padding: 15px 0;
+            text-decoration: none;
+            font-size: 15px;
+            color: #495057;
+            display: block;
+            transition: 0.3s;
+            text-align: center;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .sidenav a:hover,
+        .dropdown-btn:hover {
+            background-color: #bbbfc4
+        }
+
+        /* 드롭다운 스타일 */
+        .dropdown {
+            width: 100%;
+            text-align: center;
+        }
+
+        .dropdown-content {
+            max-height: 0;
+            overflow: hidden;
+            background-color: #c7cace;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+            opacity: 0;
+        }
+
+        .dropdown-content a {
+            padding: 10px 0;
+            font-size: 15px;
+            display: block;
+        }
+
+        /* 드롭다운 활성화 시 */
+        .dropdown.active .dropdown-content {
+            max-height: 200px;
+            /* 적절한 값으로 조정 */
+            opacity: 1;
+        }
+
+        .SlideNavOpenDiv {
+            position: absolute;
+            transition: all 0.3s ease-in-out;
+            top: 80px;
+            left: -60px;
+            z-index: 1;
+        }
+
+        .SlideNavOpenDiv i {
+            color: #5c677d;
+        }
+
+        .SlideShow {
+            left: 20px;
+        }
+
+        .SlideNavCloseDiv {
+            position: absolute;
+            top: 20px;
+            left: 160px;
+            z-index: 20;
+        }
+
+        .SlideNavCloseDiv i {
+            color: white;
+        }
+
+        .SlideNavCloseDiv img,
+        .SlideNavOpenDiv img {
+            transition: all 0.3s ease-in-out;
+            width: 35px;
+            height: 35px;
+            cursor: pointer;
+        }
+
+        .SlideClose:hover {
+            transform: translateX(-6px);
+        }
+
+        .SlideOpen:hover {
+            transform: translateX(6px);
+        }
+
+        main {
+            transition: margin-left .5s;
+            padding: 16px;
+        }
+
+        @media screen and (max-height: 450px) {
+            .sidenav {
+                padding-top: 15px;
+            }
+
+            .sidenav a {
+                font-size: 18px;
+            }
+        }
+
+        /* 네비 끝 */
+        /* 메인시작 */
+        table {
+            font-size: 12px;
+        }
+
+        .rwd-table {
+            border: 1px #a39485 solid;
+            font-size: 0.9em;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .rwd-table tr:first-child {
+            border-top: none;
+            color: #fff;
+            background-color: #6c757d;
+        }
+
+        .rwd-table tr {
+            border-top: 1px solid #808080;
+            border-bottom: 1px solid #808080;
+            background-color: #ffffff;
+        }
+
+        .rwd-table tr:nth-child(odd):not(:first-child) {
+            background-color: #ffffff;
+        }
+
+        .rwd-table th {
+            display: none;
+        }
+
+        .rwd-table td {
+            display: block;
+        }
+
+        .rwd-table td:first-child {
+            margin-top: 0.5em;
+        }
+
+        .rwd-table td:last-child {
+            margin-bottom: 0.5em;
+        }
+
+        .rwd-table th,
+        .rwd-table td {
+            text-align: center;
+        }
+
+        .rwd-table {
+            color: #333;
+            border-radius: 0.4em;
+            overflow: hidden;
+        }
+
+        .rwd-table tr {
+            border-color: #ccc;
+        }
+
+        .rwd-table th,
+        .rwd-table td {
+            padding: 0.5em 1em;
+        }
+
+        @media screen and (max-width: 601px) {
+            .rwd-table tr:nth-child(2) {
+                border-top: none;
+            }
+        }
+
+        @media screen and (min-width: 600px) {
+            .rwd-table tr:hover:not(:first-child) {
+                background-color: #f5f4f485;
+            }
+
+            .rwd-table td:before {
+                display: none;
+            }
+
+            .rwd-table th,
+            .rwd-table td {
+                display: table-cell;
+                padding: 0.25em 0.5em;
+            }
+
+            .rwd-table th:first-child,
+            .rwd-table td:first-child {
+                padding-left: 0;
+            }
+
+            .rwd-table th:last-child,
+            .rwd-table td:last-child {
+                padding-right: 0;
+            }
+
+            .rwd-table th,
+            .rwd-table td {
+                padding: 1em !important;
+            }
+        }
+
+        .container {
+            display: block;
+            text-align: center;
+            min-height: 800px;
+            margin-left: 32px;
+            margin-right: 50px;
+        }
+
+        .totalPrice {
+            color: red;
+        }
+
+        h2 {
+            text-align: left;
+            margin-top: 80px;
+        }
+
+        .orderList {
+            height: 70px;
+            text-align: left;
+
+            p {
+                padding-top: 30px;
+            }
+        }
+
+        #red {
+            color: red;
+        }
+
+        a {
+            text-decoration: none;
+
+            b {
+                color: black;
+            }
+        }
+
+        .pagination {
+            margin: 4rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .pagination .page-item {
+            margin: 0 5px;
+        }
+
+        .pagination .page-link {
+            color: #ff84f4;
+            border-radius: 8px;
+            padding: 8px 12px;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .pagination .page-link:hover {
+            background-color: #ffddfc;
+            color: white;
+        }
+
+        .pagination .active .page-link {
+            background-color: #fec3fa;
+            color: white;
+            border: none;
+        }
+
+        .pagination .disabled .page-link {
+            color: #ccc;
+            pointer-events: none;
+            background-color: #f8f9fa;
+        }
+
+        .buttonAndTotal {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        #checkoutCode {
+            color: #000;
+            font-weight: 600;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        .container__sort {
+            display: flex;
+            justify-content: end;
+            margin-bottom: 20px;
+        }
+
+        #sizeSelect,
+        .text__right {
+            margin: 0 10px;
+        }
+
+        select {
+            font-size: 1rem;
+            border: 1px solid #838383;
+        }
+
+        .form__search {
+            display: flex;
+            justify-content: start;
+        }
+
+        .searchForm {
+            width: 9rem;
+            border: 0px;
+            height: 1.5rem;
+            font-size: 1rem;
+            margin-left: 0.5rem;
+        }
+
+        .searchForm:focus {
+            outline: none;
+        }
+
+        .btn-submit {
+            background-color: #ffffff;
+            border: 0px;
+        }
+
+        .searchArea {
+            margin-left: 10px;
+            border: 1px solid #111111;
+            width: 12rem;
+            height: 1.7rem;
+        }
+
+        .container__sort2 {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #sizeSelect,
+        .text__right {
+            margin: 0 10px;
+        }
+
+        .searchForm {
+            width: 9rem;
+            border: 0px;
+            height: 1.5rem;
+            font-size: 1rem;
+            margin-left: 0.5rem;
+        }
+
+        .searchForm:focus {
+            outline: none;
+        }
+
+        .btn-submit {
+            background-color: #ffffff;
+            border: 0px;
+        }
+
+        .form__search {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        #checkoutStateSelect {
+            font-size: 1rem;
+        }
+
+        #sizeSelect {
+            font-size: 1rem;
+        }
+
+        #sortSelect {
+            font-size: 1rem;
+        }
+
+        #searchSelect {
+            border: 0px;
+            font-size: 0.9rem;
+        }
+
+        #searchSelect:focus {
+            outline: none;
+        }
+
+        #HanSerachForm {
+            border: 1px solid #111111;
+            border-radius: 7px;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .trPointer {
+            cursor: pointer;
+        }
+
+        /* 메인끝 */
+    </style>
+</head>
+
+<body>
+<!-- 헤더 시작 -->
+<header th:fragment="masterHeader">
+
+    <div class="masterHeader">
+
+        <div class="headerTitle">
+
+            <div id="mainLogo">
+                <img th:src="@{/images/mainLogoTitle.png}" width="auto" height="40px">
+            </div>
+            <div>
+                <p class="adminText">Administrator</p>
+            </div>
+        </div>
+
+        <div class="headerTitleADiv">
+
+            <div class="homePage">
+
+                <a th:href="@{/}"><i class="fa-solid fa-house"></i><span>홈페이지</span></a>
+            </div>
+
+            <div class="logout">
+                <a th:href="@{/logout}"><i class="fa-solid fa-power-off"></i><span>로그아웃</span></a>
+            </div>
+
+        </div>
+    </div>
+
+</header>
+
+<!-- 헤더 끝 -->
+
+
+<!-- 네비 바 시작 -->
+
+<nav th:fragment="masterNav">
+
+    <div class="SlideNavBody">
+
+        <div class="SlideNavOpenDiv ">
+            <i class="fa-xl fa-solid fa-bars SlideOpen" onclick="openNav()"></i>
+        </div>
+
+    </div>
+
+    <div id="mySidenav" class="sidenav">
+        <div class="dropdown">
+            <button class="dropdown-btn" onclick="toggleDropdown(this)"><i class="menu-icon fa fa-barcode"></i> 상품
+                관리 <i class="arrow fa fa-angle-down"></i></button>
+            <div class="dropdown-content">
+                <a th:href="@{/admin/product/list}">상품 목록</a>
+                <a th:href="@{/admin/product/add}">상품 추가</a>
+            </div>
+        </div>
+
+        <div class="dropdown">
+            <button class="dropdown-btn" onclick="toggleDropdown(this)"><i class="menu-icon fa fa-list-alt"></i> 예약
+                관리 <i class="arrow fa fa-angle-down"></i></button>
+            <div class="dropdown-content">
+                <a th:href="@{/admin/reservation/list}">예약 목록</a>
+            </div>
+        </div>
+
+        <div class="dropdown">
+            <button class="dropdown-btn" onclick="toggleDropdown(this)"><i class="fa-solid fa-chart-line"></i> 매출 현황
+                <i class="arrow fa fa-angle-down"></i></button>
+            <div class="dropdown-content">
+                <a th:href="@{/admin/chart}">매출 차트</a>
+                <a th:href="@{/admin/chart/report}">매출 보고서</a>
+            </div>
+        </div>
+        <div class="SlideNavCloseDiv">
+            <i class="fa-xl fa-solid fa-bars SlideClose" onclick="closeNav()" style="transform:rotate(90deg);"></i>
+        </div>
+    </div>
+
+
+    </div>
+
+</nav>
+<!-- 네비 바 끝 -->
+<!-- 메인 시작 -->
+<main id="main">
+    <div class="container">
+        <h2 th:if="${keywordQuery==null}">전체 예약 목록</h2>
+        <h2 th:if="${keywordQuery!=null}" th:text="'검색어 : '+ ${keywordQuery}" class="search-name"></h2>
+        <hr />
+        <div class="orderList">
+            <p><b>예약 내역</b> : 총 <b id="red">[[${total}]]</b>건</p>
+        </div>
+        <div>
+            <div class="form__search">
+                <form action="/admin/reservation/search/index" method="get" role="search" id="HanSerachForm">
+                    <select name="search" id="searchSelect" onchange="">
+                        <option value="reservationCode" th:selected="${searchSelect=='reservationCode'}">예약번호</option>
+                        <option value="ordererName" th:selected="${searchSelect=='ordererName'}">
+                            예약자명
+                        </option>
+                        <option value="packageName" th:selected="${searchSelect=='packageName'}">
+                            패키지명
+                        </option>
+                    </select>
+                    <input type="text" class="searchForm" id="searchInput" name="keyword"
+                           placeholder="검색어를 입력하세요." />
+                    <button type="submit" class="btn-submit" form="HanSerachForm">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </form>
+                <div class="container__sort2">
+                    <select name="reservationState" id="reservationStateSelect" onchange="">
+                        <option hidden selected>예약 상태</option>
+                        <option value="ALL" th:selected="${reservationState=='ALL'}">
+                            전체예약
+                        </option>
+                        <option value="CONFIRM" th:selected="${reservationState=='CONFIRM'}" style="color: blue">
+                            예약완료
+                        </option>
+                        <option value="WAIT" th:selected="${reservationState=='WAIT'}" style="color: green">
+                            예약보류
+                        </option>
+                        <option value="CANCEL" th:selected="${reservationState=='CANCEL'}" style="color: red">
+                            예약취소
+                        </option>
+                        <option value="REQUEST" th:selected="${reservationState=='REQUEST'}" style="color: red">
+                            예약취소요청
+                        </option>
+                    </select>
+                    <select name="sizeSelect" id="sizeSelect" onchange="">
+                        <option value="10" th:selected="${size==10}">10개</option>
+                        <option value="20" th:selected="${size==20}">20개</option>
+                        <option value="30" th:selected="${size==30}">30개</option>
+                    </select>
+
+                    <select name="sortSelect" id="sortSelect" onchange="">
+                        <option value="default" th:selected="${sortSelect == 'default'}">
+                            최신순
+                        </option>
+                        <option value="past" th:selected="${sortSelect == 'past'}">
+                            오래된순
+                        </option>
+                        <option value="price_asc" th:selected="${sortSelect == 'price_asc'}">
+                            총 결제 금액 낮은순
+                        </option>
+                        <option value="price_desc" th:selected="${sortSelect == 'price_desc'}">
+                            총 결제 금액 높은순
+                        </option>
+                    </select>
+                    <span class="text__right">
+                            <span th:text="${paging.totalElements + '건의 상품 / '}">10건의 상품 / </span>
+                            <span
+                                    th:text="${(paging.number + 1) + (paging.number * size) - paging.totalPages + (paging.totalPages - paging.number)}"></span>
+
+                            <span th:text="${(paging.number * size) + #lists.size(paging.content) + '건'}"></span>
+                        </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- <h1 th:if="${total ==0}">주문내역이 없습니다.</h1> -->
+
+        <table class="rwd-table" th:if="${total >0}">
+            <tbody>
+            <tr>
+                <th>예약번호</th>
+                <th>예약자</th>
+                <th>패키지명</th>
+                <th>총 결제 금액(원)</th>
+                <th>예약 상태</th>
+                <th>예약 날짜</th>
+                <th>수정날짜 </th>
+            </tr>
+            <tr th:each="reservation : ${reservationList}"
+                th:onclick="window.location.href='/admin/reservation/details/' + [[${reservation.id}]];"
+                class="trPointer">
+                <td th:text="${reservation.reservationCode}" id="checkoutCode">202503281145110001</td>
+                <td th:text="${reservation.memberName}">김춘식</td>
+                <td th:text="${reservation.packageName}">[다낭]3박5일 여행풀코스(가이드X)#자유여행 #연인 #가족 #추가비용없음 #대한항공
+                </td>
+                <td th:text="${reservation.totalPay}" class="totalPrice">
+                    <b>1,704,000</b>
+                </td>
+                <td th:text="${reservation.reservationState}" class="checkoutStep">예약완료</td>
+                <td th:text="${reservation.createdAt}">2025.03.28 11:45:11</td>
+                <td th:text="${reservation.modifiedAt}">2025.03.28 12:45:23</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- 페이지네이션 -->
+    <nav aria-label="Page navigation" th:unless="${paging.totalElements == 0}">
+        <ul class="pagination">
+            <!-- 첫 페이지 버튼 -->
+            <li class="page-item" th:classappend="${paging.first} ? 'disabled' : ''">
+                <a class="page-link" th:href="@{/admin/reservation/list(page=0, size=${size})}" aria-label="First">
+                    <span>&laquo;</span>
+                </a>
+            </li>
+
+            <!-- 이전 버튼 -->
+            <li class="page-item" th:classappend="${paging.hasPrevious()} ? '' : 'disabled'">
+                <a class="page-link" th:href="@{/admin/reservation/list(page=${currentPage - 1}, size=${size})}"
+                   aria-label="Previous">
+                    <span>&lt;</span>
+                </a>
+            </li>
+
+            <!-- 페이지 번호 -->
+            <li class="page-item"
+                th:each="pageNum : ${#numbers.sequence(currentPage - 2 > 0 ? currentPage - 2 : 0,
+                                                     currentPage + 2 < paging.totalPages - 1 ? currentPage + 2 : paging.totalPages - 1)}"
+                th:classappend="${pageNum == currentPage} ? 'active' : ''">
+                <a class="page-link" th:href="@{/admin/reservation/list(page=${pageNum}, size=${size})}"
+                   th:text="${pageNum + 1}"></a>
+            </li>
+
+            <!-- 다음 버튼 -->
+            <li class="page-item" th:classappend="${paging.hasNext()} ? '' : 'disabled'">
+                <a class="page-link" th:href="@{/admin/reservation/list(page=${currentPage + 1}, size=${size})}"
+                   aria-label="Next">
+                    <span>&gt;</span>
+                </a>
+            </li>
+
+            <!-- 마지막 페이지 버튼 -->
+            <li class="page-item" th:classappend="${paging.last} ? 'disabled' : ''">
+                <a class="page-link" th:href="@{/admin/reservation/list(page=${paging.totalPages - 1}, size=${size})}"
+                   aria-label="Last">
+                    <span>&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</main>
+
+<!-- 메인 끝 -->
+ <script>
+      // 검색 단어기준 상품개수 정렬
+      const searchSelect = document.getElementById("searchSelect");
+      const sizeSelect = document.getElementById("sizeSelect");
+      const sortSelect = document.getElementById("sortSelect");
+      const checkoutStateSelect = document.getElementById(
+        "checkoutStateSelect"
+      );
+
+      const keywordQuery = encodeURIComponent(`[[${keywordQuery}]]`);
+      const currentSearch = `[[${searchSelect}]]`; //현재 검색 기준
+      const currentSize = `[[${size}]]`; // 현재 사이즈
+      const currentSort = `[[${sortSelect}]]`; // 현재 정렬 방식
+      const currentReservationState = `[[${reservationState}]]`; //현재 주문상태
+
+      checkoutStateSelect.addEventListener("change", function () {
+        const selectedReservationState = this.value;
+        window.location.href = `?page=0&search=${currentSearch}&checkoutState=${selectedReservationState}&size=${currentSize}&sort=${currentSort}`;
+      });
+
+      sizeSelect.addEventListener("change", function () {
+        const selectedSize = this.value;
+        window.location.href = `?page=0&search=${currentSearch}&checkoutState=${currentReservationState}&size=${selectedSize}&sort=${currentSort}`;
+      });
+
+      sortSelect.addEventListener("change", function () {
+        const selectedSort = this.value;
+        window.location.href = `?page=0&search=${currentSearch}&checkoutState=${currentReservationState}&size=${currentSize}&sort=${selectedSort}`;
+      });
+ </script>
+<script>
+
+    function toggleDropdown(button) {
+        let dropdown = button.parentElement;
+        let content = dropdown.querySelector(".dropdown-content");
+
+        if (dropdown.classList.contains("active")) {
+            content.style.maxHeight = "0px";
+            content.style.opacity = "0";
+            setTimeout(() => {
+                dropdown.classList.remove("active");
+            }, 300); // transition 시간 후 active 제거
+        } else {
+            dropdown.classList.add("active");
+            content.style.maxHeight = content.scrollHeight + "px"; // 실제 높이로 설정
+            content.style.opacity = "1";
+        }
+    }
+    window.addEventListener('DOMContentLoaded', (event) => {
+        openNav();
+    });
+
+    function openNav() {
+
+        document.getElementById("mySidenav").style.width = "200px";
+        document.getElementById("main").style.marginLeft = "200px";
+        document.querySelector(".SlideNavOpenDiv").classList.remove("SlideShow");
+    }
+
+
+    function closeNav() {
+
+        document.getElementById("mySidenav").style.width = "0";
+        document.getElementById("main").style.marginLeft = "0";
+        setTimeout(delay, 300);
+    }
+
+    function delay() {
+        document.querySelector(".SlideNavOpenDiv").classList.add("SlideShow");
+    }
+
+    if (document.title.includes("주문")) {
+        document.getElementById("barMenuCheckout").style.backgroundColor = "#7d8597";
+    }
+
+    if (document.title.includes("매출")) {
+        document.getElementById("barMenuSales").style.backgroundColor = "#7d8597";
+    }
+
+    if (document.title.includes("상품")) {
+        document.getElementById("barMenuProduct").style.backgroundColor = "#7d8597";
+    }
+
+
+</script>
+</body>
+
+</html>
