@@ -15,13 +15,17 @@ public class PackageService {
 
     private final PackageImageService packageImageService;
 
+    private final PackageScheduleService packageScheduleService;
+
+    private final PackageOptionService packageOptionService;
+
     // 저장
     public void save(PackageRequestDto requestDto) {
 
         Package aPackage = Package.builder()
                 .id(requestDto.getId())
                 .packageName(requestDto.getPackageName())
-                .maximumMember(requestDto.getMaximumSeats())
+                .maximumMember(requestDto.getMaximumMember())
                 .minimumRequired(requestDto.getMinimumRequired())
                 .adultPrice(requestDto.getAdultPrice())
                 .childPrice(requestDto.getChildPrice())
@@ -31,19 +35,17 @@ public class PackageService {
                 .description(requestDto.getDescription())
                 .packageCategory(requestDto.getPackageCategory())
                 .hotelName(requestDto.getHotelName())
-                .guide(requestDto.isGuide())
-                .airFare(requestDto.isAirFare())
-                .hotelFee(requestDto.isHotelFee())
-                .shopping(requestDto.isShopping())
-//                .mainImage((PackageImage) requestDto.getMainImage())
                 .build();
 
         if (requestDto.getMainImage() != null && !requestDto.getMainImage().isEmpty()) {
             PackageImage mainPackageImage = packageImageService.create(requestDto, aPackage);
             aPackage.setMainImage(mainPackageImage);
         }
-
-
+        // 패키지 기본 정보 저장
         packageRepository.save(aPackage);
+        // 항공편 일정 정보 저장
+        packageScheduleService.save(aPackage, requestDto);
+        // 선택 옵션 저장
+        packageOptionService.save(aPackage, requestDto);
     }
 }

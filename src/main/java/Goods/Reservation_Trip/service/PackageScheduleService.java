@@ -3,9 +3,13 @@ package Goods.Reservation_Trip.service;
 import Goods.Reservation_Trip.dto.PackageRequestDto;
 import Goods.Reservation_Trip.entity.Package;
 import Goods.Reservation_Trip.entity.PackageSchedule;
+import Goods.Reservation_Trip.enums.PackageStatus;
 import Goods.Reservation_Trip.repository.PackageScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Service
 @RequiredArgsConstructor
@@ -15,11 +19,11 @@ public class PackageScheduleService {
 
     public PackageSchedule save(Package aPackage, PackageRequestDto requestDto) {
         PackageSchedule packageSchedule = PackageSchedule.builder()
-                .departureDate(requestDto.getDepartureDate())
-                .returnDate(requestDto.getReturnDate())
-//                .maximumSeats(requestDto.getMaximumSeats())
-//                .minimumSeats(requestDto.getMinimumSeats())
-//                .seatsAvailable(requestDto)
+                .aPackage(aPackage)
+                .departureDateOut(LocalDate.parse(requestDto.getDepartureDateOut()))
+                .arrivalDateOut(LocalDate.parse(requestDto.getArrivalDateOut()))
+                .departureDateReturn(LocalDate.parse(requestDto.getDepartureDateReturn()))
+                .arrivalDateReturn(LocalDate.parse(requestDto.getArrivalDateReturn()))
                 .departurePointOut(requestDto.getDeparturePointOut())
                 .arrivalPointOut(requestDto.getArrivalPointOut())
                 .departurePointReturn(requestDto.getDeparturePointReturn())
@@ -34,6 +38,7 @@ public class PackageScheduleService {
                 .arrivalTimeOut(requestDto.getArrivalTimeOut())
                 .departureTimeReturn(requestDto.getDepartureTimeReturn())
                 .arrivalTimeReturn(requestDto.getArrivalTimeReturn())
+                .packageStatus(PackageStatus.AVAILABLE)
                 .build();
 
         return packageScheduleRepository.save(packageSchedule);
