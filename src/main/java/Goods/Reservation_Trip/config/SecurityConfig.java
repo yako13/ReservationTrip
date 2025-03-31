@@ -32,6 +32,7 @@ public class SecurityConfig {
 
         //접근 권한 설정
         http.authorizeHttpRequests((auth) -> auth
+                        .requestMatchers("/member/**").hasRole(MemberRole.MEMBER.name())
 //                        .requestMatchers("/init/member", "/member/**","/checkout/**","/account/**","/cart/**").hasRole(MemberRole.MEMBER.name())
 //                        .requestMatchers("/master/**").hasRole(MemberRole.ADMIN.name())
                         .anyRequest().permitAll()
@@ -52,7 +53,8 @@ public class SecurityConfig {
         //oauth 로그인
         http.oauth2Login((auth) -> auth
                 .loginPage("/login")
-                .defaultSuccessUrl("/")
+//                .defaultSuccessUrl("/")
+                        .defaultSuccessUrl("/test10")
                 .failureUrl("/login")
                 .authorizationEndpoint(authorization -> authorization.baseUri("/oauth2/authorization"))
                 .successHandler(authenticationSuccessHandler)

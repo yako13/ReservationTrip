@@ -18,7 +18,8 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         SavedRequest savedRequest = new HttpSessionRequestCache().getRequest(request, response);
-        String redirectUrl = "/";
+//        String redirectUrl = "/";
+        String redirectUrl = "/test10";
         String masterRedirectUrl = "/master/checkout/list";
 
         Collection<? extends GrantedAuthority> grantedAuthorities = authentication.getAuthorities();
@@ -27,11 +28,11 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             role = authority.getAuthority();
         }
 
-        if(role.equals("ROLE_USER") && savedRequest != null){
+        if(role.equals("ROLE_MEMBER") && savedRequest != null){
             redirectUrl = savedRequest.getRedirectUrl();
             response.sendRedirect(redirectUrl);
         }
-        else if(role.equals("ROLE_USER")){
+        else if(role.equals("ROLE_MEMBER")){
             response.sendRedirect(redirectUrl);
         }
         else if(role.equals("ROLE_ADMIN")){
