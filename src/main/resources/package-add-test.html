@@ -1,0 +1,102 @@
+<h4>항공편 추가</h4>
+
+<!-- 날짜 범위 선택 -->
+<div class="row">
+  <div class="col">
+    <label>출발 시작일</label>
+    <input type="date" id="start_date" class="form-control" />
+  </div>
+  <div class="col">
+    <label>출발 종료일</label>
+    <input type="date" id="end_date" class="form-control" />
+  </div>
+</div>
+
+<!-- 항공편 기본 정보 입력 -->
+<div class="row mt-3">
+  <div class="col">
+    <label>항공사</label>
+    <input type="text" id="airline" class="form-control" />
+  </div>
+  <div class="col">
+    <label>항공편명</label>
+    <input type="text" id="flight_no" class="form-control" />
+  </div>
+  <div class="col">
+    <label>출발 시간</label>
+    <input type="time" id="departure_time" class="form-control" />
+  </div>
+  <div class="col">
+    <label>도착 시간</label>
+    <input type="time" id="arrival_time" class="form-control" />
+  </div>
+</div>
+
+<!-- 자동 생성 버튼 -->
+<button type="button" class="btn btn-primary mt-3" onclick="generateFlights()">
+  항공편 자동 추가
+</button>
+
+<!-- 항공편 목록 -->
+<table class="table mt-3">
+  <thead>
+    <tr>
+      <th>출발 날짜</th>
+      <th>항공사</th>
+      <th>항공편명</th>
+      <th>출발 시간</th>
+      <th>도착 시간</th>
+      <th>관리</th>
+    </tr>
+  </thead>
+  <tbody id="flightTableBody"></tbody>
+</table>
+
+<script>
+  function generateFlights() {
+    const startDate = new Date(document.getElementById("start_date").value);
+    const endDate = new Date(document.getElementById("end_date").value);
+    const airline = document.getElementById("airline").value;
+    const flightNo = document.getElementById("flight_no").value;
+    const departureTime = document.getElementById("departure_time").value;
+    const arrivalTime = document.getElementById("arrival_time").value;
+    const flightTable = document.getElementById("flightTableBody");
+
+    if (
+      !startDate ||
+      !endDate ||
+      !airline ||
+      !flightNo ||
+      !departureTime ||
+      !arrivalTime
+    ) {
+      alert("모든 항목을 입력해주세요.");
+      return;
+    }
+
+    // 기존 데이터 초기화
+    flightTable.innerHTML = "";
+
+    for (
+      let d = new Date(startDate);
+      d <= endDate;
+      d.setDate(d.getDate() + 1)
+    ) {
+      const formattedDate = d.toISOString().split("T")[0]; // YYYY-MM-DD 형식
+      const row = flightTable.insertRow();
+      row.innerHTML = `
+                <td><input type="date" name="departure_dates[]" class="form-control" value="${formattedDate}" readonly></td>
+                <td><input type="text" name="airline[]" class="form-control" value="${airline}" readonly></td>
+                <td><input type="text" name="flight_no[]" class="form-control" value="${flightNo}" readonly></td>
+                <td><input type="time" name="departure_time[]" class="form-control" value="${departureTime}" readonly></td>
+                <td><input type="time" name="arrival_time[]" class="form-control" value="${arrivalTime}" readonly></td>
+                <td><button type="button" class="btn btn-danger" onclick="removeRow(this)">삭제</button></td>
+            `;
+    }
+  }
+
+  function removeRow(button) {
+    const row = button.parentNode.parentNode;
+    row.parentNode.removeChild(row);
+  }
+</script>
