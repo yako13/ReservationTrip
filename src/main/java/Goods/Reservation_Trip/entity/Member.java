@@ -4,6 +4,7 @@ import Goods.Reservation_Trip.base.BaseTime;
 import Goods.Reservation_Trip.enums.MemberRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Builder
 public class Member extends BaseTime {
 
     @Id
@@ -23,9 +25,9 @@ public class Member extends BaseTime {
     @Column(name = "member_id")
     private Long id;
 
-    @Column(name = "member_id", nullable = false)
-    @Comment(value = "회원 아이디")
-    private String memberId;
+    @Column(name = "email", nullable = false)
+    @Comment(value = "회원 이메일")
+    private String email;
 
     @Column(nullable = true)
     @Comment(value = "비밀번호")
@@ -59,7 +61,7 @@ public class Member extends BaseTime {
     @Comment(value = "탈퇴 날짜")
     private LocalDateTime withdrawalAt;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "VARCHAR(50)")
     @Enumerated(EnumType.STRING)
     @Comment(value = "권한")
     private MemberRole role;
@@ -71,4 +73,8 @@ public class Member extends BaseTime {
     @Column(name = "privacy_agreement", nullable = false)
     @Comment(value = "개인정보 수집 동의 여부")
     private boolean privacyAgreement;
+
+    public void setPassword(String password){
+        this.password = password;
+    }
 }

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>냥만여행 로그인</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .frontContainer {
+            background-color: #f1f0f1;
+            padding: 10rem 0;
+        }
+
+        .container {
+            box-sizing: border-box;
+            margin: 0rem auto;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            width: 30rem;
+            border-radius: 4px;
+            text-align: center;
+            padding: 2rem;
+            background-color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.295);
+        }
+
+        .formArea {
+            box-sizing: border-box;
+
+            .form {
+                box-sizing: border-box;
+
+            }
+
+            input {
+                padding: 0.5rem;
+                margin: 0.8rem auto;
+                width: 90%;
+                height: 2rem;
+                border: none;
+                font-size: 1rem;
+                border-bottom: 0.1rem solid #ccc;
+
+                &:focus {
+                    outline: none;
+                    border-bottom: 0.1rem solid #000000;
+                }
+            }
+        }
+
+        .inputArea {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btnArea {
+            padding: 0.5rem;
+        }
+
+        .loginBtn {
+            height: 3rem;
+            width: 100%;
+            background-color: #43bff8;
+            color: #ffffff;
+            border: none;
+            border-radius: 7px;
+            transition: all 0.3s ease;
+
+            &:hover {
+                background-color: #3e8cf1;
+                color: #ebebeb;
+                transform: scale(0.98);
+            }
+        }
+
+        .linkArea {
+            color: #747474;
+            margin: 1.5rem 0 1rem 0;
+
+            a:hover {
+                font-weight: 600;
+            }
+        }
+
+        .separator {
+            display: block;
+            text-align: center;
+            position: relative;
+            background: transparent;
+            color: rgb(111, 111, 111);
+            width: 100%;
+            margin: 1rem 0;
+
+            p {
+                margin: 0;
+            }
+
+            &::before {
+                content: "";
+                position: absolute;
+                top: 10px;
+                left: 0;
+                background: rgb(111, 111, 111);
+                height: 1px;
+                width: 43%;
+            }
+
+            &::after {
+                content: "";
+                position: absolute;
+                top: 10px;
+                right: 0;
+                background: rgb(111, 111, 111);
+                height: 1px;
+                width: 43%;
+            }
+        }
+
+        .snsLoginArea {
+            p {
+                margin: 1rem 0 2rem 0;
+                font-weight: 600;
+            }
+
+            img {
+                margin: 0 1rem;
+                width: 3.5rem;
+            }
+        }
+
+        a {
+            text-decoration: none;
+            color: gray;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <div class="frontContainer">
+            <div class="container">
+                <input type="hidden" th:if="${param.error}" value="로그인에 실패하였습니다." id="dataAlert">
+                <div class="logoArea">
+                </div>
+                <div class="loginText">
+                    <h2>로그인</h2>
+                    <p>모든 순간 두근두근, 여행은 냥만여행</p>
+                </div>
+                <div class="formArea">
+                    <form th:action="@{/login}" th:method="post" class="form">
+                        <div class="inputArea">
+                            <input type="email" placeholder="이메일" required id="emailInput" name="email">
+                            <input type="password" placeholder="비밀번호" name="password" required id="passwordInput">
+                        </div>
+                        <div class="btnArea">
+                            <button class="loginBtn">로그인</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="linkArea">
+                    <a th:href="@{/find/id}">아이디 찾기</a>
+                    <span>·</span>
+                    <a th:href="@{/find/password}">비밀번호 찾기</a>
+                    <span>·</span>
+                    <a th:href="@{/join}">회원가입</a>
+                </div>
+                <div class="separator">
+                    <p>OR</p>
+                </div>
+                <div class="snsLoginArea">
+                    <p>소설 계정으로 간편 로그인</p>
+                    <a href="/oauth2/authorization/google"><img th:src="@{/images/google.png}"></a>
+                    <a href="/oauth2/authorization/naver"><img th:src="@{/images/naver2.png}"></a>
+                    <a href="/oauth2/authorization/kakao"><img th:src="@{/images/kakao.png}"></a>
+                </div>
+            </div>
+        </div>
+        <script th:src="@{/js/alert.js}"></script>
+    </main>
+</body>
+
+</html>
