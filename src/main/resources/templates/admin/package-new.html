@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>관리자 상품 등록</title>
+  </head>
+  <style>
+    .main__container {
+      width: 800px;
+    }
+    .a1 {
+      border: 1px solid;
+      border-radius: 7px;
+      padding: 20px;
+    }
+    .a2 {
+      float: left;
+      width: 340px;
+    }
+    .a3 {
+      margin-left: 450px;
+      width: 270px;
+    }
+    .a4 {
+    }
+    .a5 {
+      border: 1px solid;
+      border-radius: 7px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .a6 {
+      border: 1px solid;
+      border-radius: 7px;
+      padding: 20px;
+      height: 300px;
+    }
+    .a7 {
+      border: 1px solid;
+      border-radius: 7px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+    .a8 {
+      border: 1px solid;
+      border-radius: 7px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .a9 {
+      border: 1px solid;
+      border-radius: 7px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .b1 {
+      border: 1px solid;
+      border-radius: 7px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .input__flex {
+      display: flex;
+      flex-direction: column;
+    }
+    .b2 {
+      display: flex;
+      margin-top: 10px;
+    }
+    .plane-time {
+      margin-left: 50px;
+      gap: 20px;
+    }
+    input[type="checkbox"] {
+      display: none;
+    }
+    .input__label {
+      border: 1px solid #8e8e8e;
+      border-radius: 7px;
+      padding: 5px;
+      color: #8e8e8e;
+      cursor: pointer;
+    }
+    input[type="checkbox"]:checked + label {
+      border: 1px solid;
+      color: #f61472;
+    }
+    .b3 {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+  </style>
+  <body>
+    <h1>상품 등록</h1>
+    <main class="main__container">
+      <div class="a1">
+        <form
+          action="/admin/package/save"
+          method="post"
+          enctype="multipart/form-data">
+          <!-- 상품 기본 정보 -->
+          <div>상품 기본 정보</div>
+          <div class="a6">
+            <div class="a2">
+              <div class="input__flex">
+                <label>상품명</label>
+                <input type="text" name="packageName" />
+              </div>
+              <div class="input__flex">
+                <label>예약 가능 인원수</label>
+                <input type="number" name="maximumMember" />
+              </div>
+              <div class="input__flex">
+                <label>성인 1인당 가격</label>
+                <input type="text" name="adultPrice" />
+              </div>
+              <div class="input__flex">
+                <label>아동 1인당 가격</label>
+                <input type="text" name="childPrice" />
+              </div>
+              <div class="input__flex">
+                <label>유아 1인당 가격</label>
+                <input type="text" name="babyPrice" />
+              </div>
+              <div class="input__flex">
+                <label>유류할증료 포함 1인당 가격</label>
+                <input type="text" name="fuelSurchargeIncluded" />
+              </div>
+              <div class="input__flex">
+                <label>여행지 한 줄 설명</label>
+                <input type="text" name="description" />
+              </div>
+            </div>
+            <div class="a3">
+              <div class="input__flex">
+                <label>최소 출발 인원</label>
+                <input type="number" name="minimumRequired" />
+              </div>
+              <div>
+                <label>도시 카테고리</label>
+                <select id="mainCategory">
+                  <option value="" selected>카테고리를 선택하세요</option>
+                  <option value="JAPAN">일본</option>
+                  <option value="CENTRAL_ASIA">
+                    중국 / 홍콩 / 몽골 / 중앙아시아
+                  </option>
+                  <option value="SOUTHEAST_ASIA">동남아 / 대만 / 서남아</option>
+                  <option value="EUROPA">유럽 / 아프리카</option>
+                  <option value="LATIN_AMERICA">
+                    미주 / 하와이 / 캐나다 / 중남미
+                  </option>
+                  <option value="OCEANIA">괌/ 사이판 / 뉴질랜드 / 호주</option>
+                </select>
+                <select id="subCategory">
+                  <option value="#">중분류</option>
+                </select>
+                <select id="smallCategory">
+                  <option value="#">소분류</option>
+                </select>
+              </div>
+              <div class="input__flex">
+                <label>유류할증료</label>
+                <input type="text" name="fuelSurcharge" />
+              </div>
+              <div class="input__flex">
+                <label>썸네일 이미지</label>
+                <input type="file" name="mainImage" />
+              </div>
+              <div class="input__flex">
+                <label>서브 이미지</label>
+                <input type="file" multiple name="subImage" />
+              </div>
+              <div class="input__flex">
+                <label>일정이미지</label>
+                <input type="file" multiple name="descImage" />
+              </div>
+              <br />
+            </div>
+          </div>
+          <br />
+          <!-- 여행 일정 정보 -->
+          <div class="a4">여행 일정 정보</div>
+          <div class="a5">
+            <div>
+              <label>여행 기간</label>
+              <input type="text" name="period" />
+            </div>
+            <div>
+              <div class="a8">
+                <span>출국일정</span>
+                <div class="b2">
+                  <div class="b3">
+                    <div>
+                      <label>출발지</label>
+                      <select name="departurePointOut">
+                        <option value="GIMPO">김포국제공항</option>
+                        <option>인천국제공항</option>
+                        <option>대구국제공항</option>
+                        <option>부산국제공항</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label>도착지</label>
+                      <select name="arrivalPointOut">
+                        <option value="NARITA">나리타국제공항</option>
+                        <option>간사이국제공항</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label>항공사</label>
+                      <select name="airlineOut">
+                        <option value="AIR_SEOUL">에어서울</option>
+                        <option>티웨이항공</option>
+                        <option>에어부산</option>
+                        <option>제주항공</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="input__flex plane-time">
+                    <div>
+                      <label for="departureDateOut">출발날짜</label>
+                      <input
+                        type="date"
+                        id="departureDateOut"
+                        name="departureDateOut" />
+                    </div>
+                    <div>
+                      <label for="arrivalDateOut">도착날짜</label>
+                      <input
+                        type="date"
+                        id="arrivalDateOut"
+                        name="arrivalDateOut" />
+                    </div>
+                    <div>
+                      <label>항공기 번호</label>
+                      <input type="text" name="flightNumberOut" />
+                    </div>
+                  </div>
+                  <div class="input__flex plane-time">
+                    <div>
+                      <label for="departureTimeOut">출발시간</label>
+                      <input
+                        type="time"
+                        id="departureTimeOut"
+                        name="departureTimeOut" />
+                    </div>
+                    <div>
+                      <label for="arrivalTimeOut">도착시간</label>
+                      <input
+                        type="time"
+                        id="arrivalTimeOut"
+                        name="arrivalTimeOut" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- 귀국일정 -->
+              <div class="a8">
+                <span>귀국일정</span>
+                <div class="b2">
+                  <div class="b3">
+                    <div>
+                      <label>출발지</label>
+                      <select name="departurePointReturn">
+                        <option value="NARITA">나리타국제공항</option>
+                        <option>간사이국제공항</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label>도착지</label>
+                      <select name="arrivalPointReturn">
+                        <option value="GIMPO">김포국제공항</option>
+                        <option>인천국제공항</option>
+                        <option>대구국제공항</option>
+                        <option>부산국제공항</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label>항공사</label>
+                      <select name="airlineReturn">
+                        <option value="AIR_SEOUL">에어서울</option>
+                        <option>티웨이항공</option>
+                        <option>에어부산</option>
+                        <option>제주항공</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="input__flex plane-time">
+                    <div>
+                      <label for="return-departure">출발날짜</label>
+                      <input
+                        type="date"
+                        id="return-departure"
+                        name="departureDateReturn" />
+                    </div>
+                    <div>
+                      <label for="return-arrive">도착날짜</label>
+                      <input
+                        type="date"
+                        id="return-arrive"
+                        name="arrivalDateReturn" />
+                    </div>
+                    <div>
+                      <label>항공기 번호</label>
+                      <input type="text" name="flightNumberReturn" />
+                    </div>
+                  </div>
+                  <div class="input__flex plane-time">
+                    <div>
+                      <label for="return-departure-time">출발시간</label>
+                      <input
+                        type="time"
+                        id="return-departure-time"
+                        name="departureTimeReturn" />
+                    </div>
+                    <div>
+                      <label for="return-arrive-time">도착시간</label>
+                      <input
+                        type="time"
+                        id="return-arrive-time"
+                        name="arrivalTimeReturn" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- /귀국일정 -->
+              <button type="button">항공편 자동 추가</button>
+              <button type="button">항공편 단일 추가</button>
+              <!-- 팝업창에서 입력과 등록 처리를 하고 확인 하는 방법? -->
+            </div>
+          </div>
+          <!-- 추가로 생성되는 항공편 -->
+          <div></div>
+          <!-- /추가로 생기는 항공편 -->
+          <span>호텔 일정</span>
+          <div class="a9">
+            <div>
+              <label for="hetel-name">호텔명</label>
+              <input type="text" id="hotel-name" name="hotelName" />
+            </div>
+            <button type="button">일정 추가</button>
+          </div>
+          <!-- 상품 옵션 -->
+          <div>옵션</div>
+          <div class="b1">
+            <input type="checkbox" id="guide" name="guide" />
+            <label for="guide" class="input__label">가이드 동반</label>
+            <input type="checkbox" id="hotel-fee" name="hotelFee" />
+            <label for="hotel-fee" class="input__label">호텔비 포함</label>
+            <input type="checkbox" id="plane-fee" name="airFare" />
+            <label for="plane-fee" class="input__label">항공료 포함</label>
+            <input type="checkbox" id="no-shopping" name="shopping" />
+            <label for="no-shopping" class="input__label">쇼핑 없음</label>
+          </div>
+          <button type="submit">등록하기</button>
+          <button type="button">돌아가기</button>
+        </form>
+      </div>
+    </main>
+  </body>
+</html>
