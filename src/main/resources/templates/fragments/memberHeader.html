@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StarCloud Workshop</title>
+  <link rel="stylesheet" href="css/mainPage.css">
+
+</head>
+
+<body>
+
+<header th:fragment="memberHeader">
+
+  <!-- 헤더 시작 -->
+  <div class="HanHeaderMain">
+
+    <div class="HanHeaderLogo">
+      냥만여행
+    </div>
+
+    <div class="HanHeaderMid">
+
+      <div class="HanSerachForm">
+
+        <form action="/product/search/index" method="get" role="search" id="HanSerachForm">
+
+          <input type="text" id="cardName" name="keyword" placeholder="검색어를 입력해주세요">
+          <button type="submit" form="HanSerachForm"></button>
+          <img th:src="@{/images/paw2.svg}" width="34px">
+        </form>
+
+      </div>
+
+
+    </div>
+
+    <!-- 로그아웃시 나타나는 헤더 부분 시작 -->
+
+    <!-- <div class="HanHeaderButton">
+      <a th:href="@{/login}">로그인</a>
+      <a th:href="@{/join}">회원가입</a>
+    </div> -->
+
+    <!-- 로그아웃시 나타나는 헤더 부분 끝 -->
+
+    <!-- 로그인시 나타나는 헤더부분 시작-->
+
+    <div class="HanHeaderButton">
+      <div class="Handropdown">
+        <a class="dropbtn HanHeaderButtonA" onclick="toggleDropdown(event, 'mypageDropdown')">
+          <img th:src="@{/images/user1.svg}" alt="" width="30px" height="auto" class="HanHeaderHover"></a>
+        <div class="HanDrodBoxName" id="mypageDropdown">
+          <div class="HanDrodBoxNameBox">
+            <img th:src="@{/images/user1.svg}" alt="">
+            <div class="HanDrodBoxNameDiv">
+              <div>
+                <p class="HanHeaderUserName" >[[${name}]]님</p>
+              </div>
+              <p class="HanHeaderUserId" ></p>
+            </div>
+          </div>
+          <div class="HandropdownBoxLogout">
+            <a href="/logout" id="logoutLink">
+              <img th:src="@{/images/logout.svg}" width="20px" height="auto">로그아웃</a>
+          </div>
+          <div class="HandropdownBox" id="">
+            <a th:href="@{/member/checkout/list}">마이페이지</a>
+            <a th:href="@{/member/checkout/list}">주문목록</a>
+            <a th:href="@{/member/pay/create}">결제 등록</a>
+            <a th:href="@{/member/delivery/create}">배송지 등록</a>
+          </div>
+        </div>
+      </div>
+      <a href="/cart" class="HanHeaderButtonA"><img th:src="@{/images/ticket.png}" width="33px" height="auto"
+                                                    class="HanHeaderHover"></a>
+
+      <a href="/cart" class="HanHeaderButtonA"><img th:src="@{/images/heart.png}" width="32px" height="auto"
+                                                    class="HanHeaderHover"></a>
+
+
+    </div>
+
+    <!-- 로그인시 나타나는 헤더부분 끝-->
+
+  </div>
+
+  <hr class="HanHeaderHr" />
+
+  <!-- 네비 시작 -->
+  <div class="HanNaviMain">
+
+    <div class="HanNaviBarADiv">
+      <a th:href="@{/product/list}">전체상품</a>
+    </div>
+
+    <div class="HanNaviBarADiv">
+      <a >해외여행</a>
+    </div>
+
+    <div class="HanNaviBarADiv">
+      <a >국내여행</a>
+    </div>
+
+  </div>
+  <!-- 네비 끝 -->
+
+
+  <hr class="HanNavHr" />
+  <!-- 헤더 끝 -->
+
+
+  <!-- 네비 끝 -->
+
+  <!-- 헤더 끝 -->
+
+</header>
+
+</body>
+
+
+</html>
