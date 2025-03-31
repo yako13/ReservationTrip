@@ -27,11 +27,11 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             role = authority.getAuthority();
         }
 
-        if(role.equals("ROLE_USER") && savedRequest != null){
+        if(role.equals("ROLE_MEMBER") && savedRequest != null){
             redirectUrl = savedRequest.getRedirectUrl();
             response.sendRedirect(redirectUrl);
         }
-        else if(role.equals("ROLE_USER")){
+        else if(role.equals("ROLE_MEMBER")){
             response.sendRedirect(redirectUrl);
         }
         else if(role.equals("ROLE_ADMIN")){

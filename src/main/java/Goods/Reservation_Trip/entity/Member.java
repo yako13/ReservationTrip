@@ -42,7 +42,7 @@ public class Member extends BaseTime {
     private String birth;
 
     @Column(nullable = true)
-    @Comment(value = "성별")
+    @Comment(value = "성별, 남1 여0")
     private boolean gender;
 
     @Column(name = "phone_number", nullable = true)
@@ -67,14 +67,21 @@ public class Member extends BaseTime {
     private MemberRole role;
 
     @Column(name = "terms_agreement", nullable = false)
-    @Comment(value = "이용약관 동의 여부")
+    @Comment(value = "이용약관 동의 여부, 동의1 미동의0")
     private boolean termsAgreement;
 
     @Column(name = "privacy_agreement", nullable = false)
-    @Comment(value = "개인정보 수집 동의 여부")
+    @Comment(value = "개인정보 수집 동의 여부, 동의1 미동의0")
     private boolean privacyAgreement;
 
     public void setPassword(String password){
         this.password = password;
+    }
+
+    public void editMember(String password,String name,String birth,String phoneNumber){
+        this.password = password;
+        this.name = name;
+        this.birth = birth;
+        this.phoneNumber = phoneNumber;
     }
 }

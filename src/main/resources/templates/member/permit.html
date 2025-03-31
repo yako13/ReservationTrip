@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>냥만여행 회원</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            background-color: white;
+            /* border: 1px solid #ccc; */
+            /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.295); */
+        }
+
+
+        .innerContainer {
+            background-color: #f1f0f1;
+        }
+
+        .messageArea {
+            border-radius: 4px;
+            width: 20rem;
+            background-color: #ffffff;
+            margin: 10rem auto;
+            padding: 3.5rem;
+
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.295);
+
+            p {
+                margin-bottom: 3rem;
+                font-weight: 600;
+            }
+
+            a {
+                color: #797979;
+            }
+        }
+
+        .inputArea {
+            text-align: start;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 1.7rem;
+
+            label {
+                margin-bottom: 0.5rem;
+            }
+
+            input {
+                padding: 0.3rem;
+                height: 2rem;
+                border: #ccc 1px solid;
+                border-radius: 4px;
+
+                &:focus {
+                    outline: none;
+                    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.122);
+                }
+            }
+        }
+
+
+
+        #findBtn {
+            width: 100%;
+            height: 2.5rem;
+            font-size: 1rem;
+            border-radius: 4px;
+            background-color: black;
+            color: white;
+
+            &:hover {
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.295);
+            }
+        }
+
+        #findIdLink {
+            &:hover {
+                font-weight: 600;
+                color: black;
+            }
+
+        }
+
+        #findPasswordLink {
+            color: black;
+            font-weight: 600;
+        }
+
+        #email {
+            width: 70%;
+        }
+
+        #authBtn {
+            width: 24%;
+            height: 2.6rem;
+        }
+
+
+        #authBtn {
+            border: none;
+            border-radius: 4px;
+            background-color: #171668;
+            color: white;
+
+            &:hover {
+                box-shadow:
+                    7px 7px 20px 0px #0002,
+                    4px 4px 5px 0px #0001;
+            }
+
+        }
+
+        .infoArea{
+            text-align: start;
+            font-size: 0.8rem;
+            color: #929292;
+            p{
+                margin-bottom: 0.5rem;
+            }
+        }
+
+        .formArea{
+            margin-top: 1.2rem;
+        }
+
+        .mailInputArea{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            span{
+                font-weight: 600;
+            }
+        }
+
+        label{
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <div class="container">
+            <div class="innerContainer">
+                <div class="messageArea">
+
+                    <div class="infoArea">
+                        <p>회원정보 보호를 위하여 이메일 인증이 필요합니다.</p>
+                        <hr>
+                    </div>
+                    <div class="formArea">
+                        <form>
+                            <div class="inputArea">
+                                <div class="mailInputArea">
+                                    <span>nyangmanTravel@gmail.com</span>
+                                    <button id="authBtn">인증하기</button>
+                                </div>
+                            </div>
+                            <div class="inputArea">
+                                <span id="timer"></span>
+                                <input type="text" name="authCode" placeholder="인증번호" id="authCode">
+                            </div>
+                            <button id="findBtn">확인</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

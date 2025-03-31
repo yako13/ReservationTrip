@@ -1,9 +1,13 @@
 package Goods.Reservation_Trip.service.member;
 
+import Goods.Reservation_Trip.dto.member.req.EditDto;
 import Goods.Reservation_Trip.dto.member.req.JoinDto;
+import Goods.Reservation_Trip.dto.member.res.MemberResponseDto;
 import Goods.Reservation_Trip.entity.Member;
 import Goods.Reservation_Trip.enums.MemberRole;
 import Goods.Reservation_Trip.repository.MemberRepository;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -70,5 +74,55 @@ public class MemberService {
         member.setPassword(passwordEncoder.encode(password));
     }
 
+    //회원 정보 가져오기
+    public MemberResponseDto getMember(HttpServletRequest request) {
+        //세션에서 회원 PK 들고오기
+        HttpSession session = request.getSession(false);
+
+        Long memberId = (Long) session.getAttribute("memberId");
+
+        if (memberId == null) return null;
+
+        //가져온 PK로 DB에서 회원 찾기
+        Optional<Member> optionalMember = memberRepository.findById(memberId);
+
+        if (optionalMember.isEmpty()) return null;
+
+        Member member = optionalMember.get();
+
+        //찾은 회원을 dto에 담아주기
+        return MemberResponseDto.builder()
+                .id(memberId)
+                .email(member.getEmail())
+                .name(member.getName())
+                .password(member.getPassword())
+                .provider(member.getProvider())
+                .birth(member.getBirth())
+                .gender(member.isGender())
+                .phoneNumber(member.getPhoneNumber())
+                .build();
+
+    }
+
+    public void editMember(EditDto editDto) {
+        //가져온 이메일로 DB에서 회원찾기
+        Optional<Member> optionalMember = memberRepository.findByEmail(editDto.getEmail());
+
+        if (optionalMember.isEmpty()) throw new RuntimeException("잘못된 접근");
+
+        Member member = optionalMember.get();
+
+        String password = editDto.getPassword();
+        String name = editDto.getName();
+        String birth = editDto.getBirth();
+        String phoneNumber = editDto.getPhoneNumber();
+
+        //회원정보 수정
+        member.editMember(password, name, birth, phoneNumber);
+
+        //수정한 내용 저장
+        memberRepository.save(member);
+
+    }
 
 }
