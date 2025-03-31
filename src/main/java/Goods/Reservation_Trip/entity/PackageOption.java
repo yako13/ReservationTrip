@@ -2,6 +2,7 @@ package Goods.Reservation_Trip.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
@@ -10,6 +11,7 @@ import org.hibernate.annotations.Comment;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 public class PackageOption {
 

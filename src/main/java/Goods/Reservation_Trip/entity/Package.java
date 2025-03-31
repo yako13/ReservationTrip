@@ -9,18 +9,18 @@ import org.hibernate.annotations.Comment;
 import java.math.BigDecimal;
 import java.util.List;
 
-@Table(name = "package_trip")
+@Table(name = "package")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Builder
-public class PackageTrip extends BaseTime {
+public class Package extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "package_trip_id")
+    @Column(name = "package_id")
     private Long id;
 
     @Column(name = "package_name", nullable = false)
@@ -87,26 +87,10 @@ public class PackageTrip extends BaseTime {
     @Comment("호텔 명")
     private List<String> hotelName;
 
-    @Column(nullable = true)
-    @Comment("가이드 유무")
-    private boolean guide;
-
-    @Column(nullable = true)
-    @Comment("항공료 포함 유무")
-    private boolean airFare;
-
-    @Column(nullable = true)
-    @Comment("호텔비 포함 유무")
-    private boolean hotelFee;
-
-    @Column(nullable = true)
-    @Comment("쇼핑 여부")
-    private boolean shopping;
-
-    @OneToMany(mappedBy = "package_trip", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "aPackage", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PackageImage> packageImageList;
 
-    @OneToMany(mappedBy = "package_trip", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "aPackage", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PackageSchedule> packageScheduleList;
 
 }

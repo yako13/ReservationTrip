@@ -10,8 +10,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
+import org.springframework.cglib.core.Local;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Date;
 
 @Table(name = "package_schedule")
@@ -31,17 +34,21 @@ public class PackageSchedule {
     @ManyToOne(cascade = CascadeType.ALL)
     private Package aPackage;
 
-    @Column(name = "departure_date", nullable = true)
+    @Column(name = "departure_date_out", nullable = true)
     @Comment("여행 출국 날짜")
-    private Date departureDate;
+    private LocalDate departureDateOut;
 
-    @Column(name = "return_date", nullable = true)
+    @Column(name = "arrival_date_out", nullable = true)
+    @Comment("여행 출국 도착 날짜")
+    private LocalDate arrivalDateOut;
+
+    @Column(name = "departure_date_return", nullable = true)
     @Comment("여행 귀국 날짜")
-    private Date returnDate;
+    private LocalDate departureDateReturn;
 
-//    @Column(name = "seats_available", nullable = false)
-//    @Comment("남은 좌석 수")
-//    private int seatsAvailable;
+    @Column(name = "arrival_date_return", nullable = true)
+    @Comment("여행 귀국 도착 날짜")
+    private LocalDate arrivalDateReturn;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "departure_point_out", nullable = true, columnDefinition = "VARCHAR(50)")
@@ -68,13 +75,13 @@ public class PackageSchedule {
     private String period;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "air_line)out", nullable = true, columnDefinition = "VARCHAR(50)")
-    @Comment("항공사 명")
+    @Column(name = "air_line_out", nullable = true, columnDefinition = "VARCHAR(50)")
+    @Comment("출국 항공사 명")
     private Airline airlineOut;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "air_line_return", nullable = true, columnDefinition = "VARCHAR(50)")
-    @Comment("항공사 명")
+    @Comment("귀국 항공사 명")
     private Airline airlineReturn;
 
     /**
@@ -98,17 +105,17 @@ public class PackageSchedule {
 
     @Column(name = "departure_time_out")
     @Comment("출국 출발 시간")
-    private LocalDateTime departureTimeOut;
+    private LocalTime departureTimeOut;
 
     @Column(name = "arrival_time_out")
     @Comment("출국 도착 시간")
-    private LocalDateTime arrivalTimeOut;
+    private LocalTime arrivalTimeOut;
 
     @Column(name = "departure_time_return", nullable = true)
     @Comment("귀국 출발 시간")
-    private LocalDateTime departureTimeReturn;
+    private LocalTime departureTimeReturn;
 
     @Column(name = "arrival_time_return", nullable = true)
     @Comment("귀국 도착 시간")
-    private LocalDateTime arrivalTimeReturn;
+    private LocalTime arrivalTimeReturn;
 }
