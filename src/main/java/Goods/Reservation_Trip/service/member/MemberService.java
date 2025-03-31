@@ -33,7 +33,11 @@ public class MemberService {
     }
 
     //회원가입
-    public void join(JoinDto joinDto) {
+    public boolean join(JoinDto joinDto) {
+
+        //이름과 휴대전화번호가 중복된 회원이 있는 경우 가입 불가
+        if(memberRepository.findByNameAndPhoneNumber(joinDto.getName(), joinDto.getPhoneNumber()).isPresent()) return false;
+
         Member member = Member.builder()
                 .email(joinDto.getEmail())
                 .password(passwordEncoder.encode(joinDto.getPassword()))
@@ -47,6 +51,7 @@ public class MemberService {
                 .build();
 
         memberRepository.save(member);
+        return true;
     }
 
     //아이디찾기
@@ -58,9 +63,7 @@ public class MemberService {
         String memberMail = member.getEmail();
 
         //메일 변환
-        String newMail = memberMail.substring(0, memberMail.indexOf("@") - 3) + "***" + memberMail.substring(memberMail.indexOf("@"));
-
-        return newMail;
+        return memberMail.substring(0, memberMail.indexOf("@") - 3) + "***" + memberMail.substring(memberMail.indexOf("@"));
     }
 
     //임시비밀번호로 비밀번호 변경
@@ -103,7 +106,8 @@ public class MemberService {
 
     }
 
-    public void editMember(String email,EditDto editDto) {
+    //회원수정
+    public boolean editMember(String email,EditDto editDto) {
         //가져온 이메일로 DB에서 회원찾기
         Optional<Member> optionalMember = memberRepository.findByEmail(email);
 
@@ -123,11 +127,18 @@ public class MemberService {
         String birth = editDto.getBirth();
         String phoneNumber = editDto.getPhoneNumber();
 
+        //이름이랑 휴대전화번호가 중복될 경우 수정 불가
+        Optional<Member> aMember = memberRepository.findByNameAndPhoneNumber(name,phoneNumber);
+
+        if(aMember.isPresent()) return false;
+
         //회원정보 수정
         member.editMember(passwordEncoder.encode(password), name, birth, phoneNumber);
 
         //수정한 내용 저장
         memberRepository.save(member);
+
+        return true;
 
     }
 

@@ -88,7 +88,12 @@ public class MemberController {
             return "member/join";
         }
 
-        memberService.join(joinDto);
+        //이름 및 휴대전화번호가 중복인 회원이 있는 경우
+        if(!memberService.join(joinDto)) {
+            model.addAttribute("alert", "동일한 이름과 휴대전화번호를 가진 회원이 있습니다. ");
+            return "member/join";
+        }
+
         return "member/joinSuccess";
     }
 
@@ -171,12 +176,18 @@ public class MemberController {
         model.addAttribute("gender", editDto.isGender());
         model.addAttribute("birth", editDto.getBirth());
 
+        //인증번호 일치하지 않을 때
         if (!mailService.validationAuthCode(memberResponseDto.getEmail(), editDto.getAuthCode())) {
             model.addAttribute("alert", "인증번호가 일치하지 않습니다.");
             return "member/edit";
         }
 
-        memberService.editMember(memberResponseDto.getEmail(), editDto);
+        //이름과 휴대전화번호가 같은 회원이 있는 경우 수정 불가
+        if(!memberService.editMember(memberResponseDto.getEmail(), editDto)) {
+            model.addAttribute("alert","동일한 이름과 휴대전화번호를 가진 회원이 있습니다. ");
+            return "member/edit";
+        }
+
         model.addAttribute("alert", "수정이 완료되었습니다.");
         return "member/edit";
     }
