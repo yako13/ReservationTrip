@@ -7,21 +7,20 @@ import lombok.*;
 import org.hibernate.annotations.Comment;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
-@Table(name = "package")
+@Table(name = "package_trip")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Builder
-public class Package extends BaseTime {
+public class PackageTrip extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "package_id")
+    @Column(name = "package_trip_id")
     private Long id;
 
     @Column(name = "package_name", nullable = false)
@@ -104,10 +103,10 @@ public class Package extends BaseTime {
     @Comment("쇼핑 여부")
     private boolean shopping;
 
-    @OneToMany(mappedBy = "aPackage", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PackageImage> packageImageList = new ArrayList<>();
+    @OneToMany(mappedBy = "package_trip", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PackageImage> packageImageList;
 
-    @OneToMany(mappedBy = "aPackage", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "package_trip", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PackageSchedule> packageScheduleList;
 
 }

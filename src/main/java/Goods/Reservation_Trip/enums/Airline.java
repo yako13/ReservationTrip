@@ -4,12 +4,12 @@ import lombok.Getter;
 
 @Getter
 public enum Airline implements BaseEnum{
-    KOREANAIR("대한항공"),
-    ASIANAAIR("아시아나항공"),
-    AIRSEOUL("에어서울"),
-    AIRBUSAN("에어부산"),
-    TWAYAIR("티웨이항공"),
-    JEJUAIR("제주항공");
+    KOREAN_AIR("대한항공"),
+    ASIANA_AIR("아시아나항공"),
+    AIR_SEOUL("에어서울"),
+    AIR_BUSAN("에어부산"),
+    TWAY_AIR("티웨이항공"),
+    JEJU_AIR("제주항공");
 
     private final String name;
 
