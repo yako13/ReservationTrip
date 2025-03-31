@@ -13,10 +13,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class EditDto {
 
-    //이메일
-    @NotBlank(message = "이메일은 필수 정보입니다.")
-    private String email;
-
     //인증번호
     @NotBlank(message = "인증번호는 필수 정보입니다.")
     private String authCode;

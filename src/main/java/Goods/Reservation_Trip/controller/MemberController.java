@@ -7,6 +7,7 @@ import Goods.Reservation_Trip.service.member.MailService;
 import Goods.Reservation_Trip.service.member.MemberService;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.naming.AuthenticationException;
 
@@ -141,6 +143,7 @@ public class MemberController {
         return "1000";
     }
 
+    //회원 수정페이지
     @GetMapping("/member/edit")
     public String memberEditPage(Model model, HttpServletRequest request) {
         MemberResponseDto memberResponseDto = memberService.getMember(request);
@@ -156,25 +159,54 @@ public class MemberController {
         return "member/edit";
     }
 
+    //회원 정보 수정
     @PostMapping("/member/edit")
     public String memberEdit(@Valid EditDto editDto, Model model, HttpServletRequest request) throws AuthenticationException {
         MemberResponseDto memberResponseDto = memberService.getMember(request);
 
         model.addAttribute("provider", memberResponseDto.getProvider());
-        model.addAttribute("email", editDto.getEmail());
+        model.addAttribute("email",memberResponseDto.getEmail());
         model.addAttribute("password", editDto.getPassword());
         model.addAttribute("name", editDto.getName());
         model.addAttribute("phoneNumber", editDto.getPhoneNumber());
         model.addAttribute("gender", editDto.isGender());
         model.addAttribute("birth", editDto.getBirth());
 
-        if (!mailService.validationAuthCode(editDto.getEmail(), editDto.getAuthCode())) {
+        if (!mailService.validationAuthCode(memberResponseDto.getEmail(), editDto.getAuthCode())) {
             model.addAttribute("alert", "인증번호가 일치하지 않습니다.");
             return "member/edit";
         }
 
-        memberService.editMember(editDto);
+        memberService.editMember(memberResponseDto.getEmail(), editDto);
         model.addAttribute("alert", "수정이 완료되었습니다.");
         return "member/edit";
+    }
+
+    //회원 탈퇴 시 이메일 인증 페이지
+    @GetMapping("/permit/withdrawal")
+    public String permitPage(Model model,HttpServletRequest request){
+        MemberResponseDto member = memberService.getMember(request);
+
+        model.addAttribute("email",member.getEmail());
+
+        return "member/permit";
+    }
+
+    @PostMapping("/permit/withdrawal")
+    @ResponseBody
+    public String permitWithdrawal(JoinDto joinDto, HttpServletRequest request) throws AuthenticationException {
+        MemberResponseDto memberResponseDto =  memberService.getMember(request);
+
+        //인증번호가 일치하지 않을 때
+        if(!mailService.validationAuthCode(memberResponseDto.getEmail(),joinDto.getAuthCode())) return "500";
+
+        //회원 탈퇴
+        memberService.memberWithdrawal(memberResponseDto.getEmail());
+
+        HttpSession httpSession = request.getSession(false);
+        //세션 삭제
+        httpSession.invalidate();
+
+        return "1000";
     }
 }

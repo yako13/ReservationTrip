@@ -104,9 +104,9 @@ public class MemberService {
 
     }
 
-    public void editMember(EditDto editDto) {
+    public void editMember(String email,EditDto editDto) {
         //가져온 이메일로 DB에서 회원찾기
-        Optional<Member> optionalMember = memberRepository.findByEmail(editDto.getEmail());
+        Optional<Member> optionalMember = memberRepository.findByEmail(email);
 
         if (optionalMember.isEmpty()) throw new RuntimeException("잘못된 접근");
 
@@ -122,6 +122,18 @@ public class MemberService {
 
         //수정한 내용 저장
         memberRepository.save(member);
+
+    }
+
+    public void memberWithdrawal(String email){
+        Optional<Member> optionalMember = memberRepository.findByEmail(email);
+
+        if (optionalMember.isEmpty()) throw new RuntimeException("잘못된 접근");
+
+        Member member = optionalMember.get();
+
+        //회원탈퇴 : 권한 Member -> Cancellation 수정, 탈퇴 날짜 추가
+        member.setWithdrawalAt();
 
     }
 

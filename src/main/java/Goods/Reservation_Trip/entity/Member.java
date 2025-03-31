@@ -84,4 +84,9 @@ public class Member extends BaseTime {
         this.birth = birth;
         this.phoneNumber = phoneNumber;
     }
+
+    public void setWithdrawalAt(){
+        this.withdrawalAt = LocalDateTime.now();
+        this.role = MemberRole.CANCELLATION;
+    }
 }

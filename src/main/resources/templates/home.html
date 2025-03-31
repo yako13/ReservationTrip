@@ -1,13 +1,34 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
 </head>
+
 <body>
-<a th:href="@{/member/edit}">회원수정</a>
+  <a th:href="@{/member/edit}">회원수정</a>
+  <a id="withdrawalBtn">회원 탈퇴</a>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const cancelBtn = document.getElementById("withdrawalBtn");
+
+      if (cancelBtn) {
+        cancelBtn.addEventListener("click", () => {
+          var answer = confirm("회원 탈퇴를 하시면, 복구가 어려운 점을 참고하시기 바랍니다. 정말 탈퇴를 원하시나요?");
+
+          if (answer) {
+            window.location.assign("/permit/withdrawal");
+          }
+        });
+      } else {
+        console.error("cancelBtn을 찾을 수 없습니다.");
+      }
+    });
+  </script>
 </body>
+
 </html>
