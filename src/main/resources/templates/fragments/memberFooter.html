@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CloudStar Workshop</title>
+  </head>
+
+  <body>
+    <footer th:fragment="memberFooter">
+      <!-- 푸터 시작 -->
+
+      <div class="HanFooterBody">
+        <div class="THfooter">
+          <div class="THlinks">
+            <a href="#">회사소개</a>
+            <a href="#">이용약관</a>
+            <a href="#">전자금융거래 이용약관</a>
+            <a href="#">개인정보처리방침</a>
+            <a href="#">청소년보호정책</a>
+            <a href="#">전자금융거래약관</a>
+            <a href="#">고객센터</a>
+          </div>
+          <div class="THfooterDiv1">
+            <!-- 로고 이미지 -->
+
+            <!-- <div>
+                <div class="THfooterLogo"></div>
+              </div> -->
+
+            <div class="THinfo">
+              <p>상호명 : 냥만여행</p>
+              <p>site : http://localhost:8080/</p>
+              <p>주소 : 부산 부산진구 중앙대로 631 선문빌딩 9F</p>
+
+              <div class="HanFooterGit">
+                <img th:src="@{/images/git.svg}" alt=""/>
+                <!-- <p>@yako13 @Ranme95 @kimhansol-code</p> -->
+                <a href="https://github.com/yako13" target="_blank">
+                  @yako13
+                </a>
+                <a href="https://github.com/Ranme95" target="_blank">
+                  @Ranme95
+                </a>
+                <a href="https://github.com/kimhansol-code" target="_blank">
+                  @kimhansol-code
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        function toggleDropdown(event, dropdownId) {
+          event.preventDefault();
+          event.stopPropagation(); // 클릭한 요소에서 이벤트 전파 중지
+
+          // 모든 드롭다운 닫기 (현재 선택된 것 제외)
+          document
+            .querySelectorAll(".HandropdownBox, .HanDrodBoxName")
+            .forEach((menu) => {
+              if (menu.id !== dropdownId) {
+                menu.classList.remove("HanHeadershow");
+              }
+            });
+
+          // 현재 드롭다운 열기/닫기
+          const dropdown = document.getElementById(dropdownId);
+          dropdown.classList.toggle("HanHeadershow");
+        }
+
+        // 다른 곳을 클릭하면 드롭다운 닫기
+        document.addEventListener("click", function () {
+          document
+            .querySelectorAll(".HandropdownBox, .HanDrodBoxName")
+            .forEach((menu) => {
+              menu.classList.remove("HanHeadershow");
+            });
+        });
+
+        // 드롭다운 안에서 클릭해도 닫히지 않도록 설정
+        document
+          .querySelectorAll(".HandropdownBox, .HanDrodBoxName")
+          .forEach((menu) => {
+            menu.addEventListener("click", function (event) {
+              event.stopPropagation();
+            });
+          });
+      </script>
+
+      <!-- 푸터 끝 -->
+    </footer>
+  </body>
+</html>
