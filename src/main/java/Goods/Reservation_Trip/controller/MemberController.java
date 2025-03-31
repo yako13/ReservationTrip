@@ -149,7 +149,6 @@ public class MemberController {
         MemberResponseDto memberResponseDto = memberService.getMember(request);
 
         model.addAttribute("email", memberResponseDto.getEmail());
-        model.addAttribute("password", memberResponseDto.getPassword());
         model.addAttribute("name", memberResponseDto.getName());
         model.addAttribute("phoneNumber", memberResponseDto.getPhoneNumber());
         model.addAttribute("gender", memberResponseDto.isGender());

@@ -95,7 +95,6 @@ public class MemberService {
                 .id(memberId)
                 .email(member.getEmail())
                 .name(member.getName())
-                .password(member.getPassword())
                 .provider(member.getProvider())
                 .birth(member.getBirth())
                 .gender(member.isGender())
@@ -112,13 +111,20 @@ public class MemberService {
 
         Member member = optionalMember.get();
 
+        //비밀번호 = 바뀐 비밀번호
         String password = editDto.getPassword();
+
+        //비밀번호 입력을 안했을 시
+        if(editDto.getPassword().isEmpty()){
+            password = member.getPassword();
+        }
+
         String name = editDto.getName();
         String birth = editDto.getBirth();
         String phoneNumber = editDto.getPhoneNumber();
 
         //회원정보 수정
-        member.editMember(password, name, birth, phoneNumber);
+        member.editMember(passwordEncoder.encode(password), name, birth, phoneNumber);
 
         //수정한 내용 저장
         memberRepository.save(member);

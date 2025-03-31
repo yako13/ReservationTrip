@@ -1,6 +1,8 @@
 package Goods.Reservation_Trip.dto.member.req;
 
+import Goods.Reservation_Trip.inter.ValidPassword;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,8 +20,7 @@ public class EditDto {
     private String authCode;
 
     //비밀번호
-    @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$"
-            ,message = "비밀번호는 영대소문자, 숫자, 특수문자조합으로 8~15자리여야합니다.")
+    @ValidPassword
     private String password;
 
     //이름

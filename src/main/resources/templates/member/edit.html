@@ -209,7 +209,8 @@
                             <th>이메일</th>
                             <td>
                                 <span th:text="${email}" id="email"></span>
-                                <b><span th:if="${provider !=null}" id="provider">([[${provider}]] 소셜 가입회원)</span></b>
+                                <b><span id="provider">[[${provider}]]</span><span th:if="${provider !=null}"> 소셜
+                                        가입회원</span></b>
                             </td>
                             <td>
                                 <button id="authBtn" type="button">인증하기</button>
@@ -218,20 +219,21 @@
                         </tr>
                         <tr class="authArea">
                             <th><span class="red">*</span>이메일 인증번호</th>
-                            <td><input type="text" id="authCode" name="authCode" class="joinInput" maxlength="6" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></td>
+                            <td><input type="text" id="authCode" name="authCode" maxlength="6"
+                                    oninput="this.value = this.value.replace(/[^0-9]/g, '')"></td>
                             <td>
                                 <button id="authCodeBtn" type="button">인증확인</button>
                             </td>
                         </tr>
                         <tr th:if="${provider ==null}">
                             <th><span class="red">*</span>비밀번호 <i class="fa-solid fa-eye-slash" id="eye"></i></th>
-                            <td><input type="password" name="password" id="userPassword" class="joinInput"
-                                    th:value="${password}"></td>
+                            <td><input type="password" name="password" id="userPassword"
+                                    placeholder="입력을 하지 않을 시에는 기존 비밀번호로 저장됩니다."></td>
                             <td class="info" id="passwordError">비밀번호는 대소문자, 숫자, 특수문자 조합으로 8~15자리여야합니다.</td>
                         </tr>
                         <tr th:if="${provider ==null}">
                             <th><span class="red">*</span>비밀번호 확인</th>
-                            <td><input type="password" id="userPasswordCheck" class="joinInput" th:value="${password}">
+                            <td><input type="password" id="userPasswordCheck">
                             </td>
                             <td id="passwordAgain" class="info">비밀번호를 재입력해주세요.</td>
                         </tr>
@@ -280,9 +282,12 @@
     <script th:src="@{/js/alert.js}"></script>
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script>
+        let bol_auth = 0;
+
         window.onload = function () {
             //인증확인버튼 비활성화 
             document.getElementById("authCodeBtn").disabled = true;
+            bol_auth = 0;
         };
 
         // 메일 인증
@@ -306,7 +311,7 @@
                 }
             }, 1000);
         }
-        let bol_auth = 0;
+
         //메일 전송
         $("#authBtn").click(function () {
 
@@ -341,7 +346,7 @@
 
         //인증 번호
         $("#authCodeBtn").click(function () {
-            bol_auth = 0;
+
             var params = {
                 email: $("#email").text(),
                 authCode: $("#authCode").val()
@@ -438,63 +443,11 @@
         let passwordError = document.getElementById("passwordError");
 
 
-        let checkEye = true;
 
-        function clickEye() {
-            checkEye = !checkEye;
-        }
-
-        //눈 클릭 했을 경우
-        if (provider.innerText == null || provider.innerText == "") {
-            eye.addEventListener("click", () => {
-                if (checkEye) {
-                    eye.className = "fa-solid fa-eye";
-                    userPassword.type = "text";
-                    userPasswordCheck.type = "text";
-                    clickEye();
-                }
-                else {
-                    eye.className = "fa-solid fa-eye-slash"
-                    userPassword.type = "password";
-                    userPasswordCheck.type = "password";
-                    clickEye();
-                }
-            })
-        }
 
         bol_check_password = 0;
 
-        //비밀번호 일치 여부
-        function checkPassword() {
-            if (userPassword.value !== userPasswordCheck.value) {
-                passwordAgain.innerText = "비밀번호가 일치하지 않습니다.";
-                passwordAgain.style.color = "red";
-                bol_check_password = 0;
-            }
-            else {
-                passwordAgain.innerText = "비밀번호를 재입력해주세요.";
-                passwordAgain.style.color = "black";
-                bol_check_password = 1;
-            }
-        }
-        if (provider.innerText == null || provider.innerText == "") {
-            userPassword.addEventListener("keydown", () => {
-                checkPassword();
-            })
 
-            userPassword.addEventListener("keyup", () => {
-                checkPassword();
-            })
-
-            userPasswordCheck.addEventListener("keydown", () => {
-                checkPassword();
-            })
-
-            userPasswordCheck.addEventListener("keyup", () => {
-                checkPassword();
-            })
-
-        }
         joinBtn.addEventListener("click", submitBtn);
 
         const today = new Date();
@@ -508,12 +461,13 @@
             e.preventDefault();
             let ValueCheck = SignUpValueCheckAll();
             let valid = true;
+
             if (bol_auth == 0) {
                 alert("이메일 인증을 해주십시오.");
             }
 
             //OAuth 제공자가 없을 때
-            if (provider.innerText == null || provider.innerText == "") {
+            if ((provider.innerText == null || provider.innerText == "") && userPassword.value !="" ) {
                 if (password_check.test(userPassword.value)) {
                     userPassword.classList.remove("inputRed");
                     passwordError.classList.remove("red");
@@ -559,13 +513,69 @@
                 valid = false;
             }
 
-            if (provider.innerText != null || provider.innerText != ""){
+            if (provider.innerText != null || provider.innerText != "") {
                 bol_check_password = 1;
             }
 
             if (ValueCheck === 0 && valid === true && bol_auth === 1 && bol_check_password === 1) {
                 document.getElementById("editForm").submit();
             }
+        }
+
+        let checkEye = true;
+
+        function clickEye() {
+            checkEye = !checkEye;
+        }
+
+        //눈 클릭 했을 경우
+        if (provider.innerText == null || provider.innerText == "") {
+            eye.addEventListener("click", () => {
+                if (checkEye) {
+                    eye.className = "fa-solid fa-eye";
+                    userPassword.type = "text";
+                    userPasswordCheck.type = "text";
+                    clickEye();
+                }
+                else {
+                    eye.className = "fa-solid fa-eye-slash"
+                    userPassword.type = "password";
+                    userPasswordCheck.type = "password";
+                    clickEye();
+                }
+            })
+        }
+
+        //비밀번호 일치 여부
+        function checkPassword() {
+            if (userPassword.value !== userPasswordCheck.value) {
+                passwordAgain.innerText = "비밀번호가 일치하지 않습니다.";
+                passwordAgain.style.color = "red";
+                bol_check_password = 0;
+            }
+            else {
+                passwordAgain.innerText = "비밀번호를 재입력해주세요.";
+                passwordAgain.style.color = "black";
+                bol_check_password = 1;
+            }
+        }
+        if (provider.innerText == null || provider.innerText == "") {
+            userPassword.addEventListener("keydown", () => {
+                checkPassword();
+            })
+
+            userPassword.addEventListener("keyup", () => {
+                checkPassword();
+            })
+
+            userPasswordCheck.addEventListener("keydown", () => {
+                checkPassword();
+            })
+
+            userPasswordCheck.addEventListener("keyup", () => {
+                checkPassword();
+            })
+
         }
     </script>
 </body>

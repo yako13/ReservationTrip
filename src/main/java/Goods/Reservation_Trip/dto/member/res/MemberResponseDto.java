@@ -18,9 +18,6 @@ public class MemberResponseDto {
     //이름
     private String name;
 
-    //비밀번호
-    private String password;
-
     //OAuth2 제공자
     private String provider;
 
