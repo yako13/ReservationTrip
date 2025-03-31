@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>냥만여행 아이디찾기</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            background-color: white;
+            /* border: 1px solid #ccc; */
+            /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.295); */
+        }
+
+
+        .innerContainer {
+            background-color: #f1f0f1;
+        }
+
+        .messageArea {
+            border-radius: 4px;
+            width: 20rem;
+            background-color: #ffffff;
+            margin: 10rem auto;
+            padding: 3.5rem;
+
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.295);
+
+            p {
+                margin-bottom: 3rem;
+                font-weight: 600;
+            }
+
+            a {
+                color: #797979;
+            }
+        }
+
+        .inputArea {
+            text-align: start;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 1rem;
+
+            label {
+                margin-bottom: 0.5rem;
+            }
+
+            input {
+                padding: 0.3rem;
+                height: 2rem;
+                border: #ccc 1px solid;
+                border-radius: 4px;
+
+                &:focus {
+                    outline: none;
+                    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.122);
+                }
+            }
+        }
+
+        .linkArea {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+
+        #findBtn {
+            margin-top: 1.5rem;
+            width: 100%;
+            height: 2.5rem;
+            font-size: 1rem;
+            background-color: #43bff8;
+            color: #ffffff;
+            border: none;
+            border-radius: 7px;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+            border-radius: 4px;
+            color: white;
+
+            &:hover {
+                background-color: #3e8cf1;
+                color: #ebebeb;
+                transform: scale(0.98);
+            }
+        }
+
+        #findIdLink {
+            color: black;
+            font-weight: 600;
+        }
+
+        #findPasswordLink {
+            &:hover {
+                font-weight: 600;
+                color: black;
+            }
+        }
+
+        /* .findId {
+            display: none;
+        } */
+
+        .foundId {
+            display: none;
+        }
+
+        .foundMail {
+            color: rgb(22, 131, 255);
+        }
+
+        .foundLink {
+            display: flex;
+
+            a {
+                display: inline-block;
+                width: 15rem;
+                height: 3rem;
+                margin: 0 1rem;
+                line-height: 3rem;
+                border-radius: 4px;
+
+            }
+        }
+
+        #loginLink {
+            background-color: #43bff8;
+            color: #ffffff;
+            border: none;
+            border-radius: 7px;
+            transition: all 0.3s ease;
+
+            &:hover {
+                background-color: #3e8cf1;
+                color: #ebebeb;
+                transform: scale(0.98);
+            }
+        }
+
+        #passwordLink {
+            background-color: #ececec;
+            color: #333;
+            border-radius: 7px;
+            transition: all 0.3s ease;
+
+            &:hover {
+                background-color: #e0e0e0;
+                color: #333;
+                transform: scale(0.98);
+            }
+        }
+
+        .infoArea {
+            text-align: start;
+            font-size: 0.8rem;
+            color: #929292;
+
+            p {
+                margin-bottom: 0.5rem;
+            }
+        }
+
+        .formArea {
+            margin-top: 1.2rem;
+        }
+
+        label {
+            font-weight: 600;
+        }
+
+        a{
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <div class="container">
+            <div class="innerContainer">
+                <div class="messageArea">
+                    <div class="findId">
+                        <div class="linkArea">
+                            <a id="findIdLink"> 계정 이메일 찾기</a>
+                            <a th:href="@{/find/password}" id="findPasswordLink"> 비밀번호 찾기</a>
+                        </div>
+                        <div class="infoArea">
+                            <p>회원가입 시, 입력하신 이름 휴대전화번호로
+                                아이디를 확인하실 수 있습니다.</p>
+                            <hr>
+                        </div>
+                        <div class="formArea">
+                            <form>
+                                <div class="inputArea">
+                                    <label for="userName">이름</label>
+                                    <input type="text" name="name" placeholder="이름" id="userName">
+                                </div>
+                                <div class="inputArea">
+                                    <label for="phoneNumber">휴대전화번호</label>
+                                    <input type="text" name="phoneNumber" placeholder="휴대전화번호" id="phoneNumber">
+                                </div>
+                                <button id="findBtn" type="button">확인</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="foundId">
+                        <p>계정 찾기가 완료되었습니다.</p>
+                        <p class="foundMail"></p>
+                        <div class="foundLink">
+                            <a th:href="@{/login}" id="loginLink">로그인</a>
+                            <a th:href="@{/find/password}" id="passwordLink">비밀번호 찾기</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </main>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script>
+        //메일 전송
+        $("#findBtn").click(function () {
+            var params = {
+                name: $("#userName").val(),
+                phoneNumber: $("#phoneNumber").val()
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/find/id",
+                data: params,
+                success: function (res) {
+                    if (res != null && res != "") {
+                        document.querySelector(".findId").style.display = "none";
+                        document.querySelector(".foundId").style.display = "block";
+                        document.querySelector(".foundMail").innerText = res;
+                    }
+                    else {
+                        alert("아이디를 찾을 수 없습니다.");
+                    }
+                },
+                error: function () {
+                    alert("통신 실패.");
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -10,6 +10,7 @@ import org.hibernate.annotations.Comment;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+
 @Table(name = "reservation")
 @Getter
 @NoArgsConstructor
@@ -75,3 +76,4 @@ public class Reservation {
     @Comment("카드사 승인 번호")
     private String approved;
 }
+
