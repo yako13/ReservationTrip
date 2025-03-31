@@ -95,13 +95,14 @@ public class Package extends BaseTime {
 
     @Column(name = "air_line", nullable = false)
     @Comment("항공사 명")
+    @Enumerated(EnumType.STRING)
     private Airline airline;
 
     @Column(name = "hotel_name", nullable = false)
     @Comment("호텔 명")
     private String hotelName;
 
-    @JoinColumn(name = "package_image", nullable = false)
+    @JoinColumn(name = "schedule_image", nullable = false)
     @OneToOne
     @Comment("일정 사진")
     private PackageImage scheduleImage;
