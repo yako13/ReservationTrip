@@ -6,15 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>냥만여행 회원가입</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/mainPage.css}">
     <style>
 
-        main{
+        /* main{
             background-color: #f1f0f1;
-        }
+        } */
 
         .container {
             box-sizing: border-box;
-            margin: 5rem auto;
+            margin: 2rem auto;
             display: flex;
             justify-content: center;
             flex-direction: column;
@@ -32,33 +33,6 @@
 
             form {
                 width: 100%;
-            }
-        }
-
-        .bar {
-            margin: 2rem auto;
-            display: flex;
-            justify-content: center;
-            width: 100%;
-            font-size: 1.2rem;
-
-            div {
-                border: #818181 1px solid;
-                width: 33%;
-                background-color: #ccc;
-
-                &:first-child {
-                    border-right: none;
-                }
-
-                &:nth-child(2) {
-                    background-color: #818181;
-                    color: white;
-                }
-
-                &:last-child {
-                    border-left: none;
-                }
             }
         }
 
@@ -150,7 +124,6 @@
         #authBtn,
         #authCodeBtn {
             border: none;
-            border-radius: 4px;
             height: 2rem;
             background-color: #43bff8;
             color: #ffffff;
@@ -236,26 +209,21 @@
         .inputRed {
             border: red solid 1px !important;
         }
+
+        .titleArea{
+            margin-bottom: 5rem;
+        }
     </style>
 </head>
 
 <body>
+    <header th:replace="/fragments/memberHeader::memberHeader"></header>
     <main>
         <input type="hidden" th:value="${alert}" id="dataAlert">
         <div class="container">
             <div class="titleArea">
                 <h1>회원가입</h1>
-            </div>
-            <div class="bar">
-                <div>
-                    <p>약관동의</p>
-                </div>
-                <div>
-                    <p>정보 입력</p>
-                </div>
-                <div>
-                    <p>가입 완료</p>
-                </div>
+                <hr>
             </div>
             <div class="essential">
                 <span class="red">*</span>
@@ -284,7 +252,7 @@
                             <th><span class="red">*</span>비밀번호 <i class="fa-solid fa-eye-slash" id="eye"></i></th>
                             <td><input type="password" name="password" id="userPassword" class="joinInput"
                                     th:value="${password}"></td>
-                            <td class="info" id="passwordError">비밀번호는 대소문자, 숫자, 특수문자 조합으로 8~15자리여야합니다.</td>
+                            <td class="info" id="passwordError">비밀번호는 대소문자, 숫자, 특수문자(!@#$%^*+=-) 조합으로 8~15자리여야합니다.</td>
                         </tr>
                         <tr>
                             <th><span class="red">*</span>비밀번호 확인</th>
@@ -334,6 +302,7 @@
             </div>
         </div>
     </main>
+    <footer th:replace="/fragments/memberFooter::memberFooter"></footer>
     <script th:src="@{/js/alert.js}"></script>
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script>

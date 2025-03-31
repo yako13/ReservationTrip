@@ -69,7 +69,7 @@ public class MemberController {
     }
 
     @PostMapping("/join")
-    public String join(@Valid JoinDto joinDto, Model model, Errors errors) throws AuthenticationException {
+    public String join(@Valid JoinDto joinDto, Model model, Errors errors,RedirectAttributes attributes) throws AuthenticationException {
         model.addAttribute("email", joinDto.getEmail());
         model.addAttribute("password", joinDto.getPassword());
         model.addAttribute("name", joinDto.getName());
@@ -94,7 +94,9 @@ public class MemberController {
             return "member/join";
         }
 
-        return "member/joinSuccess";
+        attributes.addFlashAttribute("alert","회원가입이 완료되었습니다.");
+
+        return "redirect:/login";
     }
 
     //아이디 찾기 페이지
