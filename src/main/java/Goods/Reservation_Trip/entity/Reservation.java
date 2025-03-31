@@ -39,7 +39,7 @@ public class Reservation {
     private LocalDate endDate;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "reservation_state", nullable = false)
+    @Column(name = "reservation_state", nullable = false, columnDefinition = "VARCHAR(50)")
     @Comment("예약 상태")
     private ReservationState reservationState;
 
