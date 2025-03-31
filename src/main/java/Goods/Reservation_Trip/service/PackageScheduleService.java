@@ -3,6 +3,7 @@ package Goods.Reservation_Trip.service;
 import Goods.Reservation_Trip.dto.PackageRequestDto;
 import Goods.Reservation_Trip.entity.Package;
 import Goods.Reservation_Trip.entity.PackageSchedule;
+import Goods.Reservation_Trip.enums.DeparturePoint;
 import Goods.Reservation_Trip.enums.PackageStatus;
 import Goods.Reservation_Trip.repository.PackageScheduleRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,12 +34,10 @@ public class PackageScheduleService {
                 .airlineReturn(requestDto.getAirlineReturn())
                 .flightNumberOut(requestDto.getFlightNumberOut())
                 .flightNumberReturn(requestDto.getFlightNumberReturn())
-                .packageStatus(requestDto.getPackageStatus())
                 .departureTimeOut(requestDto.getDepartureTimeOut())
                 .arrivalTimeOut(requestDto.getArrivalTimeOut())
                 .departureTimeReturn(requestDto.getDepartureTimeReturn())
                 .arrivalTimeReturn(requestDto.getArrivalTimeReturn())
-                .packageStatus(PackageStatus.AVAILABLE)
                 .build();
 
         return packageScheduleRepository.save(packageSchedule);

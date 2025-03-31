@@ -110,7 +110,7 @@
               </div>
               <div class="input__flex">
                 <label>예약 가능 인원수</label>
-                <input type="number" name="maximumSeats" />
+                <input type="number" name="maximumMember" />
               </div>
               <div class="input__flex">
                 <label>성인 1인당 가격</label>
@@ -141,7 +141,7 @@
               <div>
                 <label>도시 카테고리</label>
                 <select id="mainCategory">
-                  <option value="#" selected>카테고리를 선택하세요</option>
+                  <option value="" selected>카테고리를 선택하세요</option>
                   <option value="JAPAN">일본</option>
                   <option value="CENTRAL_ASIA">
                     중국 / 홍콩 / 몽골 / 중앙아시아
@@ -154,10 +154,10 @@
                   <option value="OCEANIA">괌/ 사이판 / 뉴질랜드 / 호주</option>
                 </select>
                 <select id="subCategory">
-                  <option value=""></option>
+                  <option value="#">중분류</option>
                 </select>
                 <select id="smallCategory">
-                  <option value=""></option>
+                  <option value="#">소분류</option>
                 </select>
               </div>
               <div class="input__flex">
@@ -211,7 +211,7 @@
                     <div>
                       <label>항공사</label>
                       <select name="airlineOut">
-                        <option value="AIRSEOUL">에어서울</option>
+                        <option value="AIR_SEOUL">에어서울</option>
                         <option>티웨이항공</option>
                         <option>에어부산</option>
                         <option>제주항공</option>
@@ -280,7 +280,7 @@
                     <div>
                       <label>항공사</label>
                       <select name="airlineReturn">
-                        <option value="AIRSEOUL">에어서울</option>
+                        <option value="AIR_SEOUL">에어서울</option>
                         <option>티웨이항공</option>
                         <option>에어부산</option>
                         <option>제주항공</option>
@@ -360,98 +360,4 @@
       </div>
     </main>
   </body>
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const mainCategorySelect = document.getElementById("mainCategory");
-      const subCategorySelect = document.getElementById("subCategory");
-      const smallCategorySelect = document.getElementById("smallCategory");
-
-      // 대분류를 fetch하여 select 요소에 추가
-      fetch("/api/categories")
-        .then((response) => response.json())
-        .then((categories) => {
-          categories.forEach((category) => {
-            const option = document.createElement("option");
-            option.value = category.name;
-            option.textContent = category.name;
-            mainCategorySelect.appendChild(option);
-          });
-        });
-
-      // 대분류가 선택되면 중분류를 업데이트
-      // 대분류가 선택되었을 때 중분류를 업데이트
-      mainCategorySelect.addEventListener("change", function () {
-        const mainCategory = mainCategorySelect.value;
-
-        if (mainCategory) {
-          // 중분류를 빈 값으로 초기화
-          subCategorySelect.innerHTML =
-            '<option value="">중분류를 선택하세요</option>';
-          smallCategorySelect.innerHTML =
-            '<option value="">소분류를 선택하세요</option>'; // 소분류도 초기화
-
-          fetch(`/api/categories/${mainCategory}`)
-            .then((response) => response.json())
-            .then((subCategories) => {
-              if (Array.isArray(subCategories)) {
-                subCategories.forEach((subCategory) => {
-                  const option = document.createElement("option");
-                  option.value = subCategory.name;
-                  option.textContent = subCategory.name;
-                  subCategorySelect.appendChild(option);
-                });
-              } else {
-                console.log("중분류 데이터가 배열이 아닙니다.");
-              }
-            })
-            .catch((error) => {
-              console.error(
-                "중분류 데이터를 가져오는 데 오류가 발생했습니다:",
-                error
-              );
-            });
-        } else {
-          // 대분류 선택이 없을 때 중분류 초기화
-          subCategorySelect.innerHTML =
-            '<option value="">중분류를 선택하세요</option>';
-          smallCategorySelect.innerHTML =
-            '<option value="">소분류를 선택하세요</option>';
-        }
-      });
-
-      // 중분류가 선택되면 소분류를 업데이트
-      subCategorySelect.addEventListener("change", function () {
-        const mainCategory = mainCategorySelect.value;
-        const subCategory = subCategorySelect.value;
-
-        if (mainCategory && subCategory) {
-          fetch(`/api/categories/${mainCategory}/${subCategory}`)
-            .then((response) => response.json())
-            .then((smallCategories) => {
-              if (Array.isArray(smallCategories)) {
-                smallCategorySelect.innerHTML =
-                  '<option value="">소분류를 선택하세요</option>';
-                smallCategories.forEach((smallCategory) => {
-                  const option = document.createElement("option");
-                  option.value = smallCategory.name;
-                  option.textContent = smallCategory.name;
-                  smallCategorySelect.appendChild(option);
-                });
-              } else {
-                console.error(
-                  "Expected an array, but received:",
-                  smallCategories
-                );
-              }
-            })
-            .catch((error) => {
-              console.error("Error fetching small categories:", error);
-            });
-        } else {
-          smallCategorySelect.innerHTML =
-            '<option value="">소분류를 선택하세요</option>';
-        }
-      });
-    });
-  </script>
 </html>

@@ -3,6 +3,7 @@ package Goods.Reservation_Trip.service;
 import Goods.Reservation_Trip.dto.PackageRequestDto;
 import Goods.Reservation_Trip.entity.Package;
 import Goods.Reservation_Trip.entity.PackageImage;
+import Goods.Reservation_Trip.enums.PackageStatus;
 import Goods.Reservation_Trip.repository.PackageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,7 @@ public class PackageService {
                 .description(requestDto.getDescription())
                 .packageCategory(requestDto.getPackageCategory())
                 .hotelName(requestDto.getHotelName())
+                .packageStatus(PackageStatus.AVAILABLE)
                 .build();
 
         if (requestDto.getMainImage() != null && !requestDto.getMainImage().isEmpty()) {

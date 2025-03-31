@@ -2,6 +2,7 @@ package Goods.Reservation_Trip.entity;
 
 import Goods.Reservation_Trip.base.BaseTime;
 import Goods.Reservation_Trip.enums.PackageCategory;
+import Goods.Reservation_Trip.enums.PackageStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Comment;
@@ -47,18 +48,6 @@ public class Package extends BaseTime {
     @Comment("유아 인당 가격")
     private BigDecimal babyPrice;
 
-//    @Column(name = "adult_number", nullable = false)
-//    @Comment("성인 인원수")
-//    private int adultNumber;
-//
-//    @Column(name = "child_number", nullable = false)
-//    @Comment("아동 인원수")
-//    private int childNumber;
-//
-//    @Column(name = "baby_number", nullable = false)
-//    @Comment("유아 인원수")
-//    private int babyNumber;
-
     @Column(nullable = false)
     @Comment("간략한 설명글")
     private String description;
@@ -68,9 +57,6 @@ public class Package extends BaseTime {
     @Comment("대표 이미지")
     private PackageImage mainImage;
 
-    /**
-     *
-     */
     @Column(name = "package_category", nullable = true)
     @Comment("카테고리")
     private PackageCategory packageCategory;
@@ -86,6 +72,11 @@ public class Package extends BaseTime {
     @Column(name = "hotel_name", nullable = false)
     @Comment("호텔 명")
     private List<String> hotelName;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "package_status", nullable = false, columnDefinition = "VARCHAR(50)")
+    @Comment("예약 가능 상태")
+    private PackageStatus packageStatus;
 
     @OneToMany(mappedBy = "aPackage", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PackageImage> packageImageList;

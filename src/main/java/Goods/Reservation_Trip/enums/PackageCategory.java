@@ -4,6 +4,7 @@ import lombok.Getter;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Getter
@@ -40,13 +41,7 @@ public enum PackageCategory implements BaseEnum{
 
     public static List<PackageCategory> getSubCategories(PackageCategory parentCategory) {
         return Arrays.stream(PackageCategory.values())
-                .filter(category -> category.getParent() == parentCategory)
-                .collect(Collectors.toList());
-    }
-
-    public static List<PackageCategory> getSmallCategories(PackageCategory packageCategory){
-        return Arrays.stream(PackageCategory.values())
-                .filter(category -> category.getParent() == packageCategory)
+                .filter(category -> Objects.equals(category.getParent(), parentCategory))
                 .collect(Collectors.toList());
     }
 
@@ -55,10 +50,10 @@ public enum PackageCategory implements BaseEnum{
         return name;
     }
 
-    public static PackageStatus formName(String name) {
-        for (PackageStatus packageStatus : PackageStatus.values()) {
-            if (packageStatus.getName().equals(name)) {
-                return packageStatus;
+    public static PackageCategory fromName(String name) {
+        for (PackageCategory packageCategory : PackageCategory.values()) {
+            if (packageCategory.getName().equals(name)) {
+                return packageCategory;
             }
         }
         throw new IllegalArgumentException("존재하지않는 카테고리" + name);

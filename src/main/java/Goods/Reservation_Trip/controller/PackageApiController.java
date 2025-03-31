@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class PackageApiController {
 
     @GetMapping("api/categories")
-    public List<PackageCategory> getCategories(){
+    public List<PackageCategory> getCategories() {
         return Arrays.stream(PackageCategory.values())
                 .filter(category -> category.getParent() == null)
                 .collect(Collectors.toList());
@@ -22,14 +22,14 @@ public class PackageApiController {
 
     @GetMapping("api/categories/{parentCategory}")
     public List<PackageCategory> getSubCategories(@PathVariable String parentCategory) {
-        PackageCategory parent = PackageCategory.valueOf(parentCategory);
+        PackageCategory parent = PackageCategory.fromName(parentCategory);
         return PackageCategory.getSubCategories(parent);
     }
 
     @GetMapping("/api/categories/{parentCategory}/{subCategory}")
-    public List<PackageCategory> getSmallCategories(@PathVariable String parentCategory, @PathVariable String subCategory){
-        PackageCategory parent = PackageCategory.valueOf(parentCategory);
-        PackageCategory sub = PackageCategory.valueOf(subCategory);
-        return PackageCategory.getSmallCategories(sub);
+    public List<PackageCategory> getSmallCategories(@PathVariable String parentCategory, @PathVariable String subCategory) {
+        PackageCategory parent = PackageCategory.fromName(parentCategory);
+        PackageCategory sub = PackageCategory.fromName(subCategory);
+        return PackageCategory.getSubCategories(sub);
     }
 }
