@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>냥만여행 로그인</title>
     <style>
+
+
         body {
             margin: 0;
             padding: 0;
@@ -14,6 +16,7 @@
         .frontContainer {
             background-color: #f1f0f1;
             padding: 10rem 0;
+            min-height: 44.95rem;
         }
 
         .container {
@@ -23,11 +26,11 @@
             justify-content: center;
             flex-direction: column;
             width: 30rem;
-            border-radius: 4px;
+            border-radius: 7px;
             text-align: center;
             padding: 2rem;
             background-color: white;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.295);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .formArea {
@@ -149,6 +152,7 @@
         <div class="frontContainer">
             <div class="container">
                 <input type="hidden" th:if="${param.error}" value="로그인에 실패하였습니다." id="dataAlert">
+                <input type="hidden" th:value="${alert}" id="dataAlert2">
                 <div class="logoArea">
                 </div>
                 <div class="loginText">
@@ -171,7 +175,7 @@
                     <span>·</span>
                     <a th:href="@{/find/password}">비밀번호 찾기</a>
                     <span>·</span>
-                    <a th:href="@{/join}">회원가입</a>
+                    <a th:href="@{/terms/agree}">회원가입</a>
                 </div>
                 <div class="separator">
                     <p>OR</p>
