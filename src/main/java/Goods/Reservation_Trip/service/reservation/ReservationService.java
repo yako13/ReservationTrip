@@ -1,7 +1,10 @@
 package Goods.Reservation_Trip.service.reservation;
 
+import Goods.Reservation_Trip.config.ImageManager;
+import Goods.Reservation_Trip.dto.reservation.res.ReservationDetailsResponseDto;
 import Goods.Reservation_Trip.dto.reservation.res.ReservationResponseDto;
 import Goods.Reservation_Trip.entity.Reservation;
+import Goods.Reservation_Trip.entity.ReservationDetails;
 import Goods.Reservation_Trip.enums.ReservationState;
 import Goods.Reservation_Trip.repository.ReservationRepository;
 import Goods.Reservation_Trip.util.Formatter;
@@ -13,6 +16,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Transactional
@@ -21,6 +26,8 @@ import java.util.Map;
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
+
+    private final ImageManager imageManager;
 
     public Page<ReservationResponseDto> pageReservation(int page, int size, String sort, String reservationState) {
 
@@ -111,14 +118,13 @@ public class ReservationService {
         );
 
         //검색기준이 예약번호일때
-        if("reservationCode".equals(search)){
+        if ("reservationCode".equals(search)) {
             ReservationState state = stateMap.get(reservationState);
 
             reservationPage = (state != null)
                     ? reservationRepository.findByCodeContainingWithoutSpaceAndReservationState(trimKeyword, pageable, state)
                     : reservationRepository.findByCodeContainingWithoutSpace(trimKeyword, pageable);
         }
-
 
 
         //검색 기준이 예약자일 때
@@ -155,5 +161,63 @@ public class ReservationService {
                         .build()
         );
 
+    }
+
+    public List<ReservationDetailsResponseDto> getReservationDetails(Long memberId,Integer year,Integer month) {
+        //멤버 아이디로 해당 주문 리스트 가져옴
+        List<Reservation> reservationList = reservationRepository.findByMemberId(memberId);
+
+        List<ReservationDetailsResponseDto> responseDtos = new ArrayList<>();
+
+
+        for (Reservation reservation : reservationList) {
+
+            StringBuilder reservationMembers = new StringBuilder();
+
+            int adultSum = 0;
+            int childSum = 0;
+            int infantSum = 0;
+
+            //예약자 연령대 계산
+            for (ReservationDetails reservationDetails : reservation.getReservationDetailsList()) {
+                if (reservationDetails.getAgeGroup().getName().equals("어린이")) {
+                    childSum++;
+                } else if (reservationDetails.getAgeGroup().getName().equals("성인")) {
+                    adultSum++;
+                } else if (reservationDetails.getAgeGroup().getName().equals("유아")) {
+                    infantSum++;
+                } else {
+                    throw new RuntimeException("잘못된 접근");
+                }
+            }
+
+            reservationMembers.append("성인 "+adultSum + "명");
+
+            if (childSum != 0) {
+                reservationMembers.append("어린이 "+childSum + "명");
+            }
+
+            if (infantSum != 0) {
+                reservationMembers.append("유아 "+infantSum + "명");
+            }
+
+            ReservationDetailsResponseDto reservationDetailsResponseDto = ReservationDetailsResponseDto.builder()
+                    .reservationPK(reservation.getId())
+                    .code(reservation.getCode())
+                    .createdAt(Formatter.getLocalDate(reservation.getCreatedAt()))
+                    .packageName(reservation.getAPackage().getPackageName())
+                    .startDate(reservation.getStartDate().toString())
+                    .endDate(reservation.getEndDate().toString())
+                    .reservationMembers(reservationMembers.toString())
+                    .totalPay(Formatter.changeBigDecimalFormat(reservation.getTotalPay()))
+                    .reservationState(reservation.getReservationState().getName())
+                    .packagePK(reservation.getAPackage().getId())
+                    .mainImage(imageManager.createImageUrl(reservation.getAPackage().getMainImage().getImageFullName()))
+                    .build();
+
+            responseDtos.add(reservationDetailsResponseDto);
+        }
+
+        return responseDtos;
     }
 }
