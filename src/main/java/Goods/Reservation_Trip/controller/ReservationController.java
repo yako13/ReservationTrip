@@ -19,25 +19,24 @@ public class ReservationController {
 
     @GetMapping("/admin/reservation/list")
     public String adminReservationListPage(@PageableDefault(size = 10)Pageable pageable,
-//            @RequestParam(defaultValue = "ordererName") String search, //검색 기준
-//            @RequestParam(defaultValue = "0") int page, // 페이지 시작
-//            @RequestParam(defaultValue = "10") int size, // 예약 분류 기본 개수
-//            @RequestParam(defaultValue = "default") String sort, // 예약 정렬
-//            @RequestParam(defaultValue = "ALL") String reservationState, //예약 상태
+            @RequestParam(defaultValue = "ordererName") String search, //검색 기준
+            @RequestParam(defaultValue = "0") int page, // 페이지 시작
+            @RequestParam(defaultValue = "10") int size, // 예약 분류 기본 개수
+            @RequestParam(defaultValue = "default") String sort, // 예약 정렬
+            @RequestParam(defaultValue = "ALL") String reservationState, //예약 상태
             Model model){
 
-//        Page<ReservationResponseDto> reservationResponseDtos = reservationService.pageReservation(page,size,sort,reservationState);
+        Page<ReservationResponseDto> reservationResponseDtos = reservationService.pageReservation(page,size,sort,reservationState);
 
-        Page<ReservationResponseDto> reservationResponseDtos = reservationService.pageReservation(pageable);
 
         model.addAttribute("reservationList",reservationResponseDtos.getContent());
         model.addAttribute("paging",reservationResponseDtos);
         model.addAttribute("total", reservationResponseDtos.getTotalElements());
         model.addAttribute("currentPage", reservationResponseDtos.getNumber());
-//        model.addAttribute("size", size);
-//        model.addAttribute("sortSelect", sort);
-//        model.addAttribute("searchSelect",search);
-//        model.addAttribute("reservationState",reservationState);
+        model.addAttribute("size", size);
+        model.addAttribute("sortSelect", sort);
+        model.addAttribute("searchSelect",search);
+        model.addAttribute("reservationState",reservationState);
 
         return "reservation/adminList";
     }

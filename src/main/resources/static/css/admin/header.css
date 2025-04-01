@@ -1,0 +1,312 @@
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css');
+
+@font-face {
+    font-family: 'NanumSquareRound';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NanumSquareRound.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Ownglyph_jiwoosonang';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2408@1.0/Ownglyph_jiwoosonang.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+* {
+    font-family: NanumSquareRound;
+
+}
+
+a {
+    text-decoration: none;
+
+}
+
+/*헤더시작  */
+header {
+    margin: 0;
+    padding: 0;
+    gap: 0;
+}
+
+.siteName {
+    font-family: 'Ownglyph_jiwoosonang';
+}
+
+.masterHeader {
+    box-sizing: border-box;
+    padding: 20px 30px;
+    background-color: #f7dad9;
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+    gap: 0;
+    align-items: center;
+    line-height: 50px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+
+.headerTitle {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    width: 400px;
+}
+
+.headerTitleMenu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+
+}
+
+
+.headerTitleMenu .fa-user-tie {
+    font-size: 22px;
+}
+
+.headerTitle p {
+    display: inline-block;
+    font-size: 22px;
+}
+
+p {
+    margin: 0;
+}
+
+
+.headerTitleADiv {
+    width: 280px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease-in-out;
+}
+
+
+.homePage i {
+    margin-bottom: -6px;
+    margin-right: 3px;
+    width: 22px;
+    height: auto;
+}
+
+.homePage a {
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: all 0.3s ease;
+    color: white;
+    background-color: #333333;
+}
+
+.homePage a:hover {
+    font-weight: 600;
+}
+
+
+.logout a {
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: all 0.3s ease;
+    color: white;
+}
+
+.logout {
+    i {
+        margin-right: 5px;
+    }
+
+}
+
+
+.logout a:hover {
+    font-weight: 600;
+}
+
+
+
+.headerLogoArea {
+    display: flex;
+    justify-content: end;
+    width: 140px;
+}
+
+body {
+    margin: 0;
+}
+
+
+p {
+    margin: 0;
+}
+
+
+
+.headerLogoArea {
+    display: flex;
+    justify-content: end;
+    width: 120px;
+    margin-left: 20px;
+}
+
+.masterHeader {
+    background-color: #6c757d;
+    color: white;
+}
+
+.adminText {
+    font-weight: 600;
+    margin-top: 5px;
+
+}
+
+#mainLogo {
+    img {
+        margin-top: 20px;
+    }
+}
+
+/* 헤더 끝 */
+
+/* 네비 시작 */
+.SlideNavBody {
+    position: relative;
+}
+
+.sidenav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 50px;
+    left: 0;
+    background-color: #adb5bd;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.sidenav a,
+.dropdown-btn {
+    width: 200px;
+    padding: 15px 0;
+    text-decoration: none;
+    font-size: 15px;
+    color: #495057;
+    display: block;
+    transition: 0.3s;
+    text-align: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.sidenav a:hover,
+.dropdown-btn:hover {
+    background-color: #bbbfc4
+}
+
+/* 드롭다운 스타일 */
+.dropdown {
+    width: 100%;
+    text-align: center;
+}
+
+.dropdown-content {
+    max-height: 0;
+    overflow: hidden;
+    background-color: #c7cace;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    opacity: 0;
+}
+
+.dropdown-content a {
+    padding: 10px 0;
+    font-size: 15px;
+    display: block;
+}
+
+/* 드롭다운 활성화 시 */
+.dropdown.active .dropdown-content {
+    max-height: 200px;
+    /* 적절한 값으로 조정 */
+    opacity: 1;
+}
+
+.SlideNavOpenDiv {
+    position: absolute;
+    transition: all 0.3s ease-in-out;
+    top: 80px;
+    left: -60px;
+    z-index: 1;
+}
+
+.SlideNavOpenDiv i {
+    color: #5c677d;
+}
+
+.SlideShow {
+    left: 20px;
+}
+
+.SlideNavCloseDiv {
+    position: absolute;
+    top: 20px;
+    left: 160px;
+    z-index: 20;
+}
+
+.SlideNavCloseDiv i {
+    color: white;
+}
+
+.SlideNavCloseDiv img,
+.SlideNavOpenDiv img {
+    transition: all 0.3s ease-in-out;
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+}
+
+.SlideClose:hover {
+    transform: translateX(-6px);
+}
+
+.SlideOpen:hover {
+    transform: translateX(6px);
+}
+
+main {
+    transition: margin-left .5s;
+    padding: 16px;
+}
+
+@media screen and (max-height: 450px) {
+    .sidenav {
+        padding-top: 15px;
+    }
+
+    .sidenav a {
+        font-size: 18px;
+    }
+}
+
+/* 네비 끝 */

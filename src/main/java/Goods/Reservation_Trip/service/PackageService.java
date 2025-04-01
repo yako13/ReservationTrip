@@ -35,7 +35,7 @@ public class PackageService {
                 .fuelSurchargeIncluded(requestDto.getFuelSurchargeIncluded())
                 .description(requestDto.getDescription())
                 .packageCategory(requestDto.getPackageCategory())
-                .hotelName(requestDto.getHotelName())
+//                .hotelName(requestDto.getHotelName())
                 .packageStatus(PackageStatus.AVAILABLE)
                 .build();
 

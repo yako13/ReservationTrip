@@ -70,9 +70,9 @@ public class Package extends BaseTime {
     @Comment("유류할증료 포함")
     private BigDecimal fuelSurchargeIncluded;
 
-    @Column(name = "hotel_name", nullable = false)
-    @Comment("호텔 명")
-    private List<String> hotelName;
+//    @Column(name = "hotel_name", nullable = false)
+//    @Comment("호텔 명")
+//    private List<String> hotelName;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "package_status", nullable = false, columnDefinition = "VARCHAR(50)")

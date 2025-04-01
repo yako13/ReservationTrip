@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+     <!-- 헤더 시작 -->
+     <header th:fragment="masterHeader">
+
+        <div class="masterHeader">
+
+            <div class="headerTitle">
+
+                <div id="mainLogo">
+                    <img th:src="@{/images/mainLogoTitle.png}" width="auto" height="40px">
+                </div>
+                <div>
+                    <p class="adminText">Administrator</p>
+                </div>
+            </div>
+
+            <div class="headerTitleADiv">
+
+                <div class="homePage">
+
+                    <a th:href="@{/}"><i class="fa-solid fa-house"></i><span>홈페이지</span></a>
+                </div>
+
+                <div class="logout">
+                    <a th:href="@{/logout}"><i class="fa-solid fa-power-off"></i><span>로그아웃</span></a>
+                </div>
+
+            </div>
+        </div>
+
+    </header>
+
+    <!-- 헤더 끝 -->
+
+
+    <!-- 네비 바 시작 -->
+
+    <nav th:fragment="masterNav">
+
+        <div class="SlideNavBody">
+
+            <div class="SlideNavOpenDiv ">
+                <i class="fa-xl fa-solid fa-bars SlideOpen" onclick="openNav()"></i>
+            </div>
+
+        </div>
+
+        <div id="mySidenav" class="sidenav">
+            <div class="dropdown">
+                <button class="dropdown-btn" onclick="toggleDropdown(this)"><i class="menu-icon fa fa-barcode"></i> 상품
+                    관리 <i class="arrow fa fa-angle-down"></i></button>
+                <div class="dropdown-content">
+                    <a th:href="@{/admin/product/list}">상품 목록</a>
+                    <a th:href="@{/admin/product/add}">상품 추가</a>
+                </div>
+            </div>
+
+            <div class="dropdown">
+                <button class="dropdown-btn" onclick="toggleDropdown(this)"><i class="menu-icon fa fa-list-alt"></i> 예약
+                    관리 <i class="arrow fa fa-angle-down"></i></button>
+                <div class="dropdown-content">
+                    <a th:href="@{/admin/reservation/list}">예약 목록</a>
+                </div>
+            </div>
+
+            <div class="dropdown">
+                <button class="dropdown-btn" onclick="toggleDropdown(this)"><i class="fa-solid fa-chart-line"></i> 매출 현황
+                    <i class="arrow fa fa-angle-down"></i></button>
+                <div class="dropdown-content">
+                    <a th:href="@{/admin/chart}">매출 차트</a>
+                    <a th:href="@{/admin/chart/report}">매출 보고서</a>
+                </div>
+            </div>
+            <div class="SlideNavCloseDiv">
+                <i class="fa-xl fa-solid fa-bars SlideClose" onclick="closeNav()" style="transform:rotate(90deg);"></i>
+            </div>
+        </div>
+
+
+        </div>
+
+    </nav>
+    <!-- 네비 바 끝 -->
+</body>
+</html>

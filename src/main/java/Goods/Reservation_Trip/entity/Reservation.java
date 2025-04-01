@@ -10,6 +10,7 @@ import org.hibernate.annotations.Comment;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -30,11 +31,11 @@ public class Reservation extends BaseTime {
     private String code;
 
     @JoinColumn(name = "package_id")
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     private Package aPackage;
 
     @JoinColumn(name = "member_id")
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     private Member member;
 
     @Column(name = "start_date", nullable = false)
@@ -81,6 +82,9 @@ public class Reservation extends BaseTime {
     @Column(nullable = false)
     @Comment("카드사 승인 번호")
     private String approved;
+
+    @OneToMany(mappedBy = "reservation",cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReservationDetails> reservationDetailsList = new ArrayList<>();
 
 }
 
