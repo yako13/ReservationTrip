@@ -1,4 +1,4 @@
-package Goods.Reservation_Trip.repository;
+package Goods.Reservation_Trip.repository.aPackage;
 
 import Goods.Reservation_Trip.entity.PackageImage;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,12 +1,10 @@
-package Goods.Reservation_Trip.controller;
+package Goods.Reservation_Trip.controller.aPackage;
 
-import Goods.Reservation_Trip.dto.PackageRequestDto;
-import Goods.Reservation_Trip.enums.Airline;
-import Goods.Reservation_Trip.service.PackageService;
+import Goods.Reservation_Trip.dto.aPackage.PackageRequestDto;
+import Goods.Reservation_Trip.service.aPackage.PackageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -25,8 +23,14 @@ public class PackageController {
     }
 
     @PostMapping("/admin/package/save")
-    public String PackageSave(PackageRequestDto requestDto) {
+    public String PackageSave(@ModelAttribute PackageRequestDto requestDto) {
         packageService.save(requestDto);
         return "redirect:/Q";
+    }
+
+    @GetMapping("/admin/package/list")
+    public String adminPackageList(){
+
+        return "/admin/package-list";
     }
 }

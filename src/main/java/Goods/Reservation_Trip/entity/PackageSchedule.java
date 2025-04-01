@@ -3,19 +3,15 @@ package Goods.Reservation_Trip.entity;
 import Goods.Reservation_Trip.enums.Airline;
 import Goods.Reservation_Trip.enums.ArrivalPoint;
 import Goods.Reservation_Trip.enums.DeparturePoint;
-import Goods.Reservation_Trip.enums.PackageStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
-import org.springframework.cglib.core.Local;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Date;
 
 @Table(name = "package_schedule")
 @Getter

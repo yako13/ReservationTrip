@@ -1,7 +1,6 @@
 package Goods.Reservation_Trip.entity;
 
 import Goods.Reservation_Trip.base.BaseTime;
-import Goods.Reservation_Trip.enums.PackageCategory;
 import Goods.Reservation_Trip.enums.PackageStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -57,9 +56,10 @@ public class Package extends BaseTime {
     @Comment("대표 이미지")
     private PackageImage mainImage;
 
-    @Column(name = "package_category", nullable = true)
-    @Comment("카테고리")
-    private PackageCategory packageCategory;
+//    @Enumerated(EnumType.STRING)
+//    @Column(name = "package_category", nullable = true)
+//    @Comment("카테고리")
+//    private PackageCategory packageCategory;
 
     @Column(name = "fuel_surcharge", nullable = false)
     @Comment("유류할증료")
@@ -69,9 +69,24 @@ public class Package extends BaseTime {
     @Comment("유류할증료 포함")
     private BigDecimal fuelSurchargeIncluded;
 
-    @Column(name = "hotel_name", nullable = false)
+    @Column(name = "hotel_name", columnDefinition = "TEXT")
     @Comment("호텔 명")
-    private List<String> hotelName;
+    private String hotelName;
+
+    @ManyToOne
+    @JoinColumn(name = "main_category_id", nullable = true)
+    @Comment("대분류 카테고리")
+    private PackageCategory mainCategory;
+
+    @ManyToOne
+    @JoinColumn(name = "sub_category_id", nullable = true)
+    @Comment("중분류 카테고리")
+    private PackageCategory subCategory;
+
+    @ManyToOne
+    @JoinColumn(name = "small_category_id", nullable = true)
+    @Comment("소분류 카테고리")
+    private PackageCategory smallCategory;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "package_status", nullable = false, columnDefinition = "VARCHAR(50)")

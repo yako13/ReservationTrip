@@ -1,9 +1,9 @@
-package Goods.Reservation_Trip.service;
+package Goods.Reservation_Trip.service.aPackage;
 
-import Goods.Reservation_Trip.dto.PackageRequestDto;
+import Goods.Reservation_Trip.dto.aPackage.PackageRequestDto;
 import Goods.Reservation_Trip.entity.Package;
 import Goods.Reservation_Trip.entity.PackageOption;
-import Goods.Reservation_Trip.repository.PackageOptionRepository;
+import Goods.Reservation_Trip.repository.aPackage.PackageOptionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

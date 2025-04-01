@@ -1,8 +1,10 @@
-package Goods.Reservation_Trip.dto;
+package Goods.Reservation_Trip.dto.aPackage;
 
-import Goods.Reservation_Trip.enums.*;
+import Goods.Reservation_Trip.enums.Airline;
+import Goods.Reservation_Trip.enums.ArrivalPoint;
+import Goods.Reservation_Trip.enums.DeparturePoint;
+import Goods.Reservation_Trip.enums.PackageStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,10 +13,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -69,11 +68,6 @@ public class PackageRequestDto {
      * 간단 설명글
      */
     private String description;
-
-    /**
-     * 카테고리
-     */
-    private PackageCategory packageCategory;
 
     /**
      * 메인 이미지
@@ -199,7 +193,11 @@ public class PackageRequestDto {
     /**
      * 호텔명 리스트
      */
-    private List<String> hotelName;
+    private String hotelName;
+
+    private Long mainCategoryId; // 대분류 ID
+    private Long subCategoryId; // 중분류 ID
+    private Long smallCategoryId; // 소분류 ID
 
     /**
      * 가이드 유무

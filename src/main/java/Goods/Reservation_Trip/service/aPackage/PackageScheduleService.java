@@ -1,16 +1,13 @@
-package Goods.Reservation_Trip.service;
+package Goods.Reservation_Trip.service.aPackage;
 
-import Goods.Reservation_Trip.dto.PackageRequestDto;
+import Goods.Reservation_Trip.dto.aPackage.PackageRequestDto;
 import Goods.Reservation_Trip.entity.Package;
 import Goods.Reservation_Trip.entity.PackageSchedule;
-import Goods.Reservation_Trip.enums.DeparturePoint;
-import Goods.Reservation_Trip.enums.PackageStatus;
-import Goods.Reservation_Trip.repository.PackageScheduleRepository;
+import Goods.Reservation_Trip.repository.aPackage.PackageScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Service
 @RequiredArgsConstructor

@@ -138,25 +138,19 @@
                 <label>최소 출발 인원</label>
                 <input type="number" name="minimumRequired" />
               </div>
+              <input
+                type="hidden"
+                id="hiddenMainCategoryId"
+                name="mainCategoryId" />
               <div>
                 <label>도시 카테고리</label>
-                <select id="mainCategory">
+                <select id="mainCategory" name="mainCategoryId">
                   <option value="" selected>카테고리를 선택하세요</option>
-                  <option value="JAPAN">일본</option>
-                  <option value="CENTRAL_ASIA">
-                    중국 / 홍콩 / 몽골 / 중앙아시아
-                  </option>
-                  <option value="SOUTHEAST_ASIA">동남아 / 대만 / 서남아</option>
-                  <option value="EUROPA">유럽 / 아프리카</option>
-                  <option value="LATIN_AMERICA">
-                    미주 / 하와이 / 캐나다 / 중남미
-                  </option>
-                  <option value="OCEANIA">괌/ 사이판 / 뉴질랜드 / 호주</option>
                 </select>
-                <select id="subCategory">
+                <select id="subCategory" name="subCategoryId">
                   <option value="#">중분류</option>
                 </select>
-                <select id="smallCategory">
+                <select id="smallCategory" name="smallCategoryId">
                   <option value="#">소분류</option>
                 </select>
               </div>
@@ -360,4 +354,89 @@
       </div>
     </main>
   </body>
+  <script>
+    // 카테고리 데이터를 가져와서 트리 구조로 처리하는 함수
+    document
+      .getElementById("mainCategory")
+      .addEventListener("change", function () {
+        document.getElementById("hiddenMainCategoryId").value = this.value;
+      });
+
+    function loadCategories() {
+      fetch("/api/categories")
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("API 응답 데이터:", data);
+          const mainCategorySelect = document.getElementById("mainCategory");
+          resetSelect(mainCategorySelect, "대분류 선택"); // 초기화
+
+          data.forEach((mainCategory) => {
+            const option = document.createElement("option");
+            option.value = mainCategory.id;
+            option.textContent = mainCategory.name;
+            mainCategorySelect.appendChild(option);
+          });
+
+          // 대분류 변경 시 중분류 로딩
+          mainCategorySelect.addEventListener("change", function () {
+            const selectedMainCategory = data.find((c) => c.id == this.value);
+            loadSubCategories(selectedMainCategory?.children || []);
+          });
+        })
+        .catch((error) =>
+          console.error("카테고리 데이터를 가져오는데 실패했습니다:", error)
+        );
+    }
+
+    // 중분류 로딩
+    function loadSubCategories(subCategories) {
+      const subCategorySelect = document.getElementById("subCategory");
+      resetSelect(subCategorySelect, "중분류 선택"); // 초기화
+
+      const smallCategorySelect = document.getElementById("smallCategory");
+      resetSelect(smallCategorySelect, "소분류 선택"); // 중분류가 바뀌면 소분류도 초기화
+
+      subCategories.forEach((subCategory) => {
+        const option = document.createElement("option");
+        option.value = subCategory.id;
+        option.textContent = subCategory.name;
+        subCategorySelect.appendChild(option);
+      });
+
+      // 중분류 변경 시 소분류 로딩
+      subCategorySelect.addEventListener("change", function () {
+        const selectedSubCategory = subCategories.find(
+          (c) => c.id == this.value
+        );
+        loadSmallCategories(selectedSubCategory?.children || []);
+      });
+    }
+
+    // 소분류 로딩
+    function loadSmallCategories(smallCategories) {
+      const smallCategorySelect = document.getElementById("smallCategory");
+      resetSelect(smallCategorySelect, "소분류 선택"); // 초기화
+
+      smallCategories.forEach((smallCategory) => {
+        const option = document.createElement("option");
+        option.value = smallCategory.id;
+        option.textContent = smallCategory.name;
+        smallCategorySelect.appendChild(option);
+      });
+    }
+
+    // 셀렉트 박스를 초기화하는 함수
+    function resetSelect(selectElement, placeholderText) {
+      selectElement.innerHTML = ""; // 기존 옵션 초기화
+      const defaultOption = document.createElement("option");
+      defaultOption.value = "";
+      defaultOption.textContent = `-- ${placeholderText} --`;
+      defaultOption.disabled = true;
+      defaultOption.selected = true;
+      selectElement.appendChild(defaultOption);
+    }
+
+    // 페이지 로드 시 대분류 로딩
+    document.addEventListener("DOMContentLoaded", loadCategories);
+  </script>
 </html>
