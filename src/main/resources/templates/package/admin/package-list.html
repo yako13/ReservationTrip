@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+  </head>
+  <body>
+    <h1>package list</h1>
+    <main>
+      <div th:each="packageList : ${package}">
+        <table>
+          <thead>
+            <th>순번</th>
+            <th>이미지</th>
+            <th>상품명</th>
+          </thead>
+          <tbody>
+            <tr th:text="${package.id}">
+              1
+            </tr>
+            <tr>
+              <img src="#" />
+            </tr>
+            <tr th:text="${package.name}">
+              패키지 이름
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </body>
+</html>

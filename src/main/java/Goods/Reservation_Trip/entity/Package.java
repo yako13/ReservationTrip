@@ -5,6 +5,7 @@ import Goods.Reservation_Trip.enums.PackageStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.Fetch;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -56,11 +57,6 @@ public class Package extends BaseTime {
     @Comment("대표 이미지")
     private PackageImage mainImage;
 
-//    @Enumerated(EnumType.STRING)
-//    @Column(name = "package_category", nullable = true)
-//    @Comment("카테고리")
-//    private PackageCategory packageCategory;
-
     @Column(name = "fuel_surcharge", nullable = false)
     @Comment("유류할증료")
     private BigDecimal fuelSurcharge;
@@ -73,18 +69,22 @@ public class Package extends BaseTime {
     @Comment("호텔 명")
     private String hotelName;
 
+    @OneToOne
+    @JoinColumn(name = "package_schedule_id")
+    private PackageSchedule packageSchedule;
+
     @ManyToOne
-    @JoinColumn(name = "main_category_id", nullable = true)
+    @JoinColumn(name = "main_category_id", nullable = false)
     @Comment("대분류 카테고리")
     private PackageCategory mainCategory;
 
     @ManyToOne
-    @JoinColumn(name = "sub_category_id", nullable = true)
+    @JoinColumn(name = "sub_category_id", nullable = false)
     @Comment("중분류 카테고리")
     private PackageCategory subCategory;
 
     @ManyToOne
-    @JoinColumn(name = "small_category_id", nullable = true)
+    @JoinColumn(name = "small_category_id", nullable = false)
     @Comment("소분류 카테고리")
     private PackageCategory smallCategory;
 

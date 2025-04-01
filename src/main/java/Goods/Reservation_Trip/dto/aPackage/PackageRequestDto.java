@@ -195,9 +195,20 @@ public class PackageRequestDto {
      */
     private String hotelName;
 
-    private Long mainCategoryId; // 대분류 ID
-    private Long subCategoryId; // 중분류 ID
-    private Long smallCategoryId; // 소분류 ID
+    /**
+     * 대분류 ID
+     */
+    private Long mainCategoryId;
+
+    /**
+     * 중분류 ID
+     */
+    private Long subCategoryId;
+
+    /**
+     * 소분류 ID
+     */
+    private Long smallCategoryId;
 
     /**
      * 가이드 유무
@@ -218,5 +229,6 @@ public class PackageRequestDto {
      * 쇼핑 유무
      */
     private boolean shopping;
+
+    private Long packageScheduleId;
 }
-//34
