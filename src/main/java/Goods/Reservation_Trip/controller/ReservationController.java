@@ -19,7 +19,7 @@ public class ReservationController {
 
     @GetMapping("/admin/reservation/list")
     public String adminReservationListPage(@PageableDefault(size = 10)Pageable pageable,
-            @RequestParam(defaultValue = "ordererName") String search, //검색 기준
+            @RequestParam(defaultValue = "reservationCode") String search, //검색 기준
             @RequestParam(defaultValue = "0") int page, // 페이지 시작
             @RequestParam(defaultValue = "10") int size, // 예약 분류 기본 개수
             @RequestParam(defaultValue = "default") String sort, // 예약 정렬
@@ -39,5 +39,31 @@ public class ReservationController {
         model.addAttribute("reservationState",reservationState);
 
         return "reservation/adminList";
+    }
+
+    @GetMapping("/admin/reservation/search/index")
+    public String adminSearchReservationListPage(@PageableDefault(size = 10)Pageable pageable,
+                                           @RequestParam(value="keyword",required = false,defaultValue = "검색어를 입력해주세요.")String keyword,
+                                           @RequestParam(defaultValue = "reservationCode") String search, //검색 기준
+                                           @RequestParam(defaultValue = "0") int page, // 페이지 시작
+                                           @RequestParam(defaultValue = "10") int size, // 예약 분류 기본 개수
+                                           @RequestParam(defaultValue = "default") String sort, // 예약 정렬
+                                           @RequestParam(defaultValue = "ALL") String reservationState, //예약 상태
+                                           Model model){
+
+        Page<ReservationResponseDto> reservationResponseDtos = reservationService.pageReservationSearch(keyword,search,page,size,sort,reservationState);
+
+
+        model.addAttribute("reservationList",reservationResponseDtos.getContent());
+        model.addAttribute("paging",reservationResponseDtos);
+        model.addAttribute("total", reservationResponseDtos.getTotalElements());
+        model.addAttribute("currentPage", reservationResponseDtos.getNumber());
+        model.addAttribute("size", size);
+        model.addAttribute("sortSelect", sort);
+        model.addAttribute("searchSelect",search);
+        model.addAttribute("reservationState",reservationState);
+        model.addAttribute("keywordQuery",keyword);
+
+        return "reservation/adminSearchList";
     }
 }

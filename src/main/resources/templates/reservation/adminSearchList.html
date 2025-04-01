@@ -94,7 +94,7 @@
                 </div>
             </div>
 
-            <!-- <h1 th:if="${total ==0}">주문내역이 없습니다.</h1> -->
+            <h1 th:if="${total ==0}">주문내역이 없습니다.</h1>
 
             <table class="rwd-table" th:if="${total >0}">
                 <tbody>
@@ -132,14 +132,14 @@
             <ul class="pagination">
                 <!-- 첫 페이지 버튼 -->
                 <li class="page-item" th:classappend="${paging.first} ? 'disabled' : ''">
-                    <a class="page-link" th:href="@{/admin/reservation/list(page=0, size=${size})}" aria-label="First">
+                    <a class="page-link" th:href="@{/admin/reservation/search/index(keyword=${keywordQuery},page=0, size=${size},sort=${sortSelect},reservationState=${reservationState})}" aria-label="First">
                         <span>&laquo;</span>
                     </a>
                 </li>
 
                 <!-- 이전 버튼 -->
                 <li class="page-item" th:classappend="${paging.hasPrevious()} ? '' : 'disabled'">
-                    <a class="page-link" th:href="@{/admin/reservation/list(page=${currentPage - 1}, size=${size})}"
+                    <a class="page-link" th:href="@{/admin/reservation/search/index(keyword=${keywordQuery},page=${currentPage-1}, size=${size},sort=${sortSelect},reservationState=${reservationState})}" 
                         aria-label="Previous">
                         <span>&lt;</span>
                     </a>
@@ -150,13 +150,13 @@
                     th:each="pageNum : ${#numbers.sequence(currentPage - 2 > 0 ? currentPage - 2 : 0,
                                                      currentPage + 2 < paging.totalPages - 1 ? currentPage + 2 : paging.totalPages - 1)}"
                     th:classappend="${pageNum == currentPage} ? 'active' : ''">
-                    <a class="page-link" th:href="@{/admin/reservation/list(page=${pageNum}, size=${size})}"
+                    <a class="page-link" th:href="@{/admin/reservation/search/index(keyword=${keywordQuery},page=${pageNum}, size=${size},sort=${sortSelect},reservationState=${reservationState})}" 
                         th:text="${pageNum + 1}"></a>
                 </li>
 
                 <!-- 다음 버튼 -->
                 <li class="page-item" th:classappend="${paging.hasNext()} ? '' : 'disabled'">
-                    <a class="page-link" th:href="@{/admin/reservation/list(page=${currentPage + 1}, size=${size})}"
+                    <a class="page-link" th:href="@{/admin/reservation/search/index(keyword=${keywordQuery},page=${currentPage+1}, size=${size},sort=${sortSelect},reservationState=${reservationState})}"
                         aria-label="Next">
                         <span>&gt;</span>
                     </a>
@@ -165,7 +165,7 @@
                 <!-- 마지막 페이지 버튼 -->
                 <li class="page-item" th:classappend="${paging.last} ? 'disabled' : ''">
                     <a class="page-link"
-                        th:href="@{/admin/reservation/list(page=${paging.totalPages - 1}, size=${size})}"
+                        th:href="@{/admin/reservation/search/index(keyword=${keywordQuery},page=${paging.totalPages-1}, size=${size},sort=${sortSelect},reservationState=${reservationState})}"
                         aria-label="Last">
                         <span>&raquo;</span>
                     </a>
@@ -207,17 +207,17 @@
 
         reservationStateSelect.addEventListener("change", function () {
             const selectedReservationState = this.value;
-            window.location.href = `?page=0&search=${currentSearch}&reservationState=${selectedReservationState}&size=${currentSize}&sort=${currentSort}`;
+            window.location.href = `/admin/reservation/search/index?keyword=${keywordQuery}&page=0&search=${currentSearch}&reservationState=${selectedReservationState}&size=${currentSize}&sort=${currentSort}`;
         });
 
         sizeSelect.addEventListener("change", function () {
             const selectedSize = this.value;
-            window.location.href = `?page=0&search=${currentSearch}&reservationState=${currentReservationState}&size=${selectedSize}&sort=${currentSort}`;
+            window.location.href = `/admin/reservation/search/index?keyword=${keywordQuery}&page=0&search=${currentSearch}&reservationState=${currentReservationState}&size=${selectedSize}&sort=${currentSort}`;
         });
 
         sortSelect.addEventListener("change", function () {
             const selectedSort = this.value;
-            window.location.href = `?page=0&search=${currentSearch}&reservationState=${currentReservationState}&size=${currentSize}&sort=${selectedSort}`;
+            window.location.href = `/admin/reservation/search/index?keyword=${keywordQuery}&page=0&search=${currentSearch}&reservationState=${currentReservationState}&size=${currentSize}&sort=${selectedSort}`;
         });
     </script>
     <script th:src="@{/js/adminNav.js}"></script>

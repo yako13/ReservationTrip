@@ -13,6 +13,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Map;
+
 @Transactional
 @RequiredArgsConstructor
 @Service
@@ -20,11 +22,11 @@ public class ReservationService {
 
     private final ReservationRepository reservationRepository;
 
-    public Page<ReservationResponseDto> pageReservation(int page,int size,String sort,String reservationState){
+    public Page<ReservationResponseDto> pageReservation(int page, int size, String sort, String reservationState) {
 
         //페이지당 예약 수 50개이상 불러올 때
-        if(size>=50){
-            throw  new RuntimeException("올바르지 않은 접근");
+        if (size >= 50) {
+            throw new RuntimeException("올바르지 않은 접근");
         }
 
         Pageable pageable;
@@ -52,26 +54,106 @@ public class ReservationService {
             reservationPage = reservationRepository.findByReservationState(ReservationState.CANCEL, pageable);
         } else if (reservationState.equals("WAIT")) {
             reservationPage = reservationRepository.findByReservationState(ReservationState.WAIT, pageable);
-        }
-        else if(reservationState.equals("REQUEST")){
+        } else if (reservationState.equals("REQUEST")) {
             reservationPage = reservationRepository.findByReservationState(ReservationState.REQUEST, pageable);
-        }
-        else {
+        } else {
             reservationPage = reservationRepository.findAll(pageable);
         }
 
         return reservationPage.map(reservation ->
-                    ReservationResponseDto.builder()
-                            .reservationPK(reservation.getId())
-                            .packageName(reservation.getAPackage().getPackageName())
-                            .memberName(reservation.getMember().getName())
-                            .reservationCode(reservation.getCode())
-                            .totalPay(Formatter.changeBigDecimalFormat(reservation.getTotalPay()))
-                            .reservationState(reservation.getReservationState().getName())
-                            .createdAt(Formatter.getLocalDate(reservation.getCreatedAt()))
-                            .modifiedAt(Formatter.getLocalDate(reservation.getModifiedAt()))
-                            .build()
-                );
+                ReservationResponseDto.builder()
+                        .reservationPK(reservation.getId())
+                        .packageName(reservation.getAPackage().getPackageName())
+                        .memberName(reservation.getMember().getName())
+                        .reservationCode(reservation.getCode())
+                        .totalPay(Formatter.changeBigDecimalFormat(reservation.getTotalPay()))
+                        .reservationState(reservation.getReservationState().getName())
+                        .createdAt(Formatter.getLocalDate(reservation.getCreatedAt()))
+                        .modifiedAt(Formatter.getLocalDate(reservation.getModifiedAt()))
+                        .build()
+        );
+
+    }
+
+    public Page<ReservationResponseDto> pageReservationSearch(String keyword, String search, int page, int size, String sort, String reservationState) {
+
+        //페이지당 예약 수 50개이상 불러올 때
+        if (size >= 50) {
+            throw new RuntimeException("올바르지 않은 접근");
+        }
+
+        Pageable pageable;
+
+        //가격으로 sort
+        if ("price_asc".equals(sort)) {
+            pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "totalPay"));
+        } else if ("price_desc".equals(sort)) {
+            pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "totalPay"));
+
+            //주문 날짜별 sort
+        } else if ("past".equals(sort)) {
+            pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "createdAt"));
+        } else {
+            pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        }
+
+        if (keyword == null || keyword.isBlank()) return Page.empty();
+
+        String trimKeyword = keyword.trim();
+
+        Page<Reservation> reservationPage = null;
+
+        Map<String, ReservationState> stateMap = Map.of(
+                "CONFIRM", ReservationState.CONFIRM,
+                "WAIT", ReservationState.WAIT,
+                "CANCEL", ReservationState.CANCEL,
+                "REQUEST", ReservationState.REQUEST
+        );
+
+        //검색기준이 예약번호일때
+        if("reservationCode".equals(search)){
+            ReservationState state = stateMap.get(reservationState);
+
+            reservationPage = (state != null)
+                    ? reservationRepository.findByCodeContainingWithoutSpaceAndReservationState(trimKeyword, pageable, state)
+                    : reservationRepository.findByCodeContainingWithoutSpace(trimKeyword, pageable);
+        }
+
+
+
+        //검색 기준이 예약자일 때
+        if ("ordererName".equals(search)) {
+
+            ReservationState state = stateMap.get(reservationState);
+
+            reservationPage = (state != null)
+                    ? reservationRepository.findByMemberNameContainingWithoutSpaceAndReservationState(trimKeyword, pageable, state)
+                    : reservationRepository.findByMemberNameContainingWithoutSpace(trimKeyword, pageable);
+        }
+
+        //검색 기준이 패키지명일 때
+        if ("packageName".equals(search)) {
+
+            ReservationState state = stateMap.get(reservationState);
+
+            reservationPage = (state != null)
+                    ? reservationRepository.findByAPackagePackageNameContainingWithoutSpaceAndReservationState(trimKeyword, pageable, state)
+                    : reservationRepository.findByAPackagePackageNameContainingWithoutSpace(trimKeyword, pageable);
+        }
+
+
+        return reservationPage.map(reservation ->
+                ReservationResponseDto.builder()
+                        .reservationPK(reservation.getId())
+                        .packageName(reservation.getAPackage().getPackageName())
+                        .memberName(reservation.getMember().getName())
+                        .reservationCode(reservation.getCode())
+                        .totalPay(Formatter.changeBigDecimalFormat(reservation.getTotalPay()))
+                        .reservationState(reservation.getReservationState().getName())
+                        .createdAt(Formatter.getLocalDate(reservation.getCreatedAt()))
+                        .modifiedAt(Formatter.getLocalDate(reservation.getModifiedAt()))
+                        .build()
+        );
 
     }
 }
