@@ -23,6 +23,13 @@ a {
 }
 
 /*헤더시작  */
+
+
+/* 배지를 클릭하면 목록 표시 */
+.hidden {
+    display: none;
+}
+
 header {
     margin: 0;
     padding: 0;
@@ -83,7 +90,7 @@ p {
 
 
 .headerTitleADiv {
-    width: 280px;
+    width: 350px;
     display: flex;
     justify-content: space-between;
     align-items: center;

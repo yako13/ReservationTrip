@@ -1,23 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+
 <body>
-     <!-- 헤더 시작 -->
-     <header th:fragment="masterHeader">
+    <!-- 헤더 시작 -->
+    <header th:fragment="masterHeader">
 
         <div class="masterHeader">
 
             <div class="headerTitle">
 
                 <div id="mainLogo">
-                    <img th:src="@{/images/mainLogoTitle.png}" width="auto" height="40px">
+                    <img th:src="@{/images/logoFull600.png}" width="auto" height="40px">
                 </div>
                 <div>
                     <p class="adminText">Administrator</p>
+                </div>
+                <span id="bell">🔔</span>
+            </div>
+            
+            <div id="notification-container">
+                <div id="notification-badge">0</div> <!-- 알림 개수 표시 -->
+                <div id="notification-list" class="hidden">
+                    <p id="closeIcon">X</p>
+                    <ul id="notification-items">
+                    </ul> <!-- 알림 목록 -->
                 </div>
             </div>
 
@@ -89,4 +101,5 @@
     </nav>
     <!-- 네비 바 끝 -->
 </body>
+
 </html>
