@@ -1,0 +1,276 @@
+/* 메인시작 */
+table {
+    font-size: 12px;
+}
+
+.rwd-table {
+    border: 1px #a39485 solid;
+    font-size: 0.9em;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.rwd-table tr:first-child {
+    border-top: none;
+    color: #fff;
+    background-color: #6c757d;
+}
+
+.rwd-table tr {
+    border-top: 1px solid #808080;
+    border-bottom: 1px solid #808080;
+    background-color: #ffffff;
+}
+
+.rwd-table tr:nth-child(odd):not(:first-child) {
+    background-color: #ffffff;
+}
+
+.rwd-table th {
+    display: none;
+}
+
+.rwd-table td {
+    display: block;
+}
+
+.rwd-table td:first-child {
+    margin-top: 0.5em;
+}
+
+.rwd-table td:last-child {
+    margin-bottom: 0.5em;
+}
+
+.rwd-table th,
+.rwd-table td {
+    text-align: center;
+}
+
+.rwd-table {
+    color: #333;
+    border-radius: 0.4em;
+    overflow: hidden;
+}
+
+.rwd-table tr {
+    border-color: #ccc;
+}
+
+.rwd-table th,
+.rwd-table td {
+    padding: 0.5em 1em;
+}
+
+@media screen and (max-width: 601px) {
+    .rwd-table tr:nth-child(2) {
+        border-top: none;
+    }
+}
+
+@media screen and (min-width: 600px) {
+    .rwd-table tr:hover:not(:first-child) {
+        background-color: #f5f4f485;
+    }
+
+    .rwd-table td:before {
+        display: none;
+    }
+
+    .rwd-table th,
+    .rwd-table td {
+        display: table-cell;
+        padding: 0.25em 0.5em;
+    }
+
+    .rwd-table th:first-child,
+    .rwd-table td:first-child {
+        padding-left: 0;
+    }
+
+    .rwd-table th:last-child,
+    .rwd-table td:last-child {
+        padding-right: 0;
+    }
+
+    .rwd-table th,
+    .rwd-table td {
+        padding: 1em !important;
+    }
+}
+
+.container {
+    display: block;
+    text-align: center;
+    min-height: 800px;
+    margin-left: 32px;
+    margin-right: 50px;
+}
+
+.totalPrice {
+    color: red;
+}
+
+h2 {
+    text-align: left;
+    margin-top: 80px;
+}
+
+.orderList {
+    height: 70px;
+    text-align: left;
+
+    p {
+        padding-top: 30px;
+    }
+}
+
+#red {
+    color: red;
+}
+
+a {
+    text-decoration: none;
+
+    b {
+        color: black;
+    }
+}
+
+.buttonAndTotal {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+#checkoutCode {
+    color: #000;
+    font-weight: 600;
+}
+
+ul {
+    list-style: none;
+}
+
+.container__sort {
+    display: flex;
+    justify-content: end;
+    margin-bottom: 20px;
+}
+
+#sizeSelect,
+.text__right {
+    margin: 0 10px;
+}
+
+select {
+    font-size: 1rem;
+    border: 1px solid #838383;
+}
+
+.form__search {
+    display: flex;
+    justify-content: start;
+}
+
+.searchForm {
+    width: 9rem;
+    border: 0px;
+    height: 1.5rem;
+    font-size: 1rem;
+    margin-left: 0.5rem;
+}
+
+.searchForm:focus {
+    outline: none;
+}
+
+.btn-submit {
+    background-color: #ffffff;
+    border: 0px;
+}
+
+.searchArea {
+    margin-left: 10px;
+    border: 1px solid #111111;
+    width: 12rem;
+    height: 1.7rem;
+}
+
+.container__sort2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#sizeSelect,
+.text__right {
+    margin: 0 10px;
+}
+
+.searchForm {
+    width: 9rem;
+    border: 0px;
+    height: 1.5rem;
+    font-size: 1rem;
+    margin-left: 0.5rem;
+}
+
+.searchForm:focus {
+    outline: none;
+}
+
+.btn-submit {
+    background-color: #ffffff;
+    border: 0px;
+}
+
+.form__search {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+#checkoutStateSelect {
+    font-size: 1rem;
+}
+
+#sizeSelect {
+    font-size: 1rem;
+}
+
+#sortSelect {
+    font-size: 1rem;
+}
+
+#searchSelect {
+    border: 0px;
+    font-size: 0.9rem;
+}
+
+#searchSelect:focus {
+    outline: none;
+}
+
+#HanSerachForm {
+    border: 1px solid #111111;
+    border-radius: 7px;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+}
+
+.trPointer {
+    cursor: pointer;
+}
+
+#requestAlert {
+    color: rgb(63, 141, 243);
+    transform: scaleX(-1);
+}
+
+/* 메인끝 */

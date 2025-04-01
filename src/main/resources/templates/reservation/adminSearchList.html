@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>판매자 헤더</title>
+    <link th:href="@{/css/admin/header.css}" rel="stylesheet">
+    </link>
+    <link th:href="@{/css/pagenation.css}" rel="stylesheet">
+    </link>
+    <link th:href="@{/css/admin/reservationList.css}" rel="stylesheet">
+</link>
+</head>
+
+<body>
+    <header th:replace="fragments/adminHeader::masterHeader"></header>
+    <nav th:replace="fragments/adminHeader::masterNav"></nav>
+    <!-- 메인 시작 -->
+    <main id="main">
+        <div class="container">
+            <h2 th:if="${keywordQuery==null}">전체 예약 목록</h2>
+            <h2 th:if="${keywordQuery!=null}" th:text="'검색어 : '+ ${keywordQuery}" class="search-name"></h2>
+            <hr />
+            <div class="orderList">
+                <p><b>예약 내역</b> : 총 <b id="red">[[${total}]]</b>건</p>
+            </div>
+            <div>
+                <div class="form__search">
+                    <form action="/admin/reservation/search/index" method="get" role="search" id="HanSerachForm">
+                        <select name="search" id="searchSelect" onchange="">
+                            <option value="reservationCode" th:selected="${searchSelect=='reservationCode'}">예약번호
+                            </option>
+                            <option value="ordererName" th:selected="${searchSelect=='ordererName'}">
+                                예약자명
+                            </option>
+                            <option value="packageName" th:selected="${searchSelect=='packageName'}">
+                                패키지명
+                            </option>
+                        </select>
+                        <input type="text" class="searchForm" id="searchInput" name="keyword"
+                            placeholder="검색어를 입력하세요." />
+                        <button type="submit" class="btn-submit" form="HanSerachForm">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </button>
+                    </form>
+                    <div class="container__sort2">
+                        <select name="reservationState" id="reservationStateSelect" onchange="">
+                            <option hidden selected>예약 상태</option>
+                            <option value="ALL" th:selected="${reservationState=='ALL'}">
+                                전체예약
+                            </option>
+                            <option value="CONFIRM" th:selected="${reservationState=='CONFIRM'}" style="color: blue">
+                                예약완료
+                            </option>
+                            <option value="WAIT" th:selected="${reservationState=='WAIT'}" style="color: green">
+                                예약보류
+                            </option>
+                            <option value="CANCEL" th:selected="${reservationState=='CANCEL'}" style="color: red">
+                                예약취소
+                            </option>
+                            <option value="REQUEST" th:selected="${reservationState=='REQUEST'}" style="color: red">
+                                예약취소요청
+                            </option>
+                        </select>
+                        <select name="sizeSelect" id="sizeSelect" onchange="">
+                            <option value="10" th:selected="${size==10}">10개</option>
+                            <option value="20" th:selected="${size==20}">20개</option>
+                            <option value="30" th:selected="${size==30}">30개</option>
+                        </select>
+
+                        <select name="sortSelect" id="sortSelect" onchange="">
+                            <option value="default" th:selected="${sortSelect == 'default'}">
+                                최신순
+                            </option>
+                            <option value="past" th:selected="${sortSelect == 'past'}">
+                                오래된순
+                            </option>
+                            <option value="price_asc" th:selected="${sortSelect == 'price_asc'}">
+                                총 결제 금액 낮은순
+                            </option>
+                            <option value="price_desc" th:selected="${sortSelect == 'price_desc'}">
+                                총 결제 금액 높은순
+                            </option>
+                        </select>
+                        <span class="text__right">
+                            <span th:text="${paging.totalElements + '건의 상품 / '}">10건의 상품 / </span>
+                            <span
+                                th:text="${(paging.number + 1) + (paging.number * size) - paging.totalPages + (paging.totalPages - paging.number)}"></span>
+
+                            <span th:text="${(paging.number * size) + #lists.size(paging.content) + '건'}"></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <h1 th:if="${total ==0}">주문내역이 없습니다.</h1>
+
+            <table class="rwd-table" th:if="${total >0}">
+                <tbody>
+                    <tr>
+                        <th>예약번호</th>
+                        <th>예약자</th>
+                        <th>패키지명</th>
+                        <th>총 결제 금액</th>
+                        <th>예약 상태</th>
+                        <th>예약 날짜</th>
+                        <th>수정날짜 </th>
+                    </tr>
+                    <tr th:each="reservation : ${reservationList}"
+                        th:onclick="window.location.href='/admin/reservation/details/' + [[${reservation.reservationPK}]];"
+                        class="trPointer">
+                        <td id="checkoutCode">
+                            <i th:if="${reservation.reservationState == '예약취소신청'}"
+                                class="fa-solid fa-xl fa-comment-dots" id="requestAlert"></i>
+                            [[${reservation.reservationCode}]]
+                        </td>
+                        <td th:text="${reservation.memberName}"></td>
+                        <td th:text="${reservation.packageName}"></td>
+                        <td th:text="${reservation.totalPay}" class="totalPrice">
+                            <b></b>
+                        </td>
+                        <td th:text="${reservation.reservationState}" class="reservationState"></td>
+                        <td th:text="${reservation.createdAt}"></td>
+                        <td th:text="${reservation.modifiedAt}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- 페이지네이션 -->
+        <nav aria-label="Page navigation" th:unless="${paging.totalElements == 0}">
+            <ul class="pagination">
+                <!-- 첫 페이지 버튼 -->
+                <li class="page-item" th:classappend="${paging.first} ? 'disabled' : ''">
+                    <a class="page-link" th:href="@{/admin/reservation/search/index(keyword=${keywordQuery},page=0, size=${size},sort=${sortSelect},reservationState=${reservationState})}" aria-label="First">
+                        <span>&laquo;</span>
+                    </a>
+                </li>
+
+                <!-- 이전 버튼 -->
+                <li class="page-item" th:classappend="${paging.hasPrevious()} ? '' : 'disabled'">
+                    <a class="page-link" th:href="@{/admin/reservation/search/index(keyword=${keywordQuery},page=${currentPage-1}, size=${size},sort=${sortSelect},reservationState=${reservationState})}" 
+                        aria-label="Previous">
+                        <span>&lt;</span>
+                    </a>
+                </li>
+
+                <!-- 페이지 번호 -->
+                <li class="page-item"
+                    th:each="pageNum : ${#numbers.sequence(currentPage - 2 > 0 ? currentPage - 2 : 0,
+                                                     currentPage + 2 < paging.totalPages - 1 ? currentPage + 2 : paging.totalPages - 1)}"
+                    th:classappend="${pageNum == currentPage} ? 'active' : ''">
+                    <a class="page-link" th:href="@{/admin/reservation/search/index(keyword=${keywordQuery},page=${pageNum}, size=${size},sort=${sortSelect},reservationState=${reservationState})}" 
+                        th:text="${pageNum + 1}"></a>
+                </li>
+
+                <!-- 다음 버튼 -->
+                <li class="page-item" th:classappend="${paging.hasNext()} ? '' : 'disabled'">
+                    <a class="page-link" th:href="@{/admin/reservation/search/index(keyword=${keywordQuery},page=${currentPage+1}, size=${size},sort=${sortSelect},reservationState=${reservationState})}"
+                        aria-label="Next">
+                        <span>&gt;</span>
+                    </a>
+                </li>
+
+                <!-- 마지막 페이지 버튼 -->
+                <li class="page-item" th:classappend="${paging.last} ? 'disabled' : ''">
+                    <a class="page-link"
+                        th:href="@{/admin/reservation/search/index(keyword=${keywordQuery},page=${paging.totalPages-1}, size=${size},sort=${sortSelect},reservationState=${reservationState})}"
+                        aria-label="Last">
+                        <span>&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </main>
+    <!-- 메인 끝 -->
+    <script>
+        const reservationStateElements = document.querySelectorAll(".reservationState");
+
+
+        //예약에 따라 색깔 다르게 적용
+        reservationStateElements.forEach((checkoutStepElement, index) => {
+            const checkoutStep = checkoutStepElement.textContent;
+
+            if (checkoutStep == "예약완료") {
+                checkoutStepElement.style.color = "blue";
+            }
+            else if (checkoutStep == "예약보류") {
+                checkoutStepElement.style.color = "green";
+            }
+            else {
+                checkoutStepElement.style.color = "red";
+            }
+        });
+
+        // 검색 단어기준 상품개수 정렬
+        const searchSelect = document.getElementById("searchSelect");
+        const sizeSelect = document.getElementById("sizeSelect");
+        const sortSelect = document.getElementById("sortSelect");
+        const reservationStateSelect = document.getElementById("reservationStateSelect");
+
+        const keywordQuery = encodeURIComponent(`[[${keywordQuery}]]`);
+        const currentSearch = `[[${searchSelect}]]`; //현재 검색 기준
+        const currentSize = `[[${size}]]`; // 현재 사이즈
+        const currentSort = `[[${sortSelect}]]`; // 현재 정렬 방식
+        const currentReservationState = `[[${reservationState}]]`; //현재 주문상태
+
+        reservationStateSelect.addEventListener("change", function () {
+            const selectedReservationState = this.value;
+            window.location.href = `/admin/reservation/search/index?keyword=${keywordQuery}&page=0&search=${currentSearch}&reservationState=${selectedReservationState}&size=${currentSize}&sort=${currentSort}`;
+        });
+
+        sizeSelect.addEventListener("change", function () {
+            const selectedSize = this.value;
+            window.location.href = `/admin/reservation/search/index?keyword=${keywordQuery}&page=0&search=${currentSearch}&reservationState=${currentReservationState}&size=${selectedSize}&sort=${currentSort}`;
+        });
+
+        sortSelect.addEventListener("change", function () {
+            const selectedSort = this.value;
+            window.location.href = `/admin/reservation/search/index?keyword=${keywordQuery}&page=0&search=${currentSearch}&reservationState=${currentReservationState}&size=${currentSize}&sort=${selectedSort}`;
+        });
+    </script>
+    <script th:src="@{/js/adminNav.js}"></script>
+</body>
+
+</html>

@@ -4,6 +4,7 @@ import Goods.Reservation_Trip.base.BaseTime;
 import Goods.Reservation_Trip.enums.PackageImageType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
@@ -15,6 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
 public class PackageImage extends BaseTime {
 
     @Id
@@ -23,10 +25,10 @@ public class PackageImage extends BaseTime {
     private Long id;
 
     @JoinColumn(name = "package_id", nullable = false)
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Package aPackage;
 
-    @Column(name = "package_image_type", nullable = false)
+    @Column(name = "package_image_type", nullable = false, columnDefinition = "VARCHAR(50)")
     @Enumerated(EnumType.STRING)
     @Comment("이미지 타입")
     private PackageImageType packageImageType;

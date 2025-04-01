@@ -1,5 +1,6 @@
 package Goods.Reservation_Trip.entity;
 
+import Goods.Reservation_Trip.base.BaseTime;
 import Goods.Reservation_Trip.enums.ReservationState;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,18 +10,25 @@ import org.hibernate.annotations.Comment;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Table(name = "reservation")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Reservation {
+public class Reservation extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "reservation_id")
     private Long id;
+
+    @Column(name="reservation_code")
+    @Comment("예약번호")
+    private String code;
 
     @JoinColumn(name = "package_id")
     @ManyToOne
@@ -39,7 +47,7 @@ public class Reservation {
     private LocalDate endDate;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "reservation_state", nullable = false)
+    @Column(name = "reservation_state", nullable = false, columnDefinition = "VARCHAR(50)")
     @Comment("예약 상태")
     private ReservationState reservationState;
 
@@ -74,4 +82,9 @@ public class Reservation {
     @Column(nullable = false)
     @Comment("카드사 승인 번호")
     private String approved;
+
+    @OneToMany(mappedBy = "reservation",cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReservationDetails> reservationDetailsList = new ArrayList<>();
+
 }
+

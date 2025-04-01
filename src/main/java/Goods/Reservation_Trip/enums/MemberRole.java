@@ -5,7 +5,8 @@ import lombok.Getter;
 @Getter
 public enum MemberRole implements BaseEnum{
     ADMIN("관리자"),
-    MEMBER("일반");
+    MEMBER("일반"),
+    CANCELLATION("탈퇴회원");
 
     private final String name;
 
@@ -24,6 +25,6 @@ public enum MemberRole implements BaseEnum{
                 return role;
             }
         }
-        throw new IllegalArgumentException("존재하지 않는 역활: " + name);
+        throw new IllegalArgumentException("존재하지 않는 역할: " + name);
     }
 }
