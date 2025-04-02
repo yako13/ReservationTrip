@@ -22,7 +22,7 @@ public class PackageCategory {
     private Long id;
 
     @Comment("카테고리명")
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -31,6 +31,8 @@ public class PackageCategory {
     @JsonIgnore
     private PackageCategory parent;
 
+    @Comment("카테고리 단계[1 = 부모, 2 = 1의 자식, 3 = 2의 자식]")
+    @Column(nullable = false)
     private int depth;
 
     @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)

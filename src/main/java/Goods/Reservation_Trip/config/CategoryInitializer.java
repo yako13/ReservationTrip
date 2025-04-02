@@ -23,21 +23,28 @@ public class CategoryInitializer implements CommandLineRunner{
             packageCategoryRepository.save(china);
 
             // 중분류 depth:2
-            PackageCategory kansai = new PackageCategory(null, "간사이", japan, 2);
+            PackageCategory kansai = new PackageCategory(null, "간사이(관서)", japan, 2);
             packageCategoryRepository.save(kansai);
-            PackageCategory kanto = new PackageCategory(null, "간토", japan, 2);
+            PackageCategory kanto = new PackageCategory(null, "간토(관동)", japan, 2);
             packageCategoryRepository.save(kanto);
 
             // 소분류 depth:3
             PackageCategory osaka = new PackageCategory(null, "오사카", kansai, 3);
             packageCategoryRepository.save(osaka);
-            PackageCategory tokyo = new PackageCategory(null, "도쿄", kansai, 3);
+            PackageCategory kyoto = new PackageCategory(null, "교토", kansai, 3);
+            packageCategoryRepository.save(kyoto);
+            PackageCategory kobe = new PackageCategory(null, "고베", kansai, 3);
+            packageCategoryRepository.save(kobe);
+            PackageCategory wakayama = new PackageCategory(null, "와카야마", kansai, 3);
+            packageCategoryRepository.save(wakayama);
+            PackageCategory tokyo = new PackageCategory(null, "도쿄", kanto, 3);
             packageCategoryRepository.save(tokyo);
-
-            PackageCategory osaka1 = new PackageCategory(null, "오사카1", kansai, 3);
-            packageCategoryRepository.save(osaka1);
-            PackageCategory tokyo1 = new PackageCategory(null, "도쿄1", kansai, 3);
-            packageCategoryRepository.save(tokyo1);
+            PackageCategory Shizuoka = new PackageCategory(null, "시즈오카", kanto, 3);
+            packageCategoryRepository.save(Shizuoka);
+            PackageCategory Hakone = new PackageCategory(null, "하코네", kanto, 3);
+            packageCategoryRepository.save(Hakone);
+            PackageCategory Yokohama = new PackageCategory(null, "요코하마", kanto, 3);
+            packageCategoryRepository.save(Yokohama);
         }
     }
 }

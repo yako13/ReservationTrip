@@ -7,23 +7,31 @@
   <body>
     <h1>package list</h1>
     <main>
-      <div th:each="packageList : ${package}">
+      <div>
         <table>
           <thead>
             <th>순번</th>
             <th>이미지</th>
             <th>상품명</th>
+            <th>가격</th>
+            <th>출발지</th>
+            <th>도착지</th>
+            <th>여행기간</th>
+            <th>수정</th>
+            <th>삭제</th>
           </thead>
-          <tbody>
-            <tr th:text="${package.id}">
-              1
-            </tr>
-            <tr>
-              <img src="#" />
-            </tr>
-            <tr th:text="${package.name}">
-              패키지 이름
-            </tr>
+          <tbody th:each="package : ${packageList}">
+            <td th:text="${package.id}"></td>
+            <td>
+              <img th:src="${package.mainImagePath}" height="100px" />
+            </td>
+            <td th:text="${package.name}"></td>
+            <td th:text="${package.name}"></td>
+            <td th:text="${package.name}"></td>
+            <td th:text="${package.name}"></td>
+            <td th:text="${package.name}"></td>
+            <td><button type="button">수정하기</button></td>
+            <td><button type="button">삭제하기</button></td>
           </tbody>
         </table>
       </div>

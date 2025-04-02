@@ -1,6 +1,6 @@
 package Goods.Reservation_Trip.service.aPackage;
 
-import Goods.Reservation_Trip.dto.aPackage.PackageRequestDto;
+import Goods.Reservation_Trip.dto.aPackage.req.PackageOptionRequestDto;
 import Goods.Reservation_Trip.entity.Package;
 import Goods.Reservation_Trip.entity.PackageOption;
 import Goods.Reservation_Trip.repository.aPackage.PackageOptionRepository;
@@ -14,7 +14,7 @@ public class PackageOptionService {
     private final PackageOptionRepository packageOptionRepository;
 
 
-    public PackageOption save(Package aPackage, PackageRequestDto requestDto) {
+    public PackageOption save(Package aPackage, PackageOptionRequestDto requestDto) {
         PackageOption packageOption = PackageOption.builder()
                 .aPackage(aPackage)
                 .guide(requestDto.isGuide())

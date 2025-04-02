@@ -5,9 +5,9 @@ import Goods.Reservation_Trip.enums.PackageStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Comment;
-import org.hibernate.annotations.Fetch;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Table(name = "package")
@@ -69,10 +69,6 @@ public class Package extends BaseTime {
     @Comment("호텔 명")
     private String hotelName;
 
-    @OneToOne
-    @JoinColumn(name = "package_schedule_id")
-    private PackageSchedule packageSchedule;
-
     @ManyToOne
     @JoinColumn(name = "main_category_id", nullable = false)
     @Comment("대분류 카테고리")
@@ -97,6 +93,12 @@ public class Package extends BaseTime {
     private List<PackageImage> packageImageList;
 
     @OneToMany(mappedBy = "aPackage", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PackageSchedule> packageScheduleList;
+    private List<PackageSchedule> packageScheduleList = new ArrayList<>();
 
+    public void addPackageSchedules(List<PackageSchedule> schedules) {
+        this.packageScheduleList.addAll(schedules);
+        for (PackageSchedule schedule : schedules) {
+            schedule.setAPackage(this);  // **패키지와 스케줄의 양방향 관계 설정**
+        }
+    }
 }

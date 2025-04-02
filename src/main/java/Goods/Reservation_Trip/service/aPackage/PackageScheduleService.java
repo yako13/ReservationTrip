@@ -1,42 +1,65 @@
 package Goods.Reservation_Trip.service.aPackage;
 
-import Goods.Reservation_Trip.dto.aPackage.PackageRequestDto;
+import Goods.Reservation_Trip.dto.aPackage.res.AdminPackageListResponseDto;
+import Goods.Reservation_Trip.dto.aPackage.req.PackageScheduleRequestDto;
 import Goods.Reservation_Trip.entity.Package;
 import Goods.Reservation_Trip.entity.PackageSchedule;
+import Goods.Reservation_Trip.enums.PackageStatus;
 import Goods.Reservation_Trip.repository.aPackage.PackageScheduleRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class PackageScheduleService {
 
     private final PackageScheduleRepository packageScheduleRepository;
 
-    public PackageSchedule save(Package aPackage, PackageRequestDto requestDto) {
-        PackageSchedule packageSchedule = PackageSchedule.builder()
-                .aPackage(aPackage)
-                .departureDateOut(LocalDate.parse(requestDto.getDepartureDateOut()))
-                .arrivalDateOut(LocalDate.parse(requestDto.getArrivalDateOut()))
-                .departureDateReturn(LocalDate.parse(requestDto.getDepartureDateReturn()))
-                .arrivalDateReturn(LocalDate.parse(requestDto.getArrivalDateReturn()))
-                .departurePointOut(requestDto.getDeparturePointOut())
-                .arrivalPointOut(requestDto.getArrivalPointOut())
-                .departurePointReturn(requestDto.getDeparturePointReturn())
-                .arrivalPointReturn(requestDto.getArrivalPointReturn())
-                .period(requestDto.getPeriod())
-                .airlineOut(requestDto.getAirlineOut())
-                .airlineReturn(requestDto.getAirlineReturn())
-                .flightNumberOut(requestDto.getFlightNumberOut())
-                .flightNumberReturn(requestDto.getFlightNumberReturn())
-                .departureTimeOut(requestDto.getDepartureTimeOut())
-                .arrivalTimeOut(requestDto.getArrivalTimeOut())
-                .departureTimeReturn(requestDto.getDepartureTimeReturn())
-                .arrivalTimeReturn(requestDto.getArrivalTimeReturn())
-                .build();
+    private final ObjectMapper objectMapper;
 
-        return packageScheduleRepository.save(packageSchedule);
+    public List<PackageSchedule> saveAll(Package aPackage, List<PackageScheduleRequestDto> requestDto) {
+        if (requestDto == null) {
+            throw new IllegalArgumentException("스케줄 요청 데이터가 null입니다.");
+        }
+
+        List<PackageSchedule> schedules = requestDto.stream()
+                .map(dto -> PackageSchedule.builder()
+                        .aPackage(aPackage)
+                        .departureDateOut(dto.getDepartureDateOut())
+                        .arrivalDateOut(dto.getArrivalDateOut())
+                        .departureDateReturn(dto.getDepartureDateReturn())
+                        .arrivalDateReturn(dto.getArrivalDateReturn())
+                        .departurePointOut(dto.getDeparturePointOut())
+                        .arrivalPointOut(dto.getArrivalPointOut())
+                        .departurePointReturn(dto.getDeparturePointReturn())
+                        .arrivalPointReturn(dto.getArrivalPointReturn())
+                        .period(dto.getPeriod())
+                        .airlineOut(dto.getAirlineOut())
+                        .airlineReturn(dto.getAirlineReturn())
+                        .flightNumberOut(dto.getFlightNumberOut())
+                        .flightNumberReturn(dto.getFlightNumberReturn())
+                        .departureTimeOut(dto.getDepartureTimeOut())
+                        .arrivalTimeOut(dto.getArrivalTimeOut())
+                        .departureTimeReturn(dto.getDepartureTimeReturn())
+                        .arrivalTimeReturn(dto.getArrivalTimeReturn())
+                        .packageStatus(PackageStatus.AVAILABLE)
+                        .build())
+                .collect(Collectors.toList());
+
+        return packageScheduleRepository.saveAll(schedules);
+    }
+
+    public AdminPackageListResponseDto toAdminPackageScheduleListDto(PackageSchedule packageSchedule) {
+        return AdminPackageListResponseDto.builder()
+                .departurePointOut(String.valueOf(packageSchedule.getDeparturePointOut()))
+                .arrivalPointOut(String.valueOf(packageSchedule.getArrivalPointOut()))
+                .period(packageSchedule.getPeriod())
+                .build();
     }
 }

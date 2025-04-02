@@ -1,4 +1,4 @@
-package Goods.Reservation_Trip.dto.aPackage;
+package Goods.Reservation_Trip.dto.aPackage.res;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

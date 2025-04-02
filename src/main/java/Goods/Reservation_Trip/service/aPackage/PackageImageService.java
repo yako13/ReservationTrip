@@ -1,8 +1,8 @@
 package Goods.Reservation_Trip.service.aPackage;
 
 import Goods.Reservation_Trip.config.ImageManager;
-import Goods.Reservation_Trip.dto.aPackage.PackageImageUrlDto;
-import Goods.Reservation_Trip.dto.aPackage.PackageRequestDto;
+import Goods.Reservation_Trip.dto.aPackage.res.PackageImageUrlDto;
+import Goods.Reservation_Trip.dto.aPackage.req.PackageRequestDto;
 import Goods.Reservation_Trip.entity.Package;
 import Goods.Reservation_Trip.entity.PackageImage;
 import Goods.Reservation_Trip.enums.PackageImageType;

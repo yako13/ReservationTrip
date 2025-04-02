@@ -183,7 +183,7 @@
           <div class="a5">
             <div>
               <label>여행 기간</label>
-              <input type="text" name="period" />
+              <input type="text" name="schedules[0].period" />
             </div>
             <div>
               <div class="a8">
@@ -192,7 +192,7 @@
                   <div class="b3">
                     <div>
                       <label>출발지</label>
-                      <select name="departurePointOut">
+                      <select name="schedules[0].departurePointOut">
                         <option value="GIMPO">김포국제공항</option>
                         <option>인천국제공항</option>
                         <option>대구국제공항</option>
@@ -201,14 +201,14 @@
                     </div>
                     <div>
                       <label>도착지</label>
-                      <select name="arrivalPointOut">
+                      <select name="schedules[0].arrivalPointOut">
                         <option value="NARITA">나리타국제공항</option>
                         <option>간사이국제공항</option>
                       </select>
                     </div>
                     <div>
                       <label>항공사</label>
-                      <select name="airlineOut">
+                      <select name="schedules[0].airlineOut">
                         <option value="AIR_SEOUL">에어서울</option>
                         <option>티웨이항공</option>
                         <option>에어부산</option>
@@ -218,22 +218,24 @@
                   </div>
                   <div class="input__flex plane-time">
                     <div>
-                      <label for="departureDateOut">출발날짜</label>
+                      <label for="schedules[0].departureDateOut"
+                        >출발날짜</label
+                      >
                       <input
                         type="date"
                         id="departureDateOut"
-                        name="departureDateOut" />
+                        name="schedules[0].departureDateOut" />
                     </div>
                     <div>
                       <label for="arrivalDateOut">도착날짜</label>
                       <input
                         type="date"
                         id="arrivalDateOut"
-                        name="arrivalDateOut" />
+                        name="schedules[0].arrivalDateOut" />
                     </div>
                     <div>
                       <label>항공기 번호</label>
-                      <input type="text" name="flightNumberOut" />
+                      <input type="text" name="schedules[0].flightNumberOut" />
                     </div>
                   </div>
                   <div class="input__flex plane-time">
@@ -242,14 +244,14 @@
                       <input
                         type="time"
                         id="departureTimeOut"
-                        name="departureTimeOut" />
+                        name="schedules[0].departureTimeOut" />
                     </div>
                     <div>
                       <label for="arrivalTimeOut">도착시간</label>
                       <input
                         type="time"
                         id="arrivalTimeOut"
-                        name="arrivalTimeOut" />
+                        name="schedules[0].arrivalTimeOut" />
                     </div>
                   </div>
                 </div>
@@ -261,14 +263,14 @@
                   <div class="b3">
                     <div>
                       <label>출발지</label>
-                      <select name="departurePointReturn">
+                      <select name="schedules[0].departurePointReturn">
                         <option value="NARITA">나리타국제공항</option>
                         <option>간사이국제공항</option>
                       </select>
                     </div>
                     <div>
                       <label>도착지</label>
-                      <select name="arrivalPointReturn">
+                      <select name="schedules[0].arrivalPointReturn">
                         <option value="GIMPO">김포국제공항</option>
                         <option>인천국제공항</option>
                         <option>대구국제공항</option>
@@ -277,7 +279,7 @@
                     </div>
                     <div>
                       <label>항공사</label>
-                      <select name="airlineReturn">
+                      <select name="schedules[0].airlineReturn">
                         <option value="AIR_SEOUL">에어서울</option>
                         <option>티웨이항공</option>
                         <option>에어부산</option>
@@ -291,18 +293,20 @@
                       <input
                         type="date"
                         id="return-departure"
-                        name="departureDateReturn" />
+                        name="schedules[0].departureDateReturn" />
                     </div>
                     <div>
                       <label for="return-arrive">도착날짜</label>
                       <input
                         type="date"
                         id="return-arrive"
-                        name="arrivalDateReturn" />
+                        name="schedules[0].arrivalDateReturn" />
                     </div>
                     <div>
                       <label>항공기 번호</label>
-                      <input type="text" name="flightNumberReturn" />
+                      <input
+                        type="text"
+                        name="schedules[0].flightNumberReturn" />
                     </div>
                   </div>
                   <div class="input__flex plane-time">
@@ -311,14 +315,14 @@
                       <input
                         type="time"
                         id="return-departure-time"
-                        name="departureTimeReturn" />
+                        name="schedules[0].departureTimeReturn" />
                     </div>
                     <div>
                       <label for="return-arrive-time">도착시간</label>
                       <input
                         type="time"
                         id="return-arrive-time"
-                        name="arrivalTimeReturn" />
+                        name="schedules[0].arrivalTimeReturn" />
                     </div>
                   </div>
                 </div>
@@ -343,13 +347,25 @@
           <!-- 상품 옵션 -->
           <div>옵션</div>
           <div class="b1">
-            <input type="checkbox" id="guide" name="guide" />
+            <input type="hidden" name="guide" value="false" />
+            <input type="checkbox" id="guide" name="guide" value="true" />
             <label for="guide" class="input__label">가이드 동반</label>
-            <input type="checkbox" id="hotel-fee" name="hotelFee" />
+            <input type="hidden" name="hotelFee" value="false" />
+            <input
+              type="checkbox"
+              id="hotel-fee"
+              name="hotelFee"
+              value="true" />
             <label for="hotel-fee" class="input__label">호텔비 포함</label>
-            <input type="checkbox" id="plane-fee" name="airFare" />
+            <input type="hidden" name="airFare" value="false" />
+            <input type="checkbox" id="plane-fee" name="airFare" value="true" />
             <label for="plane-fee" class="input__label">항공료 포함</label>
-            <input type="checkbox" id="no-shopping" name="shopping" />
+            <input type="hidden" name="shopping" value="false" />
+            <input
+              type="checkbox"
+              id="no-shopping"
+              name="shopping"
+              value="true" />
             <label for="no-shopping" class="input__label">쇼핑 없음</label>
           </div>
           <button type="submit">등록하기</button>
@@ -442,5 +458,26 @@
 
     // 페이지 로드 시 대분류 로딩
     document.addEventListener("DOMContentLoaded", loadCategories);
+    document.addEventListener("DOMContentLoaded", function () {
+      const checkboxes = document.querySelectorAll("input[type=checkbox]");
+
+      checkboxes.forEach((checkbox) => {
+        checkbox.addEventListener("change", function () {
+          // 체크되었으면 true, 아니면 hidden input을 추가하여 false 값 전송
+          if (!this.checked) {
+            let hiddenInput = document.createElement("input");
+            hiddenInput.type = "hidden";
+            hiddenInput.name = this.name;
+            hiddenInput.value = "false";
+            this.parentNode.appendChild(hiddenInput);
+          } else {
+            let hiddenInput = document.querySelector(
+              `input[type=hidden][name=${this.name}]`
+            );
+            if (hiddenInput) hiddenInput.remove(); // 체크 시 기존 hidden input 제거
+          }
+        });
+      });
+    });
   </script>
 </html>
