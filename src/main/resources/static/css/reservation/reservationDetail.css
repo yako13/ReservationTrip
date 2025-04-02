@@ -245,7 +245,7 @@ body {
 }
 
 .HanTrip p {
-  font-size: 12px;
+  font-size: 13px;
   margin: 4px;
 
 }
@@ -260,11 +260,11 @@ body {
 }
 
 .HanTrip p.HanTitleP {
-  text-align: center;
+
   font-size: 17px;
   font-weight: 600;
-  margin: 6px 0;
-  margin-bottom: 8px;
+  margin: 8px 0;
+  margin-bottom: 10px;
 
 }
 
@@ -317,7 +317,6 @@ body {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-
 
 }
 
@@ -421,11 +420,12 @@ body {
 
 /* 결제하기 버튼 */
 .HanPayButtonDiv {
+  width: 800px;
   display: flex;
   justify-content: center;
   gap: 43px;
   margin: 0;
-  margin-top: 26px;
+  margin: 26px;
 }
 
 
@@ -436,7 +436,7 @@ body {
   padding: 10px 20px;
   border: none;
   border-radius: 8px;
-  background-color: #43bff8;
+  background-color: #ff7979;
   color: #ffffff;
   font-size: 22px;
   font-weight: bolder;
@@ -449,7 +449,7 @@ body {
 }
 
 .HanPayButtonDiv button:hover {
-  background-color: #3e8cf1;
+  background-color: #f05439;
   color: #ebebeb;
   transform: scale(0.98);
 }

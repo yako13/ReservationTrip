@@ -242,6 +242,11 @@
   background-color: white;
 }
 
+.HanProductdelete button:hover {
+  color: #000000;
+  background-color: #d1d1d1;
+}
+
 
 
 
