@@ -40,6 +40,8 @@ public class CombinePackageService {
                     .period(packageSchedule.getPeriod())
                     .name(packageSchedule.getAPackage().getPackageName())
                     .fuelSurchargeIncluded(packageSchedule.getAPackage().getFuelSurchargeIncluded())
+                    .departureDateOut(packageSchedule.getDepartureDateOut())
+                    .arrivalDateReturn(packageSchedule.getArrivalDateReturn())
                     .build();
         });
     }
