@@ -1,13 +1,16 @@
 package Goods.Reservation_Trip.service.aPackage;
 
-import Goods.Reservation_Trip.dto.aPackage.res.AdminPackageListResponseDto;
 import Goods.Reservation_Trip.dto.aPackage.req.PackageScheduleRequestDto;
+import Goods.Reservation_Trip.dto.aPackage.res.AdminPackageListResponseDto;
 import Goods.Reservation_Trip.entity.Package;
 import Goods.Reservation_Trip.entity.PackageSchedule;
 import Goods.Reservation_Trip.enums.PackageStatus;
 import Goods.Reservation_Trip.repository.aPackage.PackageScheduleRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,11 +58,17 @@ public class PackageScheduleService {
         return packageScheduleRepository.saveAll(schedules);
     }
 
-    public AdminPackageListResponseDto toAdminPackageScheduleListDto(PackageSchedule packageSchedule) {
-        return AdminPackageListResponseDto.builder()
-                .departurePointOut(String.valueOf(packageSchedule.getDeparturePointOut()))
-                .arrivalPointOut(String.valueOf(packageSchedule.getArrivalPointOut()))
-                .period(packageSchedule.getPeriod())
-                .build();
+    public Page<AdminPackageListResponseDto> getAdminPackageScheduleListDto(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return packageScheduleRepository.findAll(pageable).map(packageSchedule -> {
+            return AdminPackageListResponseDto.builder()
+                    .id(packageSchedule.getId())
+                    .departurePointOut(String.valueOf(packageSchedule.getDeparturePointOut()))
+                    .arrivalPointOut(String.valueOf(packageSchedule.getArrivalPointOut()))
+                    .period(packageSchedule.getPeriod())
+                    .name(packageSchedule.getAPackage().getPackageName())
+                    .fuelSurchargeIncluded(packageSchedule.getAPackage().getFuelSurchargeIncluded())
+                    .build();
+        });
     }
 }

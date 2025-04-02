@@ -1,7 +1,5 @@
 package Goods.Reservation_Trip.service.aPackage;
 
-import Goods.Reservation_Trip.config.ImageManager;
-import Goods.Reservation_Trip.dto.aPackage.res.AdminPackageListResponseDto;
 import Goods.Reservation_Trip.dto.aPackage.req.PackageOptionRequestDto;
 import Goods.Reservation_Trip.dto.aPackage.req.PackageRequestDto;
 import Goods.Reservation_Trip.dto.aPackage.req.PackageScheduleRequestDto;
@@ -13,9 +11,6 @@ import Goods.Reservation_Trip.enums.PackageStatus;
 import Goods.Reservation_Trip.repository.aPackage.PackageCategoryRepository;
 import Goods.Reservation_Trip.repository.aPackage.PackageRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,8 +30,6 @@ public class PackageService {
     private final PackageOptionService packageOptionService;
 
     private final PackageCategoryRepository packageCategoryRepository;
-
-    private final ImageManager imageManager;
 
     // 패키지 저장
     @Transactional
@@ -78,24 +71,5 @@ public class PackageService {
         // 항공편 일정 정보 리스트 저장
         List<PackageSchedule> scheduleList = packageScheduleService.saveAll(aPackage, scheduleRequestDto);
         aPackage.addPackageSchedules(scheduleList);
-    }
-
-    // 관리자 상품 리스트
-    public Page<AdminPackageListResponseDto> getAdminPackageListDto(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return packageRepository.findAll(pageable).map(aPackage -> {
-            String packageMainImagePath = null;
-            if (aPackage.getMainImage() != null) {
-                packageMainImagePath = imageManager.createImageUrl(aPackage.getMainImage().getImageFullName());
-            }
-
-            return AdminPackageListResponseDto.builder()
-                    .id(aPackage.getId())
-                    .name(aPackage.getPackageName())
-                    .mainImagePath(packageMainImagePath)
-                    .fuelSurchargeIncluded(aPackage.getFuelSurchargeIncluded())
-                    .maximumMember(aPackage.getMaximumMember())
-                    .build();
-        });
     }
 }

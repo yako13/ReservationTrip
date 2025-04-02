@@ -1,9 +1,10 @@
 package Goods.Reservation_Trip.controller.aPackage;
 
-import Goods.Reservation_Trip.dto.aPackage.res.AdminPackageListResponseDto;
 import Goods.Reservation_Trip.dto.aPackage.req.PackageOptionRequestDto;
 import Goods.Reservation_Trip.dto.aPackage.req.PackageRequestDto;
 import Goods.Reservation_Trip.dto.aPackage.req.PackageScheduleListRequestDto;
+import Goods.Reservation_Trip.dto.aPackage.res.AdminPackageListResponseDto;
+import Goods.Reservation_Trip.service.aPackage.CombinePackageService;
 import Goods.Reservation_Trip.service.aPackage.PackageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class PackageController {
 
     private final PackageService packageService;
+
+    private final CombinePackageService combinePackageService;
 
     @GetMapping("/Q")
     public String Q() {
@@ -45,8 +48,8 @@ public class PackageController {
     public String adminPackageList(@RequestParam(defaultValue = "0") int page,
                                    @RequestParam(defaultValue = "10") int size,
                                    Model model) {
-        Page<AdminPackageListResponseDto> adminPackageListDto = packageService.getAdminPackageListDto(page, size);
-        model.addAttribute("packageList", adminPackageListDto.getContent());
+        Page<AdminPackageListResponseDto> adminPackageListDto = combinePackageService.getAdminPackageAndScheduleList(page, size);
+        model.addAttribute("packageList", adminPackageListDto);
         return "package/admin/package-list";
     }
 }

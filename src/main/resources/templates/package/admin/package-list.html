@@ -20,18 +20,20 @@
             <th>수정</th>
             <th>삭제</th>
           </thead>
-          <tbody th:each="package : ${packageList}">
-            <td th:text="${package.id}"></td>
-            <td>
-              <img th:src="${package.mainImagePath}" height="100px" />
-            </td>
-            <td th:text="${package.name}"></td>
-            <td th:text="${package.name}"></td>
-            <td th:text="${package.name}"></td>
-            <td th:text="${package.name}"></td>
-            <td th:text="${package.name}"></td>
-            <td><button type="button">수정하기</button></td>
-            <td><button type="button">삭제하기</button></td>
+          <tbody>
+            <tr th:each="package : ${packageList}">
+              <td th:text="${package.id}"></td>
+              <td>
+                <img th:src="${package.mainImagePath}" height="100px" />
+              </td>
+              <td th:text="${package.name}"></td>
+              <td th:text="${package.fuelSurchargeIncluded}"></td>
+              <td th:text="${package.departurePointOut}"></td>
+              <td th:text="${package.arrivalPointOut}"></td>
+              <td th:text="${package.period}"></td>
+              <td><button type="button">수정하기</button></td>
+              <td><button type="button">삭제하기</button></td>
+            </tr>
           </tbody>
         </table>
       </div>
