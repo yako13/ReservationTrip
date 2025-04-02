@@ -1,13 +1,13 @@
 package Goods.Reservation_Trip.entity;
 
 import Goods.Reservation_Trip.base.BaseTime;
-import Goods.Reservation_Trip.enums.PackageCategory;
 import Goods.Reservation_Trip.enums.PackageStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Comment;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Table(name = "package")
@@ -57,11 +57,6 @@ public class Package extends BaseTime {
     @Comment("대표 이미지")
     private PackageImage mainImage;
 
-    @Column(name = "package_category", nullable = true)
-    @Comment("카테고리")
-    @Enumerated(EnumType.STRING)
-    private PackageCategory packageCategory;
-
     @Column(name = "fuel_surcharge", nullable = false)
     @Comment("유류할증료")
     private BigDecimal fuelSurcharge;
@@ -70,9 +65,24 @@ public class Package extends BaseTime {
     @Comment("유류할증료 포함")
     private BigDecimal fuelSurchargeIncluded;
 
-//    @Column(name = "hotel_name", nullable = false)
-//    @Comment("호텔 명")
-//    private List<String> hotelName;
+    @Column(name = "hotel_name", columnDefinition = "TEXT")
+    @Comment("호텔 명")
+    private String hotelName;
+
+    @ManyToOne
+    @JoinColumn(name = "main_category_id", nullable = false)
+    @Comment("대분류 카테고리")
+    private PackageCategory mainCategory;
+
+    @ManyToOne
+    @JoinColumn(name = "sub_category_id", nullable = false)
+    @Comment("중분류 카테고리")
+    private PackageCategory subCategory;
+
+    @ManyToOne
+    @JoinColumn(name = "small_category_id", nullable = false)
+    @Comment("소분류 카테고리")
+    private PackageCategory smallCategory;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "package_status", nullable = false, columnDefinition = "VARCHAR(50)")
@@ -83,9 +93,12 @@ public class Package extends BaseTime {
     private List<PackageImage> packageImageList;
 
     @OneToMany(mappedBy = "aPackage", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Reservation> reservationList;
+    private List<PackageSchedule> packageScheduleList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "aPackage", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PackageSchedule> packageScheduleList;
-
+    public void addPackageSchedules(List<PackageSchedule> schedules) {
+        this.packageScheduleList.addAll(schedules);
+        for (PackageSchedule schedule : schedules) {
+            schedule.setAPackage(this);  // **패키지와 스케줄의 양방향 관계 설정**
+        }
+    }
 }

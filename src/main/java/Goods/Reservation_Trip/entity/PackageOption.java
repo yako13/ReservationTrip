@@ -23,19 +23,19 @@ public class PackageOption {
     @ManyToOne
     private Package aPackage;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "BOOLEAN")
     @Comment("가이드 동반 여부")
     private boolean guide;
 
-    @Column(name = "hotel_fee", nullable = false)
+    @Column(name = "hotel_fee", nullable = false, columnDefinition = "BOOLEAN")
     @Comment("호텔비 포함 여부")
     private boolean hotelFee;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "BOOLEAN")
     @Comment("항공료 포함 여부")
     private boolean airfare;
 
-    @Column(name = "no_shopping")
+    @Column(name = "no_shopping", columnDefinition = "BOOLEAN")
     @Comment("쇼핑 여부")
     private boolean noShopping;
 }
