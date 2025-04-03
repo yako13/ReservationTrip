@@ -6,10 +6,12 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.Comment;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +21,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Setter
 public class Reservation extends BaseTime {
 
     @Id
@@ -55,6 +58,10 @@ public class Reservation extends BaseTime {
     @Comment("카카오페이 고유 번호")
     private String aid;
 
+//    @Column(nullable = false)
+//    @Comment("카카오 페이 결제 승인 시각")
+//    private LocalDateTime approvedAt;
+
     @Column(nullable = false)
     @Comment("카카오페이 결제 고유 번호")
     private String tid;
@@ -67,7 +74,7 @@ public class Reservation extends BaseTime {
     @Comment("카카오페이 발급사명")
     private String issuerCorp;
 
-    @Column(name = "pur_corp", nullable = false)
+    @Column(name = "pur_corp")
     @Comment("카카오페이 매입사명")
     private String purCorp;
 
@@ -75,11 +82,11 @@ public class Reservation extends BaseTime {
     @Comment("총 결제 금액")
     private BigDecimal totalPay;
 
-    @Column(name = "pur_corp_code", nullable = false)
+    @Column(name = "pur_corp_code")
     @Comment("매입사 코드")
     private String purCorpCode;
 
-    @Column(nullable = false)
+    @Column
     @Comment("카드사 승인 번호")
     private String approved;
 

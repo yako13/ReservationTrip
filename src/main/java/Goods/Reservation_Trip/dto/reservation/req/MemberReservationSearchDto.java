@@ -1,14 +1,14 @@
-package Goods.Reservation_Trip.dto.member.req;
+package Goods.Reservation_Trip.dto.reservation.req;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.time.LocalDate;
 
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Setter
 public class MemberReservationSearchDto {
 
     //검색 기준
@@ -19,8 +19,4 @@ public class MemberReservationSearchDto {
 
     //조회 마감일
     private String endDate;
-    
-    //조회 결과 개수
-    private int count;
-
 }

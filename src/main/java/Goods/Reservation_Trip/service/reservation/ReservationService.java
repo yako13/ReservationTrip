@@ -1,6 +1,7 @@
 package Goods.Reservation_Trip.service.reservation;
 
 import Goods.Reservation_Trip.config.ImageManager;
+import Goods.Reservation_Trip.dto.reservation.req.MemberReservationSearchDto;
 import Goods.Reservation_Trip.dto.reservation.res.ReservationDetailsResponseDto;
 import Goods.Reservation_Trip.dto.reservation.res.ReservationResponseDto;
 import Goods.Reservation_Trip.entity.Reservation;
@@ -16,6 +17,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -163,43 +166,19 @@ public class ReservationService {
 
     }
 
-    public List<ReservationDetailsResponseDto> getReservationDetails(Long memberId,Integer year,Integer month) {
-        //멤버 아이디로 해당 주문 리스트 가져옴
-        List<Reservation> reservationList = reservationRepository.findByMemberId(memberId);
+    /**
+     * 회원 주문 리스트
+     */
+    public List<ReservationDetailsResponseDto> getReservationList(Long memberId) {
+        //멤버 아이디로 해당 최근10개의 주문 리스트 가져옴
+        List<Reservation> reservationList = reservationRepository.findTop10ByMemberIdOrderByCreatedAtDesc(memberId);
 
         List<ReservationDetailsResponseDto> responseDtos = new ArrayList<>();
 
 
         for (Reservation reservation : reservationList) {
 
-            StringBuilder reservationMembers = new StringBuilder();
-
-            int adultSum = 0;
-            int childSum = 0;
-            int infantSum = 0;
-
-            //예약자 연령대 계산
-            for (ReservationDetails reservationDetails : reservation.getReservationDetailsList()) {
-                if (reservationDetails.getAgeGroup().getName().equals("어린이")) {
-                    childSum++;
-                } else if (reservationDetails.getAgeGroup().getName().equals("성인")) {
-                    adultSum++;
-                } else if (reservationDetails.getAgeGroup().getName().equals("유아")) {
-                    infantSum++;
-                } else {
-                    throw new RuntimeException("잘못된 접근");
-                }
-            }
-
-            reservationMembers.append("성인 "+adultSum + "명");
-
-            if (childSum != 0) {
-                reservationMembers.append("어린이 "+childSum + "명");
-            }
-
-            if (infantSum != 0) {
-                reservationMembers.append("유아 "+infantSum + "명");
-            }
+            String reservationMembers = getReservationMembers(reservation);
 
             ReservationDetailsResponseDto reservationDetailsResponseDto = ReservationDetailsResponseDto.builder()
                     .reservationPK(reservation.getId())
@@ -208,7 +187,7 @@ public class ReservationService {
                     .packageName(reservation.getAPackage().getPackageName())
                     .startDate(reservation.getStartDate().toString())
                     .endDate(reservation.getEndDate().toString())
-                    .reservationMembers(reservationMembers.toString())
+                    .reservationMembers(reservationMembers)
                     .totalPay(Formatter.changeBigDecimalFormat(reservation.getTotalPay()))
                     .reservationState(reservation.getReservationState().getName())
                     .packagePK(reservation.getAPackage().getId())
@@ -219,5 +198,107 @@ public class ReservationService {
         }
 
         return responseDtos;
+    }
+
+    /**
+     * 예약자 명단(ex: 성인2명 유아 1명)
+     */
+    public String getReservationMembers(Reservation reservation) {
+        StringBuilder reservationMembers = new StringBuilder();
+
+        int adultSum = 0;
+        int childSum = 0;
+        int infantSum = 0;
+
+        //예약자 연령대 계산
+        for (ReservationDetails reservationDetails : reservation.getReservationDetailsList()) {
+            if (reservationDetails.getAgeGroup().getName().equals("어린이")) {
+                childSum++;
+            } else if (reservationDetails.getAgeGroup().getName().equals("성인")) {
+                adultSum++;
+            } else if (reservationDetails.getAgeGroup().getName().equals("유아")) {
+                infantSum++;
+            } else {
+                throw new RuntimeException("잘못된 접근");
+            }
+        }
+
+        reservationMembers.append("성인 " + adultSum + "명");
+
+        if (childSum != 0) {
+            reservationMembers.append("어린이 " + childSum + "명");
+        }
+
+        if (infantSum != 0) {
+            reservationMembers.append("유아 " + infantSum + "명");
+        }
+
+        return reservationMembers.toString();
+    }
+
+    public List<ReservationDetailsResponseDto> getReservationSearchList(Long memberId, MemberReservationSearchDto searchDto) {
+
+        List<ReservationDetailsResponseDto> responseDtos = new ArrayList<>();
+
+        //시작일을 연,월,일로 분리 후 int로 변환
+        int startYear = Integer.parseInt(searchDto.getStartDate().substring(0, 4));
+        int startMonth = Integer.parseInt(searchDto.getStartDate().substring(5, 7));
+        int startDay = Integer.parseInt(searchDto.getStartDate().substring(8, 10));
+//        int startYear = searchDto.getStartDate().getYear();
+//        int startMonth = searchDto.getStartDate().getMonthValue();
+//        int startDay = searchDto.getStartDate().getDayOfMonth();
+
+        LocalDate startDate = LocalDate.of(startYear, startMonth, startDay);
+
+        //종료일을 연,월,일로 분리 후 int로 변환
+        int endYear = Integer.parseInt(searchDto.getEndDate().substring(0, 4));
+        int endMonth = Integer.parseInt(searchDto.getEndDate().substring(5, 7));
+        int endDay = Integer.parseInt(searchDto.getEndDate().substring(8, 10));
+//        int endYear = searchDto.getEndDate().getYear();
+//        int endMonth = searchDto.getEndDate().getMonthValue();
+//        int endDay = searchDto.getEndDate().getDayOfMonth();
+
+        LocalDate endDate = LocalDate.of(endYear, endMonth, endDay);
+
+        //DB에 localDateTime 형식으로 저장되어있으므로 찾을 때도 localDateTime으로 바꿔줘야함
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = endDate.atTime(23, 59, 59);
+
+        List<Reservation> reservationList = null;
+
+        //예약일 기준으로 검색
+        if (searchDto.getSearchSelect().equals("createdAt")) {
+            reservationList = reservationRepository.findByMemberIdAndCreatedAtBetween(memberId, startDateTime, endDateTime);
+
+            //시작일 기준으로 검색
+        } else if (searchDto.getSearchSelect().equals("startedAt")) {
+            reservationList = reservationRepository.findByMemberIdAndStartDateBetween(memberId, startDate, endDate);
+        } else {
+            throw new RuntimeException("잘못된 접근");
+        }
+
+        for (Reservation reservation : reservationList) {
+
+            String reservationMembers = getReservationMembers(reservation);
+
+            ReservationDetailsResponseDto reservationDetailsResponseDto = ReservationDetailsResponseDto.builder()
+                    .reservationPK(reservation.getId())
+                    .code(reservation.getCode())
+                    .createdAt(Formatter.getLocalDate(reservation.getCreatedAt()))
+                    .packageName(reservation.getAPackage().getPackageName())
+                    .startDate(reservation.getStartDate().toString())
+                    .endDate(reservation.getEndDate().toString())
+                    .reservationMembers(reservationMembers)
+                    .totalPay(Formatter.changeBigDecimalFormat(reservation.getTotalPay()))
+                    .reservationState(reservation.getReservationState().getName())
+                    .packagePK(reservation.getAPackage().getId())
+                    .mainImage(imageManager.createImageUrl(reservation.getAPackage().getMainImage().getImageFullName()))
+                    .build();
+
+            responseDtos.add(reservationDetailsResponseDto);
+        }
+
+        return responseDtos;
+
     }
 }
