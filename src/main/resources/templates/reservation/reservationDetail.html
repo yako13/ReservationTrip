@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>예약하기</title>
+
+  <link rel="stylesheet" th:href="@{/css/mainPage.css}"/>
+  <link rel="stylesheet" th:href="@{/css/reservation/reservationDetail.css}" />
+  <style>
+
+  </style>
+
+</head>
+
+<body>
+
+<!-- 헤더 시작 -->
+
+<header th:replace="/fragments/memberHeader::memberHeader"></header>
+<!-- 헤더 끝 -->
+
+
+<!-- 메인 시작 -->
+
+  <div class="HanResDiv">
+
+    <div class="section-title2" style="margin-top: 40px;">
+      <img th:src="@{/images/ticket2.svg}" width="32px">
+      <span>예약상세</span>
+    </div>
+
+
+
+    <!-- 예약 정보 -->
+    <div class="HanResCard" style="margin-top: 20px;">
+
+      <div class="section-title">
+        <img th:src="@{/images/package.svg}" width="17px">
+        <span>상품정보</span>
+      </div>
+
+      <div class="HanResNumDiv">
+        <p>예약번호 : 202501010111</p>
+        <p>예약일 : 2025.01.01</p>
+
+      </div>
+
+      <div class="tripTitleDiv">
+
+        <div class="tripTitle">
+
+          <img th:src="@{/images/pick1.jpg}" width="50px" height="50px" class="HanPrdImg">
+          <span>[출발확정] 오사카 3박 4일 </span>
+
+        </div>
+
+        <p class="tripTitlePay">500,000원</p>
+      </div>
+
+      <div class="HanInfoGroup">
+
+        <div class="HanDateDiv">
+
+          <p class="info-label">출발일</p>
+          <p class="info-value">25.05.01(목)</p>
+
+        </div>
+
+        <div class="highlight">3박 4일</div>
+
+        <div class="HanDateDiv">
+          <p class="info-label">도착일</p>
+          <p class="info-value">25.05.04(일)</p>
+        </div>
+
+
+      </div>
+
+      <div class="airline-info">
+
+        <div class="HanFlex1">
+
+          <p>항공정보 : </p>
+
+          <div>
+
+            <p><strong>제주항공</strong></p>
+            <p>서울(ICN) → 후쿠오카(FUK)</p>
+
+          </div>
+
+        </div>
+
+        <div class="HanFlex1">
+
+          <p>항공출발 : </p>
+          <p>25.05.01(목) 09:35 ｜ 항공편 7C1403</p>
+        </div>
+
+        <div class="HanFlex1">
+
+          <p>항공도착 : </p>
+          <p>25.05.04(일) 13:30 ｜ 항공편 7C1404</p>
+        </div>
+
+
+      </div>
+
+
+    </div>
+
+    <!-- 예약자 정보 -->
+
+    <div class="HanResCard">
+      <div class="section-title">
+
+        <img th:src="@{/images/people.svg}" width="20px">
+        <span>예약자 정보</span>
+
+      </div>
+
+      <div class="HanInfoGroup2">
+
+        <div class="HanFlex1">
+          <p class="HanLight">이름 / 성별 : </p>
+          <p class="HanBold">홍길동</p>
+        </div>
+
+        <div class="HanFlex1">
+          <p class="HanLight">생년월일 : </p>
+          <p class="HanBold">1991.01.01</p>
+        </div>
+
+        <div class="HanFlex1">
+          <p class="HanLight">휴대폰번호 : </p>
+          <p class="HanBold">010-1111-2222</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 여행자 정보 입력 -->
+
+    <div class="HanResCard">
+
+      <div class="section-title" style="margin-bottom: -5px;">
+
+        <img th:src="@{/images/peopleMany.svg}" width="24px" style="margin-top: 1px;">
+        <span>여행자 정보</span>
+
+      </div>
+
+      <div class="HanTripHr"></div>
+
+      <div>
+
+        <hr class="HanHr1">
+
+        <div class="HanTrip">
+          <p class="HanTitleP">성인 1</p>
+
+          <div class="HanNameDiv">
+
+            <p>이름 / 성별 : </p>
+            <p>홍길동 / 남 </p>
+
+          </div>
+
+          <div class="HanNameDiv">
+
+            <p>생년월일 : </p>
+            <p>1994.01.01</p>
+
+          </div>
+
+          <div class="HanNameDiv">
+
+            <p>휴대폰번호 : </p>
+
+            <p>010-1111-2222</p>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div>
+
+        <hr class="HanHr1">
+
+        <div class="HanTrip">
+          <p class="HanTitleP">아동 1</p>
+
+
+
+          <div class="HanNameDiv">
+
+            <p>이름 / 성별 : </p>
+            <p>김길동 / 남 </p>
+
+          </div>
+
+          <div class="HanNameDiv">
+
+            <p>생년월일 : </p>
+            <p>2015.01.01</p>
+
+          </div>
+
+          <div class="HanNameDiv">
+
+            <p>휴대폰번호 : </p>
+            <p>010-1111-2222</p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="HanResCard">
+      <div class="section-title"><img th:src="@{/images/pay1.svg}" width="20px"><span>결제 정보</span></div>
+
+      <div class="HanInfoGroup2">
+
+        <div class="HanFlex1">
+          <p class="HanLight">성인 1명 :</p>
+          <p class="HanLight">500,000원</p>
+        </div>
+
+        <div class="HanFlex1">
+          <p class="HanLight">아동 1명 : </p>
+          <p class="HanLight">500,000원</p>
+        </div>
+
+        <hr class="HanHr1">
+
+        <div class="HanFlex1">
+          <p class="HanBold HanTotal" style="font-size: 18px;">총 결제 금액 : </p>
+          <p class="HanBold HanTotal" style="font-size: 18px;">1,000,000원</p>
+        </div>
+
+      </div>
+      <div class="HanPayDiv">
+
+
+        <p class="HanBold2 HanMargin0">결제수단 :</p>
+
+        <div class="HanKakaoPay">
+
+          <img th:src="@{/images/kakaoPay2.svg}" width="123px">
+          <!-- <p>카카오페이</p> -->
+
+        </div>
+
+
+
+      </div>
+
+
+
+    </div>
+
+
+    <div class="HanPayButtonDiv ">
+      <button>예약 취소</button>
+
+    </div>
+
+
+
+  </div>
+
+  <!-- 푸터 시작 -->
+
+  <footer th:replace="/fragments/memberFooter::memberFooter"></footer>
+
+  <!-- 푸터 끝 -->
+
+
+  <!-- ========================= scroll-top ========================= -->
+  <button id="scrollToTopBtn">
+
+  </button>
+
+  <!-- 탑 스크롤 스크립트 -->
+  <script th:src="@{/js/scrollTop.js}"></script>
+
+
+
+</body>
+
+</html>

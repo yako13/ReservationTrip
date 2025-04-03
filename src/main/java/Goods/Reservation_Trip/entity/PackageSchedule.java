@@ -5,20 +5,15 @@ import Goods.Reservation_Trip.enums.ArrivalPoint;
 import Goods.Reservation_Trip.enums.DeparturePoint;
 import Goods.Reservation_Trip.enums.PackageStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Comment;
-import org.springframework.cglib.core.Local;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Date;
 
 @Table(name = "package_schedule")
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -31,7 +26,7 @@ public class PackageSchedule {
     private Long id;
 
     @JoinColumn(name = "package_id")
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Package aPackage;
 
     @Column(name = "departure_date_out", nullable = false)
@@ -107,4 +102,11 @@ public class PackageSchedule {
     @Column(name = "arrival_time_return", nullable = false)
     @Comment("귀국 도착 시간")
     private LocalTime arrivalTimeReturn;
+
+    @Enumerated(EnumType.STRING)
+    private PackageStatus packageStatus;
+
+    public void setAPackage(Package aPackage) {
+        this.aPackage = aPackage;
+    }
 }

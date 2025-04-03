@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>찜 목록</title>
+
+    <link rel="stylesheet" th:href="@{/css/mainPage.css}">
+    <link rel="stylesheet" th:href="@{/css/dib.css}">
+
+</head>
+
+<body>
+<!-- 헤더 시작 -->
+
+<header th:replace="/fragments/memberHeader::memberHeader"></header>
+
+
+<!-- 메인 시작 -->
+<div class="HanCartBody">
+
+    <div class="HanCartMain">
+
+        <!-- 장바구니에 물품이 있을때 시작-->
+
+        <div th:unless="${cartNo}" id="cartItemsContainer">
+
+            <div class="HanCartTop">
+                <div class="HanCartTopTitle HanCartCheckbox">
+
+                    <img th:src="@{/images/heart.png}" alt="쇼핑카트 아이콘" width="24px" height="24px">
+                    <p class="HanCartTopTitleP">찜 목록</p>
+                </div>
+
+
+                <div class="HanCartTopDeleteA">
+
+                    <button id="removeAllButton">전체 삭제</button>
+
+                </div>
+            </div>
+
+            <ul>
+
+                <hr class="HanCartHr">
+
+                <!-- 카트 아이템 시작 -->
+                <li  class="product-item" >
+
+
+                    <div class="HanCartInfo">
+                        <div class="HanCartImgDiv">
+                            <a> <img th:src="@{/images/pick1.jpg}" alt=""></a>
+                        </div>
+
+                        <div class="HanCartProductName">
+                            <p>[출발확정]후쿠오카 3박 4일</p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="HanCartHrRight"></div>
+
+
+                    <div>
+                        <div class="HanProductPriceDiv">
+                            <span class="HanProductSumCnt">여행 날짜</span>
+                            <span class="">2025.05.01</span>
+
+                            <div>
+                                    <span class="total-item-price"></span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="HanCartHrRight"></div>
+
+                    <div>
+
+                        <div class="HanProductPriceDiv">
+
+                            <span class="HanProductSumCnt">상품 금액</span>
+                            <span class="HanProductPrice">1,612,000</span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="HanProductdelete">
+                        <button>삭제</button>
+                    </div>
+
+
+                </li>
+                <!-- 카트 아이템 끝 -->
+
+
+                <hr class="HanCartHrBottom">
+            </ul>
+        </div>
+
+        <!-- 장바구니에 물품이 있을때 끝-->
+
+        <!-- 장바구니에 물품이 없을때 시작-->
+
+        <!-- <div th:if="${cartNo}" style="padding-bottom:55px">
+
+            <div class="HanCartPDiv">
+
+                <img src="/images/info.svg" width="40" height="40px">
+                <p class="HanCartPDivP1">찜에 담긴 상품이 없습니다.</p>
+                <p class="HanCartPDivP2">원하는 여행을 찜해보세요!</p>
+
+            </div>
+
+        </div> -->
+
+        <!-- 장바구니에 물품이 없을때 시작-->
+
+    </div>
+
+
+</div>
+
+
+<!-- 장바구니에 물품이 없을때 끝-->
+
+<!-- 메인 끝 -->
+
+
+<!-- 푸터 시작 -->
+
+<footer th:replace="/fragments/memberFooter::memberFooter"></footer>
+
+<!-- 푸터 끝 -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+
+    //---------------가격을 원단위로 바꿔주는 코드 시작------------------------------------------
+
+    document.querySelectorAll('.product-item').forEach(item => {
+        let price = parseInt(item.querySelector('.item').getAttribute('data-price'));
+        let quantity = parseInt(item.querySelector('.quantity').value);
+        let totalPriceElement = item.querySelector('.total-item-price');
+
+        totalPriceElement.textContent = (price * quantity).toLocaleString() + "원";
+    });
+
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".product-item").forEach(item => {
+            let priceAttr = item.querySelector(".item").getAttribute("data-price");
+
+            if (priceAttr) {
+                let productPrice = parseFloat(priceAttr);  //  소수점 포함된 숫자 변환
+                item.querySelector(".product-price").textContent = productPrice.toLocaleString() + "원";
+            } else {
+                console.warn(" 가격 값이 존재하지 않습니다.");
+            }
+        });
+    });
+
+    //---------------가격을 원단위로 바꿔주는 코드 끝------------------------------------------
+
+</script>
+
+<script>
+
+    $(document).ready(function () {
+        $("#removeAllButton").click(function () {
+
+            $.ajax({
+                url: "/cart/clear",
+                type: "POST",
+                headers: {
+                    "X-CSRF-TOKEN": $("meta[name='_csrf']").attr("content") // CSRF 토큰 필요 시
+                },
+                success: function (response) {
+
+
+                    // 1. 기존 장바구니 목록 숨기기
+                    $("#cartItemsContainer").hide();
+
+                    // 2. "장바구니가 비어 있음" 메시지 표시
+                    $(".HanCartMain").append(`
+                <div style="padding-bottom:55px">
+                    <div class="HanCartPDiv">
+                        <img src="/images/info.svg" width="40" height="40px">
+                        <p class="HanCartPDivP1">장바구니에 담긴 상품이 없습니다.</p>
+                        <p class="HanCartPDivP2">원하는 상품을 장바구니에 담아보세요!</p>
+                    </div>
+                </div>
+            `);
+                },
+                error: function (xhr, status, error) {
+                    alert("삭제 중 오류가 발생했습니다.");
+                    console.error("Error:", error);
+                }
+            });
+
+        });
+    });
+
+
+
+
+
+
+    function toggleCheckboxes(source) {
+        let checkboxes = document.querySelectorAll('.item');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = source.checked;
+        });
+        calculateTotal();
+    }
+
+    function calculateTotal() {
+        let checkboxes = document.querySelectorAll('.item');
+        let total = 0;
+        let selectedCount = 0;
+        let shippingFee = 3000;
+
+
+
+        checkboxes.forEach(checkbox => {
+            if (checkbox.checked) {
+                let price = parseInt(checkbox.getAttribute('data-price'));
+                let quantity = parseInt(checkbox.closest('.product-item').querySelector('.quantity').value);
+                total += price * quantity;
+                selectedCount++;
+            }
+        });
+
+
+        if (selectedCount > 0) {  //  체크박스가 하나라도 선택되었을 때만 실행
+
+            if (total >= 50000) {
+                shippingFee = 0;
+            }
+
+            let finalPrice = total + shippingFee;
+
+            document.getElementById('totalPrice').textContent = `${total.toLocaleString()}원`;
+            document.getElementById('shippingFee').textContent = `${shippingFee.toLocaleString()}원`;
+            document.getElementById('finalPrice').textContent = `${finalPrice.toLocaleString()}원`;
+            //  선택된 항목이 없으면 0원으로 초기화
+        } else {
+            document.getElementById('totalPrice').textContent = "0원";
+            document.getElementById('shippingFee').textContent = "0원";
+            document.getElementById('finalPrice').textContent = "0원";
+        }
+
+
+        let checkoutButton = document.getElementById('checkoutButton');
+        checkoutButton.textContent = `${selectedCount}건 결제하기`;
+        checkoutButton.disabled = selectedCount === 0;
+
+
+    }
+
+
+
+
+
+
+    function submitRemoveSelected() {
+        let selectedItems = [];
+        document.querySelectorAll('.item:checked').forEach(checkbox => {
+            selectedItems.push(checkbox.getAttribute('data-id'));
+        });
+
+        if (selectedItems.length === 0) {
+            alert("삭제할 상품을 선택하세요.");
+            return;
+        }
+
+        // 선택된 상품 ID를 form의 hidden input에 저장
+        document.getElementById('selectedItemsInput').value = selectedItems.join(',');
+
+        // 폼 전송 (페이지가 새로고침됨)
+        document.getElementById('removeSelectedForm').submit();
+    }
+
+
+</script>
+
+
+</body>
+
+</html>
