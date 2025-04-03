@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" th:href="@{https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/mainPage.css}">
+    <style>
+        .container {
+            padding: 5rem 20rem;
+            min-height: 35rem;
+        }
+
+        .formArea {
+            margin-top: 2rem;
+            display: flex;
+            background-color: #ebebeb;
+            height: 3rem;
+            line-height: 3rem;
+            padding: 1rem 1rem;
+            border-radius: 7px;
+        }
+
+        .HanSearchDate {
+            display: flex;
+            margin: 0 0rem 0 15rem;
+
+            input {
+                padding-left: 2.5rem;
+                border: none;
+                height: 2rem;
+                width: 8rem;
+                margin: 0 0.4rem;
+                border-radius: 7px;
+
+                &:focus {
+                    outline: none;
+                    border: 2px solid #43bff8;
+                }
+            }
+        }
+
+        .radioArea {
+            display: flex;
+            align-items: center;
+            margin: 0 2rem;
+            width: 26rem;
+        }
+
+        [type="radio"] {
+            appearance: none;
+            border: max(2px, 0.1em) solid gray;
+            border-radius: 50%;
+            width: 1.2em;
+            height: 1.2em;
+            transition: border 0.2s ease-in-out;
+            background-color: white;
+            margin:0 1rem;
+        }
+
+        [type="radio"]:checked {
+            border: 0.6em solid #3e82ff;
+        }
+
+        [type="radio"]:focus-visible {
+            outline-offset: max(4px, 0.1em);
+            outline: max(2px, 0.1em) dotted #3e82ff;
+        }
+
+        [type="radio"]:hover {
+            box-shadow: 0 0 0 max(2px, 0.2em) lightgray;
+            cursor: pointer;
+        }
+
+        [type="radio"]:hover+span {
+            cursor: pointer;
+        }
+
+        [type="radio"]:disabled {
+            background-color: lightgray;
+            box-shadow: none;
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        [type="radio"]:disabled+span {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        #searchBtn {
+            margin-left: 2rem;
+            background-color: #43bff8;
+            color: #ffffff;
+            border: none;
+            border-radius: 7px;
+            transition: all 0.3s ease;
+            width: 5rem;
+
+            &:hover {
+                background-color: #3e8cf1;
+                color: #ebebeb;
+                transform: scale(0.98);
+            }
+        }
+
+        .reservationTable {
+            width: 100%;
+            border-top: 1px solid black;
+            border-collapse: collapse;
+            text-align: center;
+
+            tr {
+                height: 4rem;
+                border-bottom: 1px solid #c2c2c2;
+            }
+
+            th {
+                background-color: #ebebeb;
+                height: 4rem;
+                border-bottom: 1px solid #c2c2c2;
+            }
+        }
+
+        #radioText {
+            margin-right: 1rem;
+            font-weight: 600;
+        }
+
+        #tui-datepicker,
+        #tui-datepicker2 {
+            position: relative;
+            top: 3rem;
+        }
+
+        #tui-datepicker {
+            right: 30rem;
+        }
+
+        #tui-datepicker2 {
+            right: 14rem;
+        }
+    </style>
+</head>
+
+<body>
+    <header th:replace="/fragments/memberHeader::memberHeader"></header>
+    <div class="container">
+        <div class="titleArea">
+            <h2>예약내역</h2>
+            <hr>
+        </div>
+        <form class="formArea" action="/member/reservation/search" method="get" role="search">
+            <div class="radioArea">
+                <span id="radioText">기간 조회</span>
+                <input type="radio" value="createdAt" id="createdAt" name="searchSelect">
+                <label for="createdAt">예약일 기준</label>
+                <input type="radio" value="startedAt" id="startedAt" name="searchSelect">
+                <label for="startedAt">출발일 기준</label>
+            </div>
+
+            <div class="HanSearchDate">
+                <!-- 날짜 입력 input -->
+                <div id="startInput">
+                    <input type="text" id="departure-input" name="startDate" readonly />
+                </div>
+                ~
+                <div id="endInput">
+                    <input type="text" id="departure-input2" name="endDate" readonly />
+                </div>
+
+                <!-- 달력 표시용 컨테이너 -->
+                <div id="tui-datepicker"></div>
+                <div id="tui-datepicker2"></div>
+            </div>
+            <button type="submit" id="searchBtn">조회</button>
+        </form>
+        <div>
+            <p>총 0건</p>
+        </div>
+        <div>
+            <table class="reservationTable">
+                <tr>
+                    <th>예약일/예약코드</th>
+                    <th>상품명</th>
+                    <th>결제 금액</th>
+                    <th>인원</th>
+                    <th>출발일/귀국일</th>
+                    <th>예약상태</th>
+                </tr>
+                <tr th:if="${reservationList!=null} " th:each="reservation : ${reservationList}">
+                    <td >[[${reservation.createdAt}]]/[[${reservation.code}]]</td>
+                    <td th:text="${reservation.packageName}"></td>
+                    <td>총 [[${reservation.totalPay}]]</td>
+                    <td th:text="${reservation.reservationMembers}"></td>
+                    <td>[[${reservation.startDate}]] ~ [[${reservation.endDate}]]</td>
+                    <td th:text="${reservation.reservationState}">예약완료</td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+    <footer th:replace="/fragments/memberFooter::memberFooter"></footer>
+    <script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
+    <link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css">
+    <script>
+
+        function scrollToCenter(el) {
+            const rect = el.getBoundingClientRect();
+            const offset = rect.top + window.scrollY - (window.innerHeight / 2) + (rect.height / 2) + 100;
+            window.scrollTo({
+                top: offset,
+                behavior: 'smooth'
+            });
+        }
+
+        // 날짜 input
+        const dateInput = document.getElementById('departure-input');
+        if (dateInput) {
+            dateInput.addEventListener('click', () => {
+                scrollToCenter(dateInput);
+            });
+        }
+
+        const dateInput2 = document.getElementById('departure-input2');
+        if (dateInput2) {
+            dateInput2.addEventListener('click', () => {
+                scrollToCenter(dateInput2);
+            });
+        }
+    </script>
+
+    <!-- 달력 스크립트 -->
+    <!-- 달력 라이브러리 -->
+    <script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
+    <link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css">
+
+    <script th:inline="none">
+        const fullyBooked = [];
+        const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
+
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const weekday = weekdays[date.getDay()];
+            return `${year}.${month}.${day}(${weekday})`;
+        }
+
+        // 오늘 날짜 가져오기
+        const today = new Date();
+        const todayFormatted = formatDate(today);
+
+        const datePicker = new tui.DatePicker('#tui-datepicker', {
+            input: {
+                element: document.getElementById('departure-input'),
+                format: 'yyyy.MM.dd'
+            },
+            language: 'ko',
+            selectableRanges: [[new Date('2024-01-01'), new Date('2030-12-31')]],
+            disabledDate: function (date) {
+                const d = date.toISOString().split('T')[0];
+                return fullyBooked.includes(d);
+            }
+        });
+
+        datePicker.on('change', () => {
+            const selectedDate = datePicker.getDate();
+            document.getElementById('departure-input').value = formatDate(selectedDate);
+        });
+
+        // 입력 필드 초기값을 오늘 날짜로 설정
+        document.getElementById('departure-input').value = todayFormatted;
+
+        const datePicker2 = new tui.DatePicker('#tui-datepicker2', {
+            input: {
+                element: document.getElementById('departure-input2'),
+                format: 'yyyy.MM.dd'
+            },
+            language: 'ko',
+            selectableRanges: [[new Date('2024-01-01'), new Date('2030-12-31')]],
+            disabledDate: function (date) {
+                const d = date.toISOString().split('T')[0];
+                return fullyBooked.includes(d);
+            }
+        });
+
+        datePicker2.on('change', () => {
+            const selectedDate = datePicker2.getDate();
+            document.getElementById('departure-input2').value = formatDate(selectedDate);
+        });
+
+        // 입력 필드 초기값을 오늘 날짜로 설정
+        document.getElementById('departure-input2').value = todayFormatted;
+
+    </script>
+</body>
+
+</html>

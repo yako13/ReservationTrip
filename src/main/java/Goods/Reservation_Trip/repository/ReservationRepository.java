@@ -8,9 +8,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface ReservationRepository extends JpaRepository<Reservation,Long> {
     Page<Reservation> findAll(Pageable pageable);
     Page<Reservation> findByReservationState(ReservationState reservationState,Pageable pageable);
+    List<Reservation> findByMemberId(Long memberId);
 
     //공백 구분 없이 예약자 이름 검색
     @Query("SELECT r FROM Reservation r WHERE LOWER(REPLACE(r.member.name, ' ', '')) LIKE LOWER(CONCAT('%', REPLACE(:withoutSpaceSearchText, ' ', ''), '%'))")

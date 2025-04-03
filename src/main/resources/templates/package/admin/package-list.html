@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+  </head>
+  <body>
+    <h1>package list</h1>
+    <main>
+      <div>
+        <table>
+          <thead>
+            <th>순번</th>
+            <th>이미지</th>
+            <th>상품명</th>
+            <th>가격</th>
+            <th>출발지</th>
+            <th>도착지</th>
+            <th>여행기간</th>
+            <th>수정</th>
+            <th>삭제</th>
+          </thead>
+          <tbody>
+            <tr th:each="package : ${packageList}">
+              <td th:text="${package.id}"></td>
+              <td>
+                <img th:src="${package.mainImagePath}" height="100px" />
+              </td>
+              <td th:text="${package.name}"></td>
+              <td th:text="${package.fuelSurchargeIncluded}"></td>
+              <td th:text="${package.departurePointOut}"></td>
+              <td th:text="${package.arrivalPointOut}"></td>
+              <td th:text="${package.period}"></td>
+              <td><button type="button">수정하기</button></td>
+              <td><button type="button">삭제하기</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </body>
+</html>
