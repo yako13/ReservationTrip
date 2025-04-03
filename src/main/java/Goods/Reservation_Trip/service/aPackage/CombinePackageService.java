@@ -34,7 +34,6 @@ public class CombinePackageService {
                     .name(aPackage.getPackageName())
                     .mainImagePath(packageMainImagePath)
                     .fuelSurchargeIncluded(aPackage.getFuelSurchargeIncluded())
-                    .maximumMember(aPackage.getMaximumMember())
                     .departurePointOut(String.valueOf(packageSchedule.getDeparturePointOut().getName()))
                     .arrivalPointOut(String.valueOf(packageSchedule.getArrivalPointOut().getName()))
                     .period(packageSchedule.getPeriod())

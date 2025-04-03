@@ -91,6 +91,11 @@
       flex-direction: column;
       gap: 20px;
     }
+    #flightTable {
+      padding: 1rem;
+      border: 1px solid #8e8e8e;
+      margin-top: 0.5rem;
+    }
   </style>
   <body>
     <h1>상품 등록</h1>
@@ -181,61 +186,66 @@
           <!-- 여행 일정 정보 -->
           <div class="a4">여행 일정 정보</div>
           <div class="a5">
-            <div>
-              <label>여행 기간</label>
-              <input type="text" name="schedules[0].period" />
+            <div class="generateClass">
+              <label for="period">여행 기간</label>
+              <input type="text" name="period" id="period" />
+              <label>시작일자</label>
+              <input type="date" id="setStart" />
+              <label>종료일자</label>
+              <input type="date" id="setLast" />
             </div>
-            <div>
+            <div class="generateClass">
               <div class="a8">
                 <span>출국일정</span>
                 <div class="b2">
                   <div class="b3">
                     <div>
-                      <label>출발지</label>
-                      <select name="schedules[0].departurePointOut">
-                        <option value="김포국제공항">김포국제공항</option>
-                        <option>인천국제공항</option>
-                        <option>대구국제공항</option>
-                        <option>부산국제공항</option>
+                      <label for="departurePointOut">출발지</label>
+                      <select name="departurePointOut" id="departurePointOut">
+                        <option value="GIMPO">김포국제공항</option>
+                        <option value="INCHEON">인천국제공항</option>
+                        <option value="DAEGU">대구국제공항</option>
+                        <option value="BUSAN">부산국제공항</option>
                       </select>
                     </div>
                     <div>
-                      <label>도착지</label>
-                      <select name="schedules[0].arrivalPointOut">
+                      <label for="arrivalPointOut">도착지</label>
+                      <select name="arrivalPointOut" id="arrivalPointOut">
                         <option value="NARITA">나리타국제공항</option>
-                        <option>간사이국제공항</option>
+                        <option value="KANSAI">간사이국제공항</option>
                       </select>
                     </div>
                     <div>
-                      <label>항공사</label>
-                      <select name="schedules[0].airlineOut">
+                      <label for="airlineOut">항공사</label>
+                      <select name="airlineOut" id="airlineOut">
                         <option value="AIR_SEOUL">에어서울</option>
-                        <option>티웨이항공</option>
-                        <option>에어부산</option>
-                        <option>제주항공</option>
+                        <option value="TWAY_AIR">티웨이항공</option>
+                        <option value="AIR_BUSAN">에어부산</option>
+                        <option value="JEJU_AIR">제주항공</option>
                       </select>
                     </div>
                   </div>
                   <div class="input__flex plane-time">
                     <div>
-                      <label for="schedules[0].departureDateOut"
-                        >출발날짜</label
-                      >
+                      <label for="departureDateOut">출발날짜</label>
                       <input
                         type="date"
                         id="departureDateOut"
-                        name="schedules[0].departureDateOut" />
+                        name="departureDateOut" />
                     </div>
                     <div>
                       <label for="arrivalDateOut">도착날짜</label>
                       <input
                         type="date"
                         id="arrivalDateOut"
-                        name="schedules[0].arrivalDateOut" />
+                        name="arrivalDateOut" />
                     </div>
                     <div>
-                      <label>항공기 번호</label>
-                      <input type="text" name="schedules[0].flightNumberOut" />
+                      <label for="flightNumberOut">항공기 번호</label>
+                      <input
+                        type="text"
+                        name="flightNumberOut"
+                        id="flightNumberOut" />
                     </div>
                   </div>
                   <div class="input__flex plane-time">
@@ -244,14 +254,14 @@
                       <input
                         type="time"
                         id="departureTimeOut"
-                        name="schedules[0].departureTimeOut" />
+                        name="departureTimeOut" />
                     </div>
                     <div>
                       <label for="arrivalTimeOut">도착시간</label>
                       <input
                         type="time"
                         id="arrivalTimeOut"
-                        name="schedules[0].arrivalTimeOut" />
+                        name="arrivalTimeOut" />
                     </div>
                   </div>
                 </div>
@@ -262,79 +272,88 @@
                 <div class="b2">
                   <div class="b3">
                     <div>
-                      <label>출발지</label>
-                      <select name="schedules[0].departurePointReturn">
+                      <label for="departurePointReturn">출발지</label>
+                      <select
+                        name="departurePointReturn"
+                        id="departurePointReturn">
                         <option value="NARITA">나리타국제공항</option>
-                        <option>간사이국제공항</option>
+                        <option value="KANSAI">간사이국제공항</option>
                       </select>
                     </div>
                     <div>
-                      <label>도착지</label>
-                      <select name="schedules[0].arrivalPointReturn">
+                      <label for="arrivalPointReturn">도착지</label>
+                      <select name="arrivalPointReturn" id="arrivalPointReturn">
                         <option value="GIMPO">김포국제공항</option>
-                        <option>인천국제공항</option>
-                        <option>대구국제공항</option>
-                        <option>부산국제공항</option>
+                        <option value="INCHEON">인천국제공항</option>
+                        <option value="DAEGU">대구국제공항</option>
+                        <option value="BUSAN">부산국제공항</option>
                       </select>
                     </div>
                     <div>
-                      <label>항공사</label>
-                      <select name="schedules[0].airlineReturn">
+                      <label for="airlineReturn">항공사</label>
+                      <select name="airlineReturn" id="airlineReturn">
                         <option value="AIR_SEOUL">에어서울</option>
-                        <option>티웨이항공</option>
-                        <option>에어부산</option>
-                        <option>제주항공</option>
+                        <option value="TWAY_AIR">티웨이항공</option>
+                        <option value="AIR_BUSAN">에어부산</option>
+                        <option value="JEJU_AIR">제주항공</option>
                       </select>
                     </div>
                   </div>
                   <div class="input__flex plane-time">
                     <div>
-                      <label for="return-departure">출발날짜</label>
+                      <label for="departureDateReturn">출발날짜</label>
                       <input
                         type="date"
-                        id="return-departure"
-                        name="schedules[0].departureDateReturn" />
+                        id="departureDateReturn"
+                        name="departureDateReturn" />
                     </div>
                     <div>
-                      <label for="return-arrive">도착날짜</label>
+                      <label for="arrivalDateReturn">도착날짜</label>
                       <input
                         type="date"
-                        id="return-arrive"
-                        name="schedules[0].arrivalDateReturn" />
+                        id="arrivalDateReturn"
+                        name="arrivalDateReturn" />
                     </div>
                     <div>
-                      <label>항공기 번호</label>
+                      <label for="flightNumberReturn">항공기 번호</label>
                       <input
                         type="text"
-                        name="schedules[0].flightNumberReturn" />
+                        name="flightNumberReturn"
+                        id="flightNumberReturn" />
                     </div>
                   </div>
                   <div class="input__flex plane-time">
                     <div>
-                      <label for="return-departure-time">출발시간</label>
+                      <label for="departureTimeReturn">출발시간</label>
                       <input
                         type="time"
-                        id="return-departure-time"
-                        name="schedules[0].departureTimeReturn" />
+                        id="departureTimeReturn"
+                        name="departureTimeReturn" />
                     </div>
                     <div>
-                      <label for="return-arrive-time">도착시간</label>
+                      <label for="arrivalTimeReturn">도착시간</label>
                       <input
                         type="time"
-                        id="return-arrive-time"
-                        name="schedules[0].arrivalTimeReturn" />
+                        id="arrivalTimeReturn"
+                        name="arrivalTimeReturn" />
                     </div>
                   </div>
                 </div>
               </div>
               <!-- /귀국일정 -->
-              <button type="button">항공편 자동 추가</button>
-              <button type="button">항공편 단일 추가</button>
+              <button type="button" onclick="generateFlights()">
+                항공편 자동 추가
+              </button>
+              <button type="button" onclick="deleteFlight()">
+                항공편 전체 삭제
+              </button>
               <!-- 팝업창에서 입력과 등록 처리를 하고 확인 하는 방법? -->
             </div>
           </div>
           <!-- 추가로 생성되는 항공편 -->
-          <div></div>
+          <table>
+            <tbody id="flightTable"></tbody>
+          </table>
           <!-- /추가로 생기는 항공편 -->
           <span>호텔 일정</span>
           <div class="a9">
@@ -369,7 +388,9 @@
             <label for="no-shopping" class="input__label">쇼핑 없음</label>
           </div>
           <button type="submit">등록하기</button>
-          <button type="button">돌아가기</button>
+          <button type="button" onclick="location.href='/admin/package/list'">
+            돌아가기
+          </button>
         </form>
       </div>
     </main>
@@ -479,5 +500,207 @@
         });
       });
     });
+    // 시작 날짜와 같은 값을 부여
+    document.getElementById("setStart").addEventListener("change", function () {
+      document.getElementById("departureDateOut").value = this.value;
+      document.getElementById("arrivalDateOut").value = this.value;
+      document.getElementById("departureDateReturn").value = this.value;
+      document.getElementById("arrivalDateReturn").value = this.value;
+    });
+
+    function generateFlights() {
+      const setStart = document.getElementById("setStart").value;
+      const setLast = document.getElementById("setLast").value;
+
+      const period = Number(document.getElementById("period").value);
+      const departurePointOut =
+        document.getElementById("departurePointOut").value;
+      const arrivalPointOut = document.getElementById("arrivalPointOut").value;
+      const airlineOut = document.getElementById("airlineOut").value;
+      const departureDateOut =
+        document.getElementById("departureDateOut").value;
+      const arrivalDateOut = document.getElementById("arrivalDateOut").value;
+      const flightNumberOut = document.getElementById("flightNumberOut").value;
+      const departureTimeOut =
+        document.getElementById("departureTimeOut").value;
+      const arrivalTimeOut = document.getElementById("arrivalTimeOut").value;
+      const departurePointReturn = document.getElementById(
+        "departurePointReturn"
+      ).value;
+      const arrivalPointReturn =
+        document.getElementById("arrivalPointReturn").value;
+      const airlineReturn = document.getElementById("airlineReturn").value;
+      const departureDateReturn = document.getElementById(
+        "departureDateReturn"
+      ).value;
+      const arrivalDateReturn =
+        document.getElementById("arrivalDateReturn").value;
+      const flightNumberReturn =
+        document.getElementById("flightNumberReturn").value;
+      const departureTimeReturn = document.getElementById(
+        "departureTimeReturn"
+      ).value;
+      const arrivalTimeReturn =
+        document.getElementById("arrivalTimeReturn").value;
+
+      if (
+        !setStart ||
+        !setLast ||
+        !period ||
+        !departurePointOut ||
+        !arrivalPointOut ||
+        !airlineOut ||
+        !departureDateOut ||
+        !arrivalDateOut ||
+        !flightNumberOut ||
+        !departureTimeOut ||
+        !arrivalTimeOut ||
+        !departurePointReturn ||
+        !arrivalPointReturn ||
+        !airlineReturn ||
+        !departureDateReturn ||
+        !arrivalDateReturn ||
+        !flightNumberReturn ||
+        !departureTimeReturn ||
+        !arrivalTimeReturn
+      ) {
+        alert("모든 항목을 입력해야합니다");
+        return;
+      }
+
+      function deleteFlight() {
+        const table = document.getElementById("flightTable");
+        table.innerHTML = "";
+      }
+      window.deleteFlight = deleteFlight;
+
+      let startDate = new Date(setStart);
+      let endDate = new Date(setLast);
+
+      for (
+        let sd = new Date(startDate),
+          sd2 = new Date(startDate.setDate(startDate.getDate() + period - 1));
+        sd <= endDate;
+        sd.setDate(sd.getDate() + 1), sd2.setDate(sd2.getDate() + 1)
+      ) {
+        const table = document.getElementById("flightTable");
+        // 테이블 개수만큼 index 추가
+        const rowCount = table.rows.length;
+        console.log(rowCount);
+        const formattedDate = sd.toISOString().split("T")[0];
+        const formattedDateEnd = sd2.toISOString().split("T")[0];
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td><input type="date" name="schedules[${rowCount}].departureDateOut" value="${formattedDate}"></td>
+            <td><select name="schedules[${rowCount}].departurePointOut">
+              <option value="GIMPO" ${
+                departurePointOut === "GIMPO" ? "selected" : ""
+              }>김포국제공항</option>
+              <option value="INCHEON" ${
+                departurePointOut === "INCHEON" ? "selected" : ""
+              }>인천국제공항</option>
+              <option value="DAEGU" ${
+                departurePointOut === "DAEGU" ? "selected" : ""
+              }>대구국제공항</option>
+              <option value="BUSAN" ${
+                departurePointOut === "BUSAN" ? "selected" : ""
+              }>부산국제공항</option></select></td>
+            <td><select name="schedules[${rowCount}].arrivalPointOut">
+              <option value="NARITA" ${
+                arrivalPointOut === "NARITA" ? "selected" : ""
+              }>나리타국제공항</option>
+              <option value="KANSAI" ${
+                arrivalPointOut === "KANSAI" ? "selected" : ""
+              }>간사이국제공항</option></select></td>
+            <td><select name="schedules[${rowCount}].airlineOut">
+              <option value="AIR_SEOUL" ${
+                airlineOut === "AIR_SEOUL" ? "selected" : ""
+              }>에어서울</option>
+              <option value="TWAY_AIR" ${
+                airlineOut === "TWAY_AIR" ? "selected" : ""
+              }>티웨이항공</option>
+              <option value="AIR_BUSAN" ${
+                airlineOut === "AIR_BUSAN" ? "selected" : ""
+              }>에어부산</option>
+              <option value="JEJU_AIR" ${
+                airlineOut === "JEJU_AIR" ? "selected" : ""
+              }>제주항공</option>
+              <option value="ASIANA_AIR ${
+                airlineOut === "ASIANA_AIR" ? "selected" : ""
+              }">아시아나항공</option>
+              <option value="KOREAN_AIR" ${
+                airlineOut === "KOREAN_AIR" ? "seleted" : ""
+              }>대한항공</option></select></td>
+              <td><input type="text" name="schedules[${rowCount}].flightNumberOut" value="${flightNumberOut}"></td>
+              <td><input type="time" name="schedules[${rowCount}].departureTimeOut" value="${departureTimeOut}"></td>
+              <td><input type="time" name="schedules[${rowCount}].arrivalTimeOut" value="${arrivalTimeOut}"></td>
+              <td><input type="date" name="schedules[${rowCount}].departureDateReturn" value="${formattedDateEnd}">
+              <td><select name="schedules[${rowCount}].departurePointReturn">
+                <option value="NARITA" ${
+                  departurePointReturn === "NARITA" ? "selected" : ""
+                }>나리타국제공항</option>
+                <option value="KANSAI" ${
+                  departurePointReturn === "KANSAI" ? "selected" : ""
+                }>간사이국제공항</option></select></td>
+              <td><select name="schedules[${rowCount}].arrivalPointReturn">
+                <option value="GIMPO" ${
+                  arrivalPointReturn === "GIMPO" ? "selected" : ""
+                }>김포국제공항</option>
+                <option value="INCHEON" ${
+                  arrivalPointReturn === "INCHEON" ? "selected" : ""
+                }>인천국제공항</option>
+                <option value="DAEGU" ${
+                  arrivalPointReturn === "DAEGU" ? "selected" : ""
+                }>대구국제공항</option>
+                <option value="BUSAN" ${
+                  arrivalPointReturn === "BUSAN" ? "selected" : ""
+                }>부산국제공항</option></select></td>
+              <td><select name="schedules[${rowCount}].airlineReturn">
+                <option value="AIR_SEOUL" ${
+                  airlineReturn === "AIR_SEOUL" ? "selected" : ""
+                }>에어서울</option>
+                <option value="TWAY_AIR" ${
+                  airlineReturn === "TWAY_AIR" ? "selected" : ""
+                }>티웨이항공</option>
+                <option value="AIR_BUSAN" ${
+                  airlineReturn === "AIR_BUSAN" ? "selected" : ""
+                }>에어부산</option>
+                <option value="JEJU_AIR" ${
+                  airlineReturn === "JEJU_AIR" ? "selected" : ""
+                }>제주항공</option>
+                <option value="ASIANA_AIR ${
+                  airlineReturn === "ASIANA_AIR" ? "selected" : ""
+                }">아시아나항공</option>
+                <option value="KOREAN_AIR" ${
+                  airlineReturn === "KOREAN_AIR" ? "seleted" : ""
+                }>대한항공</option></select></td>
+              <td><input type=text name="schedules[${rowCount}].flightNumberReturn" value=${flightNumberReturn}></td>
+              <td><input type="time" name="schedules[${rowCount}].departureTimeReturn" value="${departureTimeReturn}"></td>
+              <td><input type="time" name="schedules[${rowCount}].arrivalTimeReturn" value="${arrivalTimeReturn}"></td>
+              <td><input type="hidden" name="schedules[${rowCount}].arrivalDateOut" value="${formattedDate}"></td>
+              <td><input type="hidden" name="schedules[${rowCount}].arrivalDateReturn" value="${formattedDateEnd}"></td>
+              <td><button type="button" onclick="removeRow(this)">삭제</button></td>`;
+        table.appendChild(row);
+      }
+    }
+    // 행 삭제
+    function removeRow(button) {
+      const row = button.parentNode.parentNode;
+      row.parentNode.removeChild(row);
+      updateRowIndexes();
+    }
+    // 행 삭제 후 index 재정렬
+    function updateRowIndexes() {
+      const rows = document.querySelectorAll("#flightTable tr");
+
+      rows.forEach((row, index) => {
+        const inputs = row.querySelectorAll("input, select");
+        inputs.forEach((input) => {
+          if (input.name) {
+            input.name = input.name.replace(/\[\d+\]/, `[${index}]`);
+          }
+        });
+      });
+    }
   </script>
 </html>

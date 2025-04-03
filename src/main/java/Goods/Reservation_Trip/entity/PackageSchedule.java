@@ -66,8 +66,8 @@ public class PackageSchedule {
     private ArrivalPoint arrivalPointReturn;
 
     @Column(nullable = false)
-    @Comment("여행 기간??? 3박 4일???")
-    private String period;
+    @Comment("여행 일수")
+    private int period;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "air_line_out", nullable = false, columnDefinition = "VARCHAR(50)")

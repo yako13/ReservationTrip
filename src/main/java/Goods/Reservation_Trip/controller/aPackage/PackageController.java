@@ -25,10 +25,6 @@ public class PackageController {
 
     private final CombinePackageService combinePackageService;
 
-    @GetMapping("/Q")
-    public String Q() {
-        return "package/admin/Q";
-    }
 
     @GetMapping("/admin/package/new")
     public String PackageNew() {
@@ -41,15 +37,17 @@ public class PackageController {
                               @ModelAttribute PackageOptionRequestDto optionRequestDto,
                               @ModelAttribute PackageScheduleListRequestDto scheduleRequestDtoList) {
         packageService.save(requestDto, optionRequestDto, scheduleRequestDtoList.getSchedules());
-        return "redirect:/Q";
+        return "redirect:/admin/package/list";
     }
 
     @GetMapping("/admin/package/list")
     public String adminPackageList(@RequestParam(defaultValue = "0") int page,
-                                   @RequestParam(defaultValue = "10") int size,
+                                   @RequestParam(defaultValue = "20") int size,
                                    Model model) {
         Page<AdminPackageListResponseDto> adminPackageListDto = combinePackageService.getAdminPackageAndScheduleList(page, size);
-        model.addAttribute("packageList", adminPackageListDto);
+        model.addAttribute("packageList", adminPackageListDto.getContent());
+        model.addAttribute("page", adminPackageListDto);
+        model.addAttribute("currentPage", adminPackageListDto.getNumber());
         return "package/admin/package-list";
     }
 }

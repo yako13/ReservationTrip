@@ -26,7 +26,7 @@ public class PackageScheduleRequestDto {
     /**
      * 여행 기간
      */
-    private String period;
+    private int period;
 
     /**
      * 출국 항공사명

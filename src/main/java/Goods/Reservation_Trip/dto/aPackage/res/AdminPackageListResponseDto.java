@@ -30,7 +30,5 @@ public class AdminPackageListResponseDto {
 
     private LocalDate arrivalDateReturn;
 
-    private int maximumMember;
-
-    private String period;
+    private int period;
 }

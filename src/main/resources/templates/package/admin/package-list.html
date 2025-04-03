@@ -39,11 +39,64 @@
       border-bottom: 1px solid rgba(0, 0, 0, 0.1);
       background: #fff;
     }
+    li {
+      list-style: none;
+    }
+    .pagination {
+      margin: 1rem;
+      display: flex;
+      justify-content: center;
+      padding: 2rem 0;
+    }
+    .pagination .page-item {
+      margin: 0 5px;
+    }
+    .pagination .page-link {
+      color: #73685d;
+      border-radius: 8px;
+      padding: 8px 12px;
+      transition: all 0.2s ease-in-out;
+    }
+    .pagination .page-link:hover {
+      background-color: #c9b49f;
+      color: white;
+    }
+    .pagination .active .page-link {
+      background-color: #a59584;
+      color: white;
+      border: none;
+    }
+    .pagination .disabled .page-link {
+      color: #ccc;
+      pointer-events: none;
+      background-color: #f8f9fa;
+    }
   </style>
   <body>
     <h1>package list</h1>
     <main>
       <div>
+        <button type="button" onclick="location.href='/admin/package/new'">
+          등록
+        </button>
+        <form action="/admin/package/search/index" method="get" role="search">
+          <input
+            type="text"
+            placeholder="패키지명을 검색하세요"
+            name="keyword" />
+          <button type="submit">검색</button>
+        </form>
+        <div>
+          <select id="mainCategory" name="mainCategoryId">
+            <option value="" selected>카테고리를 선택하세요</option>
+          </select>
+          <select id="subCategory" name="subCategoryId">
+            <option value="#">중분류</option>
+          </select>
+          <select id="smallCategory" name="smallCategoryId">
+            <option value="#">소분류</option>
+          </select>
+        </div>
         <table>
           <thead>
             <tr>
@@ -55,7 +108,6 @@
               <th>도착지</th>
               <th>출국일자</th>
               <th>귀국일자</th>
-              <th>여행기간</th>
               <th>수정</th>
               <th>삭제</th>
             </tr>
@@ -72,13 +124,161 @@
               <td th:text="${package.arrivalPointOut}"></td>
               <td th:text="${package.departureDateOut}"></td>
               <td th:text="${package.arrivalDateReturn}"></td>
-              <td th:text="${package.period}"></td>
               <td><button type="button">수정하기</button></td>
               <td><button type="button">삭제하기</button></td>
             </tr>
           </tbody>
         </table>
       </div>
+      <!-- 페이지네이션 -->
+      <nav aria-label="Page navigation" th:unless="${page.totalElements == 0}">
+        <ul class="pagination">
+          <!-- 첫 페이지 버튼 -->
+          <li
+            class="page-item"
+            th:classappend="${page.first} ? 'disabled' : ''">
+            <a
+              class="page-link"
+              th:href="@{/admin/package/list(page=0, size=${size})}"
+              aria-label="First">
+              <span>&laquo;</span>
+            </a>
+          </li>
+
+          <!-- 이전 버튼 -->
+          <li
+            class="page-item"
+            th:classappend="${page.hasPrevious()} ? '' : 'disabled'">
+            <a
+              class="page-link"
+              th:href="@{/admin/package/list(page=${currentPage - 1}, size=${size})}"
+              aria-label="Previous">
+              <span>&lt;</span>
+            </a>
+          </li>
+
+          <!-- 페이지 번호 -->
+          <li
+            class="page-item"
+            th:each="pageNum : ${#numbers.sequence(currentPage - 2 > 0 ? currentPage - 2 : 0,
+                                                 currentPage + 2 < page.totalPages - 1 ? currentPage + 2 : page.totalPages - 1)}"
+            th:classappend="${pageNum == currentPage} ? 'active' : ''">
+            <a
+              class="page-link"
+              th:href="@{/admin/package/list(page=${pageNum}, size=${size})}"
+              th:text="${pageNum + 1}"></a>
+          </li>
+
+          <!-- 다음 버튼 -->
+          <li
+            class="page-item"
+            th:classappend="${page.hasNext()} ? '' : 'disabled'">
+            <a
+              class="page-link"
+              th:href="@{/admin/package/list(page=${currentPage + 1}, size=${size})}"
+              aria-label="Next">
+              <span>&gt;</span>
+            </a>
+          </li>
+
+          <!-- 마지막 페이지 버튼 -->
+          <li class="page-item" th:classappend="${page.last} ? 'disabled' : ''">
+            <a
+              class="page-link"
+              th:href="@{/admin/package/list(page=${page.totalPages - 1}, size=${size})}"
+              aria-label="Last">
+              <span>&raquo;</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
     </main>
   </body>
+  <script>
+    document
+      .getElementById("mainCategory")
+      .addEventListener("change", function () {
+        document.getElementById("hiddenMainCategoryId").value = this.value;
+      });
+
+    function loadCategories() {
+      fetch("/api/categories")
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("API 응답 데이터:", data);
+          const mainCategorySelect = document.getElementById("mainCategory");
+          resetSelect(mainCategorySelect, "대분류 선택"); // 초기화
+
+          data.forEach((mainCategory) => {
+            const option = document.createElement("option");
+            option.value = mainCategory.id;
+            option.textContent = mainCategory.name;
+            mainCategorySelect.appendChild(option);
+          });
+
+          // 대분류 변경 시 중분류 로딩
+          mainCategorySelect.addEventListener("change", function () {
+            const selectedMainCategory = data.find((c) => c.id == this.value);
+            loadSubCategories(selectedMainCategory?.children || []);
+          });
+        })
+        .catch((error) =>
+          console.error("카테고리 데이터를 가져오는데 실패했습니다:", error)
+        );
+    }
+
+    // 중분류 로딩
+    function loadSubCategories(subCategories) {
+      const subCategorySelect = document.getElementById("subCategory");
+      resetSelect(subCategorySelect, "중분류 선택"); // 초기화
+
+      const smallCategorySelect = document.getElementById("smallCategory");
+      resetSelect(smallCategorySelect, "소분류 선택"); // 중분류가 바뀌면 소분류도 초기화
+
+      subCategories.forEach((subCategory) => {
+        const option = document.createElement("option");
+        option.value = subCategory.id;
+        option.textContent = subCategory.name;
+        subCategorySelect.appendChild(option);
+      });
+
+      // 중분류 변경 시 소분류 로딩
+      subCategorySelect.addEventListener("change", function () {
+        const selectedSubCategory = subCategories.find(
+          (c) => c.id == this.value
+        );
+        loadSmallCategories(selectedSubCategory?.children || []);
+      });
+    }
+
+    // 소분류 로딩
+    function loadSmallCategories(smallCategories) {
+      const smallCategorySelect = document.getElementById("smallCategory");
+      resetSelect(smallCategorySelect, "소분류 선택"); // 초기화
+
+      smallCategories.forEach((smallCategory) => {
+        const option = document.createElement("option");
+        option.value = smallCategory.id;
+        option.textContent = smallCategory.name;
+        smallCategorySelect.appendChild(option);
+      });
+    }
+
+    // 셀렉트 박스를 초기화하는 함수
+    function resetSelect(selectElement, placeholderText) {
+      selectElement.innerHTML = ""; // 기존 옵션 초기화
+      const defaultOption = document.createElement("option");
+      defaultOption.value = "";
+      defaultOption.textContent = `-- ${placeholderText} --`;
+      defaultOption.disabled = true;
+      defaultOption.selected = true;
+      selectElement.appendChild(defaultOption);
+    }
+
+    // 페이지 로드 시 대분류 로딩
+    document.addEventListener("DOMContentLoaded", loadCategories);
+    document.addEventListener("DOMContentLoaded", function () {
+      const checkboxes = document.querySelectorAll("input[type=checkbox]");
+    });
+  </script>
 </html>
