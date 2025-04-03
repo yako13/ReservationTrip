@@ -221,4 +221,9 @@ public class MemberController {
 
         return "1000";
     }
+
+    @GetMapping("/member/reservation/search")
+    public String memberReservationSearchPage(){
+
+    }
 }
