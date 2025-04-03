@@ -192,6 +192,10 @@
         .titleArea{
             margin-bottom: 5rem;
         }
+
+        .ml{
+            margin-bottom: 2rem;
+        }
     </style>
 </head>
 
@@ -216,12 +220,12 @@
                             <th>이메일</th>
                             <td>
                                 <span th:text="${email}" id="email"></span>
-                                <b><span id="provider">[['('+${provider}]]</span><span th:if="${provider !=null}"> 소셜
-                                        가입회원)</span></b>
+                                <input type="hidden" th:value="${provider}" id="provider">
+                                <b><span th:if="${provider !=null}"> ([[${provider}]] 소셜 가입회원)</span></b>
                             </td>
                             <td>
                                 <button id="authBtn" type="button">인증하기</button>
-                                <span id="timer" class="red"></span>
+                                <span id="timer" class="red ml"></span>
                             </td>
                         </tr>
                         <tr class="authArea">
@@ -475,7 +479,7 @@
             }
 
             //OAuth 제공자가 없을 때
-            if ((provider.innerText == null || provider.innerText == "") && userPassword.value !="" ) {
+            if ((provider.value == null) && userPassword.value !="" ) {
                 if (password_check.test(userPassword.value)) {
                     userPassword.classList.remove("inputRed");
                     passwordError.classList.remove("red");
@@ -521,7 +525,7 @@
                 valid = false;
             }
 
-            if (provider.innerText != null || provider.innerText != "") {
+            if (provider.value != null) {
                 bol_check_password = 1;
             }
 
@@ -537,7 +541,7 @@
         }
 
         //눈 클릭 했을 경우
-        if (provider.innerText == null || provider.innerText == "") {
+        if (provider.value != null) {
             eye.addEventListener("click", () => {
                 if (checkEye) {
                     eye.className = "fa-solid fa-eye";
@@ -567,7 +571,7 @@
                 bol_check_password = 1;
             }
         }
-        if (provider.innerText == null || provider.innerText == "") {
+        if (provider.value != null) {
             userPassword.addEventListener("keydown", () => {
                 checkPassword();
             })
