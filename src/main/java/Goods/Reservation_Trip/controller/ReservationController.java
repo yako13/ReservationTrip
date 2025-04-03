@@ -1,6 +1,7 @@
 package Goods.Reservation_Trip.controller;
 
 import Goods.Reservation_Trip.dto.member.res.MemberResponseDto;
+import Goods.Reservation_Trip.dto.reservation.req.MemberReservationSearchDto;
 import Goods.Reservation_Trip.dto.reservation.res.ReservationDetailsResponseDto;
 import Goods.Reservation_Trip.dto.reservation.res.ReservationResponseDto;
 import Goods.Reservation_Trip.service.member.MemberService;
@@ -10,13 +11,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Controller
@@ -87,23 +88,32 @@ public class ReservationController {
      * 회원 주문 리스트
      */
     @GetMapping("/member/reservation/list")
-    public String memberReservationListPage(HttpServletRequest request, Model model, @RequestParam(required = false) Integer month,
-                                            @RequestParam(required = false) Integer year
+    public String memberReservationListPage(HttpServletRequest request, Model model
     ) {
 
-        int currentMonth = (month != null) ? month : LocalDate.now().getMonthValue();
-
-
-        int currentYear = (month != null) ? year : LocalDate.now().getYear();
-
-
-        model.addAttribute("monthSelect", currentMonth);
-        model.addAttribute("yearSelect", currentYear);
-
         MemberResponseDto memberResponseDto = memberService.getMember(request);
-        List<ReservationDetailsResponseDto> reservationDetails = reservationService.getReservationDetails(memberResponseDto.getId(),year,month);
+        List<ReservationDetailsResponseDto> reservationDetails = reservationService.getReservationList(memberResponseDto.getId());
 
         model.addAttribute("reservationList", reservationDetails);
+        model.addAttribute("size",reservationDetails.size());
         return "reservation/memberList";
     }
+
+    /**
+     * 회원 주문 검색
+     */
+    @GetMapping("/member/reservation/search")
+    public String memberReservationSearchPage(MemberReservationSearchDto searchDto,HttpServletRequest request,Model model){
+        MemberResponseDto memberResponseDto = memberService.getMember(request);
+        List<ReservationDetailsResponseDto> reservationDetails = reservationService.getReservationSearchList(memberResponseDto.getId(),searchDto);
+
+        model.addAttribute("reservationList", reservationDetails);
+        model.addAttribute("size",reservationDetails.size());
+        model.addAttribute("searchSelect",searchDto.getSearchSelect());
+        model.addAttribute("startDate",searchDto.getStartDate());
+        model.addAttribute("endDate",searchDto.getEndDate());
+
+        return "reservation/memberSearchList";
+    }
+
 }

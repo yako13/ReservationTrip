@@ -1,0 +1,144 @@
+.container {
+    padding: 5rem 20rem;
+    min-height: 35rem;
+}
+
+.formArea {
+    margin-top: 2rem;
+    display: flex;
+    background-color: #ebebeb;
+    height: 3rem;
+    line-height: 3rem;
+    padding: 1rem 1rem;
+    border-radius: 7px;
+}
+
+.HanSearchDate {
+    display: flex;
+    margin: 0 0rem 0 15rem;
+
+    input {
+        padding-left: 2rem;
+        border: none;
+        height: 2rem;
+        width: 6rem;
+        margin: 0 0.4rem;
+        border-radius: 7px;
+
+        &:focus {
+            outline: none;
+            border: 2px solid #43bff8;
+        }
+    }
+}
+
+.radioArea {
+    display: flex;
+    align-items: center;
+    margin: 0 2rem;
+    width: 31rem;
+}
+
+[type="radio"] {
+    appearance: none;
+    border: max(2px, 0.1em) solid gray;
+    border-radius: 50%;
+    width: 1.2em;
+    height: 1.2em;
+    transition: border 0.2s ease-in-out;
+    background-color: white;
+    margin: 0 1rem;
+}
+
+[type="radio"]:checked {
+    border: 0.6em solid #3e82ff;
+}
+
+[type="radio"]:focus-visible {
+    outline-offset: max(4px, 0.1em);
+    outline: max(2px, 0.1em) dotted #3e82ff;
+}
+
+[type="radio"]:hover {
+    box-shadow: 0 0 0 max(2px, 0.2em) lightgray;
+    cursor: pointer;
+}
+
+[type="radio"]:hover+span {
+    cursor: pointer;
+}
+
+[type="radio"]:disabled {
+    background-color: lightgray;
+    box-shadow: none;
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+[type="radio"]:disabled+span {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+#searchBtn {
+    margin-left: 2rem;
+    background-color: #43bff8;
+    color: #ffffff;
+    border: none;
+    border-radius: 7px;
+    transition: all 0.3s ease;
+    width: 5rem;
+
+    &:hover {
+        background-color: #3e8cf1;
+        color: #ebebeb;
+        transform: scale(0.98);
+    }
+}
+
+.reservationTable {
+    width: 100%;
+    border-top: 1px solid black;
+    border-collapse: collapse;
+    text-align: center;
+
+    tr {
+        height: 4rem;
+        border-bottom: 1px solid #c2c2c2;
+    }
+
+    th {
+        background-color: #ebebeb;
+        height: 4rem;
+        border-bottom: 1px solid #c2c2c2;
+    }
+}
+
+#radioText {
+    margin-right: 1rem;
+    font-weight: 600;
+}
+
+#tui-datepicker,
+#tui-datepicker2 {
+    position: relative;
+    top: 3rem;
+}
+
+#tui-datepicker {
+    right: 30rem;
+}
+
+#tui-datepicker2 {
+    right: 14rem;
+}
+
+#infoImage{
+    width: 8rem;
+}
+
+.imageArea{
+    padding: 5rem 0;
+    text-align: center;
+    border-bottom: solid 1px #c2c2c2;
+}

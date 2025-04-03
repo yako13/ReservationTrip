@@ -21,14 +21,15 @@
         <form class="formArea" action="/member/reservation/search" method="get" role="search" id="searchForm">
             <div class="radioArea">
                 <span id="radioText">기간 조회</span>
-                <input type="radio" value="createdAt" id="createdAt" name="searchSelect" checked>
+                <input type="radio" value="createdAt" id="createdAt" name="searchSelect"
+                    th:checked="${searchSelect=='createdAt'}">
                 <label for="createdAt">예약일 기준</label>
-                <input type="radio" value="startedAt" id="startedAt" name="searchSelect">
+                <input type="radio" value="startedAt" id="startedAt" name="searchSelect"
+                    th:checked="${searchSelect=='startedAt'}">
                 <label for="startedAt">출발일 기준</label>
             </div>
 
             <div class="HanSearchDate">
-                <!-- 날짜 입력 input -->
                 <div id="startInput">
                     <input type="text" id="departure-input" name="startDate" readonly th:value="${startDate}">
                 </div>
@@ -37,10 +38,10 @@
                     <input type="text" id="departure-input2" name="endDate" readonly th:value="${endDate}">
                 </div>
 
-                <!-- 달력 표시용 컨테이너 -->
                 <div id="tui-datepicker"></div>
                 <div id="tui-datepicker2"></div>
             </div>
+
             <button type="submit" id="searchBtn">조회</button>
         </form>
         <div>
@@ -68,15 +69,22 @@
             </table>
         </div>
         <div th:if="${size==0}" class="imageArea">
-            <img th:src="@{/images/info.svg}" id="infoImage">
-            <p>예약내역이 없습니다.</p>
+                <img th:src="@{/images/info.svg}" id="infoImage">
+                <p>예약내역이 없습니다.</p>
         </div>
 
     </div>
     <footer th:replace="/fragments/memberFooter::memberFooter"></footer>
     <script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
     <link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css">
-    <script>
+
+    <script th:inline="none">
+
+        const dateInput = document.getElementById('departure-input');
+        const dateInput2 = document.getElementById('departure-input2');
+
+        const fullyBooked = [];
+        const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
 
         function scrollToCenter(el) {
             const rect = el.getBoundingClientRect();
@@ -87,32 +95,20 @@
             });
         }
 
-        // 날짜 input
-        const dateInput = document.getElementById('departure-input');
         if (dateInput) {
-            dateInput.addEventListener('click', () => {
-                scrollToCenter(dateInput);
-            });
+            dateInput.addEventListener('click', () => scrollToCenter(dateInput));
         }
-
-        const dateInput2 = document.getElementById('departure-input2');
         if (dateInput2) {
-            dateInput2.addEventListener('click', () => {
-                scrollToCenter(dateInput2);
-            });
+            dateInput2.addEventListener('click', () => scrollToCenter(dateInput2));
         }
-    </script>
 
-    <!-- 달력 스크립트 -->
-    <!-- 달력 라이브러리 -->
-    <script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
-    <link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css">
+        function parseDateString(str) {
+            if (!str) return null;
+            const cleaned = str.replace(/\./g, '-').trim(); // "2025.04.03" → "2025-04-03"
+            return new Date(cleaned);
+        }
 
-    <script th:inline="none">
-        const fullyBooked = [];
-        const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
-
-        function formatDate(date) {
+        function formatWithWeekday(date) {
             const year = date.getFullYear();
             const month = String(date.getMonth() + 1).padStart(2, '0');
             const day = String(date.getDate()).padStart(2, '0');
@@ -120,9 +116,8 @@
             return `${year}.${month}.${day}`;
         }
 
-        // 오늘 날짜 가져오기
-        const today = new Date();
-        const todayFormatted = formatDate(today);
+        const initialStart = parseDateString(dateInput.value);
+        const initialEnd = parseDateString(dateInput2.value);
 
         const datePicker = new tui.DatePicker('#tui-datepicker', {
             input: {
@@ -130,20 +125,15 @@
                 format: 'yyyy.MM.dd'
             },
             language: 'ko',
+            date: initialStart,
             selectableRanges: [[new Date('2024-01-01'), new Date('2030-12-31')]],
-            disabledDate: function (date) {
-                const d = date.toISOString().split('T')[0];
-                return fullyBooked.includes(d);
-            }
+            disabledDate: date => fullyBooked.includes(date.toISOString().split('T')[0])
         });
 
         datePicker.on('change', () => {
-            const selectedDate = datePicker.getDate();
-            dateInput.value = formatDate(selectedDate);
+            const selected = datePicker.getDate();
+            dateInput.value = formatWithWeekday(selected);
         });
-
-        // 입력 필드 초기값을 오늘 날짜로 설정
-        dateInput.value = todayFormatted;
 
         const datePicker2 = new tui.DatePicker('#tui-datepicker2', {
             input: {
@@ -151,42 +141,31 @@
                 format: 'yyyy.MM.dd'
             },
             language: 'ko',
+            date: initialEnd,
             selectableRanges: [[new Date('2024-01-01'), new Date('2030-12-31')]],
-            disabledDate: function (date) {
-                const d = date.toISOString().split('T')[0];
-                return fullyBooked.includes(d);
-            }
+            disabledDate: date => fullyBooked.includes(date.toISOString().split('T')[0])
         });
 
         datePicker2.on('change', () => {
-            const selectedDate = datePicker2.getDate();
-            dateInput2.value = formatDate(selectedDate);
+            const selected = datePicker2.getDate();
+            dateInput2.value = formatWithWeekday(selected);
         });
 
-        // 입력 필드 초기값을 오늘 날짜로 설정
-        dateInput2.value = todayFormatted;
+        const searchBtn = document.getElementById("searchBtn");
+        const searchForm = document.getElementById("searchForm");
 
-
-        let searchBtn = document.getElementById("searchBtn");
-        let searchForm = document.getElementById("searchForm");
-
-        searchBtn.addEventListener("click", submitBtn);
-
-        //날짜 시작일과 날짜 종료일 비교
-        function submitBtn(e) {
+        searchBtn.addEventListener("click", function (e) {
             e.preventDefault();
-
             if (parseInt(replaceDate(dateInput.value)) <= parseInt(replaceDate(dateInput2.value))) {
                 searchForm.submit();
-            }
-            else {
+            } else {
                 alert("조회 종료일보다 조회 시작일이 더 큽니다.");
             }
-        }
+        });
 
         function replaceDate(date) {
-            date = String(date)
-            let replaceText = date.substring(0, date.length - 3);
+            if (!date) return "";
+            const replaceText = date.split('(')[0]; // 요일 제거
             return replaceText.replaceAll(".", "");
         }
 
