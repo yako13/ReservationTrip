@@ -14,7 +14,7 @@ public class PackageOptionService {
     private final PackageOptionRepository packageOptionRepository;
 
 
-    public PackageOption save(Package aPackage, PackageOptionRequestDto requestDto) {
+    public void save(Package aPackage, PackageOptionRequestDto requestDto) {
         PackageOption packageOption = PackageOption.builder()
                 .aPackage(aPackage)
                 .guide(requestDto.isGuide())
@@ -23,6 +23,6 @@ public class PackageOptionService {
                 .noShopping(requestDto.isShopping())
                 .build();
 
-        return packageOptionRepository.save(packageOption);
+        packageOptionRepository.save(packageOption);
     }
 }

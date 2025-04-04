@@ -91,6 +91,11 @@
       flex-direction: column;
       gap: 20px;
     }
+    #flightTable {
+      padding: 1rem;
+      border: 1px solid #8e8e8e;
+      margin-top: 0.5rem;
+    }
   </style>
   <body>
     <h1>상품 등록</h1>
@@ -99,6 +104,7 @@
         <form
           action="/admin/package/save"
           method="post"
+          onsubmit="return doAction()"
           enctype="multipart/form-data">
           <input
             type="hidden"
@@ -110,69 +116,69 @@
             <div class="a2">
               <div class="input__flex">
                 <label>상품명</label>
-                <input type="text" name="packageName" />
+                <input type="text" name="aPackage.packageName" />
               </div>
               <div class="input__flex">
                 <label>예약 가능 인원수</label>
-                <input type="number" name="maximumMember" />
+                <input type="number" name="packageSchedule.maximumMember" />
               </div>
               <div class="input__flex">
                 <label>성인 1인당 가격</label>
-                <input type="text" name="adultPrice" />
+                <input type="text" name="aPackage.adultPrice" />
               </div>
               <div class="input__flex">
                 <label>아동 1인당 가격</label>
-                <input type="text" name="childPrice" />
+                <input type="text" name="aPackage.childPrice" />
               </div>
               <div class="input__flex">
                 <label>유아 1인당 가격</label>
-                <input type="text" name="babyPrice" />
+                <input type="text" name="aPackage.babyPrice" />
               </div>
               <div class="input__flex">
                 <label>유류할증료 포함 1인당 가격</label>
-                <input type="text" name="fuelSurchargeIncluded" />
+                <input type="text" name="aPackage.fuelSurchargeIncluded" />
               </div>
               <div class="input__flex">
                 <label>여행지 한 줄 설명</label>
-                <input type="text" name="description" />
+                <input type="text" name="aPackage.description" />
               </div>
             </div>
             <div class="a3">
               <div class="input__flex">
                 <label>최소 출발 인원</label>
-                <input type="number" name="minimumRequired" />
+                <input type="number" name="packageSchedule.minimumRequired" />
               </div>
               <input
                 type="hidden"
                 id="hiddenMainCategoryId"
-                name="mainCategoryId" />
+                name="aPackage.mainCategoryId" />
               <div>
                 <label>도시 카테고리</label>
-                <select id="mainCategory" name="mainCategoryId">
-                  <option value="" selected>카테고리를 선택하세요</option>
+                <select id="mainCategory" name="aPackage.mainCategoryId">
+                  <option value="" selected></option>
                 </select>
-                <select id="subCategory" name="subCategoryId">
-                  <option value="#">중분류</option>
+                <select id="subCategory" name="aPackage.subCategoryId">
+                  <option value="#">-- 중분류 --</option>
                 </select>
-                <select id="smallCategory" name="smallCategoryId">
-                  <option value="#">소분류</option>
+                <select id="smallCategory" name="aPackage.smallCategoryId">
+                  <option value="#">-- 소분류 --</option>
                 </select>
               </div>
               <div class="input__flex">
                 <label>유류할증료</label>
-                <input type="text" name="fuelSurcharge" />
+                <input type="text" name="aPackage.fuelSurcharge" />
               </div>
               <div class="input__flex">
                 <label>썸네일 이미지</label>
-                <input type="file" name="mainImage" />
+                <input type="file" name="aPackage.mainImage" />
               </div>
               <div class="input__flex">
                 <label>서브 이미지</label>
-                <input type="file" multiple name="subImage" />
+                <input type="file" multiple name="aPackage.subImage" />
               </div>
               <div class="input__flex">
                 <label>일정이미지</label>
-                <input type="file" multiple name="descImage" />
+                <input type="file" multiple name="aPackage.descImage" />
               </div>
               <br />
             </div>
@@ -181,61 +187,70 @@
           <!-- 여행 일정 정보 -->
           <div class="a4">여행 일정 정보</div>
           <div class="a5">
-            <div>
-              <label>여행 기간</label>
-              <input type="text" name="schedules[0].period" />
+            <div class="generateClass">
+              <label for="period">여행 기간</label>
+              <input type="text" name="aPackage.period" id="period" />
+              <label>시작일자</label>
+              <input type="date" id="setStart" />
+              <label>종료일자</label>
+              <input type="date" id="setLast" />
             </div>
-            <div>
+            <div class="generateClass">
               <div class="a8">
                 <span>출국일정</span>
                 <div class="b2">
                   <div class="b3">
                     <div>
-                      <label>출발지</label>
-                      <select name="schedules[0].departurePointOut">
+                      <label for="departurePointOut">출발지</label>
+                      <select
+                        name="packageSchedule.departurePointOut"
+                        id="departurePointOut">
                         <option value="GIMPO">김포국제공항</option>
-                        <option>인천국제공항</option>
-                        <option>대구국제공항</option>
-                        <option>부산국제공항</option>
+                        <option value="INCHEON">인천국제공항</option>
+                        <option value="DAEGU">대구국제공항</option>
+                        <option value="BUSAN">부산국제공항</option>
                       </select>
                     </div>
                     <div>
-                      <label>도착지</label>
-                      <select name="schedules[0].arrivalPointOut">
+                      <label for="arrivalPointOut">도착지</label>
+                      <select
+                        name="packageSchedule.arrivalPointOut"
+                        id="arrivalPointOut">
                         <option value="NARITA">나리타국제공항</option>
-                        <option>간사이국제공항</option>
+                        <option value="KANSAI">간사이국제공항</option>
                       </select>
                     </div>
                     <div>
-                      <label>항공사</label>
-                      <select name="schedules[0].airlineOut">
+                      <label for="airlineOut">항공사</label>
+                      <select name="packageSchedule.airlineOut" id="airlineOut">
                         <option value="AIR_SEOUL">에어서울</option>
-                        <option>티웨이항공</option>
-                        <option>에어부산</option>
-                        <option>제주항공</option>
+                        <option value="TWAY_AIR">티웨이항공</option>
+                        <option value="AIR_BUSAN">에어부산</option>
+                        <option value="JEJU_AIR">제주항공</option>
                       </select>
                     </div>
                   </div>
                   <div class="input__flex plane-time">
                     <div>
-                      <label for="schedules[0].departureDateOut"
-                        >출발날짜</label
-                      >
+                      <label for="departureDateOut">출발날짜</label>
                       <input
                         type="date"
                         id="departureDateOut"
-                        name="schedules[0].departureDateOut" />
+                        name="packageSchedule.departureDateOut" />
                     </div>
                     <div>
-                      <label for="arrivalDateOut">도착날짜</label>
+                      <!-- <label for="arrivalDateOut">도착날짜</label> -->
                       <input
-                        type="date"
+                        type="hidden"
                         id="arrivalDateOut"
-                        name="schedules[0].arrivalDateOut" />
+                        name="packageSchedule.arrivalDateOut" />
                     </div>
                     <div>
-                      <label>항공기 번호</label>
-                      <input type="text" name="schedules[0].flightNumberOut" />
+                      <label for="flightNumberOut">항공기 번호</label>
+                      <input
+                        type="text"
+                        name="packageSchedule.flightNumberOut"
+                        id="flightNumberOut" />
                     </div>
                   </div>
                   <div class="input__flex plane-time">
@@ -244,14 +259,14 @@
                       <input
                         type="time"
                         id="departureTimeOut"
-                        name="schedules[0].departureTimeOut" />
+                        name="packageSchedule.departureTimeOut" />
                     </div>
                     <div>
                       <label for="arrivalTimeOut">도착시간</label>
                       <input
                         type="time"
                         id="arrivalTimeOut"
-                        name="schedules[0].arrivalTimeOut" />
+                        name="packageSchedule.arrivalTimeOut" />
                     </div>
                   </div>
                 </div>
@@ -262,114 +277,140 @@
                 <div class="b2">
                   <div class="b3">
                     <div>
-                      <label>출발지</label>
-                      <select name="schedules[0].departurePointReturn">
+                      <label for="departurePointReturn">출발지</label>
+                      <select
+                        name="packageSchedule.departurePointReturn"
+                        id="departurePointReturn">
                         <option value="NARITA">나리타국제공항</option>
-                        <option>간사이국제공항</option>
+                        <option value="KANSAI">간사이국제공항</option>
                       </select>
                     </div>
                     <div>
-                      <label>도착지</label>
-                      <select name="schedules[0].arrivalPointReturn">
+                      <label for="arrivalPointReturn">도착지</label>
+                      <select
+                        name="packageSchedule.arrivalPointReturn"
+                        id="arrivalPointReturn">
                         <option value="GIMPO">김포국제공항</option>
-                        <option>인천국제공항</option>
-                        <option>대구국제공항</option>
-                        <option>부산국제공항</option>
+                        <option value="INCHEON">인천국제공항</option>
+                        <option value="DAEGU">대구국제공항</option>
+                        <option value="BUSAN">부산국제공항</option>
                       </select>
                     </div>
                     <div>
-                      <label>항공사</label>
-                      <select name="schedules[0].airlineReturn">
+                      <label for="airlineReturn">항공사</label>
+                      <select
+                        name="packageSchedule.airlineReturn"
+                        id="airlineReturn">
                         <option value="AIR_SEOUL">에어서울</option>
-                        <option>티웨이항공</option>
-                        <option>에어부산</option>
-                        <option>제주항공</option>
+                        <option value="TWAY_AIR">티웨이항공</option>
+                        <option value="AIR_BUSAN">에어부산</option>
+                        <option value="JEJU_AIR">제주항공</option>
                       </select>
                     </div>
                   </div>
                   <div class="input__flex plane-time">
                     <div>
-                      <label for="return-departure">출발날짜</label>
+                      <label for="departureDateReturn">출발날짜</label>
                       <input
                         type="date"
-                        id="return-departure"
-                        name="schedules[0].departureDateReturn" />
+                        id="departureDateReturn"
+                        name="packageSchedule.departureDateReturn" />
                     </div>
                     <div>
-                      <label for="return-arrive">도착날짜</label>
+                      <!-- <label for="arrivalDateReturn">도착날짜</label> -->
                       <input
-                        type="date"
-                        id="return-arrive"
-                        name="schedules[0].arrivalDateReturn" />
+                        type="hidden"
+                        id="arrivalDateReturn"
+                        name="packageSchedule.arrivalDateReturn" />
                     </div>
                     <div>
-                      <label>항공기 번호</label>
+                      <label for="flightNumberReturn">항공기 번호</label>
                       <input
                         type="text"
-                        name="schedules[0].flightNumberReturn" />
+                        name="packageSchedule.flightNumberReturn"
+                        id="flightNumberReturn" />
                     </div>
                   </div>
                   <div class="input__flex plane-time">
                     <div>
-                      <label for="return-departure-time">출발시간</label>
+                      <label for="departureTimeReturn">출발시간</label>
                       <input
                         type="time"
-                        id="return-departure-time"
-                        name="schedules[0].departureTimeReturn" />
+                        id="departureTimeReturn"
+                        name="packageSchedule.departureTimeReturn" />
                     </div>
                     <div>
-                      <label for="return-arrive-time">도착시간</label>
+                      <label for="arrivalTimeReturn">도착시간</label>
                       <input
                         type="time"
-                        id="return-arrive-time"
-                        name="schedules[0].arrivalTimeReturn" />
+                        id="arrivalTimeReturn"
+                        name="packageSchedule.arrivalTimeReturn" />
                     </div>
                   </div>
                 </div>
               </div>
               <!-- /귀국일정 -->
-              <button type="button">항공편 자동 추가</button>
-              <button type="button">항공편 단일 추가</button>
+              <button type="button" onclick="generateFlights()">
+                항공편 자동 추가
+              </button>
+              <button type="button" onclick="deleteFlight()">
+                항공편 전체 삭제
+              </button>
               <!-- 팝업창에서 입력과 등록 처리를 하고 확인 하는 방법? -->
             </div>
           </div>
           <!-- 추가로 생성되는 항공편 -->
-          <div></div>
+          <table>
+            <tbody id="flightTable"></tbody>
+          </table>
           <!-- /추가로 생기는 항공편 -->
           <span>호텔 일정</span>
           <div class="a9">
             <div>
-              <label for="hetel-name">호텔명</label>
-              <input type="text" id="hotel-name" name="hotelName" />
+              <label for="hetelName">호텔명</label>
+              <input type="text" id="hotelName" name="aPackage.hotelName" />
             </div>
             <button type="button">일정 추가</button>
           </div>
           <!-- 상품 옵션 -->
           <div>옵션</div>
           <div class="b1">
-            <input type="hidden" name="guide" value="false" />
-            <input type="checkbox" id="guide" name="guide" value="true" />
+            <input type="hidden" name="packageOption.guide" value="false" />
+            <input
+              type="checkbox"
+              id="guide"
+              name="packageOption.guide"
+              value="true" />
             <label for="guide" class="input__label">가이드 동반</label>
-            <input type="hidden" name="hotelFee" value="false" />
+
+            <input type="hidden" name="packageOption.hotelFee" value="false" />
             <input
               type="checkbox"
               id="hotel-fee"
-              name="hotelFee"
+              name="packageOption.hotelFee"
               value="true" />
             <label for="hotel-fee" class="input__label">호텔비 포함</label>
-            <input type="hidden" name="airFare" value="false" />
-            <input type="checkbox" id="plane-fee" name="airFare" value="true" />
+
+            <input type="hidden" name="packageOption.airFare" value="false" />
+            <input
+              type="checkbox"
+              id="plane-fee"
+              name="packageOption.airFare"
+              value="true" />
             <label for="plane-fee" class="input__label">항공료 포함</label>
-            <input type="hidden" name="shopping" value="false" />
+
+            <input type="hidden" name="packageOption.shopping" value="false" />
             <input
               type="checkbox"
               id="no-shopping"
-              name="shopping"
+              name="packageOption.shopping"
               value="true" />
             <label for="no-shopping" class="input__label">쇼핑 없음</label>
           </div>
           <button type="submit">등록하기</button>
-          <button type="button">돌아가기</button>
+          <button type="button" onclick="location.href='/admin/package/list'">
+            돌아가기
+          </button>
         </form>
       </div>
     </main>
@@ -388,7 +429,7 @@
         .then((data) => {
           console.log("API 응답 데이터:", data);
           const mainCategorySelect = document.getElementById("mainCategory");
-          resetSelect(mainCategorySelect, "대분류 선택"); // 초기화
+          resetSelect(mainCategorySelect, "대분류"); // 초기화
 
           data.forEach((mainCategory) => {
             const option = document.createElement("option");
@@ -411,10 +452,10 @@
     // 중분류 로딩
     function loadSubCategories(subCategories) {
       const subCategorySelect = document.getElementById("subCategory");
-      resetSelect(subCategorySelect, "중분류 선택"); // 초기화
+      resetSelect(subCategorySelect, "중분류"); // 초기화
 
       const smallCategorySelect = document.getElementById("smallCategory");
-      resetSelect(smallCategorySelect, "소분류 선택"); // 중분류가 바뀌면 소분류도 초기화
+      resetSelect(smallCategorySelect, "소분류"); // 중분류가 바뀌면 소분류도 초기화
 
       subCategories.forEach((subCategory) => {
         const option = document.createElement("option");
@@ -435,7 +476,7 @@
     // 소분류 로딩
     function loadSmallCategories(smallCategories) {
       const smallCategorySelect = document.getElementById("smallCategory");
-      resetSelect(smallCategorySelect, "소분류 선택"); // 초기화
+      resetSelect(smallCategorySelect, "소분류"); // 초기화
 
       smallCategories.forEach((smallCategory) => {
         const option = document.createElement("option");
@@ -472,12 +513,242 @@
             this.parentNode.appendChild(hiddenInput);
           } else {
             let hiddenInput = document.querySelector(
-              `input[type=hidden][name=${this.name}]`
+              `input[type=hidden][name="${this.name}"]`
             );
             if (hiddenInput) hiddenInput.remove(); // 체크 시 기존 hidden input 제거
           }
         });
       });
     });
+
+    function doAction() {
+      let hotelName = document.getElementById("hotelName");
+      let flightNumberReturn = document.querySelectorAll(
+        'input[name$=".details.flightNumberReturn"]'
+      );
+
+      if (hotelName.value.trim() === "") {
+        alert("호텔명을 입력하세요");
+        return false;
+      }
+
+      if (!flightNumberReturn || flightNumberReturn.length === 0) {
+        alert("항공편 자동 추가를 눌러 여행일정을 추가하세요");
+        console.log("⚠️ 항공편 번호 input이 아직 없음");
+        return false;
+      }
+      alert("qw");
+      return true;
+    }
+
+    // 시작 날짜와 같은 값을 부여
+    document.getElementById("setStart").addEventListener("change", function () {
+      const setStart = document.getElementById("setStart").value;
+      const period = Number(document.getElementById("period").value);
+      let returnDate = new Date(setStart);
+      returnDate.setDate(returnDate.getDate() + period - 1);
+      console.log(returnDate);
+      const arrivalReturnDate = returnDate.toISOString().split("T")[0];
+
+      document.getElementById("departureDateOut").value = this.value;
+      // document.getElementById("arrivalDateOut").value = this.value;
+      document.getElementById("departureDateReturn").value = arrivalReturnDate;
+      // document.getElementById("arrivalDateReturn").value = this.value;
+    });
+
+    function generateFlights() {
+      const setStart = document.getElementById("setStart").value;
+      const setLast = document.getElementById("setLast").value;
+
+      const period = Number(document.getElementById("period").value);
+      const departurePointOut =
+        document.getElementById("departurePointOut").value;
+      const arrivalPointOut = document.getElementById("arrivalPointOut").value;
+      const airlineOut = document.getElementById("airlineOut").value;
+      const departureDateOut =
+        document.getElementById("departureDateOut").value;
+      const arrivalDateOut = document.getElementById("arrivalDateOut").value;
+      const flightNumberOut = document.getElementById("flightNumberOut").value;
+      const departureTimeOut =
+        document.getElementById("departureTimeOut").value;
+      const arrivalTimeOut = document.getElementById("arrivalTimeOut").value;
+      const departurePointReturn = document.getElementById(
+        "departurePointReturn"
+      ).value;
+      const arrivalPointReturn =
+        document.getElementById("arrivalPointReturn").value;
+      const airlineReturn = document.getElementById("airlineReturn").value;
+      const departureDateReturn = document.getElementById(
+        "departureDateReturn"
+      ).value;
+      const arrivalDateReturn =
+        document.getElementById("arrivalDateReturn").value;
+      const flightNumberReturn =
+        document.getElementById("flightNumberReturn").value;
+      const departureTimeReturn = document.getElementById(
+        "departureTimeReturn"
+      ).value;
+      const arrivalTimeReturn =
+        document.getElementById("arrivalTimeReturn").value;
+
+      if (
+        !setStart ||
+        !setLast ||
+        !period ||
+        !departurePointOut ||
+        !arrivalPointOut ||
+        !airlineOut ||
+        !departureDateOut ||
+        // !arrivalDateOut ||
+        !flightNumberOut ||
+        !departureTimeOut ||
+        !arrivalTimeOut ||
+        !departurePointReturn ||
+        !arrivalPointReturn ||
+        !airlineReturn ||
+        !departureDateReturn ||
+        // !arrivalDateReturn ||
+        !flightNumberReturn ||
+        !departureTimeReturn ||
+        !arrivalTimeReturn
+      ) {
+        alert("모든 항목을 입력해야합니다");
+        return;
+      }
+
+      function deleteFlight() {
+        const table = document.getElementById("flightTable");
+        table.innerHTML = "";
+      }
+      window.deleteFlight = deleteFlight;
+
+      let startDate = new Date(setStart);
+      let endDate = new Date(setLast);
+
+      for (
+        let sd = new Date(startDate),
+          sd2 = new Date(startDate.setDate(startDate.getDate() + period - 1));
+        sd <= endDate;
+        sd.setDate(sd.getDate() + 1), sd2.setDate(sd2.getDate() + 1)
+      ) {
+        const table = document.getElementById("flightTable");
+        // 테이블 개수만큼 index 추가
+        const rowCount = table.rows.length;
+        console.log(rowCount);
+        const formattedDate = sd.toISOString().split("T")[0];
+        const formattedDateEnd = sd2.toISOString().split("T")[0];
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td><input type="date" name="packageSchedule[${rowCount}].departureDateOut" value="${formattedDate}"></td>
+            <td><select name="packageSchedule[${rowCount}].details.departurePointOut">
+              <option value="GIMPO" ${
+                departurePointOut === "GIMPO" ? "selected" : ""
+              }>김포국제공항</option>
+              <option value="INCHEON" ${
+                departurePointOut === "INCHEON" ? "selected" : ""
+              }>인천국제공항</option>
+              <option value="DAEGU" ${
+                departurePointOut === "DAEGU" ? "selected" : ""
+              }>대구국제공항</option>
+              <option value="BUSAN" ${
+                departurePointOut === "BUSAN" ? "selected" : ""
+              }>부산국제공항</option></select></td>
+            <td><select name="packageSchedule[${rowCount}].details.arrivalPointOut">
+              <option value="NARITA" ${
+                arrivalPointOut === "NARITA" ? "selected" : ""
+              }>나리타국제공항</option>
+              <option value="KANSAI" ${
+                arrivalPointOut === "KANSAI" ? "selected" : ""
+              }>간사이국제공항</option></select></td>
+            <td><select name="packageSchedule[${rowCount}].details.airlineOut">
+              <option value="AIR_SEOUL" ${
+                airlineOut === "AIR_SEOUL" ? "selected" : ""
+              }>에어서울</option>
+              <option value="TWAY_AIR" ${
+                airlineOut === "TWAY_AIR" ? "selected" : ""
+              }>티웨이항공</option>
+              <option value="AIR_BUSAN" ${
+                airlineOut === "AIR_BUSAN" ? "selected" : ""
+              }>에어부산</option>
+              <option value="JEJU_AIR" ${
+                airlineOut === "JEJU_AIR" ? "selected" : ""
+              }>제주항공</option>
+              <option value="ASIANA_AIR ${
+                airlineOut === "ASIANA_AIR" ? "selected" : ""
+              }">아시아나항공</option>
+              <option value="KOREAN_AIR" ${
+                airlineOut === "KOREAN_AIR" ? "seleted" : ""
+              }>대한항공</option></select></td>
+              <td><input type="text" name="packageSchedule[${rowCount}].details.flightNumberOut" value="${flightNumberOut}"></td>
+              <td><input type="time" name="packageSchedule[${rowCount}].details.departureTimeOut" value="${departureTimeOut}"></td>
+              <td><input type="time" name="packageSchedule[${rowCount}].details.arrivalTimeOut" value="${arrivalTimeOut}"></td>
+              <td><input type="date" name="packageSchedule[${rowCount}].departureDateReturn" value="${formattedDateEnd}">
+              <td><select name="packageSchedule[${rowCount}].details.departurePointReturn">
+                <option value="NARITA" ${
+                  departurePointReturn === "NARITA" ? "selected" : ""
+                }>나리타국제공항</option>
+                <option value="KANSAI" ${
+                  departurePointReturn === "KANSAI" ? "selected" : ""
+                }>간사이국제공항</option></select></td>
+              <td><select name="packageSchedule[${rowCount}].details.arrivalPointReturn">
+                <option value="GIMPO" ${
+                  arrivalPointReturn === "GIMPO" ? "selected" : ""
+                }>김포국제공항</option>
+                <option value="INCHEON" ${
+                  arrivalPointReturn === "INCHEON" ? "selected" : ""
+                }>인천국제공항</option>
+                <option value="DAEGU" ${
+                  arrivalPointReturn === "DAEGU" ? "selected" : ""
+                }>대구국제공항</option>
+                <option value="BUSAN" ${
+                  arrivalPointReturn === "BUSAN" ? "selected" : ""
+                }>부산국제공항</option></select></td>
+              <td><select name="packageSchedule[${rowCount}].details.airlineReturn">
+                <option value="AIR_SEOUL" ${
+                  airlineReturn === "AIR_SEOUL" ? "selected" : ""
+                }>에어서울</option>
+                <option value="TWAY_AIR" ${
+                  airlineReturn === "TWAY_AIR" ? "selected" : ""
+                }>티웨이항공</option>
+                <option value="AIR_BUSAN" ${
+                  airlineReturn === "AIR_BUSAN" ? "selected" : ""
+                }>에어부산</option>
+                <option value="JEJU_AIR" ${
+                  airlineReturn === "JEJU_AIR" ? "selected" : ""
+                }>제주항공</option>
+                <option value="ASIANA_AIR ${
+                  airlineReturn === "ASIANA_AIR" ? "selected" : ""
+                }">아시아나항공</option>
+                <option value="KOREAN_AIR" ${
+                  airlineReturn === "KOREAN_AIR" ? "seleted" : ""
+                }>대한항공</option></select></td>
+              <td><input type=text name="packageSchedule[${rowCount}].details.flightNumberReturn" value="${flightNumberReturn}""></td>
+              <td><input type="time" name="packageSchedule[${rowCount}].details.departureTimeReturn" value="${departureTimeReturn}"></td>
+              <td><input type="time" name="packageSchedule[${rowCount}].details.arrivalTimeReturn" value="${arrivalTimeReturn}"></td>
+              <td><input type="hidden" name="packageSchedule[${rowCount}].arrivalDateOut" value="${formattedDate}"></td>
+              <td><input type="hidden" name="packageSchedule[${rowCount}].arrivalDateReturn" value="${formattedDateEnd}" ></td>
+              <td><button type="button" onclick="removeRow(this)">삭제</button></td>`;
+        table.appendChild(row);
+      }
+    }
+    // 행 삭제
+    function removeRow(button) {
+      const row = button.parentNode.parentNode;
+      row.parentNode.removeChild(row);
+      updateRowIndexes();
+    }
+    // 행 삭제 후 index 재정렬
+    function updateRowIndexes() {
+      const rows = document.querySelectorAll("#flightTable tr");
+
+      rows.forEach((row, index) => {
+        const inputs = row.querySelectorAll("input, select");
+        inputs.forEach((input) => {
+          if (input.name) {
+            input.name = input.name.replace(/\[\d+\]/, `[${index}]`);
+          }
+        });
+      });
+    }
   </script>
 </html>

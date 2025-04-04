@@ -11,6 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PackageOptionRequestDto {
 
+    private Long id;
     /**
      * 가이드 유무
      */
