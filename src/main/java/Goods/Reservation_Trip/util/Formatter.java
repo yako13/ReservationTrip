@@ -65,6 +65,7 @@ public class Formatter {
     }
 
 
+
     //주문번호 숫자에 붙여주는 1~1000자리 숫자
     public class IncrementalCounter {
         private static int counter = 0; // 클래스 변수로 유지
@@ -77,12 +78,22 @@ public class Formatter {
 
     //주문 번호 만드는 함수
     public static String getReservationCode(LocalDateTime localDateTime) {
-        if (localDateTime != null) {
+        if(localDateTime !=null) {
             String dateTimePart = localDateTime.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
             String counterPart = IncrementalCounter.getNextNumber(); // 3자리 숫자 추가
             return dateTimePart + counterPart;
         }
         return null;
+    }
+
+    //패키지명에서 태그 추출
+    public static String getTag(String packageName){
+        return packageName.substring(packageName.indexOf("#"));
+    }
+
+    //패키지명에서 태그만 뺀 값
+    public static String getPackageNameWithoutTag(String packageName){
+        return packageName.substring(0,packageName.indexOf("#"));
     }
 
     //운송장 번호 만드는 함수

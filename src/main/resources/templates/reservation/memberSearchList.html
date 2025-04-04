@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>냥만여행 회원예약내역</title>
     <link rel="stylesheet" th:href="@{https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/mainPage.css}">
@@ -58,10 +58,10 @@
                     <th>예약상태</th>
                 </tr>
                 <tr th:if="${reservationList!=null} " th:each="reservation : ${reservationList}"
-                    th:onclick="window.location.href='/member/reservation/details/' + [[${reservation.reservationPK}]];">
+                    th:onclick="window.location.href='/member/reservation/details/' + [[${reservation.reservationPK}]]" class="tableTr">
                     <td><span>[[${reservation.createdAt}]]</span><br> [[${reservation.code}]]</td>
                     <td th:text="${reservation.packageName}"></td>
-                    <td>총 [[${reservation.totalPay}]]</td>
+                    <td>[[${reservation.totalPay}]]</td>
                     <td th:text="${reservation.reservationMembers}"></td>
                     <td>[[${reservation.startDate}]] ~ [[${reservation.endDate}]]</td>
                     <td th:text="${reservation.reservationState}">예약완료</td>

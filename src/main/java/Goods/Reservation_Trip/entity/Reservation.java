@@ -95,9 +95,12 @@ public class Reservation extends BaseTime {
     @Column(name = "pur_corp_code")
     @Comment("매입사 코드")
     private String purCorpCode;
-    
+
     @OneToMany(mappedBy = "reservation",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReservationDetails> reservationDetailsList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "reservation",cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Review> reviewList = new ArrayList<>();
 
 }
 
