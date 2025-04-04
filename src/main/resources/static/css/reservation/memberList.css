@@ -142,3 +142,7 @@
     text-align: center;
     border-bottom: solid 1px #c2c2c2;
 }
+
+.tableTr{
+    cursor:pointer;
+}

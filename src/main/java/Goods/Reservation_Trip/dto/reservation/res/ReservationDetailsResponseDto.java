@@ -43,4 +43,7 @@ public class ReservationDetailsResponseDto {
 
     //총 결제금액
     private String totalPay;
+
+    //태크옵션
+    private String tag;
 }
