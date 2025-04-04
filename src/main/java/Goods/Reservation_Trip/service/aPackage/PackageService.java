@@ -52,6 +52,7 @@ public class PackageService {
                 .fuelSurcharge(requestDto.getFuelSurcharge())
                 .fuelSurchargeIncluded(requestDto.getFuelSurchargeIncluded())
                 .description(requestDto.getDescription())
+                .period(requestDto.getPeriod())
                 .hotelName(requestDto.getHotelName())
                 .mainCategory(mainCategory)
                 .subCategory(subCategory)

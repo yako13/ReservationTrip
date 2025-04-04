@@ -23,10 +23,6 @@ import java.time.LocalTime;
 public class PackageScheduleRequestDto {
 
     private Long id;
-    /**
-     * 여행 기간
-     */
-    private int period;
 
     /**
      * 출국 항공사명

@@ -52,6 +52,10 @@ public class Package extends BaseTime {
     @Comment("간략한 설명글")
     private String description;
 
+    @Column(nullable = false)
+    @Comment("여행 일수")
+    private int period;
+
     @OneToOne
     @JoinColumn(name = "main_image", nullable = true)
     @Comment("대표 이미지")

@@ -62,6 +62,11 @@ public class PackageRequestDto {
     private String description;
 
     /**
+     * 여행 일수
+     */
+    private int period;
+
+    /**
      * 메인 이미지
      */
     private MultipartFile mainImage;

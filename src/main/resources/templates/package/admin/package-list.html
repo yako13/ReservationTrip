@@ -108,6 +108,8 @@
               <th>도착지</th>
               <th>출국일자</th>
               <th>귀국일자</th>
+              <th>생성일자</th>
+              <th>수정일자</th>
               <th>수정</th>
               <th>삭제</th>
             </tr>
@@ -124,6 +126,8 @@
               <td th:text="${package.arrivalPointOut}"></td>
               <td th:text="${package.departureDateOut}"></td>
               <td th:text="${package.arrivalDateReturn}"></td>
+              <td th:text="${package.createdAt}"></td>
+              <td th:text="${package.modifiedAt}"></td>
               <td><button type="button">수정하기</button></td>
               <td><button type="button">삭제하기</button></td>
             </tr>

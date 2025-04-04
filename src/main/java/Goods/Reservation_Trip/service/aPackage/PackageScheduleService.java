@@ -36,7 +36,6 @@ public class PackageScheduleService {
                         .arrivalPointOut(dto.getArrivalPointOut())
                         .departurePointReturn(dto.getDeparturePointReturn())
                         .arrivalPointReturn(dto.getArrivalPointReturn())
-                        .period(dto.getPeriod())
                         .airlineOut(dto.getAirlineOut())
                         .airlineReturn(dto.getAirlineReturn())
                         .flightNumberOut(dto.getFlightNumberOut())

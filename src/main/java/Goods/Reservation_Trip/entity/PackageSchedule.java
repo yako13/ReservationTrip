@@ -1,5 +1,6 @@
 package Goods.Reservation_Trip.entity;
 
+import Goods.Reservation_Trip.base.BaseTime;
 import Goods.Reservation_Trip.enums.Airline;
 import Goods.Reservation_Trip.enums.ArrivalPoint;
 import Goods.Reservation_Trip.enums.DeparturePoint;
@@ -18,7 +19,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @Builder
 @Entity
-public class PackageSchedule {
+public class PackageSchedule extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -64,10 +65,6 @@ public class PackageSchedule {
     @Column(name = "arrival_point_return", nullable = false, columnDefinition = "VARCHAR(50)")
     @Comment("귀국 비행기 도착지")
     private ArrivalPoint arrivalPointReturn;
-
-    @Column(nullable = false)
-    @Comment("여행 일수")
-    private int period;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "air_line_out", nullable = false, columnDefinition = "VARCHAR(50)")
