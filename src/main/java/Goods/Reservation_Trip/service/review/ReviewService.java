@@ -1,6 +1,7 @@
 package Goods.Reservation_Trip.service.review;
 
 import Goods.Reservation_Trip.config.ImageManager;
+import Goods.Reservation_Trip.dto.reservation.res.ReservationDetailsResponseDto;
 import Goods.Reservation_Trip.dto.review.req.ReviewDto;
 import Goods.Reservation_Trip.dto.review.res.ReviewResponseDto;
 import Goods.Reservation_Trip.entity.Reservation;
@@ -10,6 +11,7 @@ import Goods.Reservation_Trip.repository.ReservationRepository;
 import Goods.Reservation_Trip.repository.ReviewImageRepository;
 import Goods.Reservation_Trip.repository.ReviewRepository;
 import Goods.Reservation_Trip.util.FileStorageService;
+import Goods.Reservation_Trip.util.Formatter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,6 +47,9 @@ public class ReviewService {
 
         Reservation reservation = optionalReservation.get();
 
+        //리뷰는 1개만 가능
+        if (!reservation.getReviewList().isEmpty()) return null;
+
         return ReviewResponseDto.builder()
                 .packageMainImage(imageManager.createImageUrl(reservation.getAPackage().getMainImage().getImageFullName()))
                 .packageName(reservation.getAPackage().getPackageName())
@@ -65,6 +70,9 @@ public class ReviewService {
         if (!memberId.equals(reservation.getMember().getId())) {
             throw new RuntimeException("잘못된 접근");
         }
+
+        //리뷰는 1개만 가능
+        if (!reservation.getReviewList().isEmpty()) throw new RuntimeException("리뷰는 한개만 등록가능");
 
         Review review = new Review();
         review.setAPackage(reservation.getAPackage());
@@ -180,5 +188,32 @@ public class ReviewService {
             }
         }
 
+    }
+
+    /**
+     * 리뷰 작성 가능한 예약 불러오기
+     */
+    public List<ReservationDetailsResponseDto> getReviewAblePage(Long memberId) {
+        //리뷰 리스트가 0인 예약만 찾아옴
+        List<Reservation> reservationList = reservationRepository.findByReviewListIsNull();
+
+        if (reservationList.isEmpty()) return null;
+
+        List<ReservationDetailsResponseDto> responseDtos = new ArrayList<>();
+
+        for (Reservation reservation : reservationList) {
+            ReservationDetailsResponseDto reservationDetailsResponseDto = ReservationDetailsResponseDto.builder()
+                    .reservationPK(reservation.getId())
+                    .tag(Formatter.getTag(reservation.getAPackage().getPackageName()))
+                    .packageName(Formatter.getPackageNameWithoutTag(reservation.getAPackage().getPackageName()))
+                    .startDate(reservation.getStartDate().toString())
+                    .endDate(reservation.getEndDate().toString())
+                    .packagePK(reservation.getAPackage().getId())
+                    .mainImage(imageManager.createImageUrl(reservation.getAPackage().getMainImage().getImageFullName()))
+                    .build();
+
+            responseDtos.add(reservationDetailsResponseDto);
+        }
+        return responseDtos;
     }
 }

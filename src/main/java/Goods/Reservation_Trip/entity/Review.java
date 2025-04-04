@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Comment;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +44,19 @@ public class Review extends BaseTime {
     @Column(name = "content",nullable = false,length = 500)
     @Comment("리뷰 내용")
     private String content;
+
+
+//    @Column( nullable = false)
+//    @Comment("성인 총 결제 금액")
+//    private BigDecimal adultSumPrice;
+//
+//    @Column( nullable = false)
+//    @Comment("아동 총 결제 금액")
+//    private BigDecimal childSumPrice;
+//
+//    @Column( nullable = false)
+//    @Comment("유아 총 결제 금액")
+//    private BigDecimal babySumPrice;
 
     @OneToMany(mappedBy = "review", orphanRemoval = true)
     private List<ReviewImage> reviewImageList = new ArrayList<>();

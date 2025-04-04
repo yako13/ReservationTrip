@@ -1,6 +1,7 @@
 package Goods.Reservation_Trip.controller;
 
 import Goods.Reservation_Trip.dto.member.res.MemberResponseDto;
+import Goods.Reservation_Trip.dto.reservation.res.ReservationDetailsResponseDto;
 import Goods.Reservation_Trip.dto.review.req.ReviewDto;
 import Goods.Reservation_Trip.dto.review.res.ReviewResponseDto;
 import Goods.Reservation_Trip.service.member.MemberService;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -79,5 +82,19 @@ public class ReviewController {
 
         //        return "redirect:/member/review/list";
         return "redirect:/member/reservation/list";
+    }
+
+    /**
+     * 작성가능한 리뷰 페이지
+     */
+    @GetMapping("/member/review/list/able")
+    public String memberReviewAbleListPage(Model model,HttpServletRequest request){
+        MemberResponseDto memberResponseDto = memberService.getMember(request);
+
+        List<ReservationDetailsResponseDto> responseDtoList = reviewService.getReviewAblePage(memberResponseDto.getId());
+
+        model.addAttribute("reservationList",responseDtoList);
+
+        return "review/able";
     }
 }

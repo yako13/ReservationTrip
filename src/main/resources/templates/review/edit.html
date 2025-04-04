@@ -81,10 +81,13 @@
 
         .scoreArea {
             margin: 1rem 0;
+            i{
+                color: #ccc;
+            }
         }
 
         .y {
-            color: yellow;
+            color: yellow !important;
         }
 
         #reviewImage {
@@ -199,11 +202,11 @@
                 <input type="hidden" name="rating" id="score" th:value="${rating}">
                 <div class="scoreArea">
                     <p id="rating">⭐별점</p>
-                    <i class="fa-regular fa-star fa-2xl" id="star1"></i>
-                    <i class="fa-regular fa-star fa-2xl" id="star2"></i>
-                    <i class="fa-regular fa-star fa-2xl" id="star3"></i>
-                    <i class="fa-regular fa-star fa-2xl" id="star4"></i>
-                    <i class="fa-regular fa-star fa-2xl" id="star5"></i>
+                    <i class="fa-solid fa-star fa-2xl" id="star1"></i>
+                    <i class="fa-solid fa-star fa-2xl" id="star2"></i>
+                    <i class="fa-solid fa-star fa-2xl" id="star3"></i>
+                    <i class="fa-solid fa-star fa-2xl" id="star4"></i>
+                    <i class="fa-solid fa-star fa-2xl" id="star5"></i>
                 </div>
                 <div class="filebox">
                     <input class="upload-name" value="첨부파일" placeholder="첨부파일: 최대 다섯장만 등록 가능합니다.">
@@ -263,13 +266,13 @@
             deletedImagesInput.value = deletedImages.join(",");
 
 
-            // 🔹 파일 input에서도 해당 파일 제거하기
+            // 파일 input에서도 해당 파일 제거하기
             const fileInput = document.getElementById("file");
             if (fileInput && fileInput.files.length > 0) {
                 let dataTransfer = new DataTransfer(); // 새로운 DataTransfer 객체 생성
                 let files = Array.from(fileInput.files); // 현재 선택된 파일 배열 변환
 
-                // 🔹 index에 해당하는 파일 제외하고 다시 추가
+                // index에 해당하는 파일 제외하고 다시 추가
                 files.splice(index, 1);
 
                 files.forEach(file => {
@@ -383,7 +386,6 @@
         function changeStar() {
             for (let k = 0; k < document.getElementById("score").value; k++) {
                 s[k].classList.add("y");
-                s[k].classList.replace("fa-regular", "fa-solid");
                 let scoreLength = document.querySelectorAll(".y");
                 document.getElementById("rating").innerText = "⭐별점 : " + scoreLength.length;
             }
@@ -395,7 +397,6 @@
                         // 클릭한 별과 그 이전 별들을 채움
                         for (let j = 0; j <= i; j++) {
                             s[j].classList.add("y");
-                            s[j].classList.replace("fa-regular", "fa-solid");
                             let scoreLength = document.querySelectorAll(".y");
                             document.getElementById("rating").innerText = "⭐별점 : " + scoreLength.length;
                         }
@@ -403,7 +404,6 @@
                         // 클릭한 별과 그 이후 별들을 원래대로 되돌림
                         for (let j = i; j < s.length; j++) {
                             s[j].classList.remove("y");
-                            s[j].classList.replace("fa-solid", "fa-regular");
                             let scoreLength = document.querySelectorAll(".y");
                             document.getElementById("rating").innerText = "⭐별점 : " + scoreLength.length;
                         }
