@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" xmlns:th="http://www.thymeleaf.org">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/mainPage.css}">
+    <title>냥만여행 리뷰등록</title>
+    <style>
+        .thumbnail {
+            max-width: 150px;
+            max-height: 150px;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .image-container {
+            display: flex;
+            /* margin-right: 10px; */
+            position: relative;
+        }
+
+        .btn-delete {
+            font-size: 1rem;
+            border: 0px;
+            border-radius: 10px;
+            background-color: #ffffff;
+            height: 20px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        /* .btn-delete:hover {
+        size: 1rem;
+      } */
+
+        main {
+            display: flex;
+            justify-content: center;
+            background-color: #f1f0f1;
+        }
+
+        .container {
+            box-sizing: border-box;
+            width: 800px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+            margin: 5rem auto;
+            background-color: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .packageArea {
+            display: flex;
+            border: 1px solid #ccc;
+            padding: 1.5rem;
+
+            h4 {
+                line-height: 3.5rem;
+            }
+        }
+
+        #packageImg {
+            width: 10rem;
+            margin-right: 2rem;
+        }
+
+        #content {
+            margin: 3rem 0;
+            width: 95.8%;
+            resize: none;
+            color: black;
+            border: 1px solid #ccc;
+            outline: none;
+            height: 20rem;
+            padding: 1rem;
+        }
+
+        .scoreArea {
+            margin: 1rem 0;
+        }
+
+        .y {
+            color: yellow;
+        }
+
+        #reviewImage {
+            margin: 3rem 0;
+        }
+
+        #submitBtn,
+        #cancelBtn {
+            width: 7rem;
+            height: 2rem;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            border-radius: 7px;
+            border: none;
+        }
+
+        #submitBtn {
+            background-color: #43bff8;
+            color: #ffffff;
+
+            &:hover {
+                background-color: #3e8cf1;
+                color: #ebebeb;
+                transform: scale(0.98);
+            }
+        }
+
+        #cancelBtn {
+            margin-right: 2rem;
+            background-color: #ececec;
+            color: #333;
+
+            &:hover {
+                background-color: #e0e0e0;
+                color: #333;
+                transform: scale(0.98);
+            }
+        }
+
+        .btnArea {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .fa-regular {
+            color: #ccc;
+        }
+
+        .filebox .upload-name {
+            display: inline-block;
+            height: 40px;
+            padding: 0 10px;
+            vertical-align: middle;
+            border: 1px solid #dddddd;
+            width: 81%;
+            color: #999999;
+
+            &:focus {
+                outline: none;
+            }
+        }
+
+        .filebox {
+            margin: 2rem 0;
+        }
+
+        .filebox label {
+            display: inline-block;
+            padding: 10px 20px;
+            vertical-align: middle;
+            background-color: #43bff8;
+            transition: all 0.3s ease;
+            color: #ffffff;
+            cursor: pointer;
+            height: 23px;
+            line-height: 23px;
+            margin-left: 10px;
+
+            &:hover {
+                background-color: #3e8cf1;
+                color: #ebebeb;
+                transform: scale(0.98);
+            }
+        }
+
+        .filebox input[type="file"] {
+            position: absolute;
+            width: 0;
+            height: 0;
+            padding: 0;
+            overflow: hidden;
+            border: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <header th:replace="/fragments/memberHeader::memberHeader"></header>
+    <main>
+        <div class="container">
+            <div>
+                <h3>✏️후기 작성</h3>
+            </div>
+            <div class="packageArea">
+                <img th:src="@{/images/carousel1.jpg}" alt="" id="packageImg">
+                <h4>도쿄 시즈오카 3박4일 패키지</h4>
+            </div>
+            <form id="reviewForm" th:action="@{/member/review/new}" th:method="post">
+                <textarea id="content" name="content" placeholder="후기를 작성해주세요."></textarea>
+                <input type="hidden" name="score" id="score">
+                <div class="scoreArea">
+                    <p>⭐별점</p>
+                    <i class="fa-regular fa-star fa-2xl" id="star1"></i>
+                    <i class="fa-regular fa-star fa-2xl" id="star2"></i>
+                    <i class="fa-regular fa-star fa-2xl" id="star3"></i>
+                    <i class="fa-regular fa-star fa-2xl" id="star4"></i>
+                    <i class="fa-regular fa-star fa-2xl" id="star5"></i>
+                </div>
+                <div class="filebox">
+                    <input class="upload-name" value="첨부파일" placeholder="첨부파일: 최대 다섯장만 등록 가능합니다.">
+                    <label for="file">파일찾기</label>
+                    <input type="file" id="file" multiple
+                        onchange="previewMultipleImages(event, 'reviewImagePreview', 5, 'file')">
+                </div>
+                <div id="reviewImagePreview" class="preview-container"></div>
+                <div class="btnArea">
+                    <button type="button" id="cancelBtn"
+                        onclick="window.location.href='/member/review/list'">취소</button>
+                    <button type="button" id="submitBtn">등록</button>
+                </div>
+            </form>
+        </div>
+    </main>
+    <footer th:replace="/fragments/memberFooter::memberFooter"></footer>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script>
+
+        $("#file").on('change', function () {
+            var fileName = $("#file").val();
+            $(".upload-name").val(fileName);
+        });
+
+        let s = document.querySelectorAll(".fa-star");
+
+        window.addEventListener("load", changeStar);
+
+        function changeStar() {
+            for (let i = 0; i < s.length; i++) {
+                s[i].addEventListener("click", function () {
+                    if (!s[i].classList.contains("y")) {
+                        // 클릭한 별과 그 이전 별들을 채움
+                        for (let j = 0; j <= i; j++) {
+                            s[j].classList.add("y");
+                            s[j].classList.replace("fa-regular", "fa-solid");
+                        }
+                    } else {
+                        // 클릭한 별과 그 이후 별들을 원래대로 되돌림
+                        for (let j = i; j < s.length; j++) {
+                            s[j].classList.remove("y");
+                            s[j].classList.replace("fa-solid", "fa-regular");
+                        }
+                    }
+                })
+            }
+
+        }
+
+
+        let newImageIndex = { file: 0 }; // 새 이미지의 고유 ID 관리
+
+        // 새 이미지 미리보기 및 삭제 기능 (서브, 설명 이미지 공용)
+        function previewMultipleImages(event, previewId, maxImages, type) {
+            let previewContainer = document.getElementById(previewId);
+            let files = event.target.files;
+
+            if (!previewContainer || !files) return;
+
+            let currentImageCount = previewContainer.childElementCount; // 현재 이미지 개수
+            let newImagesCount = files.length; // 새로 추가할 이미지 개수
+
+            for (let i = 0; i < files.length; i++) {
+
+                if (currentImageCount + newImagesCount > maxImages) {
+                    alert(`최대 ${maxImages}개의 이미지만 업로드할 수 있습니다.`);
+                    return;
+                }
+
+                let file = files[i];
+                let reader = new FileReader();
+                let currentIndex = newImageIndex[type]++; // 해당 타입의 새로운 이미지 인덱스 증가
+
+                reader.onload = function (e) {
+                    // 새 이미지 컨테이너 추가
+                    let imageContainer = document.createElement("div");
+                    imageContainer.classList.add("image-container");
+                    imageContainer.classList.add(`${type}-image-container`);
+                    imageContainer.id = `new${type}-${currentIndex}`;
+
+                    // 이미지 추가
+                    let img = document.createElement("img");
+                    img.src = e.target.result;
+                    img.classList.add("thumbnail");
+
+                    // 삭제 버튼 추가
+                    let deleteButton = document.createElement("button");
+                    deleteButton.type = "button";
+                    deleteButton.innerHTML =
+                        '<i class="fa-solid fa-square-xmark" style="color: #ff0000;"></i>';
+                    deleteButton.className = "btn-delete";
+
+                    deleteButton.onclick = function () {
+                        deleteNewImage(currentIndex, type);
+                        // 현재 이미지 개수가 0일경우 첨부파일 쪽 이름 변경
+                        if(currentImageCount ==0){
+                            $(".upload-name").val("첨부파일: 최대 다섯장만 등록 가능합니다.");
+                        }
+                    };
+
+                    imageContainer.appendChild(img);
+                    imageContainer.appendChild(deleteButton);
+                    previewContainer.appendChild(imageContainer);
+                };
+
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // 새로 추가한 이미지 삭제 (서브, 설명 이미지 공용)
+        function deleteNewImage(index, type) {
+            let imageContainer = document.getElementById(`new${type}-${index}`);
+            if (imageContainer) {
+                imageContainer.remove(); // 미리보기에서 삭제
+            }
+
+            // 파일 선택 input에서도 제거 (브라우저에서 직접 수정 불가 -> 새롭게 선택하도록 유도)
+            let fileInput = document.getElementById(type);
+            fileInput.value = ""; // 선택된 파일 초기화
+        }
+
+        function previewSingleImage(event, previewId, inputId) {
+            let file = event.target.files[0];
+            let previewContainer = document.getElementById(previewId);
+            previewContainer.innerHTML = ""; // 미리보기 이미지 보여줄 공간
+
+            if (file) {
+                let reader = new FileReader();
+                reader.onload = function (e) {
+                    // 이미지 및 버튼을 감쌀 컨테이너 div 생성
+                    let imageContainer = document.createElement("div");
+                    imageContainer.classList.add("image-container"); // 클래스 추가
+
+                    let imgElement = document.createElement("img");
+                    imgElement.src = e.target.result;
+                    imgElement.classList.add("thumbnail");
+
+                    // 삭제 버튼 추가
+                    let deleteButton = document.createElement("button");
+                    deleteButton.innerHTML =
+                        deleteButton.className = "btn-delete";
+                    deleteButton.onclick = function () {
+                        imageContainer.remove(); // 미리보기 삭제
+                        document.getElementById(inputId).value = ""; // input 초기화
+                    };
+
+                    imageContainer.appendChild(imgElement);
+                    imageContainer.appendChild(deleteButton);
+                    previewContainer.appendChild(imageContainer); // 컨테이너 추가
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+
+        let submitBtn = document.getElementById("submitBtn");
+        let content = document.getElementById("content");
+
+        submitBtn.addEventListener("click", function () {
+            let scoreLength = document.querySelectorAll(".y");
+            let imageboxCount = document.querySelectorAll(".image-container");
+            // 노란색의 개수로 score 값 넣음
+            document.getElementById("score").value = scoreLength.length;
+
+            if (imageboxCount.length > 5) {
+                alert("리뷰 사진은 최대 5장까지 가능합니다.");
+            }
+
+            if (content.value.length < 10 || content.value.length > 500) {
+                alert("리뷰는 최소 10자 이상 500자 이하여야 합니다.");
+            }
+            else {
+                document.getElementById("reviewForm").submit();
+            }
+        })
+
+
+
+    </script>
+</body>
+
+</html>
