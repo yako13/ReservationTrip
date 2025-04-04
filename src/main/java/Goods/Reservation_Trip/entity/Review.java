@@ -2,9 +2,7 @@ package Goods.Reservation_Trip.entity;
 
 import Goods.Reservation_Trip.base.BaseTime;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Comment;
 
 import java.util.ArrayList;
@@ -14,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Setter
 public class Review extends BaseTime {
 
     @Id
@@ -22,10 +21,15 @@ public class Review extends BaseTime {
     @Column(name = "review_id")
     private Long id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name="package_id",nullable = false)
     @Comment("패키지 PK")
     private Package aPackage;
+
+    @OneToOne
+    @JoinColumn(name="reservation_id",nullable = false)
+    @Comment("예약 PK")
+    private Reservation reservation;
 
     @ManyToOne
     @JoinColumn(name="member_id",nullable = false)
@@ -34,7 +38,7 @@ public class Review extends BaseTime {
 
     @Column(name="score",nullable = false)
     @Comment("별점")
-    private int score;
+    private int rating;
 
     @Column(name = "content",nullable = false,length = 500)
     @Comment("리뷰 내용")

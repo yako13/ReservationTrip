@@ -86,12 +86,15 @@ public class Reservation extends BaseTime {
     @Comment("매입사 코드")
     private String purCorpCode;
 
-    @Column
-    @Comment("카드사 승인 번호")
-    private String approved;
+//    @Column
+//    @Comment("카드사 승인 번호")
+//    private String approved;
 
     @OneToMany(mappedBy = "reservation",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReservationDetails> reservationDetailsList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "reservation",cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Review> reviewList = new ArrayList<>();
 
 }
 

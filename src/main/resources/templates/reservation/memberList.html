@@ -60,7 +60,7 @@
                     th:onclick="window.location.href='/member/reservation/details/' + [[${reservation.reservationPK}]];">
                     <td><span>[[${reservation.createdAt}]]</span><br> [[${reservation.code}]]</td>
                     <td th:text="${reservation.packageName}"></td>
-                    <td>총 [[${reservation.totalPay}]]</td>
+                    <td>[[${reservation.totalPay}]]</td>
                     <td th:text="${reservation.reservationMembers}"></td>
                     <td>[[${reservation.startDate}]] ~ [[${reservation.endDate}]]</td>
                     <td th:text="${reservation.reservationState}">예약완료</td>
