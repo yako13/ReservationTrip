@@ -3,10 +3,7 @@ package Goods.Reservation_Trip.entity;
 import Goods.Reservation_Trip.base.BaseTime;
 import Goods.Reservation_Trip.enums.ReservationState;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Comment;
 
 import java.math.BigDecimal;
@@ -20,6 +17,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 @Setter
 public class Reservation extends BaseTime {
@@ -58,9 +56,21 @@ public class Reservation extends BaseTime {
     @Comment("카카오페이 고유 번호")
     private String aid;
 
-//    @Column(nullable = false)
-//    @Comment("카카오 페이 결제 승인 시각")
-//    private LocalDateTime approvedAt;
+    @Column(nullable = false)
+    @Comment("카카오 페이 결제 승인 시각")
+    private LocalDateTime approvedAt;
+
+    @Column( nullable = false)
+    @Comment("성인 총 결제 금액")
+    private BigDecimal adultSumPrice;
+
+    @Column( nullable = false)
+    @Comment("아동 총 결제 금액")
+    private BigDecimal childSumPrice;
+
+    @Column( nullable = false)
+    @Comment("유아 총 결제 금액")
+    private BigDecimal babySumPrice;
 
     @Column(nullable = false)
     @Comment("카카오페이 결제 고유 번호")
@@ -85,11 +95,7 @@ public class Reservation extends BaseTime {
     @Column(name = "pur_corp_code")
     @Comment("매입사 코드")
     private String purCorpCode;
-
-    @Column
-    @Comment("카드사 승인 번호")
-    private String approved;
-
+    
     @OneToMany(mappedBy = "reservation",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReservationDetails> reservationDetailsList = new ArrayList<>();
 

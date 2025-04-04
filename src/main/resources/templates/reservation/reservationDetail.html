@@ -5,23 +5,36 @@
   <meta charset="UTF-8" />
   <title>예약하기</title>
 
-  <link rel="stylesheet" th:href="@{/css/mainPage.css}"/>
+  <link rel="stylesheet" th:href="@{/css/mainPage.css}" />
   <link rel="stylesheet" th:href="@{/css/reservation/reservationDetail.css}" />
   <style>
+    .HanResStat {
+      display: inline-block;
+      margin: 4px;
 
+    }
+
+    .HanResStatDiv {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      color: #777;
+      font-size: 14px;
+    }
   </style>
 
 </head>
 
 <body>
 
-<!-- 헤더 시작 -->
+  <!-- 헤더 시작 -->
 
-<header th:replace="/fragments/memberHeader::memberHeader"></header>
-<!-- 헤더 끝 -->
+  <header th:replace="/fragments/memberHeader::memberHeader"></header>
+  <!-- 헤더 끝 -->
 
 
-<!-- 메인 시작 -->
+  <!-- 메인 시작 -->
 
   <div class="HanResDiv">
 
@@ -30,14 +43,16 @@
       <span>예약상세</span>
     </div>
 
-
-
     <!-- 예약 정보 -->
     <div class="HanResCard" style="margin-top: 20px;">
 
       <div class="section-title">
         <img th:src="@{/images/package.svg}" width="17px">
         <span>상품정보</span>
+      </div>
+
+      <div class="HanResStatDiv">
+        <p class="HanResStat">예약완료</p>
       </div>
 
       <div class="HanResNumDiv">
@@ -257,11 +272,7 @@
 
         </div>
 
-
-
       </div>
-
-
 
     </div>
 
@@ -270,8 +281,6 @@
       <button>예약 취소</button>
 
     </div>
-
-
 
   </div>
 

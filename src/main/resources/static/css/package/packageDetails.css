@@ -564,12 +564,12 @@ body {
   padding-bottom: 30px;
   display: flex;
   justify-content: center;
-  gap: 30px;
+  gap: 10px;
 
 }
 
 .HanCkSubmitA button {
-  width: 100%;
+  width: 208px;
   padding: 16px 0;
   box-sizing: border-box;
   display: flex;
@@ -590,20 +590,28 @@ body {
   color: #ffffff;
 }
 
-
-.HanCkSubmitA .HanHome {
-  background-color: #ececec;
-  color: #333;
-}
-
 .HanCkSubmitA .HanCheckoutList:hover {
   background-color: #3e8cf1;
   color: #ebebeb;
   transform: scale(0.98);
 }
 
-.HanCkSubmitA .HanHome:hover {
-  background-color: #e0e0e0;
-  color: #333;
+.HanCkSubmitA a {
+  border: 1px solid #ccc;
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: white;
+  color: #ffffff;
+}
+
+.HanCkSubmitA a:hover {
+  background-color: #dadada;
+  color: #ebebeb;
   transform: scale(0.98);
 }
