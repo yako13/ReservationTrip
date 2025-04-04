@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequiredArgsConstructor
@@ -21,26 +22,62 @@ public class ReviewController {
 
     private final MemberService memberService;
 
+    /**
+     * 리뷰 등록 페이지
+     */
     @GetMapping("/member/review/new/{reservationId}")
-    public String memberReviewPage(Model model, @PathVariable Long reservationId, HttpServletRequest request){
-        MemberResponseDto memberResponseDto = memberService.getMember(request);
+    public String memberReviewPage(Model model, @PathVariable Long reservationId) {
 
-        ReviewResponseDto reviewResponseDto =reviewService.getReviewCreatingPage(reservationId,memberResponseDto.getId());
+        ReviewResponseDto reviewResponseDto = reviewService.getReviewCreatingPage(reservationId);
 
-        if(reviewResponseDto == null) return "redirect:/member/reservation/details/"+reservationId;
+        if (reviewResponseDto == null) return "redirect:/member/reservation/details/" + reservationId;
 
-        model.addAttribute("packageMainImage",reviewResponseDto.getPackageMainImage());
-        model.addAttribute("packageName",reviewResponseDto.getPackageName());
-        model.addAttribute("reservationId",reservationId);
+        model.addAttribute("packageMainImage", reviewResponseDto.getPackageMainImage());
+        model.addAttribute("packageName", reviewResponseDto.getPackageName());
+        model.addAttribute("reservationId", reservationId);
 
-        return "member/newReview";
+        return "review/new";
     }
 
+    /**
+     * 리뷰 등록
+     */
     @PostMapping("/member/review/new")
-    public String createReview(ReviewDto reviewDto,HttpServletRequest request){
+    public String createReview(ReviewDto reviewDto, HttpServletRequest request) {
         MemberResponseDto memberResponseDto = memberService.getMember(request);
-        reviewService.registerReview(reviewDto,memberResponseDto.getId());
+        reviewService.registerReview(reviewDto, memberResponseDto.getId());
 //        return "redirect:/member/review/list";
+        return "redirect:/member/reservation/list";
+    }
+
+    /**
+     * 리뷰 수정 페이지
+     */
+    @GetMapping("/member/review/edit/{reviewId}")
+    public String reviewEditPage(Model model, @PathVariable Long reviewId) {
+        ReviewResponseDto reviewResponseDto = reviewService.getReviewEditPage(reviewId);
+        model.addAttribute("packageMainImage", reviewResponseDto.getPackageMainImage());
+        model.addAttribute("packageName", reviewResponseDto.getPackageName());
+        model.addAttribute("content", reviewResponseDto.getContent());
+        model.addAttribute("reviewImages", reviewResponseDto.getImagesURL());
+        model.addAttribute("rating", reviewResponseDto.getRating());
+        model.addAttribute("reviewId", reviewId);
+
+        return "review/edit";
+    }
+
+    /**
+     * 리뷰 수정
+     */
+    @PostMapping("/member/review/edit")
+    public String editReview(ReviewDto reviewDto, HttpServletRequest request,
+    @RequestParam(value = "deletedImages", required = false) String deletedImages
+    ) {
+        MemberResponseDto memberResponseDto = memberService.getMember(request);
+
+        reviewService.editReview(reviewDto, memberResponseDto.getId(),deletedImages);
+
+        //        return "redirect:/member/review/list";
         return "redirect:/member/reservation/list";
     }
 }

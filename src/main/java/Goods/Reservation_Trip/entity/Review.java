@@ -44,7 +44,7 @@ public class Review extends BaseTime {
     @Comment("리뷰 내용")
     private String content;
 
-    @OneToMany(mappedBy = "review",cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "review", orphanRemoval = true)
     private List<ReviewImage> reviewImageList = new ArrayList<>();
 
 }

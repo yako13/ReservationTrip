@@ -19,11 +19,11 @@ public class ReviewImage extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "package_image_id")
+    @Column(name = "review_image_id")
     private Long id;
 
     @JoinColumn(name = "review_id", nullable = false)
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private Review review;
 
     @Column(name = "original_name", nullable = false)

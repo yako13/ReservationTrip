@@ -12,7 +12,7 @@ import java.util.List;
 @Builder
 public class ReviewDto {
 
-    //리뷰 PK
+    //예약 PK
     private Long reservationId;
 
     //리뷰 내용
@@ -23,5 +23,8 @@ public class ReviewDto {
 
     //리뷰 이미지
     private List<MultipartFile> reviewImages;
+
+    //리뷰 PK
+    private Long reviewId;
 
 }

@@ -214,7 +214,7 @@
                 <div id="reviewImagePreview" class="preview-container"></div>
                 <div class="btnArea">
                     <button type="button" id="cancelBtn"
-                        onclick="window.location.href='/member/review/details/'+'${reservationId}'">취소</button>
+                        onclick="window.location.href='/member/review/list'">취소</button>
                     <button type="button" id="submitBtn">등록</button>
                 </div>
             </form>
@@ -328,7 +328,7 @@
 
             // 파일 선택 input에서도 제거 (브라우저에서 직접 수정 불가 -> 새롭게 선택하도록 유도)
             let fileInput = document.getElementById(type);
-            fileInput.value = null; // 선택된 파일 초기화
+            fileInput.value = ""; // 선택된 파일 초기화
         }
 
         function previewSingleImage(event, previewId, inputId) {
