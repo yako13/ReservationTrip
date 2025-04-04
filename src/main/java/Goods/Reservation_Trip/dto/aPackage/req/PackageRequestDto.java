@@ -16,6 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 public class PackageRequestDto {
 
+    private Long id;
     /**
      * 패키지명
      */

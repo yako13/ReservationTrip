@@ -1,5 +1,6 @@
 package Goods.Reservation_Trip.service.aPackage;
 
+import Goods.Reservation_Trip.dto.aPackage.req.PackageScheduleDetailsRequestDto;
 import Goods.Reservation_Trip.dto.aPackage.req.PackageScheduleRequestDto;
 import Goods.Reservation_Trip.entity.Package;
 import Goods.Reservation_Trip.entity.PackageSchedule;
@@ -9,8 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -19,35 +20,41 @@ public class PackageScheduleService {
 
     private final PackageScheduleRepository packageScheduleRepository;
 
+    private final PackageScheduleDetailsService packageScheduleDetailsService;
+
 
     public List<PackageSchedule> saveAll(Package aPackage, List<PackageScheduleRequestDto> requestDto) {
         if (requestDto == null) {
             throw new IllegalArgumentException("스케줄 요청 데이터가 null입니다.");
         }
 
-        List<PackageSchedule> schedules = requestDto.stream()
-                .map(dto -> PackageSchedule.builder()
-                        .aPackage(aPackage)
-                        .departureDateOut(dto.getDepartureDateOut())
-                        .arrivalDateOut(dto.getArrivalDateOut())
-                        .departureDateReturn(dto.getDepartureDateReturn())
-                        .arrivalDateReturn(dto.getArrivalDateReturn())
-                        .departurePointOut(dto.getDeparturePointOut())
-                        .arrivalPointOut(dto.getArrivalPointOut())
-                        .departurePointReturn(dto.getDeparturePointReturn())
-                        .arrivalPointReturn(dto.getArrivalPointReturn())
-                        .airlineOut(dto.getAirlineOut())
-                        .airlineReturn(dto.getAirlineReturn())
-                        .flightNumberOut(dto.getFlightNumberOut())
-                        .flightNumberReturn(dto.getFlightNumberReturn())
-                        .departureTimeOut(dto.getDepartureTimeOut())
-                        .arrivalTimeOut(dto.getArrivalTimeOut())
-                        .departureTimeReturn(dto.getDepartureTimeReturn())
-                        .arrivalTimeReturn(dto.getArrivalTimeReturn())
-                        .packageStatus(PackageStatus.AVAILABLE)
-                        .build())
-                .collect(Collectors.toList());
+        List<PackageSchedule> scheduleList = new ArrayList<>();
 
-        return packageScheduleRepository.saveAll(schedules);
+        for (PackageScheduleRequestDto scheduleRequestDto : requestDto) {
+                PackageSchedule packageSchedule = PackageSchedule.builder()
+                        .aPackage(aPackage)
+                        .departureDateOut(scheduleRequestDto.getDepartureDateOut())
+                        .arrivalDateOut(scheduleRequestDto.getArrivalDateOut())
+                        .departureDateReturn(scheduleRequestDto.getDepartureDateReturn())
+                        .arrivalDateReturn(scheduleRequestDto.getArrivalDateReturn())
+                        .packageStatus(PackageStatus.AVAILABLE)
+                        .build();
+
+            scheduleList.add(packageSchedule);
+        }
+
+        List<PackageSchedule> savedScheduleList = packageScheduleRepository.saveAll(scheduleList);
+
+        for (int i = 0; i < savedScheduleList.size(); i++) {
+
+            PackageScheduleDetailsRequestDto details = requestDto.get(i).getDetails();
+
+            if (details != null) {
+            packageScheduleDetailsService.save(savedScheduleList.get(i), requestDto.get(i).getDetails());
+            } else {
+                System.out.println("details 의 값이 NULL");
+            }
+        }
+        return savedScheduleList;
     }
 }

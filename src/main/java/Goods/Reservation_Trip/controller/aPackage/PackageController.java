@@ -1,13 +1,10 @@
 package Goods.Reservation_Trip.controller.aPackage;
 
-import Goods.Reservation_Trip.dto.aPackage.req.PackageOptionRequestDto;
-import Goods.Reservation_Trip.dto.aPackage.req.PackageRequestDto;
-import Goods.Reservation_Trip.dto.aPackage.req.PackageScheduleListRequestDto;
+import Goods.Reservation_Trip.dto.aPackage.req.PageSaveRequestDto;
 import Goods.Reservation_Trip.dto.aPackage.res.AdminPackageListResponseDto;
 import Goods.Reservation_Trip.service.aPackage.CombinePackageService;
 import Goods.Reservation_Trip.service.aPackage.PackageService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequiredArgsConstructor
-@Slf4j
 public class PackageController {
 
     private final PackageService packageService;
@@ -32,11 +28,8 @@ public class PackageController {
     }
 
     @PostMapping("/admin/package/save")
-    public String PackageSave(
-                              @ModelAttribute PackageRequestDto requestDto,
-                              @ModelAttribute PackageOptionRequestDto optionRequestDto,
-                              @ModelAttribute PackageScheduleListRequestDto scheduleRequestDtoList) {
-        packageService.save(requestDto, optionRequestDto, scheduleRequestDtoList.getSchedules());
+    public String PackageSave(@ModelAttribute PageSaveRequestDto requestDto) {
+        packageService.save(requestDto.getAPackage(), requestDto.getPackageOption(), requestDto.getPackageSchedule());
         return "redirect:/admin/package/list";
     }
 

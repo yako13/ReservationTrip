@@ -115,69 +115,69 @@
             <div class="a2">
               <div class="input__flex">
                 <label>상품명</label>
-                <input type="text" name="packageName" />
+                <input type="text" name="aPackage.packageName" />
               </div>
-              <div class="input__flex">
+              <!-- <div class="input__flex">
                 <label>예약 가능 인원수</label>
                 <input type="number" name="maximumMember" />
-              </div>
+              </div> -->
               <div class="input__flex">
                 <label>성인 1인당 가격</label>
-                <input type="text" name="adultPrice" />
+                <input type="text" name="aPackage.adultPrice" />
               </div>
               <div class="input__flex">
                 <label>아동 1인당 가격</label>
-                <input type="text" name="childPrice" />
+                <input type="text" name="aPackage.childPrice" />
               </div>
               <div class="input__flex">
                 <label>유아 1인당 가격</label>
-                <input type="text" name="babyPrice" />
+                <input type="text" name="aPackage.babyPrice" />
               </div>
               <div class="input__flex">
                 <label>유류할증료 포함 1인당 가격</label>
-                <input type="text" name="fuelSurchargeIncluded" />
+                <input type="text" name="aPackage.fuelSurchargeIncluded" />
               </div>
               <div class="input__flex">
                 <label>여행지 한 줄 설명</label>
-                <input type="text" name="description" />
+                <input type="text" name="aPackage.description" />
               </div>
             </div>
             <div class="a3">
-              <div class="input__flex">
+              <!-- <div class="input__flex">
                 <label>최소 출발 인원</label>
                 <input type="number" name="minimumRequired" />
-              </div>
+              </div> -->
               <input
                 type="hidden"
                 id="hiddenMainCategoryId"
-                name="mainCategoryId" />
+                name="aPackage.mainCategoryId" />
               <div>
                 <label>도시 카테고리</label>
-                <select id="mainCategory" name="mainCategoryId">
+                <select id="mainCategory" name="aPackage.mainCategoryId">
                   <option value="" selected>카테고리를 선택하세요</option>
                 </select>
-                <select id="subCategory" name="subCategoryId">
+                <select id="subCategory" name="aPackage.subCategoryId">
                   <option value="#">중분류</option>
                 </select>
-                <select id="smallCategory" name="smallCategoryId">
+                <select id="smallCategory" name="aPackage.smallCategoryId">
                   <option value="#">소분류</option>
                 </select>
               </div>
               <div class="input__flex">
                 <label>유류할증료</label>
-                <input type="text" name="fuelSurcharge" />
+                <input type="text" name="aPackage.fuelSurcharge" />
               </div>
               <div class="input__flex">
                 <label>썸네일 이미지</label>
-                <input type="file" name="mainImage" />
+                <input type="file" name="aPackage.mainImage" />
               </div>
               <div class="input__flex">
                 <label>서브 이미지</label>
-                <input type="file" multiple name="subImage" />
+                <input type="file" multiple name="aPackage.subImage" />
               </div>
               <div class="input__flex">
                 <label>일정이미지</label>
-                <input type="file" multiple name="descImage" />
+                <input type="file" multiple name="aPackage.descImage" />
               </div>
               <br />
             </div>
@@ -188,7 +188,7 @@
           <div class="a5">
             <div class="generateClass">
               <label for="period">여행 기간</label>
-              <input type="text" name="period" id="period" />
+              <input type="text" name="aPackage.period" id="period" />
               <label>시작일자</label>
               <input type="date" id="setStart" />
               <label>종료일자</label>
@@ -201,7 +201,9 @@
                   <div class="b3">
                     <div>
                       <label for="departurePointOut">출발지</label>
-                      <select name="departurePointOut" id="departurePointOut">
+                      <select
+                        name="packageSchedule.departurePointOut"
+                        id="departurePointOut">
                         <option value="GIMPO">김포국제공항</option>
                         <option value="INCHEON">인천국제공항</option>
                         <option value="DAEGU">대구국제공항</option>
@@ -210,14 +212,16 @@
                     </div>
                     <div>
                       <label for="arrivalPointOut">도착지</label>
-                      <select name="arrivalPointOut" id="arrivalPointOut">
+                      <select
+                        name="packageSchedule.arrivalPointOut"
+                        id="arrivalPointOut">
                         <option value="NARITA">나리타국제공항</option>
                         <option value="KANSAI">간사이국제공항</option>
                       </select>
                     </div>
                     <div>
                       <label for="airlineOut">항공사</label>
-                      <select name="airlineOut" id="airlineOut">
+                      <select name="packageSchedule.airlineOut" id="airlineOut">
                         <option value="AIR_SEOUL">에어서울</option>
                         <option value="TWAY_AIR">티웨이항공</option>
                         <option value="AIR_BUSAN">에어부산</option>
@@ -231,20 +235,20 @@
                       <input
                         type="date"
                         id="departureDateOut"
-                        name="departureDateOut" />
+                        name="packageSchedule.departureDateOut" />
                     </div>
                     <div>
                       <label for="arrivalDateOut">도착날짜</label>
                       <input
                         type="date"
                         id="arrivalDateOut"
-                        name="arrivalDateOut" />
+                        name="packageSchedule.arrivalDateOut" />
                     </div>
                     <div>
                       <label for="flightNumberOut">항공기 번호</label>
                       <input
                         type="text"
-                        name="flightNumberOut"
+                        name="packageSchedule.flightNumberOut"
                         id="flightNumberOut" />
                     </div>
                   </div>
@@ -254,14 +258,14 @@
                       <input
                         type="time"
                         id="departureTimeOut"
-                        name="departureTimeOut" />
+                        name="packageSchedule.departureTimeOut" />
                     </div>
                     <div>
                       <label for="arrivalTimeOut">도착시간</label>
                       <input
                         type="time"
                         id="arrivalTimeOut"
-                        name="arrivalTimeOut" />
+                        name="packageSchedule.arrivalTimeOut" />
                     </div>
                   </div>
                 </div>
@@ -274,7 +278,7 @@
                     <div>
                       <label for="departurePointReturn">출발지</label>
                       <select
-                        name="departurePointReturn"
+                        name="packageSchedule.departurePointReturn"
                         id="departurePointReturn">
                         <option value="NARITA">나리타국제공항</option>
                         <option value="KANSAI">간사이국제공항</option>
@@ -282,7 +286,9 @@
                     </div>
                     <div>
                       <label for="arrivalPointReturn">도착지</label>
-                      <select name="arrivalPointReturn" id="arrivalPointReturn">
+                      <select
+                        name="packageSchedule.arrivalPointReturn"
+                        id="arrivalPointReturn">
                         <option value="GIMPO">김포국제공항</option>
                         <option value="INCHEON">인천국제공항</option>
                         <option value="DAEGU">대구국제공항</option>
@@ -291,7 +297,9 @@
                     </div>
                     <div>
                       <label for="airlineReturn">항공사</label>
-                      <select name="airlineReturn" id="airlineReturn">
+                      <select
+                        name="packageSchedule.airlineReturn"
+                        id="airlineReturn">
                         <option value="AIR_SEOUL">에어서울</option>
                         <option value="TWAY_AIR">티웨이항공</option>
                         <option value="AIR_BUSAN">에어부산</option>
@@ -305,20 +313,20 @@
                       <input
                         type="date"
                         id="departureDateReturn"
-                        name="departureDateReturn" />
+                        name="packageSchedule.departureDateReturn" />
                     </div>
                     <div>
                       <label for="arrivalDateReturn">도착날짜</label>
                       <input
                         type="date"
                         id="arrivalDateReturn"
-                        name="arrivalDateReturn" />
+                        name="packageSchedule.arrivalDateReturn" />
                     </div>
                     <div>
                       <label for="flightNumberReturn">항공기 번호</label>
                       <input
                         type="text"
-                        name="flightNumberReturn"
+                        name="packageSchedule.flightNumberReturn"
                         id="flightNumberReturn" />
                     </div>
                   </div>
@@ -328,14 +336,14 @@
                       <input
                         type="time"
                         id="departureTimeReturn"
-                        name="departureTimeReturn" />
+                        name="packageSchedule.departureTimeReturn" />
                     </div>
                     <div>
                       <label for="arrivalTimeReturn">도착시간</label>
                       <input
                         type="time"
                         id="arrivalTimeReturn"
-                        name="arrivalTimeReturn" />
+                        name="packageSchedule.arrivalTimeReturn" />
                     </div>
                   </div>
                 </div>
@@ -359,31 +367,42 @@
           <div class="a9">
             <div>
               <label for="hetel-name">호텔명</label>
-              <input type="text" id="hotel-name" name="hotelName" />
+              <input type="text" id="hotel-name" name="aPackage.hotelName" />
             </div>
             <button type="button">일정 추가</button>
           </div>
           <!-- 상품 옵션 -->
           <div>옵션</div>
           <div class="b1">
-            <input type="hidden" name="guide" value="false" />
-            <input type="checkbox" id="guide" name="guide" value="true" />
+            <input type="hidden" name="packageOption.guide" value="false" />
+            <input
+              type="checkbox"
+              id="guide"
+              name="packageOption.guide"
+              value="true" />
             <label for="guide" class="input__label">가이드 동반</label>
-            <input type="hidden" name="hotelFee" value="false" />
+
+            <input type="hidden" name="packageOption.hotelFee" value="false" />
             <input
               type="checkbox"
               id="hotel-fee"
-              name="hotelFee"
+              name="packageOption.hotelFee"
               value="true" />
             <label for="hotel-fee" class="input__label">호텔비 포함</label>
-            <input type="hidden" name="airFare" value="false" />
-            <input type="checkbox" id="plane-fee" name="airFare" value="true" />
+
+            <input type="hidden" name="packageOption.airFare" value="false" />
+            <input
+              type="checkbox"
+              id="plane-fee"
+              name="packageOption.airFare"
+              value="true" />
             <label for="plane-fee" class="input__label">항공료 포함</label>
-            <input type="hidden" name="shopping" value="false" />
+
+            <input type="hidden" name="packageOption.shopping" value="false" />
             <input
               type="checkbox"
               id="no-shopping"
-              name="shopping"
+              name="packageOption.shopping"
               value="true" />
             <label for="no-shopping" class="input__label">쇼핑 없음</label>
           </div>
@@ -591,8 +610,8 @@
         const formattedDateEnd = sd2.toISOString().split("T")[0];
         const row = document.createElement("tr");
         row.innerHTML = `
-            <td><input type="date" name="schedules[${rowCount}].departureDateOut" value="${formattedDate}"></td>
-            <td><select name="schedules[${rowCount}].departurePointOut">
+            <td><input type="date" name="packageSchedule[${rowCount}].departureDateOut" value="${formattedDate}"></td>
+            <td><select name="packageSchedule[${rowCount}].details.departurePointOut">
               <option value="GIMPO" ${
                 departurePointOut === "GIMPO" ? "selected" : ""
               }>김포국제공항</option>
@@ -605,14 +624,14 @@
               <option value="BUSAN" ${
                 departurePointOut === "BUSAN" ? "selected" : ""
               }>부산국제공항</option></select></td>
-            <td><select name="schedules[${rowCount}].arrivalPointOut">
+            <td><select name="packageSchedule[${rowCount}].details.arrivalPointOut">
               <option value="NARITA" ${
                 arrivalPointOut === "NARITA" ? "selected" : ""
               }>나리타국제공항</option>
               <option value="KANSAI" ${
                 arrivalPointOut === "KANSAI" ? "selected" : ""
               }>간사이국제공항</option></select></td>
-            <td><select name="schedules[${rowCount}].airlineOut">
+            <td><select name="packageSchedule[${rowCount}].details.airlineOut">
               <option value="AIR_SEOUL" ${
                 airlineOut === "AIR_SEOUL" ? "selected" : ""
               }>에어서울</option>
@@ -631,18 +650,18 @@
               <option value="KOREAN_AIR" ${
                 airlineOut === "KOREAN_AIR" ? "seleted" : ""
               }>대한항공</option></select></td>
-              <td><input type="text" name="schedules[${rowCount}].flightNumberOut" value="${flightNumberOut}"></td>
-              <td><input type="time" name="schedules[${rowCount}].departureTimeOut" value="${departureTimeOut}"></td>
-              <td><input type="time" name="schedules[${rowCount}].arrivalTimeOut" value="${arrivalTimeOut}"></td>
-              <td><input type="date" name="schedules[${rowCount}].departureDateReturn" value="${formattedDateEnd}">
-              <td><select name="schedules[${rowCount}].departurePointReturn">
+              <td><input type="text" name="packageSchedule[${rowCount}].details.flightNumberOut" value="${flightNumberOut}"></td>
+              <td><input type="time" name="packageSchedule[${rowCount}].details.departureTimeOut" value="${departureTimeOut}"></td>
+              <td><input type="time" name="packageSchedule[${rowCount}].details.arrivalTimeOut" value="${arrivalTimeOut}"></td>
+              <td><input type="date" name="packageSchedule[${rowCount}].departureDateReturn" value="${formattedDateEnd}">
+              <td><select name="packageSchedule[${rowCount}].details.departurePointReturn">
                 <option value="NARITA" ${
                   departurePointReturn === "NARITA" ? "selected" : ""
                 }>나리타국제공항</option>
                 <option value="KANSAI" ${
                   departurePointReturn === "KANSAI" ? "selected" : ""
                 }>간사이국제공항</option></select></td>
-              <td><select name="schedules[${rowCount}].arrivalPointReturn">
+              <td><select name="packageSchedule[${rowCount}].details.arrivalPointReturn">
                 <option value="GIMPO" ${
                   arrivalPointReturn === "GIMPO" ? "selected" : ""
                 }>김포국제공항</option>
@@ -655,7 +674,7 @@
                 <option value="BUSAN" ${
                   arrivalPointReturn === "BUSAN" ? "selected" : ""
                 }>부산국제공항</option></select></td>
-              <td><select name="schedules[${rowCount}].airlineReturn">
+              <td><select name="packageSchedule[${rowCount}].details.airlineReturn">
                 <option value="AIR_SEOUL" ${
                   airlineReturn === "AIR_SEOUL" ? "selected" : ""
                 }>에어서울</option>
@@ -674,11 +693,11 @@
                 <option value="KOREAN_AIR" ${
                   airlineReturn === "KOREAN_AIR" ? "seleted" : ""
                 }>대한항공</option></select></td>
-              <td><input type=text name="schedules[${rowCount}].flightNumberReturn" value=${flightNumberReturn}></td>
-              <td><input type="time" name="schedules[${rowCount}].departureTimeReturn" value="${departureTimeReturn}"></td>
-              <td><input type="time" name="schedules[${rowCount}].arrivalTimeReturn" value="${arrivalTimeReturn}"></td>
-              <td><input type="hidden" name="schedules[${rowCount}].arrivalDateOut" value="${formattedDate}"></td>
-              <td><input type="hidden" name="schedules[${rowCount}].arrivalDateReturn" value="${formattedDateEnd}"></td>
+              <td><input type=text name="packageSchedule[${rowCount}].details.flightNumberReturn" value=${flightNumberReturn}></td>
+              <td><input type="time" name="packageSchedule[${rowCount}].details.departureTimeReturn" value="${departureTimeReturn}"></td>
+              <td><input type="time" name="packageSchedule[${rowCount}].details.arrivalTimeReturn" value="${arrivalTimeReturn}"></td>
+              <td><input type="hidden" name="packageSchedule[${rowCount}].arrivalDateOut" value="${formattedDate}"></td>
+              <td><input type="hidden" name="packageSchedule[${rowCount}].arrivalDateReturn" value="${formattedDateEnd}"></td>
               <td><button type="button" onclick="removeRow(this)">삭제</button></td>`;
         table.appendChild(row);
       }

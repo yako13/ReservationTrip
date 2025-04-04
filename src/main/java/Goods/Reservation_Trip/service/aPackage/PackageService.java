@@ -33,7 +33,9 @@ public class PackageService {
 
     // 패키지 저장
     @Transactional
-    public void save(PackageRequestDto requestDto, PackageOptionRequestDto optionRequestDto, List<PackageScheduleRequestDto> scheduleRequestDto) {
+    public void save(PackageRequestDto requestDto,
+                     PackageOptionRequestDto optionRequestDto,
+                     List<PackageScheduleRequestDto> scheduleRequestDto) {
 
         PackageCategory mainCategory = packageCategoryRepository.findById(requestDto.getMainCategoryId())
                 .orElseThrow(() -> new IllegalArgumentException("대분류 카테고리를 찾을 수 없습니다."));
