@@ -69,7 +69,7 @@ public class Package extends BaseTime {
     @Comment("유류할증료 포함")
     private BigDecimal fuelSurchargeIncluded;
 
-    @Column(name = "hotel_name", columnDefinition = "TEXT")
+    @Column(name = "hotel_name", columnDefinition = "TEXT", nullable = false)
     @Comment("호텔 명")
     private String hotelName;
 

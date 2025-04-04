@@ -10,11 +10,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Dip {
+public class Dib {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "dip_id")
+    @Column(name = "dib_id")
     private Long id;
 
     @JoinColumn(name = "member_id", nullable = false)

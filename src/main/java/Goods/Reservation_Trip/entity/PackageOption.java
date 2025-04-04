@@ -36,7 +36,7 @@ public class PackageOption extends BaseTime {
     @Comment("항공료 포함 여부")
     private boolean airfare;
 
-    @Column(name = "no_shopping", columnDefinition = "BOOLEAN")
+    @Column(name = "no_shopping",nullable = false, columnDefinition = "BOOLEAN")
     @Comment("쇼핑 여부")
     private boolean noShopping;
 }

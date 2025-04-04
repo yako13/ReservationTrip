@@ -104,6 +104,7 @@
         <form
           action="/admin/package/save"
           method="post"
+          onsubmit="return doAction()"
           enctype="multipart/form-data">
           <input
             type="hidden"
@@ -117,10 +118,10 @@
                 <label>상품명</label>
                 <input type="text" name="aPackage.packageName" />
               </div>
-              <!-- <div class="input__flex">
+              <div class="input__flex">
                 <label>예약 가능 인원수</label>
-                <input type="number" name="maximumMember" />
-              </div> -->
+                <input type="number" name="packageSchedule.maximumMember" />
+              </div>
               <div class="input__flex">
                 <label>성인 1인당 가격</label>
                 <input type="text" name="aPackage.adultPrice" />
@@ -143,10 +144,10 @@
               </div>
             </div>
             <div class="a3">
-              <!-- <div class="input__flex">
+              <div class="input__flex">
                 <label>최소 출발 인원</label>
-                <input type="number" name="minimumRequired" />
-              </div> -->
+                <input type="number" name="packageSchedule.minimumRequired" />
+              </div>
               <input
                 type="hidden"
                 id="hiddenMainCategoryId"
@@ -154,13 +155,13 @@
               <div>
                 <label>도시 카테고리</label>
                 <select id="mainCategory" name="aPackage.mainCategoryId">
-                  <option value="" selected>카테고리를 선택하세요</option>
+                  <option value="" selected></option>
                 </select>
                 <select id="subCategory" name="aPackage.subCategoryId">
-                  <option value="#">중분류</option>
+                  <option value="#">-- 중분류 --</option>
                 </select>
                 <select id="smallCategory" name="aPackage.smallCategoryId">
-                  <option value="#">소분류</option>
+                  <option value="#">-- 소분류 --</option>
                 </select>
               </div>
               <div class="input__flex">
@@ -238,9 +239,9 @@
                         name="packageSchedule.departureDateOut" />
                     </div>
                     <div>
-                      <label for="arrivalDateOut">도착날짜</label>
+                      <!-- <label for="arrivalDateOut">도착날짜</label> -->
                       <input
-                        type="date"
+                        type="hidden"
                         id="arrivalDateOut"
                         name="packageSchedule.arrivalDateOut" />
                     </div>
@@ -316,9 +317,9 @@
                         name="packageSchedule.departureDateReturn" />
                     </div>
                     <div>
-                      <label for="arrivalDateReturn">도착날짜</label>
+                      <!-- <label for="arrivalDateReturn">도착날짜</label> -->
                       <input
-                        type="date"
+                        type="hidden"
                         id="arrivalDateReturn"
                         name="packageSchedule.arrivalDateReturn" />
                     </div>
@@ -366,8 +367,8 @@
           <span>호텔 일정</span>
           <div class="a9">
             <div>
-              <label for="hetel-name">호텔명</label>
-              <input type="text" id="hotel-name" name="aPackage.hotelName" />
+              <label for="hetelName">호텔명</label>
+              <input type="text" id="hotelName" name="aPackage.hotelName" />
             </div>
             <button type="button">일정 추가</button>
           </div>
@@ -428,7 +429,7 @@
         .then((data) => {
           console.log("API 응답 데이터:", data);
           const mainCategorySelect = document.getElementById("mainCategory");
-          resetSelect(mainCategorySelect, "대분류 선택"); // 초기화
+          resetSelect(mainCategorySelect, "대분류"); // 초기화
 
           data.forEach((mainCategory) => {
             const option = document.createElement("option");
@@ -451,10 +452,10 @@
     // 중분류 로딩
     function loadSubCategories(subCategories) {
       const subCategorySelect = document.getElementById("subCategory");
-      resetSelect(subCategorySelect, "중분류 선택"); // 초기화
+      resetSelect(subCategorySelect, "중분류"); // 초기화
 
       const smallCategorySelect = document.getElementById("smallCategory");
-      resetSelect(smallCategorySelect, "소분류 선택"); // 중분류가 바뀌면 소분류도 초기화
+      resetSelect(smallCategorySelect, "소분류"); // 중분류가 바뀌면 소분류도 초기화
 
       subCategories.forEach((subCategory) => {
         const option = document.createElement("option");
@@ -475,7 +476,7 @@
     // 소분류 로딩
     function loadSmallCategories(smallCategories) {
       const smallCategorySelect = document.getElementById("smallCategory");
-      resetSelect(smallCategorySelect, "소분류 선택"); // 초기화
+      resetSelect(smallCategorySelect, "소분류"); // 초기화
 
       smallCategories.forEach((smallCategory) => {
         const option = document.createElement("option");
@@ -512,19 +513,47 @@
             this.parentNode.appendChild(hiddenInput);
           } else {
             let hiddenInput = document.querySelector(
-              `input[type=hidden][name=${this.name}]`
+              `input[type=hidden][name="${this.name}"]`
             );
             if (hiddenInput) hiddenInput.remove(); // 체크 시 기존 hidden input 제거
           }
         });
       });
     });
+
+    function doAction() {
+      let hotelName = document.getElementById("hotelName");
+      let flightNumberReturn = document.querySelectorAll(
+        'input[name$=".details.flightNumberReturn"]'
+      );
+
+      if (hotelName.value.trim() === "") {
+        alert("호텔명을 입력하세요");
+        return false;
+      }
+
+      if (!flightNumberReturn || flightNumberReturn.length === 0) {
+        alert("항공편 자동 추가를 눌러 여행일정을 추가하세요");
+        console.log("⚠️ 항공편 번호 input이 아직 없음");
+        return false;
+      }
+      alert("qw");
+      return true;
+    }
+
     // 시작 날짜와 같은 값을 부여
     document.getElementById("setStart").addEventListener("change", function () {
+      const setStart = document.getElementById("setStart").value;
+      const period = Number(document.getElementById("period").value);
+      let returnDate = new Date(setStart);
+      returnDate.setDate(returnDate.getDate() + period - 1);
+      console.log(returnDate);
+      const arrivalReturnDate = returnDate.toISOString().split("T")[0];
+
       document.getElementById("departureDateOut").value = this.value;
-      document.getElementById("arrivalDateOut").value = this.value;
-      document.getElementById("departureDateReturn").value = this.value;
-      document.getElementById("arrivalDateReturn").value = this.value;
+      // document.getElementById("arrivalDateOut").value = this.value;
+      document.getElementById("departureDateReturn").value = arrivalReturnDate;
+      // document.getElementById("arrivalDateReturn").value = this.value;
     });
 
     function generateFlights() {
@@ -570,7 +599,7 @@
         !arrivalPointOut ||
         !airlineOut ||
         !departureDateOut ||
-        !arrivalDateOut ||
+        // !arrivalDateOut ||
         !flightNumberOut ||
         !departureTimeOut ||
         !arrivalTimeOut ||
@@ -578,7 +607,7 @@
         !arrivalPointReturn ||
         !airlineReturn ||
         !departureDateReturn ||
-        !arrivalDateReturn ||
+        // !arrivalDateReturn ||
         !flightNumberReturn ||
         !departureTimeReturn ||
         !arrivalTimeReturn
@@ -693,11 +722,11 @@
                 <option value="KOREAN_AIR" ${
                   airlineReturn === "KOREAN_AIR" ? "seleted" : ""
                 }>대한항공</option></select></td>
-              <td><input type=text name="packageSchedule[${rowCount}].details.flightNumberReturn" value=${flightNumberReturn}></td>
+              <td><input type=text name="packageSchedule[${rowCount}].details.flightNumberReturn" value="${flightNumberReturn}""></td>
               <td><input type="time" name="packageSchedule[${rowCount}].details.departureTimeReturn" value="${departureTimeReturn}"></td>
               <td><input type="time" name="packageSchedule[${rowCount}].details.arrivalTimeReturn" value="${arrivalTimeReturn}"></td>
               <td><input type="hidden" name="packageSchedule[${rowCount}].arrivalDateOut" value="${formattedDate}"></td>
-              <td><input type="hidden" name="packageSchedule[${rowCount}].arrivalDateReturn" value="${formattedDateEnd}"></td>
+              <td><input type="hidden" name="packageSchedule[${rowCount}].arrivalDateReturn" value="${formattedDateEnd}" ></td>
               <td><button type="button" onclick="removeRow(this)">삭제</button></td>`;
         table.appendChild(row);
       }
