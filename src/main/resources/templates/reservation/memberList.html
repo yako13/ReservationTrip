@@ -57,7 +57,7 @@
                     <th>예약상태</th>
                 </tr>
                 <tr th:if="${reservationList!=null} " th:each="reservation : ${reservationList}"
-                    th:onclick="window.location.href='/member/reservation/details/' + [[${reservation.reservationPK}]];">
+                    th:onclick="window.location.href='/member/reservation/details/' + [[${reservation.reservationPK}]]" class="tableTr">
                     <td><span>[[${reservation.createdAt}]]</span><br> [[${reservation.code}]]</td>
                     <td th:text="${reservation.packageName}"></td>
                     <td>[[${reservation.totalPay}]]</td>
