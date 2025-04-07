@@ -216,4 +216,43 @@ public class ReviewService {
         }
         return responseDtos;
     }
+
+    /**
+     * 리뷰 리스트
+     */
+    public List<ReviewResponseDto> getReviewList(Long memberId) {
+        List<Review> reviewList = reviewRepository.findByMemberId(memberId);
+
+        List<ReviewResponseDto> responseDtoList = new ArrayList<>();
+
+        for (Review review : reviewList) {
+            boolean modified = true;
+            //수정됐는지 안됐는지만 체크
+            //수정 날짜와 생성 날짜가 같으면 수정하지 않았음
+            if (review.getCreatedAt().equals(review.getModifiedAt())) {
+                modified = false;
+            }
+
+            List<String> images = new ArrayList<>();
+
+            //리뷰 이미지 가져오기
+            for (ReviewImage reviewImage : review.getReviewImageList()) {
+                images.add(imageManager.createImageUrl(reviewImage.getImageFullName()));
+            }
+
+            ReviewResponseDto reviewResponseDto = ReviewResponseDto.builder()
+                    .reviewId(review.getId())
+                    .packageMainImage(imageManager.createImageUrl(review.getAPackage().getMainImage().getImageFullName()))
+                    .packageName(review.getAPackage().getPackageName())
+                    .content(review.getContent())
+                    .rating(review.getRating())
+                    .createdAt(Formatter.getLocalDate(review.getCreatedAt()))
+                    .modified(modified)
+                    .imagesURL(images)
+                    .build();
+
+            responseDtoList.add(reviewResponseDto);
+        }
+        return responseDtoList;
+    }
 }

@@ -37,6 +37,9 @@ public class ReviewResponseDto {
     //작성 날짜
     private String createdAt;
 
+    //수정 여부
+    private boolean modified;
+
     //이미지 url
     private List<String> imagesURL;
 

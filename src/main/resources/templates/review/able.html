@@ -7,13 +7,13 @@
     <title>냥만여행 리뷰 관리</title>
 
     <link rel="stylesheet" th:href="@{/css/mainPage.css}">
-    <link rel="stylesheet" th:href="@{/css/checkout/checkoutList.css}">
     <style>
         .HanCkListBody {
             padding: 5rem 20rem;
             height: auto;
             display: flex;
             flex-direction: column;
+            min-height: 35rem;
         }
 
         .HanCkListMain {
@@ -282,7 +282,7 @@
                 line-height: 3rem;
                 color: black;
                 font-weight: 600;
-                
+
 
                 &:first-child {
                     color: #43bff8;
@@ -301,7 +301,7 @@
             color: rgba(255, 41, 70, 0.904);
         }
 
-        a{
+        a {
             text-decoration: none;
         }
     </style>
@@ -309,89 +309,82 @@
 
 <body>
 
+    <header th:replace="/fragments/memberHeader::memberHeader"></header>
+    <!-- 메인 시작 -->
 
-<!-- 메인 시작 -->
+    <div class="HanCkListBody">
+        <div class="HanCkListMain">
+            <div class="linkArea">
+                <a>작성 가능 리뷰</a>
+                <a th:href="@{/member/review/list}">작성한 리뷰</a>
+            </div>
 
-<div class="HanCkListBody">
+            <ul>
+                <!-- 카트 아이템 시작 -->
 
-    <div class="titleArea">
-        <h2>리뷰관리</h2>
-        <hr>
-    </div>
-    <div class="HanCkListMain">
+                <li th:if="${reservationList!=null} " th:each="reservation : ${reservationList}">
 
+                    <div class="payDate">
+                        <p class="HanCkListProductDate">여행기간 : [[${reservation.startDate}]] ~ [[${reservation.endDate}]]
+                        </p>
+                    </div>
 
-        <!-- <div th:if="${#lists.size(reservationList)<1} " class="HanCkListTop none">
+                    <!-- 카트 아이템 항목 시작 -->
+                    <div>
+                        <div class="HanCkListInfoDiv">
 
-            <p>예약 내역 없음</p>
+                            <div class="HanCkListInfo">
 
-        </div> -->
+                                <div class="HanCkListImgDiv">
 
-        <div class="linkArea">
-            <a>작성 가능 리뷰</a>
-            <a>작성한 리뷰</a>
-        </div>
+                                    <a th:href="@{'/package/details/'+${reservation.packagePK}}"><img
+                                            th:src="${reservation.mainImage}" alt=""></a>
 
-        <ul>
-            <!-- 카트 아이템 시작 -->
+                                </div>
 
-            <li th:if="${reservationList!=null} " th:each="reservation : ${reservationList}">
+                                <div class="HanCkListProductName">
+                                    <div class="HanCkListProductNameDiv">
 
-                <div class="payDate">
-                    <p class="HanCkListProductDate">여행기간 : [[${reservation.startDate}]] ~ [[${reservation.endDate}]]</p>
-                </div>
+                                        <b>
+                                            <p class="HanCkListProductNameP" th:text="${reservation.packageName}">
+                                                [다낭]3박5일
+                                                여행풀코스(가이드X)</p>
+                                            <br>
+                                            <p id="tag" th:text="${reservation.tag}"></p>
+                                        </b>
 
-                <!-- 카트 아이템 항목 시작 -->
-                <div>
-                    <div class="HanCkListInfoDiv">
+                                    </div>
+                                </div>
 
-                        <div class="HanCkListInfo">
-
-                            <div class="HanCkListImgDiv">
-
-                                <a th:href="@{'/package/details/'+${reservation.packagePK}}"><img th:src="${reservation.mainImage}"
-                                                                                       alt=""></a>
-
-                            </div>
-
-                            <div class="HanCkListProductName">
-                                <div class="HanCkListProductNameDiv">
-
-                                    <b>
-                                        <p class="HanCkListProductNameP" th:text="${reservation.packageName}">[다낭]3박5일
-                                            여행풀코스(가이드X)</p>
-                                        <br>
-                                        <p id="tag" th:text="${reservation.tag}"></p>
-                                    </b>
-
+                                <div class="detailsBtn">
+                                    <a class="detailsLink"
+                                        th:href="'/member/review/new/'+${reservation.reservationPK}">리뷰작성하기</a>
                                 </div>
                             </div>
 
-                            <div class="detailsBtn">
-                                <a class="detailsLink" th:href="'/member/review/new/'+${reservation.reservationPK}">리뷰작성하기</a>
-                            </div>
                         </div>
 
                     </div>
 
-                </div>
+                </li>
+                <!-- 카트 아이템 항목 끝 -->
 
-            </li>
-            <!-- 카트 아이템 항목 끝 -->
-          
 
-        </ul>
+            </ul>
+            <div th:if="${reservationList==null}" class="imageArea">
+                <img th:src="@{/images/info.svg}" id="infoImage">
+                <p>예약이 없습니다.</p>
+            </div>
+        </div>
 
+
+    </div>
+    <img th:src="@{/images/topBtn.png}" id="topBtn">
     </div>
 
 
-</div>
-<img th:src="@{/images/topBtn.png}" id="topBtn">
-</div>
-
-
-<!-- 메인 끝 -->
-
+    <!-- 메인 끝 -->
+    <footer th:replace="/fragments/memberFooter::memberFooter"></footer>
 </body>
 
 </html>
