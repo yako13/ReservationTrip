@@ -1,7 +1,6 @@
 package Goods.Reservation_Trip.entity;
 
 import Goods.Reservation_Trip.base.BaseTime;
-import Goods.Reservation_Trip.enums.Airline;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,13 +27,13 @@ public class PackageScheduleDetails extends BaseTime {
     @ManyToOne
     private PackageSchedule packageSchedule;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "airline_out", nullable = false, columnDefinition = "VARCHAR(50)")
+    @JoinColumn(name = "airline_out_id")
+    @ManyToOne(fetch = FetchType.LAZY)
     @Comment("출국 항공사 명")
     private Airline airlineOut;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "airline_return", nullable = false, columnDefinition = "VARCHAR(50)")
+    @JoinColumn(name = "airline_return_id")
+    @ManyToOne(fetch = FetchType.LAZY)
     @Comment("귀국 항공사 명")
     private Airline airlineReturn;
 
@@ -46,13 +45,15 @@ public class PackageScheduleDetails extends BaseTime {
     @Comment("귀국 항공편 번호")
     private String flightNumberReturn;
 
-    @Column(name = "departure_point_out", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "departure_point_out")
     @Comment("출국 비행기 출발지")
-    private String departurePointOut;
+    private Airport departurePointOut;
 
-    @Column(name = "arrival_point_out", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "arrival_point_out")
     @Comment("출국 비행기 도착지")
-    private String arrivalPointOut;
+    private Airport arrivalPointOut;
 
     @Column(name = "departure_time_out")
     @Comment("출국 출발 시간")
@@ -77,4 +78,5 @@ public class PackageScheduleDetails extends BaseTime {
     @Column(name = "arrival_time_return", nullable = false)
     @Comment("귀국 도착 시간")
     private LocalTime arrivalTimeReturn;
+
 }

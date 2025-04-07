@@ -1,9 +1,8 @@
 package Goods.Reservation_Trip.dto.aPackage.req;
 
-import Goods.Reservation_Trip.enums.Airline;
+import Goods.Reservation_Trip.entity.Airline;
+import Goods.Reservation_Trip.entity.Airport;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,13 +22,11 @@ public class PackageScheduleDetailsRequestDto {
     /**
      * 출국 항공사명
      */
-    @Enumerated(EnumType.STRING)
     private Airline airlineOut;
 
     /**
      * 귀국 항공사명
      */
-    @Enumerated(EnumType.STRING)
     private Airline airlineReturn;
 
     /**
@@ -45,12 +42,12 @@ public class PackageScheduleDetailsRequestDto {
     /**
      * 출국 출발지
      */
-    private String departurePointOut;
+    private Airport departurePointOut;
 
     /**
      * 출국 도착지
      */
-    private String arrivalPointOut;
+    private Airport arrivalPointOut;
 
     /**
      * 출국 출발 시간

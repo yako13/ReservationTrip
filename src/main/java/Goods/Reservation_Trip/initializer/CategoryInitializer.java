@@ -1,4 +1,4 @@
-package Goods.Reservation_Trip.config;
+package Goods.Reservation_Trip.initializer;
 
 import Goods.Reservation_Trip.entity.PackageCategory;
 import Goods.Reservation_Trip.repository.aPackage.PackageCategoryRepository;
