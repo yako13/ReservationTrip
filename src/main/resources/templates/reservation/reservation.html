@@ -73,7 +73,7 @@
 
                     </div>
 
-                    <div class="highlight" th:text="${resvPageDto.packageSchedule.period}">3박 4일</div>
+                    <div class="highlight" >3박 4일</div>
 
                     <div class="HanDateDiv">
                         <p class="info-label">도착일</p>
@@ -91,17 +91,17 @@
 
                         <div>
                             <!--출국 비행기-->
-                            <p th:text="${resvPageDto.packageSchedule.airlineOut.getName}" style="font-weight: bold;">
+                            <p th:text="${resvPageDto.packageSchedule.packageScheduleDetails.airlineOut.getName}" style="font-weight: bold;">
                                 제주항공</p>
                             <p>
-                                [[${resvPageDto.packageSchedule.departurePointOut.getName}]] →
-                                [[${resvPageDto.packageSchedule.arrivalPointOut.getName}]]
+                                [[${resvPageDto.packageSchedule.packageScheduleDetails.departurePointOut.getName}]] →
+                                [[${resvPageDto.packageSchedule.packageScheduleDetails.arrivalPointOut.getName}]]
                             </p>
                             <!--귀국 비행기-->
-                            <p th:text="${resvPageDto.packageSchedule.airlineReturn.getName}"
+                            <p th:text="${resvPageDto.packageSchedule.packageScheduleDetails.airlineReturn.getName}"
                                 style="font-weight: bold; margin-top: 8px;">에어부산</p>
-                            <p>[[${resvPageDto.packageSchedule.departurePointReturn.getName}]] →
-                                [[${resvPageDto.packageSchedule.arrivalPointReturn.getName}]]</p>
+                            <p>[[${resvPageDto.packageSchedule.packageScheduleDetails.departurePointReturn.getName}]] →
+                                [[${resvPageDto.packageSchedule.packageScheduleDetails.arrivalPointReturn.getName}]]</p>
                         </div>
 
                     </div>
@@ -110,16 +110,16 @@
 
                         <p>항공출발 : </p>
                         <!--                <p >25.05.01(목) 09:35 ｜ 항공편 7C1403</p>-->
-                        <p>[[${resvPageDto.tripStartString}]] [[${resvPageDto.packageSchedule.departureTimeOut}]] ｜ 항공편
-                            [[${resvPageDto.packageSchedule.flightNumberOut}]]</p>
+                        <p>[[${resvPageDto.tripStartString}]] [[${resvPageDto.packageSchedule.packageScheduleDetails.departureTimeOut}]] ｜ 항공편
+                            [[${resvPageDto.packageSchedule.packageScheduleDetails.flightNumberOut}]]</p>
                     </div>
 
                     <div class="HanFlex1">
 
                         <p>항공도착 : </p>
                         <!--                <p>25.05.04(일) 13:30 ｜ 항공편 7C1404</p>-->
-                        <p>[[${resvPageDto.tripEndString}]] [[${resvPageDto.packageSchedule.arrivalTimeReturn}]] ｜ 항공편
-                            [[${resvPageDto.packageSchedule.flightNumberReturn}]]</p>
+                        <p>[[${resvPageDto.tripEndString}]] [[${resvPageDto.packageSchedule.packageScheduleDetails.arrivalTimeReturn}]] ｜ 항공편
+                            [[${resvPageDto.packageSchedule.packageScheduleDetails.flightNumberReturn}]]</p>
                     </div>
 
                 </div>
