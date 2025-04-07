@@ -47,8 +47,8 @@ public class PackageSchedule extends BaseTime {
     @Comment("예약 가능 상태")
     private PackageStatus packageStatus;
 
-    @OneToMany(mappedBy ="packageSchedule", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<PackageScheduleDetails> packageScheduleDetailsList;
+    @OneToOne(mappedBy ="packageSchedule", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private PackageScheduleDetails packageScheduleDetails;
 
     public void setAPackage(Package aPackage) {
         this.aPackage = aPackage;
