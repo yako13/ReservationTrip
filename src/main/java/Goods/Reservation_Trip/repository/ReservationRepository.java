@@ -23,7 +23,7 @@ public interface ReservationRepository extends JpaRepository<Reservation,Long> {
 
     List<Reservation> findByMemberIdAndStartDateBetween(Long memberId,LocalDate startDate,LocalDate endDate);
 
-    List<Reservation> findByReviewListIsNullOrderByIdDesc();
+    List<Reservation> findByMemberIdAndReviewListIsNullOrderByIdDesc(Long memberId);
 
     //공백 구분 없이 예약자 이름 검색
     @Query("SELECT r FROM Reservation r WHERE LOWER(REPLACE(r.member.name, ' ', '')) LIKE LOWER(CONCAT('%', REPLACE(:withoutSpaceSearchText, ' ', ''), '%'))")

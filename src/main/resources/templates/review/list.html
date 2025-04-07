@@ -350,8 +350,7 @@
             p {
                 width: 100%;
             }
-
-            padding: 5rem 0;
+            padding: 10rem 0;
             text-align: center;
             border-bottom: solid 1px #c2c2c2;
         }
@@ -442,7 +441,7 @@
 
 
             </ul>
-            <div th:if="${reviewList==null}" class="imageArea">
+            <div th:if="${#lists.size(reviewList) < 1}" class="imageArea">
                 <img th:src="@{/images/info.svg}" id="infoImage">
                 <p>등록하신 리뷰가 없습니다.</p>
             </div>

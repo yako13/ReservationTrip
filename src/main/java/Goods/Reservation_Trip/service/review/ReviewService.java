@@ -195,7 +195,7 @@ public class ReviewService {
      */
     public List<ReservationDetailsResponseDto> getReviewAblePage(Long memberId) {
         //리뷰 리스트가 0인 예약만 찾아옴
-        List<Reservation> reservationList = reservationRepository.findByReviewListIsNullOrderByIdDesc();
+        List<Reservation> reservationList = reservationRepository.findByMemberIdAndReviewListIsNullOrderByIdDesc(memberId);
 
         if (reservationList.isEmpty()) return null;
 
