@@ -1,6 +1,7 @@
 package Goods.Reservation_Trip.service.reservation;
 
 import Goods.Reservation_Trip.config.ImageManager;
+import Goods.Reservation_Trip.dto.member.res.MemberResponseDto;
 import Goods.Reservation_Trip.dto.reservation.req.MemberReservationSearchDto;
 import Goods.Reservation_Trip.dto.reservation.res.ReservationDetailsResponseDto;
 import Goods.Reservation_Trip.dto.reservation.res.ReservationResponseDto;
@@ -22,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Transactional
 @RequiredArgsConstructor
@@ -244,9 +246,6 @@ public class ReservationService {
         int startYear = Integer.parseInt(searchDto.getStartDate().substring(0, 4));
         int startMonth = Integer.parseInt(searchDto.getStartDate().substring(5, 7));
         int startDay = Integer.parseInt(searchDto.getStartDate().substring(8, 10));
-//        int startYear = searchDto.getStartDate().getYear();
-//        int startMonth = searchDto.getStartDate().getMonthValue();
-//        int startDay = searchDto.getStartDate().getDayOfMonth();
 
         LocalDate startDate = LocalDate.of(startYear, startMonth, startDay);
 
@@ -254,9 +253,6 @@ public class ReservationService {
         int endYear = Integer.parseInt(searchDto.getEndDate().substring(0, 4));
         int endMonth = Integer.parseInt(searchDto.getEndDate().substring(5, 7));
         int endDay = Integer.parseInt(searchDto.getEndDate().substring(8, 10));
-//        int endYear = searchDto.getEndDate().getYear();
-//        int endMonth = searchDto.getEndDate().getMonthValue();
-//        int endDay = searchDto.getEndDate().getDayOfMonth();
 
         LocalDate endDate = LocalDate.of(endYear, endMonth, endDay);
 
@@ -299,6 +295,98 @@ public class ReservationService {
         }
 
         return responseDtos;
+
+    }
+
+    /**
+     * 예약 금액 상세
+     */
+    public List<String> getDetailReservationPay(Reservation reservation) {
+        List<String> payList = new ArrayList<>();
+
+        int adultSum = 0;
+        int childSum = 0;
+        int infantSum = 0;
+
+        //예약자 연령대 계산
+        for (ReservationDetails reservationDetails : reservation.getReservationDetailsList()) {
+            if (reservationDetails.getAgeGroup().getName().equals("어린이")) {
+                childSum++;
+            } else if (reservationDetails.getAgeGroup().getName().equals("성인")) {
+                adultSum++;
+            } else if (reservationDetails.getAgeGroup().getName().equals("유아")) {
+                infantSum++;
+            } else {
+                throw new RuntimeException("잘못된 접근");
+            }
+        }
+
+        payList.add("성인 " + adultSum + "인 : " + reservation.getAdultSumPrice());
+
+        if (childSum != 0) {
+            payList.add("어린이 " + childSum + "인 : " + reservation.getChildSumPrice());
+        }
+
+        if (infantSum != 0) {
+            payList.add("유아 " + infantSum + "인 : "+reservation.getBabySumPrice());
+        }
+
+        return payList;
+    }
+
+    /**
+     * 관리자 예약 상세 페이지
+     */
+    public ReservationDetailsResponseDto getReservationDetails(Long id){
+        Optional<Reservation> reservationOptional = reservationRepository.findById(id);
+
+        if(reservationOptional.isEmpty()) return null;
+
+        Reservation reservation = reservationOptional.get();
+
+        //연령대별 금액 리스트에 추가
+        List<String> pricesByAgeGroup = new ArrayList<>();
+        pricesByAgeGroup.add("성인 : " + Formatter.changeBigDecimalFormat(reservation.getAPackage().getAdultPrice()));
+        pricesByAgeGroup.add("어린이 : " + Formatter.changeBigDecimalFormat(reservation.getAPackage().getChildPrice()));
+        pricesByAgeGroup.add("유아 : " +Formatter.changeBigDecimalFormat(reservation.getAPackage().getBabyPrice()));
+
+        //예약 인원 분류
+        List<MemberResponseDto> memberResponseDtoList = new ArrayList<>();
+
+        for(ReservationDetails reservationDetails :reservation.getReservationDetailsList()){
+            MemberResponseDto memberResponseDto = MemberResponseDto.builder()
+                    .name(reservationDetails.getName())
+                    .gender(reservationDetails.isGender())
+                    .birth(Formatter.getBirth(reservationDetails.getBirth()))
+                    .phoneNumber(Formatter.changePhoneNumber(reservationDetails.getPhoneNumber()))
+                    .passportNumber(reservationDetails.getPassportNum())
+                    .build();
+
+            memberResponseDtoList.add(memberResponseDto);
+        }
+
+        return ReservationDetailsResponseDto.builder()
+                .reservationPK(reservation.getId()) //예약 PK
+                .code(reservation.getCode()) //예약번호
+                .createdAt(Formatter.getLocalDate(reservation.getCreatedAt())) //예약일시
+                .reservationState(reservation.getReservationState().getName()) //예약상태
+                .name(reservation.getMember().getName()) //예약자 이름
+                .email(reservation.getMember().getEmail()) //예약자 이메일
+                .phoneNumber(Formatter.changePhoneNumber(reservation.getMember().getPhoneNumber())) //예약자 휴대전화번호
+                .totalPay(Formatter.changeBigDecimalFormat(reservation.getTotalPay())) //총 결제금액
+                .detailPay(getDetailReservationPay(reservation)) //상세 금액
+                .aid(reservation.getAid()) //카카오페이 결제고유번호
+                .payType(reservation.getPayType()) //결제 타입
+                .approvedAt(Formatter.getLocalDate(reservation.getApprovedAt())) //카카오페이 결제승인시각
+                .packagePK(reservation.getAPackage().getId()) //패키지 PK
+                .packageName(reservation.getAPackage().getPackageName()) //패키지명
+                .mainImage(imageManager.createImageUrl(reservation.getAPackage().getMainImage().getImageFullName())) //패키지 메인 이미지
+                .pricesByAgeGroup(pricesByAgeGroup) //연령대별 패키지 금액
+                .memberList(memberResponseDtoList) //예약 인원
+//                .hotel()
+                //+출발 시간, 항공편 등 추가
+                .build();
+
 
     }
 }

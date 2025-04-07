@@ -14,6 +14,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
@@ -82,6 +83,16 @@ public class ReservationController {
         model.addAttribute("keywordQuery", keyword);
 
         return "reservation/adminSearchList";
+    }
+
+    /**
+     * 관리자 주문 상세
+     */
+    @GetMapping("/admin/reservation/details/{id}")
+    public String adminReservationDetailsPage(Model model, @PathVariable Long id){
+        ReservationDetailsResponseDto reservationDetailsResponseDto = reservationService.getReservationDetails(id);
+        model.addAttribute("reservationList",reservationDetailsResponseDto);
+        return "reservation/adminDetails";
     }
 
     /**
