@@ -4,6 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>관리자 상품 등록</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+      integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
   </head>
   <style>
     .main__container {
@@ -96,6 +102,33 @@
       border: 1px solid #8e8e8e;
       margin-top: 0.5rem;
     }
+    .generate__container {
+      margin-bottom: 1rem;
+    }
+    .thumbnail {
+      max-width: 50px;
+      max-height: 50px;
+      display: block;
+      margin-bottom: 10px;
+    }
+    .image-container {
+      display: flex;
+      position: relative;
+    }
+    .btn-delete {
+      font-size: 1rem;
+      border: 0px;
+      border-radius: 10px;
+      background-color: #ffffff;
+      height: 20px;
+      position: relative;
+      top: 30px;
+      cursor: pointer;
+    }
+    .image-preview-container {
+      display: flex;
+      /* height: 60px; */
+    }
   </style>
   <body>
     <h1>상품 등록</h1>
@@ -124,24 +157,58 @@
               </div>
               <div class="input__flex">
                 <label>성인 1인당 가격</label>
-                <input type="text" name="aPackage.adultPrice" />
+                <input type="text" name="aPackage.adultPrice" id="adultPrice" />
               </div>
               <div class="input__flex">
                 <label>아동 1인당 가격</label>
-                <input type="text" name="aPackage.childPrice" />
+                <input
+                  type="text"
+                  name="aPackage.childPrice"
+                  id="childPrice"
+                  readonly />
               </div>
               <div class="input__flex">
                 <label>유아 1인당 가격</label>
-                <input type="text" name="aPackage.babyPrice" />
+                <input
+                  type="text"
+                  name="aPackage.babyPrice"
+                  id="babyPrice"
+                  readonly />
               </div>
               <div class="input__flex">
-                <label>유류할증료 포함 1인당 가격</label>
-                <input type="text" name="aPackage.fuelSurchargeIncluded" />
+                <label>썸네일 이미지</label>
+                <input
+                  type="file"
+                  name="aPackage.mainImage"
+                  id="mainImage"
+                  accept="image/*"
+                  oninput="this.form.submitButton.disabled = !this.files.length"
+                  onchange="previewSingleImage(event, 'mainImagePreview', 'mainImage')" />
               </div>
+              <div id="mainImagePreview" class="image-preview-container"></div>
+
               <div class="input__flex">
-                <label>여행지 한 줄 설명</label>
-                <input type="text" name="aPackage.description" />
+                <label>서브 이미지</label>
+                <input
+                  type="file"
+                  id="subImage"
+                  accept="image/*"
+                  multiple
+                  name="aPackage.subImage"
+                  onchange="previewMultipleImages(event, 'subImagePreview', 5, 'subImage')" />
               </div>
+              <div id="subImagePreview" class="image-preview-container"></div>
+              <div class="input__flex">
+                <label>일정이미지</label>
+                <input
+                  type="file"
+                  id="descImage"
+                  accept="image/*"
+                  multiple
+                  name="aPackage.descImage"
+                  onchange="previewMultipleImages(event, 'descImagePreview', 5, 'descImage')" />
+              </div>
+              <div id="descImagePreview" class="image-preview-container"></div>
             </div>
             <div class="a3">
               <div class="input__flex">
@@ -153,7 +220,7 @@
                 id="hiddenMainCategoryId"
                 name="aPackage.mainCategoryId" />
               <div>
-                <label>도시 카테고리</label>
+                <label>도시 카테고리</label><br />
                 <select id="mainCategory" name="aPackage.mainCategoryId">
                   <option value="" selected></option>
                 </select>
@@ -166,20 +233,24 @@
               </div>
               <div class="input__flex">
                 <label>유류할증료</label>
-                <input type="text" name="aPackage.fuelSurcharge" />
+                <input
+                  type="text"
+                  name="aPackage.fuelSurcharge"
+                  id="fuelSurcharge" />
               </div>
               <div class="input__flex">
-                <label>썸네일 이미지</label>
-                <input type="file" name="aPackage.mainImage" />
+                <label>유류할증료 포함 1인당 가격</label>
+                <input
+                  type="text"
+                  name="aPackage.fuelSurchargeIncluded"
+                  id="fuelSurchargeIncluded"
+                  readonly />
               </div>
               <div class="input__flex">
-                <label>서브 이미지</label>
-                <input type="file" multiple name="aPackage.subImage" />
+                <label>여행지 한 줄 설명</label>
+                <input type="text" name="aPackage.description" />
               </div>
-              <div class="input__flex">
-                <label>일정이미지</label>
-                <input type="file" multiple name="aPackage.descImage" />
-              </div>
+
               <br />
             </div>
           </div>
@@ -187,7 +258,7 @@
           <!-- 여행 일정 정보 -->
           <div class="a4">여행 일정 정보</div>
           <div class="a5">
-            <div class="generateClass">
+            <div class="generate__container">
               <label for="period">여행 기간</label>
               <input type="text" name="aPackage.period" id="period" />
               <label>시작일자</label>
@@ -205,10 +276,12 @@
                       <select
                         name="packageSchedule.departurePointOut"
                         id="departurePointOut">
+                        <option value="#">-- 공항 선택 --</option>
                         <option value="GIMPO">김포국제공항</option>
-                        <option value="INCHEON">인천국제공항</option>
+                        <option value="INCH">인천국제공항</option>
                         <option value="DAEGU">대구국제공항</option>
                         <option value="BUSAN">부산국제공항</option>
+                        <option value="사천">사천국제</option>
                       </select>
                     </div>
                     <div>
@@ -216,8 +289,7 @@
                       <select
                         name="packageSchedule.arrivalPointOut"
                         id="arrivalPointOut">
-                        <option value="NARITA">나리타국제공항</option>
-                        <option value="KANSAI">간사이국제공항</option>
+                        <option>-- 공항 선택 --</option>
                       </select>
                     </div>
                     <div>
@@ -239,18 +311,18 @@
                         name="packageSchedule.departureDateOut" />
                     </div>
                     <div>
-                      <!-- <label for="arrivalDateOut">도착날짜</label> -->
-                      <input
-                        type="hidden"
-                        id="arrivalDateOut"
-                        name="packageSchedule.arrivalDateOut" />
-                    </div>
-                    <div>
                       <label for="flightNumberOut">항공기 번호</label>
                       <input
                         type="text"
                         name="packageSchedule.flightNumberOut"
                         id="flightNumberOut" />
+                    </div>
+                    <div>
+                      <!-- <label for="arrivalDateOut">도착날짜</label> -->
+                      <input
+                        type="hidden"
+                        id="arrivalDateOut"
+                        name="packageSchedule.arrivalDateOut" />
                     </div>
                   </div>
                   <div class="input__flex plane-time">
@@ -281,8 +353,9 @@
                       <select
                         name="packageSchedule.departurePointReturn"
                         id="departurePointReturn">
-                        <option value="NARITA">나리타국제공항</option>
-                        <option value="KANSAI">간사이국제공항</option>
+                        <option value="#">-- 공항 선택 --</option>
+                        <!-- <option value="NARITA">나리타국제공항</option>
+                        <option value="KANSAI">간사이국제공항</option> -->
                       </select>
                     </div>
                     <div>
@@ -290,10 +363,12 @@
                       <select
                         name="packageSchedule.arrivalPointReturn"
                         id="arrivalPointReturn">
+                        <option value="#">-- 공항 선택 --</option>
                         <option value="GIMPO">김포국제공항</option>
                         <option value="INCHEON">인천국제공항</option>
                         <option value="DAEGU">대구국제공항</option>
                         <option value="BUSAN">부산국제공항</option>
+                        <option value="사천">사천국제</option>
                       </select>
                     </div>
                     <div>
@@ -317,18 +392,18 @@
                         name="packageSchedule.departureDateReturn" />
                     </div>
                     <div>
-                      <!-- <label for="arrivalDateReturn">도착날짜</label> -->
-                      <input
-                        type="hidden"
-                        id="arrivalDateReturn"
-                        name="packageSchedule.arrivalDateReturn" />
-                    </div>
-                    <div>
                       <label for="flightNumberReturn">항공기 번호</label>
                       <input
                         type="text"
                         name="packageSchedule.flightNumberReturn"
                         id="flightNumberReturn" />
+                    </div>
+                    <div>
+                      <!-- <label for="arrivalDateReturn">도착날짜</label> -->
+                      <input
+                        type="hidden"
+                        id="arrivalDateReturn"
+                        name="packageSchedule.arrivalDateReturn" />
                     </div>
                   </div>
                   <div class="input__flex plane-time">
@@ -521,6 +596,60 @@
       });
     });
 
+    // 마지막 카테고리를 설정하면 동적으로 공항 목록 불러옴
+    document
+      .getElementById("smallCategory")
+      .addEventListener("change", function () {
+        const categoryId = this.value;
+
+        fetch(`/api/airports/category/${categoryId}`)
+          .then((res) => res.json())
+          .then((airports) => {
+            console.log("받은 공항 응답:", airports);
+            const airportSelect = document.getElementById("arrivalPointOut");
+            const airportSelectReturn = document.getElementById(
+              "departurePointReturn"
+            );
+            airportSelect.innerHTML = "";
+            airportSelectReturn.innerHTML = "";
+
+            const defaultOption1 = document.createElement("option");
+            defaultOption1.value = "";
+            defaultOption1.textContent = "-- 공항 선택 --";
+            defaultOption1.disabled = true;
+            defaultOption1.selected = true;
+            airportSelect.appendChild(defaultOption1);
+
+            const defaultOption2 = document.createElement("option");
+            defaultOption2.value = "";
+            defaultOption2.textContent = "-- 공항 선택 --";
+            defaultOption2.disabled = true;
+            defaultOption2.selected = true;
+            airportSelectReturn.appendChild(defaultOption2);
+
+            airports.forEach((airport) => {
+              const option = document.createElement("option");
+              option.value = airport.id;
+              option.textContent = airport.name;
+              airportSelect.appendChild(option.cloneNode(true));
+              airportSelectReturn.appendChild(option.cloneNode(true));
+            });
+          })
+          .catch((error) => {
+            console.error("공항 정보를 불러오는데 실패했습니다:", error);
+          });
+      });
+
+    // 출국 도착 공항을 선택하면 귀국 출발 공항 자동 선택
+    document
+      .getElementById("arrivalPointOut")
+      .addEventListener("change", function () {
+        const selectValue = this.value;
+        const returnSelect = document.getElementById("departurePointReturn");
+        returnSelect.value = selectValue;
+      });
+
+    // 폼 제출 전 검증 (임시)
     function doAction() {
       let hotelName = document.getElementById("hotelName");
       let flightNumberReturn = document.querySelectorAll(
@@ -537,7 +666,6 @@
         console.log("⚠️ 항공편 번호 input이 아직 없음");
         return false;
       }
-      alert("qw");
       return true;
     }
 
@@ -556,6 +684,36 @@
       // document.getElementById("arrivalDateReturn").value = this.value;
     });
 
+    // 가격 자동 계산 함수
+    function updatePrices() {
+      const adultPrice =
+        parseFloat(document.getElementById("adultPrice").value) || 0;
+      const fuelSurcharge =
+        parseFloat(document.getElementById("fuelSurcharge").value) || 0;
+
+      // 아동 및 유아 가격 계산
+      const childPrice = adultPrice.toFixed(0);
+      const babyPrice = (adultPrice * 0.1).toFixed(0);
+
+      // 유류할증료 포함 가격 계산
+      const fuelSurchargeIncluded = (adultPrice + fuelSurcharge).toFixed(0);
+
+      // 값 세팅
+      document.getElementById("childPrice").value = childPrice;
+      document.getElementById("babyPrice").value = babyPrice;
+      document.getElementById("fuelSurchargeIncluded").value =
+        fuelSurchargeIncluded;
+    }
+
+    // 성인 가격, 유류할증료 입력 시 하나의 함수로 처리
+    document
+      .getElementById("adultPrice")
+      .addEventListener("input", updatePrices);
+    document
+      .getElementById("fuelSurcharge")
+      .addEventListener("input", updatePrices);
+
+    // 여행 일정 자동 추가
     function generateFlights() {
       const setStart = document.getElementById("setStart").value;
       const setLast = document.getElementById("setLast").value;
@@ -652,7 +810,10 @@
               }>대구국제공항</option>
               <option value="BUSAN" ${
                 departurePointOut === "BUSAN" ? "selected" : ""
-              }>부산국제공항</option></select></td>
+              }>부산국제공항</option>
+              <option value="사천" ${
+                departurePointOut === "사천" ? "selected" : ""
+              }>사천국제</option></select></td>
             <td><select name="packageSchedule[${rowCount}].details.arrivalPointOut">
               <option value="NARITA" ${
                 arrivalPointOut === "NARITA" ? "selected" : ""
@@ -749,6 +910,104 @@
           }
         });
       });
+    }
+
+    // 이미지 관련
+    let newImageIndex = { subImage: 0, descImage: 0 }; // 새 이미지의 고유 ID 관리
+
+    // 새 이미지 미리보기 및 삭제 기능 (서브, 설명 이미지 공용)
+    function previewMultipleImages(event, previewId, maxImages, type) {
+      let previewContainer = document.getElementById(previewId);
+      let files = event.target.files;
+
+      if (!previewContainer || !files) return;
+
+      for (let i = 0; i < files.length; i++) {
+        if (previewContainer.childElementCount >= maxImages) {
+          alert(`최대 ${maxImages}개의 이미지만 업로드할 수 있습니다.`);
+          break;
+        }
+
+        let file = files[i];
+        let reader = new FileReader();
+        let currentIndex = newImageIndex[type]++; // 해당 타입(subImage, descImage)의 새로운 이미지 인덱스 증가
+
+        reader.onload = function (e) {
+          // 새 이미지 컨테이너 추가
+          let imageContainer = document.createElement("div");
+          imageContainer.classList.add("image-container");
+          imageContainer.classList.add(`${type}-image-container`);
+          imageContainer.id = `new${type}-${currentIndex}`;
+
+          // 이미지 추가
+          let img = document.createElement("img");
+          img.src = e.target.result;
+          img.classList.add("thumbnail");
+
+          // 삭제 버튼 추가
+          let deleteButton = document.createElement("button");
+          deleteButton.type = "button";
+          deleteButton.innerHTML =
+            '<i class="fa-solid fa-square-xmark" style="color: #ff0000;"></i>';
+          deleteButton.className = "btn-delete";
+
+          deleteButton.onclick = function () {
+            deleteNewImage(currentIndex, type);
+          };
+
+          imageContainer.appendChild(img);
+          imageContainer.appendChild(deleteButton);
+          previewContainer.appendChild(imageContainer);
+        };
+
+        reader.readAsDataURL(file);
+      }
+    }
+
+    // 새로 추가한 이미지 삭제 (서브, 설명 이미지 공용)
+    function deleteNewImage(index, type) {
+      let imageContainer = document.getElementById(`new${type}-${index}`);
+      if (imageContainer) {
+        imageContainer.remove(); // 미리보기에서 삭제
+      }
+
+      // 파일 선택 input에서도 제거 (브라우저에서 직접 수정 불가 -> 새롭게 선택하도록 유도)
+      let fileInput = document.getElementById(type);
+      fileInput.value = ""; // 선택된 파일 초기화
+    }
+
+    function previewSingleImage(event, previewId, inputId) {
+      let file = event.target.files[0];
+      let previewContainer = document.getElementById(previewId);
+      previewContainer.innerHTML = ""; // 미리보기 이미지 보여줄 공간
+
+      if (file) {
+        let reader = new FileReader();
+        reader.onload = function (e) {
+          // 이미지 및 버튼을 감쌀 컨테이너 div 생성
+          let imageContainer = document.createElement("div");
+          imageContainer.classList.add("image-container"); // 클래스 추가
+
+          let imgElement = document.createElement("img");
+          imgElement.src = e.target.result;
+          imgElement.classList.add("thumbnail");
+
+          // 삭제 버튼 추가
+          let deleteButton = document.createElement("button");
+          deleteButton.innerHTML =
+            '<i class="fa-solid fa-square-xmark" style="color: #ff0000;"></i>';
+          deleteButton.className = "btn-delete";
+          deleteButton.onclick = function () {
+            imageContainer.remove(); // 미리보기 삭제
+            document.getElementById(inputId).value = ""; // input 초기화
+          };
+
+          imageContainer.appendChild(imgElement);
+          imageContainer.appendChild(deleteButton);
+          previewContainer.appendChild(imageContainer); // 컨테이너 추가
+        };
+        reader.readAsDataURL(file);
+      }
     }
   </script>
 </html>

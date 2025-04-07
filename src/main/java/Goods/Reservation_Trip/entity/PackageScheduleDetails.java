@@ -2,8 +2,6 @@ package Goods.Reservation_Trip.entity;
 
 import Goods.Reservation_Trip.base.BaseTime;
 import Goods.Reservation_Trip.enums.Airline;
-import Goods.Reservation_Trip.enums.ArrivalPoint;
-import Goods.Reservation_Trip.enums.DeparturePoint;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -48,15 +46,13 @@ public class PackageScheduleDetails extends BaseTime {
     @Comment("귀국 항공편 번호")
     private String flightNumberReturn;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "departure_point_out", nullable = false, columnDefinition = "VARCHAR(50)")
+    @Column(name = "departure_point_out", nullable = false)
     @Comment("출국 비행기 출발지")
-    private DeparturePoint departurePointOut;
+    private String departurePointOut;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "arrival_point_out", nullable = false, columnDefinition = "VARCHAR(50)")
+    @Column(name = "arrival_point_out", nullable = false)
     @Comment("출국 비행기 도착지")
-    private ArrivalPoint arrivalPointOut;
+    private String arrivalPointOut;
 
     @Column(name = "departure_time_out")
     @Comment("출국 출발 시간")
@@ -66,15 +62,13 @@ public class PackageScheduleDetails extends BaseTime {
     @Comment("출국 도착 시간")
     private LocalTime arrivalTimeOut;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "departure_point_return", nullable = false, columnDefinition = "VARCHAR(50)")
+    @Column(name = "departure_point_return", nullable = false)
     @Comment("귀국 비행기 출발지")
-    private DeparturePoint departurePointReturn;
+    private String departurePointReturn;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "arrival_point_return", nullable = false, columnDefinition = "VARCHAR(50)")
+    @Column(name = "arrival_point_return", nullable = false)
     @Comment("귀국 비행기 도착지")
-    private ArrivalPoint arrivalPointReturn;
+    private String arrivalPointReturn;
 
     @Column(name = "departure_time_return", nullable = false)
     @Comment("귀국 출발 시간")
