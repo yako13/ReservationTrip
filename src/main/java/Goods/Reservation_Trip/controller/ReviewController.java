@@ -97,4 +97,14 @@ public class ReviewController {
 
         return "review/able";
     }
+
+    @GetMapping("/member/review/list")
+    public String memberReviewListPage(Model model,HttpServletRequest request){
+        MemberResponseDto memberResponseDto = memberService.getMember(request);
+        List<ReviewResponseDto> reviewResponseDtoList = reviewService.getReviewList(memberResponseDto.getId());
+
+        model.addAttribute("reviewList",reviewResponseDtoList);
+
+        return "review/list";
+    }
 }
