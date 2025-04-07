@@ -4,6 +4,9 @@ import Goods.Reservation_Trip.entity.PackageSchedule;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import java.time.LocalDate;
 
 public interface PackageScheduleRepository extends JpaRepository<PackageSchedule, Long> {
 
@@ -11,7 +14,15 @@ public interface PackageScheduleRepository extends JpaRepository<PackageSchedule
     @Modifying
     @Query("UPDATE PackageSchedule p " +
             "SET p.packageStatus = 'CLOSED' " +
-            "WHERE p.departureDateOut < CURRENT_DATE " +
+            "WHERE p.departureDateOut <= :now " +
             "AND p.packageStatus = 'AVAILABLE'")
-    int updateExpiredSchedules();
+    int updateExpiredSchedules(@Param("now")LocalDate now);
+
+    @Modifying
+    @Query("UPDATE PackageSchedule p " +
+            "SET p.packageStatus = 'CLOSED' " +
+            "WHERE p.departureDateOut <= :cutoff " +
+            "AND p.packageStatus = 'AVAILABLE'")
+    int updateExpiredSchedulesNextDay(@Param("cutoff") LocalDate cutoff);
+
 }

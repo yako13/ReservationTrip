@@ -267,7 +267,7 @@
                 id="period"
                 placeholder="며칠 일정인가요" />
               <div>
-                <label>시작일자</label>
+                <label>자동추가 시작</label>
                 <input
                   type="text"
                   id="setStart"
@@ -278,7 +278,7 @@
                 <div id="tui-datepicker-setStart"></div>
               </div>
               <div>
-                <label>종료일자</label>
+                <label>자동추가 종료</label>
                 <input
                   type="text"
                   id="setLast"
@@ -376,7 +376,7 @@
                 <span>귀국일정</span>
                 <div class="b2">
                   <div class="b3">
-                    <div>
+                    <div style="display: none">
                       <label for="departurePointReturn">출발지</label>
                       <select
                         name="packageSchedule.departurePointReturn"
@@ -384,7 +384,7 @@
                         <option value="#">-- 공항 선택 --</option>
                       </select>
                     </div>
-                    <div>
+                    <div style="display: none">
                       <label for="arrivalPointReturn">도착지</label>
                       <select
                         name="packageSchedule.arrivalPointReturn"
@@ -409,7 +409,7 @@
                     </div>
                   </div>
                   <div class="input__flex plane-time">
-                    <div>
+                    <div style="display: none">
                       <label for="departureDateReturn">출발날짜</label>
                       <input
                         type="text"
@@ -803,24 +803,34 @@
       }
       window.deleteFlight = deleteFlight;
 
+      function formatDate(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+      }
+
       let startDate = new Date(setStart);
       let endDate = new Date(setLast);
 
       for (
-        let sd = new Date(startDate),
-          sd2 = new Date(startDate.setDate(startDate.getDate() + period - 1));
+        let sd = new Date(startDate.getTime());
         sd <= endDate;
-        sd.setDate(sd.getDate() + 1), sd2.setDate(sd2.getDate() + 1)
+        sd.setDate(sd.getDate() + 1)
       ) {
+        const sd2 = new Date(startDate.getTime());
+        sd2.setDate(sd.getDate() + period - 1);
+
         const table = document.getElementById("flightTable");
         // 테이블 개수만큼 index 추가
         const rowCount = table.rows.length;
         console.log(rowCount);
-        const formattedDate = sd.toISOString().split("T")[0];
-        const formattedDateEnd = sd2.toISOString().split("T")[0];
+        const formattedDate = formatDate(sd);
+        const formattedDateEnd = formatDate(sd2);
         const row = document.createElement("tr");
         row.innerHTML = `
-            <td><input type="hidden" name="packageSchedule[${rowCount}].departureDateOut" value="${formattedDate}"></td>
+            <td><input type="text" readonly name="packageSchedule[${rowCount}].departureDateOut" value="${formattedDate}"></td>
+            <td><button type="button" onclick="removeRow(this)">삭제</button></td>
             <td><input type="hidden" name="packageSchedule[${rowCount}].details.departurePointOut" value="${departurePointOut}">
             <td><input type="hidden" name="packageSchedule[${rowCount}].details.arrivalPointOut" value="${arrivalPointOut}">
             <td><input type="hidden" name="packageSchedule[${rowCount}].details.arrivalPointReturn" value="${arrivalPointReturn}">
@@ -835,7 +845,7 @@
             <td><input type="hidden" name="packageSchedule[${rowCount}].details.departureTimeReturn" value="${departureTimeReturn}"></td>              <td><input type="hidden" name="packageSchedule[${rowCount}].details.arrivalTimeReturn" value="${arrivalTimeReturn}"></td>
             <td><input type="hidden" name="packageSchedule[${rowCount}].arrivalDateOut" value="${formattedDate}"></td>
             <td><input type="hidden" name="packageSchedule[${rowCount}].arrivalDateReturn" value="${formattedDateEnd}" ></td>
-            <td><button type="button" onclick="removeRow(this)">삭제</button></td>`;
+            `;
         table.appendChild(row);
       }
     }
