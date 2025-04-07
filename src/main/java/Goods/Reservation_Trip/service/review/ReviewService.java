@@ -195,7 +195,7 @@ public class ReviewService {
      */
     public List<ReservationDetailsResponseDto> getReviewAblePage(Long memberId) {
         //리뷰 리스트가 0인 예약만 찾아옴
-        List<Reservation> reservationList = reservationRepository.findByReviewListIsNull();
+        List<Reservation> reservationList = reservationRepository.findByReviewListIsNullOrderByIdDesc();
 
         if (reservationList.isEmpty()) return null;
 
@@ -254,5 +254,22 @@ public class ReviewService {
             responseDtoList.add(reviewResponseDto);
         }
         return responseDtoList;
+    }
+
+    /**
+     * 리뷰삭제
+     */
+    public String deleteReview(Long id, Long memberId) {
+        Optional<Review> optionalReview = reviewRepository.findById(id);
+        if (optionalReview.isEmpty()) return "500";
+
+        Review review = optionalReview.get();
+
+        //다른 사람 리뷰 삭제 불가
+        if (!review.getMember().getId().equals(memberId)) return "500";
+
+        reviewRepository.delete(review);
+
+        return "1000";
     }
 }

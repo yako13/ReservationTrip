@@ -10,10 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -104,5 +101,15 @@ public class ReviewController {
         model.addAttribute("reviewList", reviewResponseDtoList);
 
         return "review/list";
+    }
+
+    @PostMapping("/member/review/delete/{id}")
+    @ResponseBody
+    public String deleteMemberReview(@PathVariable Long id, HttpServletRequest request) {
+        MemberResponseDto memberResponseDto = memberService.getMember(request);
+
+        if (reviewService.deleteReview(id, memberResponseDto.getId()).equals("500")) return "500";
+
+        return "1000";
     }
 }

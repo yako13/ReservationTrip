@@ -306,7 +306,7 @@
             margin: 3rem 0;
             display: flex;
             justify-content: start;
-            gap: 3rem;
+            gap: 3.6rem;
 
             img {
                 width: 10rem;
@@ -335,11 +335,29 @@
         }
 
         .y {
-            color: yellow !important;
+            color: rgb(255, 217, 0) !important;
         }
 
-        a{
+        a {
             text-decoration: none;
+        }
+
+        #infoImage {
+            width: 8rem;
+        }
+
+        .imageArea {
+            p {
+                width: 100%;
+            }
+
+            padding: 5rem 0;
+            text-align: center;
+            border-bottom: solid 1px #c2c2c2;
+        }
+
+        .deletebtn {
+            cursor: pointer;
         }
     </style>
 </head>
@@ -359,7 +377,8 @@
             <ul>
                 <!-- 카트 아이템 시작 -->
 
-                <li th:if="${reviewList!=null}" th:each="reviewList : ${reviewList}">
+                <li th:if="${reviewList!=null}" th:each="reviewList : ${reviewList}"
+                    th:class="review+${reviewList.reviewId}">
 
                     <!-- 카트 아이템 항목 시작 -->
                     <div>
@@ -386,7 +405,7 @@
                                 <div class="editLinkArea">
                                     <a th:href="@{'/member/review/edit/'+ ${reviewList.reviewId}}">수정</a>
                                     <span>|</span>
-                                    <a>삭제</a>
+                                    <a class="deletebtn" th:id="${reviewList.reviewId}">삭제</a>
                                 </div>
 
 
@@ -395,14 +414,15 @@
                         </div>
                         <hr color="#ebebeb">
                         <div class="reviewArea">
-                            <div>
-                                <input type="hidden" th:value="${reviewList.rating}" id="rating">
+                            <div class="review">
+                                <input type="hidden" th:value="${reviewList.rating}" class="rating">
                                 <i class="fa-solid fa-star"></i>
                                 <i class="fa-solid fa-star"></i>
                                 <i class="fa-solid fa-star"></i>
                                 <i class="fa-solid fa-star"></i>
                                 <i class="fa-solid fa-star"></i>
-                                <span>[[${reviewList.createdAt}]]</span><span th:if="${modified}">(수정됨)</span>
+                                <span>[[${reviewList.createdAt}]]</span>
+                                <span th:if="${reviewList.modified}">(수정됨)</span>
                             </div>
                             <div>
                                 <p th:text="${reviewList.content}">
@@ -435,17 +455,50 @@
 
     <footer th:replace="/fragments/memberFooter::memberFooter"></footer>
     <!-- 메인 끝 -->
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script>
+        //리뷰 별 색깔
         let star = document.querySelectorAll(".fa-star");
+        let rating = document.querySelectorAll(".rating");
 
         window.addEventListener("load", changeStar);
 
         function changeStar() {
-            for (let k = 0; k < document.getElementById("rating").value; k++) {
-                star[k].classList.add("y");
-            }
+            const reviews = document.querySelectorAll(".review");
 
+            reviews.forEach(review => {
+                const rating = review.querySelector(".rating").value;
+                const stars = review.querySelectorAll(".fa-star");
+
+                for (let i = 0; i < rating; i++) {
+                    stars[i].classList.add("y");
+                }
+            });
         }
+
+        //삭제
+        $(".deletebtn").click(function (event) {
+
+            if (confirm("정말 리뷰를 삭제하시겠습니까?")) {
+                var params = event.target.id;
+
+                $.ajax({
+                    type: "POST",
+                    url: "/member/review/delete/" + params,
+                    success: function (res) {
+                        if (res == 1000) {
+                            $(".review" + params).remove();
+                        }
+                        else {
+                            alert("리뷰를 삭제 할 수 없습니다.");
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        alert("통신 실패.")
+                    }
+                })
+            }
+        })
     </script>
 </body>
 
