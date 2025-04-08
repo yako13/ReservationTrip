@@ -43,6 +43,14 @@ public interface ReservationRepository extends JpaRepository<Reservation,Long> {
             Pageable pageable
     );
 
+    //공백 구분 없이 메인카테고리 검색
+    @Query("SELECT r FROM Reservation r WHERE LOWER(REPLACE(r.aPackage.mainCategory.name, ' ', '')) LIKE LOWER(CONCAT('%', REPLACE(:searchText, ' ', ''), '%'))")
+    Page<Reservation> findByMainCategoryNameWithoutSpaces(
+            @Param("searchText") String searchText,
+            Pageable pageable
+    );
+
+
     //공백 구분 없이 주문자 이름 검색 + 주문상태
     @Query("SELECT r FROM Reservation r WHERE LOWER(REPLACE(r.member.name, ' ', '')) LIKE LOWER(CONCAT('%', REPLACE(:withoutSpaceSearchText, ' ', ''), '%')) AND r.reservationState = :reservationState ORDER BY r.reservationState")
     Page<Reservation> findByMemberNameContainingWithoutSpaceAndReservationState(@Param("withoutSpaceSearchText") String name, Pageable pageable, @Param("reservationState") ReservationState reservationState);
@@ -56,5 +64,12 @@ public interface ReservationRepository extends JpaRepository<Reservation,Long> {
     Page<Reservation> findByAPackagePackageNameContainingWithoutSpaceAndReservationState(
             @Param("withoutSpaceSearchText") String productName,
             Pageable pageable, @Param("reservationState") ReservationState reservationState
+    );
+
+    //공백 구분 없이 메인카테고리 검색 +주문상태
+    @Query("SELECT r FROM Reservation r WHERE LOWER(REPLACE(r.aPackage.mainCategory.name, ' ', '')) LIKE LOWER(CONCAT('%', REPLACE(:searchText, ' ', ''), '%')) AND r.reservationState = :reservationState ORDER BY r.reservationState")
+    Page<Reservation> findByMainCategoryNameWithoutSpacesAndReservationState(
+            @Param("searchText") String searchText,
+            Pageable pageable,ReservationState reservationState
     );
 }

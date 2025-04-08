@@ -158,6 +158,15 @@ public class ReservationService {
                     : reservationRepository.findByAPackagePackageNameContainingWithoutSpace(trimKeyword, pageable);
         }
 
+        //검색 기준이 국가명일때
+        if("countryName".equals(search)){
+            ReservationState state = stateMap.get(reservationState);
+
+            reservationPage = (state != null)
+                    ? reservationRepository.findByMainCategoryNameWithoutSpacesAndReservationState(trimKeyword,pageable,state)
+                    : reservationRepository.findByMainCategoryNameWithoutSpaces(trimKeyword,pageable);
+        }
+
 
         return reservationPage.map(reservation ->
                 ReservationResponseDto.builder()
