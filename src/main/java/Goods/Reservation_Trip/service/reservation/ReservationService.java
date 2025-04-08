@@ -3,6 +3,7 @@ package Goods.Reservation_Trip.service.reservation;
 import Goods.Reservation_Trip.config.ImageManager;
 import Goods.Reservation_Trip.dto.member.res.MemberResponseDto;
 import Goods.Reservation_Trip.dto.reservation.req.MemberReservationSearchDto;
+import Goods.Reservation_Trip.dto.reservation.req.NotificationMessage;
 import Goods.Reservation_Trip.dto.reservation.res.ReservationDetailsResponseDto;
 import Goods.Reservation_Trip.dto.reservation.res.ReservationResponseDto;
 import Goods.Reservation_Trip.entity.Reservation;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +35,8 @@ public class ReservationService {
     private final ReservationRepository reservationRepository;
 
     private final ImageManager imageManager;
+
+    private final SimpMessagingTemplate messagingTemplate;
 
     public Page<ReservationResponseDto> pageReservation(int page, int size, String sort, String reservationState) {
 
@@ -328,7 +332,7 @@ public class ReservationService {
         }
 
         if (infantSum != 0) {
-            payList.add("유아 " + infantSum + "인 : "+reservation.getBabySumPrice());
+            payList.add("유아 " + infantSum + "인 : " + reservation.getBabySumPrice());
         }
 
         return payList;
@@ -337,10 +341,10 @@ public class ReservationService {
     /**
      * 관리자 예약 상세 페이지
      */
-    public ReservationDetailsResponseDto getReservationDetails(Long id){
+    public ReservationDetailsResponseDto getReservationDetails(Long id) {
         Optional<Reservation> reservationOptional = reservationRepository.findById(id);
 
-        if(reservationOptional.isEmpty()) return null;
+        if (reservationOptional.isEmpty()) return null;
 
         Reservation reservation = reservationOptional.get();
 
@@ -348,12 +352,12 @@ public class ReservationService {
         List<String> pricesByAgeGroup = new ArrayList<>();
         pricesByAgeGroup.add("성인 : " + Formatter.changeBigDecimalFormat(reservation.getAPackage().getAdultPrice()));
         pricesByAgeGroup.add("어린이 : " + Formatter.changeBigDecimalFormat(reservation.getAPackage().getChildPrice()));
-        pricesByAgeGroup.add("유아 : " +Formatter.changeBigDecimalFormat(reservation.getAPackage().getBabyPrice()));
+        pricesByAgeGroup.add("유아 : " + Formatter.changeBigDecimalFormat(reservation.getAPackage().getBabyPrice()));
 
         //예약 인원 분류
         List<MemberResponseDto> memberResponseDtoList = new ArrayList<>();
 
-        for(ReservationDetails reservationDetails :reservation.getReservationDetailsList()){
+        for (ReservationDetails reservationDetails : reservation.getReservationDetailsList()) {
             MemberResponseDto memberResponseDto = MemberResponseDto.builder()
                     .name(reservationDetails.getName())
                     .gender(reservationDetails.isGender())
@@ -388,5 +392,48 @@ public class ReservationService {
                 .build();
 
 
+    }
+
+    /**
+     * 예약 상태 변경
+     */
+    public String editReservationState(ReservationResponseDto reservationResponseDto) {
+        Optional<Reservation> optionalReservation = reservationRepository.findById(reservationResponseDto.getReservationPK());
+
+        if (optionalReservation.isEmpty()) return "500";
+
+        Reservation reservation = optionalReservation.get();
+
+        String state = reservationResponseDto.getReservationState();
+
+        if (state.equals("CONFIRM")) {
+            reservation.setReservationState(ReservationState.CONFIRM);
+        } else if (state.equals("CANCEL")) {
+            reservation.setReservationState(ReservationState.CANCEL);
+        } else if (state.equals("WAIT")) {
+            reservation.setReservationState(ReservationState.WAIT);
+        } else if (state.equals("REQUEST")) {
+            reservation.setReservationState(ReservationState.REQUEST);
+        } else return "500";
+
+        reservationRepository.save(reservation);
+
+        return reservation.getReservationState().getName();
+    }
+
+
+    public void sendCancelNotification(String reservationCode,Long memberId){
+        Optional<Reservation> optionalReservation = reservationRepository.findByMemberIdAndCode(memberId,reservationCode);
+
+        if(optionalReservation.isEmpty()) throw new RuntimeException("잘못된 접근");
+
+        Reservation reservation = optionalReservation.get();
+
+        reservation.setReservationState(ReservationState.REQUEST);
+
+        reservationRepository.save(reservation);
+
+        NotificationMessage message = new NotificationMessage("예약번호 "+reservationCode+"의 예약취소 요청이 있습니다. ","cancel");
+        messagingTemplate.convertAndSend("/topic/admin",message);
     }
 }

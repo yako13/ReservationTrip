@@ -13,9 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -125,6 +123,15 @@ public class ReservationController {
         model.addAttribute("endDate",searchDto.getEndDate());
 
         return "reservation/memberSearchList";
+    }
+
+    /**
+     * 예약 상태 변경
+     */
+    @PostMapping("/admin/reservation/details/edit")
+    @ResponseBody
+    public String editReservationState(ReservationResponseDto reservationResponseDto){
+        return reservationService.editReservationState(reservationResponseDto);
     }
 
 }
