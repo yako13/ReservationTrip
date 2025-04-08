@@ -53,8 +53,4 @@ public class ReservationDetails extends BaseTime {
     @Column(name="default_reservation",nullable = false)
     @Comment("예약자 여부, 예약자1 미예약자0")
     private boolean defaultReservation;
-
-    @Column
-    @Comment("여권 번호")
-    private String passportNum;
 }
