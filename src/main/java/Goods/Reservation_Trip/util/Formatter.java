@@ -1,5 +1,7 @@
 package Goods.Reservation_Trip.util;
 
+import Goods.Reservation_Trip.entity.PackageOption;
+
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
@@ -7,6 +9,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
@@ -97,6 +101,36 @@ public class Formatter {
     //생년월일 분류
     public static String getBirth(String birth){
       return   birth.substring(0,4)+"."+birth.substring(4,6)+"."+birth.substring(6);
+    }
+
+    //패키지 옵션 분류
+    public static List<String> getPackageOptions(PackageOption packageOption){
+        List<String> optionList = new ArrayList<>();
+        if(packageOption.isNoShopping()){
+            optionList.add("쇼핑 필수 아님");
+        }
+        else {
+            optionList.add("쇼핑 필수");
+        }
+        if(packageOption.isGuide()){
+            optionList.add("가이드 동반");
+        }
+        else{
+            optionList.add("가이드 동반 안함");
+        }
+        if(packageOption.isAirfare()){
+            optionList.add("항공료 포함");
+        }
+        else {
+            optionList.add("항공료 포함 안함");
+        }
+        if(packageOption.isHotelFee()){
+            optionList.add("숙박비 포함");
+        }
+        else {
+            optionList.add("숙박비 포함 안함");
+        }
+        return optionList;
     }
 
     //운송장 번호 만드는 함수
