@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -91,20 +92,42 @@ public class HanReservationController {
     //---------------------회원 예약 상세----------------------------------------------
 
     //예약 상세 페이지
-    @GetMapping("/member/reservation/Detail/{id}")
-    public String reservationDetailGo(HttpServletRequest request, Model model, PackResvDto form,
+    @GetMapping("/member/reservation/details/{id}")
+    public String reservationDetailGo(HttpServletRequest request, Model model, @PathVariable("id") Long id,
                                       RedirectAttributes rttr) {
 
-        return "";
-    }
+        //pk가 null일경우
+        if (id == null) {
 
-    @GetMapping("/member/reservationDetail")
-    public String reservationDetailGoTest(HttpServletRequest request, Model model, PackResvDto form,
-                                          RedirectAttributes rttr) {
+            log.error("예약 상세 페이지로 가는 컨트롤러에서 에러발생 (Long id가 null입니다)");
+            return "redirect:/";
+
+        }
+
+        ResDetailPageDto resDetailPageDto = hanReservationService.ResListDetail(request, id);
+
+        //resDetailPageDto 가 null일 경우
+        if (resDetailPageDto == null) {
+
+            log.error("서비스에서 에러 발생 ");
+            rttr.addFlashAttribute("data", "오류가 발생했습니다");
+            return "redirect:/";
+
+        }
+
+        model.addAttribute("resDetailPageDto", resDetailPageDto);
 
 
         return "reservation/reservationDetail";
     }
+
+//    @GetMapping("/member/reservationDetail")
+//    public String reservationDetailGoTest(HttpServletRequest request, Model model, PackResvDto form,
+//                                          RedirectAttributes rttr) {
+//
+//
+//        return "reservation/reservationDetail";
+//    }
 
 
 }

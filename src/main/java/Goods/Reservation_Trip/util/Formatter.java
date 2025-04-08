@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
+import java.time.temporal.ChronoUnit;
 import java.util.Locale;
 import java.util.Random;
 
@@ -149,7 +150,7 @@ public class Formatter {
         return String.format("%s(%s) %s", formattedDate, dayOfWeek, time);
     }
 
-
+    //25.01.01 식으로 생년월일을 변환해주는 함수
     public static String formatBirthDate(String birthDate) {
         if (birthDate == null || birthDate.length() != 8) {
             throw new IllegalArgumentException("생년월일은 8자리여야 합니다 (예: 20150101)");
@@ -162,9 +163,23 @@ public class Formatter {
         return String.format("%s.%s.%s", year, month, day);
     }
 
+    //BigDecimal을 원단위와 원을 붙여주는 함수 그리고 원 앞에 뛰어쓰기 없는 버전
     public static String BigDecimalFormat(BigDecimal bigDecimal) {
         DecimalFormat decimalFormat = new DecimalFormat("###,###");
         return decimalFormat.format(bigDecimal) + "원";
+    }
+
+    //몇박 몇일 계산 해주는 함수
+    public static String TripDuration(LocalDate startDate, LocalDate endDate) {
+
+        long days = ChronoUnit.DAYS.between(startDate, endDate) + 1; // 며칠
+
+        long nights = days - 1; // 몇 박
+
+        //몇박 몇일로 출력
+        String tripDuration = nights + "박 " + days + "일";
+
+        return tripDuration;
     }
 
 

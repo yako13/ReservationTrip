@@ -308,14 +308,14 @@
                 <!-- <input type="hidden" th:value="${aPackage.id}" id="packagePk"> -->
                 <input type="hidden" value="1" id="packagePk">
 
+
                 <div class="HanCkSubmitA">
                     <button type="submit" class="HanCheckoutList">예약하기</button>
 
                     <!-- 찜 아이콘: data-like="false"로 찜 여부 표시 -->
                     <a id="dib" th:attr="data-like=${isLiked}">
                         <img id="dibHeartIcon"
-                             th:src="${isLiked} ? @{/images/dibheartOn.svg} : @{/images/dibheartOff.svg}"
-                             width="30px">
+                            th:src="${isLiked} ? @{/images/dibheartOn.svg} : @{/images/dibheartOff.svg}" width="30px">
                     </a>
 
 
@@ -399,12 +399,16 @@
                 e.preventDefault();
 
                 const packagePk = $('#packagePk').val();
+                const selectedDate = $('#datepicker-input').val();
                 const isLiked = $(this).attr('data-like') === 'true';
 
                 $.ajax({
                     type: 'POST',
                     url: isLiked ? '/dib/cancel' : '/dib/add',
-                    data: { packagePk: packagePk },
+                    data: {
+                        packagePk: packagePk,
+                        selectedDate: selectedDate
+                    },
                     success: function (response) {
                         if (response.status === 'NOT_LOGGED_IN') {
                             Swal.fire({
@@ -414,13 +418,35 @@
                                 showCancelButton: true,
                                 confirmButtonText: '로그인',
                                 cancelButtonText: '취소',
-                                confirmButtonColor: '#2cafec', //  로그인 버튼 색상 
-                                cancelButtonColor: '#ff7979'      // 취소 버튼 색상
-       
+                                confirmButtonColor: '#2cafec',
+                                cancelButtonColor: '#ff7979'
                             }).then((result) => {
                                 if (result.isConfirmed) {
                                     window.location.href = '/login';
                                 }
+                            });
+                            return;
+                        }
+
+                        if (response.status === 'NOT_DAY') {
+                            Swal.fire({
+                                icon: 'info',
+                                title: '여행 일정이 없습니다',
+                                text: '다른 날짜를 선택해주세요.',
+                                confirmButtonText: '확인',
+                                confirmButtonColor: '#2cafec'
+                            });
+                            return;
+                        }
+
+                        // ✅ 날짜 마감된 경우 처리
+                        if (response.status === 'DAY_FULL') {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: '예약 마감',
+                                text: '현재 날짜는 마감되었습니다.',
+                                confirmButtonText: '확인',
+                                confirmButtonColor: '#2cafec'
                             });
                             return;
                         }
@@ -433,7 +459,9 @@
                             $('#dibHeartIcon').attr('src', '/images/dibheartOn.svg');
                             $('#dib').attr('data-like', 'true');
                         }
-                    },
+                    }
+
+                    ,
                     error: function () {
                         Swal.fire({
                             icon: 'error',
