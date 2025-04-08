@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -36,6 +37,9 @@ public class HanDibController {
         if (DibPageDtoList.isEmpty()) {
             model.addAttribute("dibNo", 1);
         }
+
+        //역순 정렬
+        Collections.reverse(DibPageDtoList);
 
         model.addAttribute("DibPageDtoList", DibPageDtoList);
 

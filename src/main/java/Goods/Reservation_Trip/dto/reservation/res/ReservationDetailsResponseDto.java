@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @NoArgsConstructor
@@ -59,6 +61,9 @@ public class ReservationDetailsResponseDto {
     //제목 태그
     private String tag;
 
+    //여행하는 나라
+    private String country;
+
     //옵션
     private List<String> option;
 
@@ -101,6 +106,12 @@ public class ReservationDetailsResponseDto {
     //여행 종료일 도착지
     private String e_destination;
 
+    //출국 항공사명
+    private String s_airlineName;
+
+    //귀국 항공사명
+    private String e_airlineName;
+
     //패키지 연령대별금액
     private List<String> pricesByAgeGroup;
 
@@ -114,6 +125,6 @@ public class ReservationDetailsResponseDto {
     private String fuelSurcharge;
 
     //호텔
-    private List<String> hotel;
+    private String hotel;
 
 }

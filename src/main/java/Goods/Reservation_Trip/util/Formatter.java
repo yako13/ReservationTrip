@@ -1,11 +1,16 @@
 package Goods.Reservation_Trip.util;
 
+import Goods.Reservation_Trip.entity.PackageOption;
+
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
@@ -98,6 +103,36 @@ public class Formatter {
       return   birth.substring(0,4)+"."+birth.substring(4,6)+"."+birth.substring(6);
     }
 
+    //패키지 옵션 분류
+    public static List<String> getPackageOptions(PackageOption packageOption){
+        List<String> optionList = new ArrayList<>();
+        if(packageOption.isNoShopping()){
+            optionList.add("쇼핑 필수 아님");
+        }
+        else {
+            optionList.add("쇼핑 필수");
+        }
+        if(packageOption.isGuide()){
+            optionList.add("가이드 동반");
+        }
+        else{
+            optionList.add("가이드 동반 안함");
+        }
+        if(packageOption.isAirfare()){
+            optionList.add("항공료 포함");
+        }
+        else {
+            optionList.add("항공료 포함 안함");
+        }
+        if(packageOption.isHotelFee()){
+            optionList.add("숙박비 포함");
+        }
+        else {
+            optionList.add("숙박비 포함 안함");
+        }
+        return optionList;
+    }
+
     //운송장 번호 만드는 함수
     public static String generateDeliveryCode() {
 
@@ -149,7 +184,7 @@ public class Formatter {
         return String.format("%s(%s) %s", formattedDate, dayOfWeek, time);
     }
 
-
+    //25.01.01 식으로 생년월일을 변환해주는 함수
     public static String formatBirthDate(String birthDate) {
         if (birthDate == null || birthDate.length() != 8) {
             throw new IllegalArgumentException("생년월일은 8자리여야 합니다 (예: 20150101)");
@@ -162,9 +197,23 @@ public class Formatter {
         return String.format("%s.%s.%s", year, month, day);
     }
 
+    //BigDecimal을 원단위와 원을 붙여주는 함수 그리고 원 앞에 뛰어쓰기 없는 버전
     public static String BigDecimalFormat(BigDecimal bigDecimal) {
         DecimalFormat decimalFormat = new DecimalFormat("###,###");
         return decimalFormat.format(bigDecimal) + "원";
+    }
+
+    //몇박 몇일 계산 해주는 함수
+    public static String TripDuration(LocalDate startDate, LocalDate endDate) {
+
+        long days = ChronoUnit.DAYS.between(startDate, endDate) + 1; // 며칠
+
+        long nights = days - 1; // 몇 박
+
+        //몇박 몇일로 출력
+        String tripDuration = nights + "박 " + days + "일";
+
+        return tripDuration;
     }
 
 

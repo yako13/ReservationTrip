@@ -9,6 +9,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+
 @Async
 @Service
 @RequiredArgsConstructor
@@ -20,7 +23,8 @@ public class ScheduleService {
     @Transactional
     @Scheduled(cron = "0 59 23 * * *")
     public void changeStatus(){
-        int updatedRows = packageScheduleRepository.updateExpiredSchedules();
+        LocalDate cutoff = LocalDate.now(ZoneId.of("Asia/Seoul")).plusDays(1);
+        int updatedRows = packageScheduleRepository.updateExpiredSchedulesNextDay(cutoff);
         if (updatedRows > 0) {
             System.out.println("매일 23시 59분 00초에 패키지 상태를 변경합니다." + updatedRows + "개의 데이터가 교체됨");
         }
@@ -31,7 +35,7 @@ public class ScheduleService {
     @Transactional
     @EventListener(ApplicationReadyEvent.class)
     public void checkStatus() {
-        int updatedRows = packageScheduleRepository.updateExpiredSchedules();
+        int updatedRows = packageScheduleRepository.updateExpiredSchedules(LocalDate.now());
         if (updatedRows > 0) {
             System.out.println("서버 시작시 한번만 패키지 상태를 변경합니다." + updatedRows + "개의 데이터가 교체됨");
         }

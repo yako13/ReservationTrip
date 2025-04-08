@@ -452,3 +452,35 @@ body {
   color: #ffffff;
   transform: scale(0.98);
 }
+
+.HanPayButtonDiv .HanReview {
+  background-color: #43bff8;
+  color: #ffffff;
+}
+
+/* .HanCardNewButton .HanSubmit {
+  background-color: #fff6a6;
+  color: #363636;
+} */
+
+.HanPayButtonDiv .HanCancel:hover {
+  background-color: #ff7979;
+  color: #ffffff;
+  transform: scale(0.98);
+}
+
+.HanPayButtonDiv .HanReview:hover {
+  background-color: #3e8cf1;
+  color: #ebebeb;
+  transform: scale(0.98);
+}
+
+.HanPayButtonDiv .HanCancelReq {
+  background-color: #d1d1d1;
+  color: #252525;
+  pointer-events: none;   /* 클릭 막기 */
+  cursor: default;
+}
+
+
+

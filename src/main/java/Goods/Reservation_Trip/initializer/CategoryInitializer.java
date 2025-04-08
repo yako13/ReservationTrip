@@ -1,13 +1,15 @@
-package Goods.Reservation_Trip.config;
+package Goods.Reservation_Trip.initializer;
 
 import Goods.Reservation_Trip.entity.PackageCategory;
 import Goods.Reservation_Trip.repository.aPackage.PackageCategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
+@Order(1)
 public class CategoryInitializer implements CommandLineRunner {
 
     private final PackageCategoryRepository packageCategoryRepository;
@@ -25,9 +27,9 @@ public class CategoryInitializer implements CommandLineRunner {
 
         // 중분류 depth:2
         PackageCategory kansai = packageCategoryRepository.findByName("간사이(관서)")
-                .orElseGet(() -> packageCategoryRepository.save(new PackageCategory(null, "간사이(관서)", null, 2)));
+                .orElseGet(() -> packageCategoryRepository.save(new PackageCategory(null, "간사이(관서)", japan, 2)));
         PackageCategory kanto = packageCategoryRepository.findByName("간토(관동)")
-                .orElseGet(() -> packageCategoryRepository.save(new PackageCategory(null, "간토(관동)", null, 2)));
+                .orElseGet(() -> packageCategoryRepository.save(new PackageCategory(null, "간토(관동)", japan, 2)));
 
 
         // 소분류 depth:3

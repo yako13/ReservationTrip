@@ -442,7 +442,7 @@
 
 
             </ul>
-            <div th:if="${reviewList==null}" class="imageArea">
+            <div th:if="${#lists.size(reviewList) < 1}" class="imageArea">
                 <img th:src="@{/images/info.svg}" id="infoImage">
                 <p>등록하신 리뷰가 없습니다.</p>
             </div>

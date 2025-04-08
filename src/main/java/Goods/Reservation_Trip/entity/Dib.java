@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Comment;
+
+import java.time.LocalDate;
 
 @Table(name = "dib")
 @Getter
@@ -26,4 +29,8 @@ public class Dib {
     @JoinColumn(name = "package_id", nullable = false)
     @ManyToOne
     private Package packageEntity;
+
+    @Column
+    @Comment("여행 시작일")
+    private LocalDate tripStart;
 }
