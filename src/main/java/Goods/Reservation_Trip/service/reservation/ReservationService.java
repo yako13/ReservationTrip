@@ -3,6 +3,7 @@ package Goods.Reservation_Trip.service.reservation;
 import Goods.Reservation_Trip.config.ImageManager;
 import Goods.Reservation_Trip.dto.member.res.MemberResponseDto;
 import Goods.Reservation_Trip.dto.reservation.req.MemberReservationSearchDto;
+import Goods.Reservation_Trip.dto.reservation.req.NotificationMessage;
 import Goods.Reservation_Trip.dto.reservation.res.ReservationDetailsResponseDto;
 import Goods.Reservation_Trip.dto.reservation.res.ReservationResponseDto;
 import Goods.Reservation_Trip.entity.Reservation;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +35,8 @@ public class ReservationService {
     private final ReservationRepository reservationRepository;
 
     private final ImageManager imageManager;
+
+    private final SimpMessagingTemplate messagingTemplate;
 
     public Page<ReservationResponseDto> pageReservation(int page, int size, String sort, String reservationState) {
 
@@ -415,5 +419,21 @@ public class ReservationService {
         reservationRepository.save(reservation);
 
         return reservation.getReservationState().getName();
+    }
+
+
+    public void sendCancelNotification(String reservationCode,Long memberId){
+        Optional<Reservation> optionalReservation = reservationRepository.findByMemberIdAndCode(memberId,reservationCode);
+
+        if(optionalReservation.isEmpty()) throw new RuntimeException("잘못된 접근");
+
+        Reservation reservation = optionalReservation.get();
+
+        reservation.setReservationState(ReservationState.REQUEST);
+
+        reservationRepository.save(reservation);
+
+        NotificationMessage message = new NotificationMessage("예약번호 "+reservationCode+"의 예약취소 요청이 있습니다. ","cancel");
+        messagingTemplate.convertAndSend("/topic/admin",message);
     }
 }
