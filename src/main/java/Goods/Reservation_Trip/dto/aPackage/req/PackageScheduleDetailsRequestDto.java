@@ -22,12 +22,12 @@ public class PackageScheduleDetailsRequestDto {
     /**
      * 출국 항공사명
      */
-    private Airline airlineOut;
+    private Long airlineOutId;
 
     /**
      * 귀국 항공사명
      */
-    private Airline airlineReturn;
+    private Long airlineReturnId;
 
     /**
      * 출국 항공기 번호
@@ -42,12 +42,12 @@ public class PackageScheduleDetailsRequestDto {
     /**
      * 출국 출발지
      */
-    private Airport departurePointOut;
+    private Long departurePointOutId;
 
     /**
      * 출국 도착지
      */
-    private Airport arrivalPointOut;
+    private Long arrivalPointOutId;
 
     /**
      * 출국 출발 시간
@@ -66,12 +66,12 @@ public class PackageScheduleDetailsRequestDto {
     /**
      * 귀국 출발지
      */
-    private String departurePointReturn;
+    private Long departurePointReturnId;
 
     /**
      * 귀국 도착지
      */
-    private String arrivalPointReturn;
+    private Long arrivalPointReturnId;
 
     /**
      * 귀국 출발 시간

@@ -63,13 +63,15 @@ public class PackageScheduleDetails extends BaseTime {
     @Comment("출국 도착 시간")
     private LocalTime arrivalTimeOut;
 
-    @Column(name = "departure_point_return", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "departure_point_return", nullable = false)
     @Comment("귀국 비행기 출발지")
-    private String departurePointReturn;
+    private Airport departurePointReturn;
 
-    @Column(name = "arrival_point_return", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "arrival_point_return", nullable = false)
     @Comment("귀국 비행기 도착지")
-    private String arrivalPointReturn;
+    private Airport arrivalPointReturn;
 
     @Column(name = "departure_time_return", nullable = false)
     @Comment("귀국 출발 시간")
