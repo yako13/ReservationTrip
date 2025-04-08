@@ -210,7 +210,7 @@
                                 </div>
                                 <div class="inputArea">
                                     <label for="phoneNumber">휴대전화번호</label>
-                                    <input type="text" name="phoneNumber" placeholder="휴대전화번호" id="phoneNumber">
+                                    <input maxlength="11" type="text" name="phoneNumber" placeholder="숫자만 입력하세요." id="phoneNumber"  oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                                 </div>
                                 <button id="findBtn" type="button">확인</button>
                             </form>

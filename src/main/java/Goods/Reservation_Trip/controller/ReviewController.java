@@ -10,10 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -49,8 +46,7 @@ public class ReviewController {
     public String createReview(ReviewDto reviewDto, HttpServletRequest request) {
         MemberResponseDto memberResponseDto = memberService.getMember(request);
         reviewService.registerReview(reviewDto, memberResponseDto.getId());
-//        return "redirect:/member/review/list";
-        return "redirect:/member/reservation/list";
+        return "redirect:/member/review/list";
     }
 
     /**
@@ -74,27 +70,46 @@ public class ReviewController {
      */
     @PostMapping("/member/review/edit")
     public String editReview(ReviewDto reviewDto, HttpServletRequest request,
-    @RequestParam(value = "deletedImages", required = false) String deletedImages
+                             @RequestParam(value = "deletedImages", required = false) String deletedImages
     ) {
         MemberResponseDto memberResponseDto = memberService.getMember(request);
 
-        reviewService.editReview(reviewDto, memberResponseDto.getId(),deletedImages);
+        reviewService.editReview(reviewDto, memberResponseDto.getId(), deletedImages);
 
-        //        return "redirect:/member/review/list";
-        return "redirect:/member/reservation/list";
+        return "redirect:/member/review/list";
     }
 
     /**
      * 작성가능한 리뷰 페이지
      */
     @GetMapping("/member/review/list/able")
-    public String memberReviewAbleListPage(Model model,HttpServletRequest request){
+    public String memberReviewAbleListPage(Model model, HttpServletRequest request) {
         MemberResponseDto memberResponseDto = memberService.getMember(request);
 
         List<ReservationDetailsResponseDto> responseDtoList = reviewService.getReviewAblePage(memberResponseDto.getId());
 
-        model.addAttribute("reservationList",responseDtoList);
+        model.addAttribute("reservationList", responseDtoList);
 
         return "review/able";
+    }
+
+    @GetMapping("/member/review/list")
+    public String memberReviewListPage(Model model, HttpServletRequest request) {
+        MemberResponseDto memberResponseDto = memberService.getMember(request);
+        List<ReviewResponseDto> reviewResponseDtoList = reviewService.getReviewList(memberResponseDto.getId());
+
+        model.addAttribute("reviewList", reviewResponseDtoList);
+
+        return "review/list";
+    }
+
+    @PostMapping("/member/review/delete/{id}")
+    @ResponseBody
+    public String deleteMemberReview(@PathVariable Long id, HttpServletRequest request) {
+        MemberResponseDto memberResponseDto = memberService.getMember(request);
+
+        if (reviewService.deleteReview(id, memberResponseDto.getId()).equals("500")) return "500";
+
+        return "1000";
     }
 }

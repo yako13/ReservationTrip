@@ -1,0 +1,612 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <title>관리자 주문 상세 내역</title>
+    <script src="https://kit.fontawesome.com/f3f72a2177.js" crossorigin="anonymous"></script>
+    <link th:href="@{/css/admin/header.css}" rel="stylesheet">
+    </link>
+    <style>
+        @font-face {
+            font-family: 'NanumSquareRound';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NanumSquareRound.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        * {
+            font-family: 'NanumSquareRound';
+        }
+
+        body {
+            margin: 0;
+        }
+
+        table {
+            font-size: 14px;
+        }
+
+        #main {
+            margin-left: 50px;
+            margin-right: 50px;
+        }
+
+        .deliveryState {
+            margin-left: 10px;
+        }
+
+        .rwd-table,
+        .orderTable {
+            margin: auto;
+            width: 100%;
+            min-width: 500px;
+            max-width: 100%;
+            border-collapse: collapse;
+            color: #333;
+            overflow: hidden;
+            border: 1px #e0e0e0 solid;
+            font-size: 0.9em;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+
+        }
+
+
+        th {
+            border-top: none;
+            color: white;
+            background-color: #2c394b;
+        }
+
+        .rwd-table tr {
+            border: 1px solid #ccc;
+            background-color: #ffffff;
+        }
+
+        .rwd-table td {
+            display: block;
+        }
+
+
+        .rwd-table tr:nth-child(odd):not(:first-child) {
+            background-color: #ffffff;
+        }
+
+        .rwd-table th {
+            display: none;
+            width: 110px;
+        }
+
+
+        .rwd-table td:first-child {
+            margin-top: .5em;
+        }
+
+        .rwd-table td:last-child {
+            margin-bottom: .5em;
+        }
+
+        .rwd-table th,
+        .rwd-table td {
+            text-align: left;
+        }
+
+        .rwd-table {
+            border-radius: 4px;
+        }
+
+        .parentsTable td {
+            box-sizing: border-box;
+            padding: 10px;
+        }
+
+        .parentsTable {
+            border-spacing: 1px;
+        }
+
+        .selectBox,
+        #deliveryCode {
+            border-radius: 3px;
+            margin-right: 10px;
+        }
+
+        .borderNone {
+            border-left: none;
+        }
+
+        .parentsTableHead {
+            padding: 5px 0px;
+            font-size: 18px;
+        }
+
+        .rwd-table th,
+        .rwd-table td {
+            padding: .5em 1em;
+        }
+
+        @media screen and (max-width: 601px) {
+            .rwd-table tr:nth-child(2) {
+                border-top: none;
+            }
+        }
+
+        @media screen and (min-width: 1000px) {
+            .rwd-table td:hover {
+                background-color: #f4f6f8;
+            }
+
+            .rwd-table td:before {
+                display: none;
+            }
+
+            .rwd-table th,
+            .rwd-table td {
+                display: table-cell;
+                padding: .25em .5em;
+            }
+
+            .rwd-table th:first-child,
+            .rwd-table td:first-child {
+                padding-left: 0;
+            }
+
+            .rwd-table th:last-child,
+            .rwd-table td:last-child {
+                padding-right: 0;
+            }
+
+            .rwd-table th,
+            .rwd-table td {
+                padding: 1em !important;
+            }
+        }
+
+
+        .container {
+            display: block;
+            text-align: center;
+            margin-left: 50px;
+        }
+
+        .totalPrice {
+            color: red;
+        }
+
+        h2 {
+            margin-top: 80px;
+            text-align: left;
+        }
+
+        .tableTitle {
+            height: 70px;
+            text-align: left;
+
+            p {
+                padding-top: 30px;
+                font-size: 20px;
+            }
+        }
+
+        .red {
+            color: red;
+        }
+
+        ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            text-align: center;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .parentsTable {
+            border-radius: 4px;
+
+            width: 50%;
+
+            .parentsTableTd {
+                background-color: #eaeef1;
+
+            }
+        }
+
+        .parentsTableHead {
+            color: white;
+            height: 40px;
+            font-size: 17px;
+            background-color: #a9b5c1;
+        }
+
+        .tableArea {
+            display: flex;
+        }
+
+        .productInfo {
+
+            th,
+            td {
+                text-align: center !important;
+            }
+        }
+
+        .buttonArea {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+
+            button,
+            a {
+                width: 100px;
+                height: 40px;
+                border-radius: 4px;
+                border: none;
+                
+                line-height: 40px;
+            }
+        }
+
+        .editButtonArea {
+            margin: 10px;
+            display: flex;
+            justify-content: end;
+        }
+
+        .editBtn {
+            width: 100px;
+            height: 31px;
+            border-radius: 4px;
+            font-size: 16px;
+            border: none;
+            color: white;
+            line-height: 30px;
+            background-color: #43bff8;
+            transition: all 0.3s ease;
+
+            &:hover {
+                background-color: #3e8cf1;
+                transform: scale(0.98);
+            }
+        }
+
+
+
+        .listBtn {
+            background-color: #ececec;
+            text-align: center;
+            color: black;
+            transition: all 0.3s ease;
+        }
+
+        .listBtn:hover {
+            background-color: #e0e0e0;
+                color: #333;
+                transform: scale(0.98);
+
+        }
+        .selectBox {
+            margin-top: 0;
+            width: 100px;
+            height: 32px;
+            border-radius: 4px;
+            margin-right: 10px;
+            border: 1px solid #ddd;
+            color: #6b6b6b;
+
+            &:focus {
+                border: 1px solid red;
+                outline: none;
+            }
+        }
+
+        #deliveryCode {
+            height: 27px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            color: #6b6b6b;
+
+            &:focus {
+                border: 1px solid red;
+                outline: none;
+            }
+        }
+
+        #topBtn {
+            width: 90px;
+            height: 90px;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            display: none;
+            /* 기본적으로 버튼 숨김 */
+        }
+
+
+
+        .parentsTable:first-child {
+            border-right: none;
+        }
+
+        .firstHead {
+            border-top-left-radius: 4px;
+        }
+
+        .firstBody {
+            border-bottom-left-radius: 4px;
+        }
+
+        .lastBody {
+            border-bottom-right-radius: 4px;
+        }
+
+        .lastHead {
+            border-top-right-radius: 4px;
+        }
+
+        .reservationTable {
+            margin: 0;
+
+            td {
+                width: 500px;
+            }
+
+            p {
+                margin: 0;
+            }
+        }
+
+        .firstTable {
+            td {
+                width: 500px;
+            }
+        }
+
+        .personTable {
+            margin: 0;
+            th,td{
+                text-align: center;
+            }
+            th:first-child{
+                width: 2rem;
+            }
+        }
+
+        .packageTable{
+            th:first-child{
+                width: 3rem;
+            }
+            th:last-child{
+                width: 4rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header th:replace="fragments/adminHeader::masterHeader"></header>
+    <nav th:replace="fragments/adminHeader::masterNav"></nav>
+    <input type="hidden" th:value="${alert}" id="dataAlert">
+    <main id="main" th:each="reservationList : ${reservationList}">
+        <div class="container">
+            <h2>예약 상세 내역</h2>
+            <hr>
+            <!-- 예약정보 -->
+            <div class="checkoutInfo">
+                <div class="tableTitle">
+                    <p><b><i class="fa-regular fa-clipboard"></i> 예약 정보</b></p>
+
+                </div>
+                <hr>
+                <table class="rwd-table firstTable">
+                    <tbody>
+                        <tr>
+                            <th>예약 상태 변경</th>
+                            <form id="reservationForm">
+                                <input type="hidden" th:value="${reservationList.reservationPK}" name="id" id="id">
+                                <td><select class="selectBox" name="reservationState" id="reservationState">
+                                        <option th:selected="${reservationList.reservationState}=='예약완료'"
+                                            value="CONFIRM">예약완료</option>
+                                        <option th:selected="${reservationList.reservationState}=='예약보류'" value="WAIT">
+                                            예약보류</option>
+                                        <option style="color: red;"
+                                            th:selected="${reservationList.reservationState}=='예약취소'" value="CANCEL">
+                                            예약취소</option>
+                                        <option style="color: red;"
+                                            th:selected="${reservationList.reservationState}=='예약취소요청'" value="REQUEST">
+                                            예약취소요청</option>
+
+                                    </select>
+                                    <button type="button" class="editBtn" id="editBtn"><i
+                                            class="fa-solid fa-pen-to-square"></i>수정</button>
+                                </td>
+                                <th>예약자명</th>
+                                <td th:text="${reservationList.name}"></td>
+                        </tr>
+
+                        <tr>
+                            <th>예약번호</th>
+                            <td th:text="${reservationList.code}"><b></b></td>
+                            <th>예약자 이메일</th>
+                            <td th:text="${reservationList.email}"></td>
+                        </tr>
+                        <tr>
+                            <th>예약일시</th>
+                            <td th:text="${reservationList.createdAt}"></td>
+                            <th>예약자 연락처</th>
+                            <td th:text="${reservationList.phoneNumber}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                </form>
+
+            </div>
+            <!-- /예약정보 -->
+            <!-- 결제정보 -->
+            <div class="payInfo">
+                <div class="tableTitle">
+                    <p><b><i class="fa-regular fa-credit-card"></i> 결제 정보</b></p>
+                </div>
+                <hr>
+
+                <div class="tableArea">
+                    <table class="rwd-table reservationTable">
+                        <tbody>
+                            <tr>
+                                <th>총 결제 금액</th>
+                                <td class="red" th:text="${reservationList.totalPay}"><b>1,704,000원</b></td>
+                                <th>카카오페이 결제고유번호</th>
+                                <td th:text="${reservationList.aid}"></td>
+                            </tr>
+                            <tr>
+                                <th>결제수단</th>
+                                <td>카카오페이</td>
+                                <th>카카오페이 결제타입</th>
+                                <td th:text="${reservationList.payType}">카드</td>
+                            </tr>
+                            <tr>
+                                <th>금액상세</th>
+                                <td>
+                                    <p th:each="pay : ${reservationList.detailPay}" th:text="pay"></p>
+                                </td>
+                                <th>카카오페이 결제승인시각</th>
+                                <td th:text="${reservationList.approvedAt}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </td>
+                    </tr>
+                    </table>
+
+                </div>
+            </div>
+            <!-- /결제정보 -->
+            <!-- 주문패키지정보 -->
+            <div class="productInfo">
+                <div class="tableTitle">
+                    <p><b><i class="fa-solid fa-plane-up"></i> 상품 정보</b></p>
+                </div>
+                <hr>
+
+                <table class="rwd-table packageTable">
+                    <tbody>
+
+                        <tr>
+                            <th>이미지</th>
+                            <th>상품명</th>
+                            <th>금액</th>
+                            <th>호텔 정보</th>
+                            <th>항공사 정보</th>
+                            <th>옵션</th>
+                        </tr>
+
+                        <tr class="imageArea">
+                            <td><a><img th:src="${reservationList.mainImage}" style="width:100%;"></a></td>
+
+                            <td th:text="${reservationList.packageName}"></td>
+                            <td class="price">
+                                <p th:each="pricesByAgeGroup : ${reservationList.pricesByAgeGroup}"
+                                    th:text="${pricesByAgeGroup}"></p>
+                            </td>
+                            <td>
+                                <p>1~3일차 : 응우옌호텔(주소, 연락처)</p>
+                                <p>4~5일차 : 두리안호텔(주소, 연락처)</p>
+                            </td>
+                            <td>
+                                <p>출발 시간 : 2025.05.06 11:00:00 (한국시간기준)</p>
+                                <p>도착 시간 : 2025.05.010 11:00:00 (한국시간기준)</p>
+                                <p>출발 시 항공기 : (대한항공)AB101</p>
+                                <p>도착 시 항공기 : (대한항공)AB101</p>
+                            </td>
+                            <td>
+                                <p>가이드 없음</p>
+                                <p>추가비용 없음</p>
+                                <p>자유여행</p>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+            <!-- /주문패키지정보 -->
+
+            <!-- 예약인원 정보 -->
+            <div class="ordererInfo">
+                <div class="tableTitle">
+                    <p><b><i class="fa-regular fa-user"></i> 예약 인원 정보</b></p>
+                </div>
+                <hr>
+
+                <div class="tableArea">
+                    <table class="rwd-table personTable" style="text-align: center;">
+                        <tbody>
+                            <tr>
+                                <th>번호</th>
+                                <th>이름</th>
+                                <th>성별</th>
+                                <th>생년월일</th>
+                                <th>연락처</th>
+                                <th>여권번호</th>
+                            </tr>
+
+                            <tr th:each="memberList,member : ${reservationList.memberList}">
+                                <td th:text="${member.size}"></td>
+                                <td th:text="${memberList.name}">김춘식</td>
+                                <td th:if="${memberList.gender}">남성</td>
+                                <td th:if="${!memberList.gender}">여성</td>
+                                <td th:text="${memberList.birth}">1999.09.09</td>
+                                <td th:text="${memberList.phoneNumber}">010-1111-2222</td>
+                                <td th:text="${memberList.passportNumber}">12312345</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- /주문자 및 배송지 정보  -->
+            <!-- 버튼영역 -->
+            <div class="buttonArea">
+                <a th:href="@{/admin/reservation/list}" class="listBtn"><i class="fa-solid fa-rotate-left"></i> 목록</a>
+            </div>
+            <img th:src="@{/images/upArrow1.svg}" id="topBtn">
+        </div>
+    </main>
+    <script th:src="@{/js/adminNav.js}"></script>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script>
+        //예약 상태 수정 
+        $("#editBtn").click(function () {
+            var params = {
+                reservationState: $("#reservationState").val(),
+                reservationPK: $("#id").val()
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/admin/reservation/details/edit",
+                data: params,
+                success: function (res) {
+                    if (res == 500) {
+                        alert("수정을 실패했습니다.")
+                    } else {
+                        alert("수정이 완료되었습니다.");
+                    }
+                },
+                error: function () {
+                    alert("통신 실패.");
+                }
+            });
+        });
+
+    </script>
+</body>
+
+</html>

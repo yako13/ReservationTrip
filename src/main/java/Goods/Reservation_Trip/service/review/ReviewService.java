@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -194,8 +195,8 @@ public class ReviewService {
      * 리뷰 작성 가능한 예약 불러오기
      */
     public List<ReservationDetailsResponseDto> getReviewAblePage(Long memberId) {
-        //리뷰 리스트가 0인 예약만 찾아옴
-        List<Reservation> reservationList = reservationRepository.findByReviewListIsNull();
+        //리뷰 리스트가 0이며, 여행 마지막날이 현재 날짜를 지나고, ID 기준 내림차순으로 정렬
+        List<Reservation> reservationList = reservationRepository.findByEndDateBeforeAndReviewListIsNullOrderByIdDesc(LocalDate.now());
 
         if (reservationList.isEmpty()) return null;
 
@@ -215,5 +216,61 @@ public class ReviewService {
             responseDtos.add(reservationDetailsResponseDto);
         }
         return responseDtos;
+    }
+
+    /**
+     * 리뷰 리스트
+     */
+    public List<ReviewResponseDto> getReviewList(Long memberId) {
+        List<Review> reviewList = reviewRepository.findByMemberId(memberId);
+
+        List<ReviewResponseDto> responseDtoList = new ArrayList<>();
+
+        for (Review review : reviewList) {
+            boolean modified = true;
+            //수정됐는지 안됐는지만 체크
+            //수정 날짜와 생성 날짜가 같으면 수정하지 않았음
+            if (review.getCreatedAt().equals(review.getModifiedAt())) {
+                modified = false;
+            }
+
+            List<String> images = new ArrayList<>();
+
+            //리뷰 이미지 가져오기
+            for (ReviewImage reviewImage : review.getReviewImageList()) {
+                images.add(imageManager.createImageUrl(reviewImage.getImageFullName()));
+            }
+
+            ReviewResponseDto reviewResponseDto = ReviewResponseDto.builder()
+                    .reviewId(review.getId())
+                    .packageMainImage(imageManager.createImageUrl(review.getAPackage().getMainImage().getImageFullName()))
+                    .packageName(review.getAPackage().getPackageName())
+                    .content(review.getContent())
+                    .rating(review.getRating())
+                    .createdAt(Formatter.getLocalDate(review.getCreatedAt()))
+                    .modified(modified)
+                    .imagesURL(images)
+                    .build();
+
+            responseDtoList.add(reviewResponseDto);
+        }
+        return responseDtoList;
+    }
+
+    /**
+     * 리뷰삭제
+     */
+    public String deleteReview(Long id, Long memberId) {
+        Optional<Review> optionalReview = reviewRepository.findById(id);
+        if (optionalReview.isEmpty()) return "500";
+
+        Review review = optionalReview.get();
+
+        //다른 사람 리뷰 삭제 불가
+        if (!review.getMember().getId().equals(memberId)) return "500";
+
+        reviewRepository.delete(review);
+
+        return "1000";
     }
 }

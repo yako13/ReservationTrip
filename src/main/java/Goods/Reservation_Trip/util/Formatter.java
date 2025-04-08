@@ -13,14 +13,13 @@ import java.util.Random;
 public class Formatter {
 
 
-
-    public static String changeBigDecimalFormat(BigDecimal bigDecimal){
+    public static String changeBigDecimalFormat(BigDecimal bigDecimal) {
         DecimalFormat decimalFormat = new DecimalFormat("###,###");
         return decimalFormat.format(bigDecimal) + " 원";
     }
 
 
-    public static String getLocalDate(LocalDateTime localDateTime){
+    public static String getLocalDate(LocalDateTime localDateTime) {
         if (localDateTime == null) {
             return null;
         }
@@ -28,22 +27,21 @@ public class Formatter {
     }
 
 
-
-    public static String changePhoneNumber(String phoneNumber){
-        if(phoneNumber.length()==11){
-            return phoneNumber.substring(0,3)+"-"+phoneNumber.substring(3,7)+"-"+phoneNumber.substring(7,11);
+    public static String changePhoneNumber(String phoneNumber) {
+        if (!phoneNumber.isEmpty()) {
+            if (phoneNumber.length() == 11) {
+                return phoneNumber.substring(0, 3) + "-" + phoneNumber.substring(3, 7) + "-" + phoneNumber.substring(7, 11);
+            } else if (phoneNumber.length() == 10) {
+                return phoneNumber.substring(0, 3) + "-" + phoneNumber.substring(3, 6) + "-" + phoneNumber.substring(6, 10);
+            }
+            throw new RuntimeException("잘못된 전화번호");
         }
-        else if(phoneNumber.length()==10){
-            return phoneNumber.substring(0,3)+"-"+phoneNumber.substring(3,6)+"-"+phoneNumber.substring(6,10);
-        }
-        throw new RuntimeException("잘못된 전화번호");
+        return "";
     }
 
-    public static String changeCardNumber(String cardNumber){
-        return cardNumber.substring(0,4)+"-"+cardNumber.substring(4,8)+"-****-****";
+    public static String changeCardNumber(String cardNumber) {
+        return cardNumber.substring(0, 4) + "-" + cardNumber.substring(4, 8) + "-****-****";
     }
-
-
 
 
     //--Han Part 시작--
@@ -66,7 +64,6 @@ public class Formatter {
     }
 
 
-
     //주문번호 숫자에 붙여주는 1~1000자리 숫자
     public class IncrementalCounter {
         private static int counter = 0; // 클래스 변수로 유지
@@ -79,7 +76,7 @@ public class Formatter {
 
     //주문 번호 만드는 함수
     public static String getReservationCode(LocalDateTime localDateTime) {
-        if(localDateTime !=null) {
+        if (localDateTime != null) {
             String dateTimePart = localDateTime.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
             String counterPart = IncrementalCounter.getNextNumber(); // 3자리 숫자 추가
             return dateTimePart + counterPart;
@@ -88,13 +85,18 @@ public class Formatter {
     }
 
     //패키지명에서 태그 추출
-    public static String getTag(String packageName){
+    public static String getTag(String packageName) {
         return packageName.substring(packageName.indexOf("#"));
     }
 
     //패키지명에서 태그만 뺀 값
-    public static String getPackageNameWithoutTag(String packageName){
-        return packageName.substring(0,packageName.indexOf("#"));
+    public static String getPackageNameWithoutTag(String packageName) {
+        return packageName.substring(0, packageName.indexOf("#"));
+    }
+
+    //생년월일 분류
+    public static String getBirth(String birth){
+      return   birth.substring(0,4)+"."+birth.substring(4,6)+"."+birth.substring(6);
     }
 
     //운송장 번호 만드는 함수
