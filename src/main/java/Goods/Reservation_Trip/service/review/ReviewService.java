@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -194,8 +195,8 @@ public class ReviewService {
      * 리뷰 작성 가능한 예약 불러오기
      */
     public List<ReservationDetailsResponseDto> getReviewAblePage(Long memberId) {
-        //리뷰 리스트가 0인 예약만 찾아옴
-        List<Reservation> reservationList = reservationRepository.findByReviewListIsNullOrderByIdDesc();
+        //리뷰 리스트가 0이며, 여행 마지막날이 현재 날짜를 지나고, ID 기준 내림차순으로 정렬
+        List<Reservation> reservationList = reservationRepository.findByEndDateBeforeAndReviewListIsNullOrderByIdDesc(LocalDate.now());
 
         if (reservationList.isEmpty()) return null;
 

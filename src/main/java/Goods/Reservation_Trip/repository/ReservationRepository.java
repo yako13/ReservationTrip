@@ -24,7 +24,7 @@ public interface ReservationRepository extends JpaRepository<Reservation,Long> {
 
     List<Reservation> findByMemberIdAndStartDateBetween(Long memberId,LocalDate startDate,LocalDate endDate);
 
-    List<Reservation> findByReviewListIsNullOrderByIdDesc();
+    List<Reservation> findByEndDateBeforeAndReviewListIsNullOrderByIdDesc(LocalDate date);
 
     Optional<Reservation> findByMemberIdAndCode(Long memberId,String code);
 
