@@ -232,7 +232,7 @@
 
             th,
             td {
-                text-align: center !important;
+                text-align: center;
             }
         }
 
@@ -384,9 +384,27 @@
             th:first-child{
                 width: 3rem;
             }
+
+            th:nth-child(2){
+                width: 1rem;
+            }
+
             th:last-child{
                 width: 4rem;
             }
+        }
+
+        .tableHead{
+            border-right: 1px solid white;
+        }
+
+        .price{
+            text-align: start !important;
+        }
+
+        .fuelSurcharge{
+            margin: 5px 0;
+            color: #ff0000;
         }
     </style>
 </head>
@@ -476,7 +494,7 @@
                             <tr>
                                 <th>금액상세</th>
                                 <td>
-                                    <p th:each="pay : ${reservationList.detailPay}" th:text="pay"></p>
+                                    <p th:each="pay : ${reservationList.detailPay}" th:text="${pay}"></p>
                                 </td>
                                 <th>카카오페이 결제승인시각</th>
                                 <td th:text="${reservationList.approvedAt}"></td>
@@ -502,35 +520,28 @@
 
                         <tr>
                             <th>이미지</th>
+                            <th>여행국가</th>
                             <th>상품명</th>
                             <th>금액</th>
                             <th>호텔 정보</th>
-                            <th>항공사 정보</th>
                             <th>옵션</th>
                         </tr>
 
                         <tr class="imageArea">
                             <td><a><img th:src="${reservationList.mainImage}" style="width:100%;"></a></td>
+                            <td>[[${reservationList.country}]]</td>
 
                             <td th:text="${reservationList.packageName}"></td>
                             <td class="price">
                                 <p th:each="pricesByAgeGroup : ${reservationList.pricesByAgeGroup}"
-                                    th:text="${pricesByAgeGroup}"></p>
+                                    th:text="${pricesByAgeGroup}" ></p>
+                                    <p class="fuelSurcharge">*유류할증료([[${reservationList.fuelSurcharge}]]) 미포함 금액</p>
                             </td>
                             <td>
-                                <p>1~3일차 : 응우옌호텔(주소, 연락처)</p>
-                                <p>4~5일차 : 두리안호텔(주소, 연락처)</p>
+                                <p th:text="${reservationList.hotel}"></p>
                             </td>
                             <td>
-                                <p>출발 시간 : 2025.05.06 11:00:00 (한국시간기준)</p>
-                                <p>도착 시간 : 2025.05.010 11:00:00 (한국시간기준)</p>
-                                <p>출발 시 항공기 : (대한항공)AB101</p>
-                                <p>도착 시 항공기 : (대한항공)AB101</p>
-                            </td>
-                            <td>
-                                <p>가이드 없음</p>
-                                <p>추가비용 없음</p>
-                                <p>자유여행</p>
+                                <!-- <p th:each="option : ${reservationList.option}" th:text="${option}"></p> -->
                             </td>
                         </tr>
 
@@ -538,6 +549,50 @@
                 </table>
             </div>
             <!-- /주문패키지정보 -->
+             <!-- 출입국 정보 -->
+            <div class="ordererInfo">
+                <div class="tableTitle">
+                    <p><b><i class="fa-solid fa-plane"></i> 출입국 정보</b></p>
+                </div>
+                <hr>
+
+                <div class="tableArea">
+                    <table class="rwd-table personTable" style="text-align: center;">
+                        <tbody>
+                            <tr>
+                                <th class="tableHead" rowspan="2">출발 하는 날</th>
+                                <th>출국 시간</th>
+                                <th>출국장</th>
+                                <th>입국 시간</th>
+                                <th>입국장</th>
+                            </tr>
+
+                            <tr>
+                                <td>[[${reservationList.s_departureTime}]] (한국시간기준)</td>
+                                <td>[[${reservationList.s_origin}]]</td>
+                                <td>[[${reservationList.s_arrivalTime}]] (한국시간기준)</td>
+                                <td>[[${reservationList.s_destination}]]</td>
+                            </tr>
+                            <tr>
+                                <th class="tableHead" rowspan="2">돌아 오는 날</th>
+                                <th>출국 시간</th>
+                                <th>출국장</th>
+                                <th>입국 시간</th>
+                                <th>입국장</th>
+                            </tr>
+
+                            <tr>
+                                <td>[[${reservationList.e_departureTime}]] (한국시간기준)</td>
+                                <td>[[${reservationList.e_origin}]]</td>
+                                <td>[[${reservationList.e_arrivalTime}]] (한국시간기준)</td>
+                                <td>[[${reservationList.e_destination}]]</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- /출발 정보  -->
+
 
             <!-- 예약인원 정보 -->
             <div class="ordererInfo">
@@ -571,7 +626,7 @@
                     </table>
                 </div>
             </div>
-            <!-- /주문자 및 배송지 정보  -->
+            <!-- /예약인원 정보  -->
             <!-- 버튼영역 -->
             <div class="buttonArea">
                 <a th:href="@{/admin/reservation/list}" class="listBtn"><i class="fa-solid fa-rotate-left"></i> 목록</a>
