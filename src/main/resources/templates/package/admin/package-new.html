@@ -831,16 +831,16 @@
         row.innerHTML = `
             <td><input type="text" readonly name="packageSchedule[${rowCount}].departureDateOut" value="${formattedDate}"></td>
             <td><button type="button" onclick="removeRow(this)">삭제</button></td>
-            <td><input type="hidden" name="packageSchedule[${rowCount}].details.departurePointOut" value="${departurePointOut}">
-            <td><input type="hidden" name="packageSchedule[${rowCount}].details.arrivalPointOut" value="${arrivalPointOut}">
-            <td><input type="hidden" name="packageSchedule[${rowCount}].details.arrivalPointReturn" value="${arrivalPointReturn}">
-            <td><input type="hidden" name="packageSchedule[${rowCount}].details.airlineOut" value="${airlineOut}">
-            <td><input type="hidden" name="packageSchedule[${rowCount}].details.airlineReturn" value="${airlineReturn}">
+            <td><input type="hidden" name="packageSchedule[${rowCount}].details.departurePointOutId" value="${departurePointOut}">
+            <td><input type="hidden" name="packageSchedule[${rowCount}].details.arrivalPointOutId" value="${arrivalPointOut}">
+            <td><input type="hidden" name="packageSchedule[${rowCount}].details.arrivalPointReturnId" value="${arrivalPointReturn}">
+            <td><input type="hidden" name="packageSchedule[${rowCount}].details.airlineOutId" value="${airlineOut}">
+            <td><input type="hidden" name="packageSchedule[${rowCount}].details.airlineReturnId" value="${airlineReturn}">
             <td><input type="hidden" name="packageSchedule[${rowCount}].details.flightNumberOut" value="${flightNumberOut}"></td>
             <td><input type="hidden" name="packageSchedule[${rowCount}].details.departureTimeOut" value="${departureTimeOut}"></td>
             <td><input type="hidden" name="packageSchedule[${rowCount}].details.arrivalTimeOut" value="${arrivalTimeOut}"></td>
             <td><input type="hidden" name="packageSchedule[${rowCount}].departureDateReturn" value="${formattedDateEnd}"></td>
-            <td><input type="hidden" name="packageSchedule[${rowCount}].details.departurePointReturn" value="${departurePointReturn}">
+            <td><input type="hidden" name="packageSchedule[${rowCount}].details.departurePointReturnId" value="${departurePointReturn}">
             <td><input type="hidden" name="packageSchedule[${rowCount}].details.flightNumberReturn" value="${flightNumberReturn}""></td>
             <td><input type="hidden" name="packageSchedule[${rowCount}].details.departureTimeReturn" value="${departureTimeReturn}"></td>              <td><input type="hidden" name="packageSchedule[${rowCount}].details.arrivalTimeReturn" value="${arrivalTimeReturn}"></td>
             <td><input type="hidden" name="packageSchedule[${rowCount}].arrivalDateOut" value="${formattedDate}"></td>
@@ -974,32 +974,19 @@
         const selectReturn = document.getElementById("airlineReturn");
         data.forEach((airline) => {
           const option = document.createElement("option");
-          option.value = airline.code; // 또는 airline.id
+          option.value = airline.id;
           option.textContent = airline.name;
           selectOut.appendChild(option);
         });
         data.forEach((airline) => {
           const option = document.createElement("option");
-          option.value = airline.code; // 또는 airline.id
+          option.value = airline.id;
           option.textContent = airline.name;
           selectReturn.appendChild(option);
         });
       })
       .catch((error) => console.error("항공사 목록 로딩 실패:", error));
     console.log(airlineReturn.value);
-
-    // 시작 날짜와 같은 값을 부여
-    // document.getElementById("setStart").addEventListener("change", function () {
-    //   const setStart = document.getElementById("setStart").value;
-    //   const period = Number(document.getElementById("period").value);
-    //   let returnDate = new Date(setStart);
-    //   returnDate.setDate(returnDate.getDate() + period - 1);
-    //   console.log(returnDate);
-    //   const arrivalReturnDate = returnDate.toISOString().split("T")[0];
-
-    //   document.getElementById("departureDateOut").value = this.value;
-    //   document.getElementById("departureDateReturn").value = arrivalReturnDate;
-    // });
   </script>
   <!-- 달력 라이브러리 -->
   <script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
