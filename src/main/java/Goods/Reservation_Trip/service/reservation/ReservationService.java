@@ -328,7 +328,7 @@ public class ReservationService {
         }
 
         if (infantSum != 0) {
-            payList.add("유아 " + infantSum + "인 : "+reservation.getBabySumPrice());
+            payList.add("유아 " + infantSum + "인 : " + reservation.getBabySumPrice());
         }
 
         return payList;
@@ -337,10 +337,10 @@ public class ReservationService {
     /**
      * 관리자 예약 상세 페이지
      */
-    public ReservationDetailsResponseDto getReservationDetails(Long id){
+    public ReservationDetailsResponseDto getReservationDetails(Long id) {
         Optional<Reservation> reservationOptional = reservationRepository.findById(id);
 
-        if(reservationOptional.isEmpty()) return null;
+        if (reservationOptional.isEmpty()) return null;
 
         Reservation reservation = reservationOptional.get();
 
@@ -348,12 +348,12 @@ public class ReservationService {
         List<String> pricesByAgeGroup = new ArrayList<>();
         pricesByAgeGroup.add("성인 : " + Formatter.changeBigDecimalFormat(reservation.getAPackage().getAdultPrice()));
         pricesByAgeGroup.add("어린이 : " + Formatter.changeBigDecimalFormat(reservation.getAPackage().getChildPrice()));
-        pricesByAgeGroup.add("유아 : " +Formatter.changeBigDecimalFormat(reservation.getAPackage().getBabyPrice()));
+        pricesByAgeGroup.add("유아 : " + Formatter.changeBigDecimalFormat(reservation.getAPackage().getBabyPrice()));
 
         //예약 인원 분류
         List<MemberResponseDto> memberResponseDtoList = new ArrayList<>();
 
-        for(ReservationDetails reservationDetails :reservation.getReservationDetailsList()){
+        for (ReservationDetails reservationDetails : reservation.getReservationDetailsList()) {
             MemberResponseDto memberResponseDto = MemberResponseDto.builder()
                     .name(reservationDetails.getName())
                     .gender(reservationDetails.isGender())
@@ -388,5 +388,32 @@ public class ReservationService {
                 .build();
 
 
+    }
+
+    /**
+     * 예약 상태 변경
+     */
+    public String editReservationState(ReservationResponseDto reservationResponseDto) {
+        Optional<Reservation> optionalReservation = reservationRepository.findById(reservationResponseDto.getReservationPK());
+
+        if (optionalReservation.isEmpty()) return "500";
+
+        Reservation reservation = optionalReservation.get();
+
+        String state = reservationResponseDto.getReservationState();
+
+        if (state.equals("CONFIRM")) {
+            reservation.setReservationState(ReservationState.CONFIRM);
+        } else if (state.equals("CANCEL")) {
+            reservation.setReservationState(ReservationState.CANCEL);
+        } else if (state.equals("WAIT")) {
+            reservation.setReservationState(ReservationState.WAIT);
+        } else if (state.equals("REQUEST")) {
+            reservation.setReservationState(ReservationState.REQUEST);
+        } else return "500";
+
+        reservationRepository.save(reservation);
+
+        return reservation.getReservationState().getName();
     }
 }

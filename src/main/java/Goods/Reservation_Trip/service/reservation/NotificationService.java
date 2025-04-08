@@ -13,7 +13,7 @@ public class NotificationService {
 
     public void sendCancelNotification(String reservationCode){
 
-        NotificationMessage message = new NotificationMessage("예약번호"+reservationCode+"의 예약취소 요청이 있습니다. ","cancel");
+        NotificationMessage message = new NotificationMessage("예약번호 "+reservationCode+"의 예약취소 요청이 있습니다. ","cancel");
         messagingTemplate.convertAndSend("/topic/admin",message);
     }
 }
