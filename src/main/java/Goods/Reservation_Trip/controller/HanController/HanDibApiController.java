@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,10 +50,12 @@ public class HanDibApiController {
 
     @PostMapping("/dib/add")
     @ResponseBody
-    public Map<String, String> addDib(@RequestParam Long packagePk, HttpServletRequest request) {
+    public Map<String, String> addDib(@RequestParam Long packagePk,  @RequestParam String selectedDate, HttpServletRequest request) {
         Map<String, String> result = new HashMap<>();
 
          MemberResponseDto memberResponseDto = hanMemberService.getMember(request);
+
+        LocalDate date = LocalDate.parse(selectedDate);
 
          //맴버 세션이 없을경우 로그인 하라고 알림
         if(memberResponseDto ==null){
@@ -62,11 +65,21 @@ public class HanDibApiController {
         }
 
 
-        int check = hanDibService.addDib(memberResponseDto, packagePk);
+        int check = hanDibService.addDib(memberResponseDto, packagePk,date);
 
-        //(0 실패 1 성공)
-        if (check != 1) {
+        //(0 실패 1 성공 2 여행일자가 없음, 3 여행일자가 꽉찼음)
+        if (check == 0) {
             result.put("status", "NOT_LOGGED_IN");
+            return result;
+        }
+
+        if (check == 2) {
+            result.put("status", "NOT_DAY");
+            return result;
+        }
+
+        if (check == 3) {
+            result.put("status", "DAY_FULL");
             return result;
         }
 

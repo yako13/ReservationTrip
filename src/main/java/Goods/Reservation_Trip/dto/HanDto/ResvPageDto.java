@@ -22,6 +22,8 @@ public class ResvPageDto { //예약 페이지를 보여주기위한 dto
     private String tripStartString;
     //여행 도착일 변환된것
     private String tripEndString;
+    //여행 기간 (몇박 몇일)
+    private String tripDuration;
 
     //여행 도착일
     private LocalDate tripEnd;

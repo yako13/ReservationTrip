@@ -382,7 +382,7 @@
 
 
             </ul>
-            <div th:if="${reservationList==null}" class="imageArea">
+            <div th:if="${(reservationList == null) || (#lists.size(reservationList) < 1)}" class="imageArea">
                 <img th:src="@{/images/info.svg}" id="infoImage">
                 <p>예약이 없습니다.</p>
             </div>

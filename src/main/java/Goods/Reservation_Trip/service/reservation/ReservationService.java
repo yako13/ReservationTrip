@@ -6,10 +6,10 @@ import Goods.Reservation_Trip.dto.reservation.req.MemberReservationSearchDto;
 import Goods.Reservation_Trip.dto.reservation.req.NotificationMessage;
 import Goods.Reservation_Trip.dto.reservation.res.ReservationDetailsResponseDto;
 import Goods.Reservation_Trip.dto.reservation.res.ReservationResponseDto;
-import Goods.Reservation_Trip.entity.Reservation;
-import Goods.Reservation_Trip.entity.ReservationDetails;
+import Goods.Reservation_Trip.entity.*;
 import Goods.Reservation_Trip.enums.ReservationState;
 import Goods.Reservation_Trip.repository.ReservationRepository;
+import Goods.Reservation_Trip.repository.aPackage.PackageOptionRepository;
 import Goods.Reservation_Trip.util.Formatter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -37,6 +37,8 @@ public class ReservationService {
     private final ImageManager imageManager;
 
     private final SimpMessagingTemplate messagingTemplate;
+
+    private final PackageOptionRepository packageOptionRepository;
 
     public Page<ReservationResponseDto> pageReservation(int page, int size, String sort, String reservationState) {
 
@@ -156,6 +158,15 @@ public class ReservationService {
                     : reservationRepository.findByAPackagePackageNameContainingWithoutSpace(trimKeyword, pageable);
         }
 
+        //검색 기준이 국가명일때
+        if("countryName".equals(search)){
+            ReservationState state = stateMap.get(reservationState);
+
+            reservationPage = (state != null)
+                    ? reservationRepository.findByMainCategoryNameWithoutSpacesAndReservationState(trimKeyword,pageable,state)
+                    : reservationRepository.findByMainCategoryNameWithoutSpaces(trimKeyword,pageable);
+        }
+
 
         return reservationPage.map(reservation ->
                 ReservationResponseDto.builder()
@@ -229,14 +240,14 @@ public class ReservationService {
             }
         }
 
-        reservationMembers.append("성인 " + adultSum + "명");
+        reservationMembers.append("성인 " + adultSum + "인");
 
         if (childSum != 0) {
-            reservationMembers.append("어린이 " + childSum + "명");
+            reservationMembers.append(", 어린이 " + childSum + "인");
         }
 
         if (infantSum != 0) {
-            reservationMembers.append("유아 " + infantSum + "명");
+            reservationMembers.append(", 유아 " + infantSum + "명");
         }
 
         return reservationMembers.toString();
@@ -325,14 +336,14 @@ public class ReservationService {
             }
         }
 
-        payList.add("성인 " + adultSum + "인 : " + reservation.getAdultSumPrice());
+        payList.add("성인 " + adultSum + "인 : " + Formatter.BigDecimalFormat(reservation.getAdultSumPrice()));
 
         if (childSum != 0) {
-            payList.add("어린이 " + childSum + "인 : " + reservation.getChildSumPrice());
+            payList.add("어린이 " + childSum + "인 : " + Formatter.BigDecimalFormat(reservation.getChildSumPrice()));
         }
 
         if (infantSum != 0) {
-            payList.add("유아 " + infantSum + "인 : " + reservation.getBabySumPrice());
+            payList.add("유아 " + infantSum + "인 : " + Formatter.BigDecimalFormat(reservation.getBabySumPrice()));
         }
 
         return payList;
@@ -354,7 +365,7 @@ public class ReservationService {
         pricesByAgeGroup.add("어린이 : " + Formatter.changeBigDecimalFormat(reservation.getAPackage().getChildPrice()));
         pricesByAgeGroup.add("유아 : " + Formatter.changeBigDecimalFormat(reservation.getAPackage().getBabyPrice()));
 
-        //예약 인원 분류
+        //예약 명단 분류
         List<MemberResponseDto> memberResponseDtoList = new ArrayList<>();
 
         for (ReservationDetails reservationDetails : reservation.getReservationDetailsList()) {
@@ -368,6 +379,27 @@ public class ReservationService {
 
             memberResponseDtoList.add(memberResponseDto);
         }
+
+
+        PackageSchedule packageScheduleCheck = new PackageSchedule();
+
+        //여행출발일과 여행일정 리스트중에 출발일이 같은것을 찾기
+        for (PackageSchedule packageScheduleDto : reservation.getAPackage().getPackageScheduleList()) {
+            if (reservation.getStartDate().isEqual(packageScheduleDto.getDepartureDateOut())) {
+                packageScheduleCheck = packageScheduleDto;
+            }
+        }
+
+        PackageScheduleDetails packageDetails = packageScheduleCheck.getPackageScheduleDetails();
+
+        //패키지 옵션
+//        Optional<PackageOption> optionalPackageOption = packageOptionRepository.findByAPackageId(reservation.getAPackage().getId());
+//
+//        if(optionalPackageOption.isEmpty()) throw new RuntimeException("패키지 옵션 없음");
+//
+//        PackageOption packageOption = optionalPackageOption.get();
+//
+//        List<String> optionList = Formatter.getPackageOptions(packageOption);
 
         return ReservationDetailsResponseDto.builder()
                 .reservationPK(reservation.getId()) //예약 PK
@@ -387,11 +419,23 @@ public class ReservationService {
                 .mainImage(imageManager.createImageUrl(reservation.getAPackage().getMainImage().getImageFullName())) //패키지 메인 이미지
                 .pricesByAgeGroup(pricesByAgeGroup) //연령대별 패키지 금액
                 .memberList(memberResponseDtoList) //예약 인원
-//                .hotel()
-                //+출발 시간, 항공편 등 추가
+                .country(reservation.getAPackage().getMainCategory().getName()) //여행하는 나라
+                .fuelSurcharge(Formatter.BigDecimalFormat(reservation.getAPackage().getFuelSurcharge())) //유류할증료
+                .hotel(reservation.getAPackage().getHotelName())
+                .s_departureTime(packageScheduleCheck.getDepartureDateOut().toString() +" "+ packageDetails.getDepartureTimeOut()) // 여행 가는 날 출발 시간
+                .s_origin(packageDetails.getDeparturePointOut().getName()) // 여행 가는 날 출발지
+                .s_departureFlight(packageDetails.getFlightNumberOut()) //여행 가는 날 출발 항공편
+                .s_arrivalTime(packageScheduleCheck.getArrivalDateOut().toString() + " "+ packageDetails.getArrivalTimeOut()) //여행 가는 날 도착 시간
+                .s_destination(packageDetails.getArrivalPointOut().getName()) //여행 가는 날 도착지
+                .e_departureTime(packageScheduleCheck.getDepartureDateReturn().toString() + " "+ packageDetails.getDepartureTimeReturn()) // 여행 종료일  출발 시간
+                .e_origin(packageDetails.getDeparturePointReturn().getName()) // 여행 종료일 출발지
+                .e_departureFlight(packageDetails.getFlightNumberReturn()) //여행 종료일 출발 항공편
+                .e_arrivalTime(packageScheduleCheck.getArrivalDateReturn().toString() +" "+ packageDetails.getArrivalTimeReturn()) //여행 종료일 도착 시간
+                .e_destination(packageDetails.getArrivalPointReturn().getName()) //여행 종료일 도착지
+                .s_airlineName(packageDetails.getAirlineOut().getName()) //출국 항공사명
+                .e_airlineName(packageDetails.getAirlineReturn().getName()) //귀국 항공사명
+//                .option(optionList)
                 .build();
-
-
     }
 
     /**

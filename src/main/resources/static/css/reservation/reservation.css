@@ -212,6 +212,14 @@ body {
 .HanTrip p {
   font-size: 12px;
   margin: 4px;
+margin-top: 5px;
+
+}
+
+.HanTrip .HanP1 {
+  font-size: 12px;
+  margin: 4px;
+  margin-top: 6px;
 
 }
 

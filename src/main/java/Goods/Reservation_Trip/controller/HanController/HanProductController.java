@@ -7,6 +7,7 @@ import Goods.Reservation_Trip.repository.HanPart.HanDibRepository;
 import Goods.Reservation_Trip.repository.MemberRepository;
 import Goods.Reservation_Trip.repository.aPackage.PackageRepository;
 import Goods.Reservation_Trip.service.HanService.HanMemberService;
+import Goods.Reservation_Trip.service.HanService.HanPackageService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,7 @@ public class HanProductController {
     private final MemberRepository memberRepository;
     private final HanDibRepository hanDibRepository;
     private final PackageRepository packageRepository;
+    private final HanPackageService hanProductService;
 
     //패키지 상세 페이지
     @GetMapping("package/details")
