@@ -52,6 +52,10 @@ public class Package extends BaseTime {
     @Comment("간략한 설명글")
     private String description;
 
+    @Column(nullable = false)
+    @Comment("여행 일수")
+    private int period;
+
     @OneToOne
     @JoinColumn(name = "main_image", nullable = true)
     @Comment("대표 이미지")
@@ -65,7 +69,7 @@ public class Package extends BaseTime {
     @Comment("유류할증료 포함")
     private BigDecimal fuelSurchargeIncluded;
 
-    @Column(name = "hotel_name", columnDefinition = "TEXT")
+    @Column(name = "hotel_name", columnDefinition = "TEXT", nullable = false)
     @Comment("호텔 명")
     private String hotelName;
 
@@ -94,6 +98,9 @@ public class Package extends BaseTime {
 
     @OneToMany(mappedBy = "aPackage", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PackageSchedule> packageScheduleList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "aPackage", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Review> reviewList = new ArrayList<>();
 
     public void addPackageSchedules(List<PackageSchedule> schedules) {
         this.packageScheduleList.addAll(schedules);

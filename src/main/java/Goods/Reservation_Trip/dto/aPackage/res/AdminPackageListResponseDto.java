@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
@@ -25,7 +27,13 @@ public class AdminPackageListResponseDto {
 
     private String arrivalPointOut;
 
-    private int maximumMember;
+    private LocalDate departureDateOut;
 
-    private String period;
+    private LocalDate arrivalDateReturn;
+
+    private int period;
+
+    private String createdAt;
+
+    private String modifiedAt;
 }

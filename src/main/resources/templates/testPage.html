@@ -22,6 +22,48 @@
 <a id="withdrawalBtn">회원 탈퇴</a>
 <a th:href="@{/member/reservation/list}">주문리스트</a>
 <a th:href="@{/admin/reservation/list}">관리자주문리스트</a>
+<a th:href="@{/member/review/list/able}">회원등록가능리뷰</a>
+
+
+<form th:action="@{/reservation}" th:method="get" id="HanResvForm">
+    <p>성인 인원수</p>
+    <input type="text" name="adultCnt">
+    <p>아동 인원수</p>
+    <input type="text" name="childCnt">
+    <p>유아 인원수</p>
+    <input type="text" name="babyCnt">
+    <p>출발일</p>
+    <input type="date" name="tripStart">
+    <p>패키지 pk</p>
+    <input type="text" name="packagePk">
+    <p>회원 pk</p>
+    <input type="text" name="memberPk">
+
+    <button type="submit" form="HanResvForm">예약하기</button>
+
+</form>
+
+<p th:if="${session.memberId!=null}">로그인 성공</p>
+
+
+<h2>테스트용 자동 로그인</h2>
+<button type="button" onclick="autoLogin()">user1 자동 로그인</button>
+
+<script>
+    function autoLogin() {
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = '/login';
+
+      form.innerHTML = `
+        <input type="hidden" name="email" value="user1@example.com">
+        <input type="hidden" name="password" value="pw123456@">
+      `;
+      document.body.appendChild(form);
+      form.submit();
+    }
+</script>
+
 <script>
     document.addEventListener("DOMContentLoaded", () => {
       const cancelBtn = document.getElementById("withdrawalBtn");

@@ -142,3 +142,12 @@
     text-align: center;
     border-bottom: solid 1px #c2c2c2;
 }
+
+.tableTr{
+    cursor:pointer;
+}
+
+.packageName{
+    color: rgba(255, 41, 70, 0.904);
+    font-weight: 600;
+}

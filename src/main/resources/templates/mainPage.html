@@ -11,7 +11,20 @@
     <link rel="stylesheet" th:href="@{/css/mainPage.css}" />
 
     <style>
+        /* 요일 헤더 중 일요일 (첫 번째 열) 빨간색 */
+        .tui-calendar th:nth-child(1) {
+            color: #e26d69 !important;
+        }
 
+        /* 날짜 셀 중 일요일 (첫 번째 열) 빨간색 */
+        .tui-calendar td:nth-child(1) {
+            color: #e26d69 !important;
+        }
+
+        .tui-datepicker .tui-is-selectable.tui-is-selected,
+        .tui-datepicker.tui-rangepicker .tui-is-selectable.tui-is-selected {
+            background-color: #5eccff;
+        }
     </style>
 
 </head>
@@ -74,7 +87,7 @@
 
                 <div class="HanCalSerachButtonDiv">
                     <button type="submit" form="HanCalSerachForm">
-                        <img th:src="@{/images/search2.svg}" width="19px" height="19px" style="margin-top: 3px;">검색
+                        <img th:src="@{/images/search2.svg}" width="21px" height="21px" style="margin-top: 2px;">검색
                     </button>
                 </div>
             </form>
@@ -722,7 +735,6 @@
     </script>
 
     <script>
-
         function scrollToCenter(el) {
             const rect = el.getBoundingClientRect();
             const offset = rect.top + window.scrollY - (window.innerHeight / 2) + (rect.height / 2) + 100;
@@ -732,14 +744,14 @@
             });
         }
 
-        // 목적지 / 출발지 드롭다운
+        // 목적지 / 출발지 드롭다운 클릭 시 가운데 정렬
         document.querySelectorAll('.HanSerachDropdown-toggle').forEach(toggle => {
             toggle.addEventListener('click', () => {
                 scrollToCenter(toggle);
             });
         });
 
-        // 날짜 input
+        // 날짜 input 클릭 시 가운데 정렬
         const dateInput = document.getElementById('departure-input');
         if (dateInput) {
             dateInput.addEventListener('click', () => {
@@ -747,7 +759,21 @@
             });
         }
 
+        //  드롭다운 열려 있을 때 휠을 위로 굴리면 최상단으로 스크롤
+        window.addEventListener('wheel', function (e) {
+            const dropdownOpen = document.querySelector('.HanSerachDropdown.open');
+            const deltaY = e.deltaY;
+
+            if (dropdownOpen && deltaY < 0) {
+                // 맨 위로 스크롤 (부드럽게)
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            }
+        }, { passive: true });
     </script>
+
 
     <!-- TOAST UI Date Picker JS -->
     <script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
@@ -786,6 +812,19 @@
         });
 
         document.getElementById('departure-input').value = '';
+
+        // TOAST UI Date Picker가 열려 있고 휠을 위로 → 맨 위로 스크롤
+        window.addEventListener('wheel', function (e) {
+            const isDatePickerOpen = document.querySelector('.tui-datepicker') !== null;
+            const deltaY = e.deltaY;
+
+            if (isDatePickerOpen && deltaY < 0) {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            }
+        }, { passive: true });
     </script>
 
 

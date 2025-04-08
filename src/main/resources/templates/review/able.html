@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>냥만여행 리뷰 관리</title>
+
+    <link rel="stylesheet" th:href="@{/css/mainPage.css}">
+    <style>
+        #infoImage {
+            width: 8rem;
+        }
+
+        .imageArea {
+            p{width: 100%;}
+            padding: 5rem 0;
+            text-align: center;
+            border-bottom: solid 1px #c2c2c2;
+        }
+
+        .HanCkListBody {
+            padding: 5rem 20rem;
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            min-height: 35rem;
+        }
+
+        .HanCkListMain {
+            padding: 0 5rem;
+        }
+
+
+        .HanCkListMain p {
+            display: inline-block;
+        }
+
+        .HanCkListTop {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            padding: 10px 0;
+            width: 100%;
+            border-radius: 14px;
+            background-color: white;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .HanCkListTop p {
+            font-size: 28px;
+            font-weight: 500;
+            margin: 0;
+        }
+
+        .HanCkListMain ul {
+            margin: 0;
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .HanCkListMain ul li {
+            display: flex;
+            flex-direction: column;
+            padding: 10px 40px;
+            background-color: white;
+            margin-bottom: 20px;
+            border-top: 2px solid #ccc;
+        }
+
+        .HanCkListMain ul li:last-child {
+            padding-bottom: 30px;
+            border-bottom: 2px solid #ccc;
+        }
+
+
+        .HanCkListOrderNum {
+            padding: 0;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .HanCkListOrderNum p {
+            margin: 6px 0;
+        }
+
+        .HanCkListOrderNum a {
+            padding-left: 10px;
+            text-decoration: none;
+            color: black;
+        }
+
+        .HanCkListOrderNumCnt {
+            width: 100px;
+            padding-right: 20px;
+            font-size: 20px;
+            font-weight: 550;
+        }
+
+        .HanCkListOrderNumTextDiv p {
+            margin: 0;
+            line-height: 30px;
+        }
+
+        .HanCkListInfoDiv {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .HanCkListInfo {
+            display: flex;
+            align-items: center;
+        }
+
+        .HanCkListImgDiv {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .HanCkListImgDiv img {
+            max-height: 200px;
+            width: 200px;
+            height: auto;
+        }
+
+        .HanCkListProductName {
+            padding-left: 40px;
+            display: flex;
+            flex-direction: column;
+            width: 600px;
+            margin-right: 57px;
+        }
+
+        .HanCkListProductDate {
+            font-size: 13px;
+            color: #939393;
+            margin: 9px 0;
+            margin-top: 0;
+        }
+
+        .HanCkListProductNameDiv {
+
+            display: flex;
+            flex-direction: column;
+
+            p:not(:first-child) {
+                margin: 0.5rem 0;
+                font-size: 0.9rem;
+            }
+
+            p:last-child {
+                font-size: 1rem;
+                font-weight: 600;
+            }
+        }
+
+        .HanCkListProductNameP {
+            font-size: 15px;
+            margin: 0;
+        }
+
+
+
+        .HanCkListDelivery {
+            margin-right: 5px;
+            text-align: start;
+            width: 200px;
+            line-height: 30px;
+        }
+
+        .HanCkListDelivery p {
+            color: blue;
+            font-size: 18px;
+            margin: 0 3px;
+        }
+
+        .HanCkSubmitA {
+            width: 100%;
+            margin: 0;
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .HanCkSubmitA a,
+        .HanCheckoutList {
+            box-sizing: border-box;
+            padding: 15px 15px;
+            line-height: 15px;
+            border: none;
+            border-radius: 4px;
+            font-size: 17px;
+            transition: all 0.3s ease;
+            font-weight: bolder;
+            text-decoration: none;
+            text-align: center;
+            margin: 0;
+        }
+
+
+        .HanCkSubmitA .HanHome {
+            background-color: #dddddd;
+            color: #333;
+        }
+
+        .HanHome {
+            width: 100px;
+        }
+
+        .HanCkSubmitA .HanHome:hover {
+            background-color: #c9c9c9;
+            color: #333;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+
+        .none {
+            height: 400px;
+            line-height: 400px;
+        }
+
+        #topBtn {
+            width: 90px;
+            height: 90px;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            border: none;
+            padding: 10px 15px;
+            font-size: 18px;
+            cursor: pointer;
+            display: none;
+            /* 기본적으로 버튼 숨김 */
+        }
+
+
+
+
+        .priceText {
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .payDate {
+            display: flex;
+            justify-content: end;
+        }
+
+        .none {
+            display: none;
+        }
+
+        .detailsBtn {
+            text-align: end;
+        }
+
+        .detailsLink {
+            display: inline-block;
+            background-color: #43bff8;
+            color: #ffffff;
+            border: none;
+            border-radius: 7px;
+            transition: all 0.3s ease;
+            width: 6rem;
+            height: 2rem;
+            text-align: center;
+            line-height: 2rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+
+            &:hover {
+                background-color: #3e8cf1;
+                color: #ebebeb;
+                transform: scale(0.98);
+            }
+
+
+        }
+
+        .linkArea {
+            margin-bottom: 3rem;
+
+            a {
+                display: inline-block;
+                background-color: white;
+                height: 3rem;
+                width: 48%;
+                text-align: center;
+                line-height: 3rem;
+                color: black;
+                font-weight: 600;
+
+
+                &:first-child {
+                    color: #43bff8;
+                    border-bottom: 2px solid #43bff8;
+                }
+            }
+
+
+        }
+
+        .titleArea {
+            margin-bottom: 5rem;
+        }
+
+        #tag {
+            color: rgba(255, 41, 70, 0.904);
+        }
+
+        a {
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header th:replace="/fragments/memberHeader::memberHeader"></header>
+    <!-- 메인 시작 -->
+
+    <div class="HanCkListBody">
+        <div class="HanCkListMain">
+            <div class="linkArea">
+                <a>작성 가능 리뷰</a>
+                <a th:href="@{/member/review/list}">작성한 리뷰</a>
+            </div>
+
+            <ul>
+                <!-- 카트 아이템 시작 -->
+
+                <li th:if="${reservationList!=null} " th:each="reservation : ${reservationList}">
+
+                    <div class="payDate">
+                        <p class="HanCkListProductDate">여행기간 : [[${reservation.startDate}]] ~ [[${reservation.endDate}]]
+                        </p>
+                    </div>
+
+                    <!-- 카트 아이템 항목 시작 -->
+                    <div>
+                        <div class="HanCkListInfoDiv">
+
+                            <div class="HanCkListInfo">
+
+                                <div class="HanCkListImgDiv">
+
+                                    <a th:href="@{'/package/details/'+${reservation.packagePK}}"><img
+                                            th:src="${reservation.mainImage}" alt=""></a>
+
+                                </div>
+
+                                <div class="HanCkListProductName">
+                                    <div class="HanCkListProductNameDiv">
+
+                                        <b>
+                                            <p class="HanCkListProductNameP" th:text="${reservation.packageName}">
+                                                [다낭]3박5일
+                                                여행풀코스(가이드X)</p>
+                                            <br>
+                                            <p id="tag" th:text="${reservation.tag}"></p>
+                                        </b>
+
+                                    </div>
+                                </div>
+
+                                <div class="detailsBtn">
+                                    <a class="detailsLink"
+                                        th:href="'/member/review/new/'+${reservation.reservationPK}">리뷰작성하기</a>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </li>
+                <!-- 카트 아이템 항목 끝 -->
+
+
+            </ul>
+            <div th:if="${reservationList==null}" class="imageArea">
+                <img th:src="@{/images/info.svg}" id="infoImage">
+                <p>예약이 없습니다.</p>
+            </div>
+        </div>
+
+
+    </div>
+    <img th:src="@{/images/topBtn.png}" id="topBtn">
+    </div>
+
+
+    <!-- 메인 끝 -->
+    <footer th:replace="/fragments/memberFooter::memberFooter"></footer>
+</body>
+
+</html>

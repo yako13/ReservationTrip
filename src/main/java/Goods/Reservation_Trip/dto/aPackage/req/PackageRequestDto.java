@@ -16,6 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 public class PackageRequestDto {
 
+    private Long id;
     /**
      * 패키지명
      */
@@ -60,6 +61,11 @@ public class PackageRequestDto {
      * 간단 설명글
      */
     private String description;
+
+    /**
+     * 여행 일수
+     */
+    private int period;
 
     /**
      * 메인 이미지

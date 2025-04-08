@@ -6,7 +6,9 @@ import lombok.Getter;
 public enum PackageStatus implements BaseEnum{
     AVAILABLE("예약가능"),
     FULL("예약매진"),
-    CLOSED("예약불가");
+    CLOSED("예약불가"),
+    CANCEL("여행취소"),
+    EXPIRED("여행출발");
 
     private final String name;
 

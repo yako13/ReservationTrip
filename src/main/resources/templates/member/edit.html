@@ -17,9 +17,7 @@
             text-align: center;
             width: 70%;
             background-color: white;
-            /* border: 1px solid #ccc; */
             padding: 5rem;
-            /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.295); */
         }
 
         .formArea {
@@ -34,7 +32,8 @@
 
         .joinTable th {
             text-align: start;
-            width: 12rem;
+            width: 17rem;
+            font-size: 1.1rem;
         }
 
         .joinTable td {
@@ -48,8 +47,9 @@
 
             input[type="text"],
             input[type="password"] {
-                width: 20rem;
-                height: 2rem;
+                font-size: 1rem;
+                width: 25rem;
+                height: 2.5rem;
                 border: 1px #ccc solid;
                 border-radius: 4px;
                 padding-left: 0.5rem;
@@ -62,13 +62,14 @@
 
             label {
                 margin-right: 1rem;
+                font-size: 1.1rem;
             }
 
         }
 
         .joinTable tr {
             border-top: 1px solid #ccc;
-            height: 5rem;
+            height: 6rem;
 
             &:last-child {
                 border-bottom: 1px solid #ccc;
@@ -120,7 +121,9 @@
         #authCodeBtn {
             border: none;
             border-radius: 4px;
-            height: 2rem;
+            height: 2.5rem;
+            margin-left: 4rem;
+            font-size: 1rem;
         }
 
 
@@ -129,8 +132,8 @@
         .resetBtn {
             margin: 0 auto;
             width: 7rem;
-            height: 2rem;
-            font-size: 1.2rem;
+            height: 3rem;
+            font-size: 1.4rem;
             transition: all 0.3s ease;
             border-radius: 7px;
             border: none;
@@ -151,7 +154,7 @@
         }
 
         .resetBtn {
-            margin-left: 2rem;
+            margin-left: 5rem;
             background-color: #ececec;
             color: #333;
 
@@ -163,7 +166,7 @@
         }
 
         .info {
-            font-size: 0.8rem;
+            font-size: 1rem;
         }
 
         .radioArea {
@@ -189,12 +192,38 @@
             border: red solid 1px !important;
         }
 
-        .titleArea{
+        .titleArea {
             margin-bottom: 5rem;
         }
 
-        .ml{
+        .ml {
             margin-bottom: 2rem;
+        }
+
+
+        #userPasswordCheck {
+            margin-top: 1.2rem;
+
+        }
+
+        #passwordAgain {
+            height: 0.8em;
+            margin: 0.3rem 0;
+            color: red;
+            font-size: 0.9em;
+        }
+
+        #authBtn{
+            margin-left: 20.1rem;
+        }
+
+        #timer{
+            margin-left: 2rem; 
+        }
+
+        #ps{
+            font-size: 0.7rem;
+            color: #777777;
         }
     </style>
 </head>
@@ -212,6 +241,7 @@
             <div class="essential">
                 <span class="red">*</span>
                 <span>필수입력사항</span>
+                <p id="ps">※ 비밀번호가 빈칸일 경우에는 비밀번호가 변경되지 않습니다.</p>
             </div>
             <div class="formArea">
                 <form id="editForm" th:action="@{/member/edit}" th:method="post">
@@ -222,8 +252,6 @@
                                 <span th:text="${email}" id="email"></span>
                                 <input type="hidden" th:value="${provider}" id="provider">
                                 <b><span th:if="${provider !=null}"> ([[${provider}]] 소셜 가입회원)</span></b>
-                            </td>
-                            <td>
                                 <button id="authBtn" type="button">인증하기</button>
                                 <span id="timer" class="red ml"></span>
                             </td>
@@ -231,43 +259,38 @@
                         <tr class="authArea">
                             <th><span class="red">*</span>이메일 인증번호</th>
                             <td><input type="text" id="authCode" name="authCode" maxlength="6"
-                                    oninput="this.value = this.value.replace(/[^0-9]/g, '')"></td>
-                            <td>
+                                    oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                                 <button id="authCodeBtn" type="button">인증확인</button>
                             </td>
                         </tr>
                         <tr th:if="${provider ==null}">
                             <th><span class="red">*</span>비밀번호 <i class="fa-solid fa-eye-slash" id="eye"></i></th>
                             <td><input type="password" name="password" id="userPassword"
-                                    placeholder="입력을 하지 않을 시에는 기존 비밀번호로 저장됩니다."></td>
-                            <td class="info" id="passwordError">비밀번호는 대소문자, 숫자, 특수문자 조합으로 8~15자리여야합니다.</td>
+                                    placeholder="대소문자, 숫자, 특수문자(!@#$%^*+=-) 조합, 8~15자"></td>
                         </tr>
                         <tr th:if="${provider ==null}">
                             <th><span class="red">*</span>비밀번호 확인</th>
-                            <td><input type="password" id="userPasswordCheck">
+                            <td><input type="password" id="userPasswordCheck" placeholder="비밀번호를 재입력해주세요.">
+                                <p  id="passwordAgain" class="info"></p>
                             </td>
-                            <td id="passwordAgain" class="info">비밀번호를 재입력해주세요.</td>
                         </tr>
                         <tr>
                             <th><span class="red">*</span>이름</th>
-                            <td><input type="text" placeholder="홍길동" name="name" class="joinInput" id="userName"
-                                    th:value="${name}"></td>
-                            <td class="info" id="nameError">이름은 한글 2~5자 또는 성과 이름을 구분하여 영문 1~10자리씩이여야 합니다.</td>
+                            <td><input type="text" placeholder="한글 2~5자 또는 성과 이름을 구분하여 영문 1~10자" name="name"
+                                    class="joinInput" id="userName" th:value="${name}"></td>
                         </tr>
                         <tr>
                             <th><span class="red">*</span>생년월일</th>
-                            <td><input type="text" placeholder="20000101" name="birth" maxlength="8"
+                            <td><input type="text" placeholder="숫자 8자 ex)19990505" name="birth" maxlength="8"
                                     oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="joinInput"
                                     id="birth" th:value="${birth}"></td>
-                            <td class="info" id="birthError">생년월일은 숫자만 가능하며 정확한 날짜여야합니다.</td>
                         </tr>
                         <tr>
                             <th><span class="red">*</span>휴대전화번호</th>
-                            <td><input type="text" placeholder="01012341234" name="phoneNumber" maxlength="11"
+                            <td><input type="text" placeholder="010, 011, 016, 017, 018, 019로 시작하며, 숫자 10~11자"
+                                    name="phoneNumber" maxlength="11"
                                     oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="joinInput"
                                     id="phoneNumber" th:value="${phoneNumber}"></td>
-                            <td class="info" id="phoneError">휴대전화번호는 010, 011, 016, 017, 018, 019로 시작하며, 숫자 10~11자리여야
-                                합니다.
                             </td>
                         </tr>
                         <tr>
@@ -479,45 +502,37 @@
             }
 
             //OAuth 제공자가 없을 때
-            if ((provider.value == null) && userPassword.value !="" ) {
+            if ((provider.value == null) && userPassword.value != "") {
                 if (password_check.test(userPassword.value)) {
                     userPassword.classList.remove("inputRed");
-                    passwordError.classList.remove("red");
                 }
                 else {
                     userPassword.classList.add("inputRed");
-                    passwordError.classList.add("red");
                     valid = false;
                 }
             }
             if (name_check.test(userName.value)) {
                 userName.classList.remove("inputRed");
-                nameError.classList.remove("red");
             }
             else {
                 userName.classList.add("inputRed");
-                nameError.classList.add("red");
                 valid = false;
             }
 
             //현재날짜보단 작고 1925년생보단 많아야함
             if (birth_check.test(birth.value) && parseInt(birth.value) < parseInt(formattedDate) && parseInt(birth.value) > 19250328) {
                 birth.classList.remove("inputRed");
-                birthError.classList.remove("red");
             }
             else {
                 birth.classList.add("inputRed");
-                birthError.classList.add("red");
                 valid = false;
             }
 
             if (phone_check.test(phone.value)) {
                 phone.classList.remove("inputRed");
-                phoneError.classList.remove("red");
             }
             else {
                 phone.classList.add("inputRed");
-                phoneError.classList.add("red");
                 valid = false;
             }
             if (document.getElementById("male").checked || document.getElementById("female").checked) { }
@@ -566,7 +581,7 @@
                 bol_check_password = 0;
             }
             else {
-                passwordAgain.innerText = "비밀번호를 재입력해주세요.";
+                passwordAgain.innerText = "";
                 passwordAgain.style.color = "black";
                 bol_check_password = 1;
             }

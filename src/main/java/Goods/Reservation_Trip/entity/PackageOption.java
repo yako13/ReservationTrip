@@ -1,5 +1,6 @@
 package Goods.Reservation_Trip.entity;
 
+import Goods.Reservation_Trip.base.BaseTime;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +14,7 @@ import org.hibernate.annotations.Comment;
 @AllArgsConstructor
 @Builder
 @Entity
-public class PackageOption {
+public class PackageOption extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,7 +36,7 @@ public class PackageOption {
     @Comment("항공료 포함 여부")
     private boolean airfare;
 
-    @Column(name = "no_shopping", columnDefinition = "BOOLEAN")
+    @Column(name = "no_shopping",nullable = false, columnDefinition = "BOOLEAN")
     @Comment("쇼핑 여부")
     private boolean noShopping;
 }

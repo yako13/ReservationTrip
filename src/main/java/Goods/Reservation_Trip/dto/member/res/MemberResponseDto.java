@@ -29,5 +29,10 @@ public class MemberResponseDto {
 
     //연락처
     private String phoneNumber;
-    
+
+    //여권번호
+    private String passportNumber;
+
+    //예약자여부
+    private boolean defaultReservation;
 }

@@ -11,19 +11,22 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface ReservationRepository extends JpaRepository<Reservation,Long> {
     Page<Reservation> findAll(Pageable pageable);
 
     Page<Reservation> findByReservationState(ReservationState reservationState,Pageable pageable);
 
-    List<Reservation> findByMemberId(Long memberId);
-
     List<Reservation> findTop10ByMemberIdOrderByCreatedAtDesc(Long memberId);
 
     List<Reservation> findByMemberIdAndCreatedAtBetween(Long memberId, LocalDateTime startDate, LocalDateTime endDate);
 
     List<Reservation> findByMemberIdAndStartDateBetween(Long memberId,LocalDate startDate,LocalDate endDate);
+
+    List<Reservation> findByEndDateBeforeAndReviewListIsNullOrderByIdDesc(LocalDate date);
+
+    Optional<Reservation> findByMemberIdAndCode(Long memberId,String code);
 
     //공백 구분 없이 예약자 이름 검색
     @Query("SELECT r FROM Reservation r WHERE LOWER(REPLACE(r.member.name, ' ', '')) LIKE LOWER(CONCAT('%', REPLACE(:withoutSpaceSearchText, ' ', ''), '%'))")

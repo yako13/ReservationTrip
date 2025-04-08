@@ -1,5 +1,3 @@
-@import url("https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css");
-
 body {
   margin: 0;
 
@@ -55,7 +53,7 @@ body {
 }
 
 .HanSerachForm button {
-  background: url(/images/search.svg);
+  background: url(/images/search3.svg);
   border: none;
   width: 29px;
   height: 29px;
@@ -647,7 +645,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 5px;
+  gap: 2px;
   border: none;
   background-color: #2cafec;
   padding: 18px 70px;
