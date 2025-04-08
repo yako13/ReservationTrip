@@ -31,7 +31,7 @@ public class AirPortInitializer implements CommandLineRunner {
             airportRepository.save(new Airport(null, "TAE", "대구국제공항", null));
         }
         if (!airportRepository.existsByCode("PUS")) {
-            airportRepository.save(new Airport(null, "PUS", "부산", null));
+            airportRepository.save(new Airport(null, "PUS", "부산국제공항", null));
         }
 
         // 해외 국제 공항

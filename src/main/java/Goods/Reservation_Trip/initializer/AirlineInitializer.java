@@ -27,5 +27,8 @@ public class AirlineInitializer implements CommandLineRunner {
         if (!airlineRepository.existsByCode("AIR_BUSAN")) {
             airlineRepository.save(new Airline(null, "AIR_BUSAN", "에어부산"));
         }
+        if (!airlineRepository.existsByCode("JEJU_Air")) {
+            airlineRepository.save(new Airline(null, "JEJU_AIR", "제주항공"));
+        }
     }
 }
