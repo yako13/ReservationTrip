@@ -20,9 +20,9 @@ public interface ReservationRepository extends JpaRepository<Reservation,Long> {
 
     List<Reservation> findTop10ByMemberIdOrderByCreatedAtDesc(Long memberId);
 
-    List<Reservation> findByMemberIdAndCreatedAtBetween(Long memberId, LocalDateTime startDate, LocalDateTime endDate);
+    List<Reservation> findByMemberIdAndCreatedAtBetweenOrderByCreatedAtAsc(Long memberId, LocalDateTime startDate, LocalDateTime endDate);
 
-    List<Reservation> findByMemberIdAndStartDateBetween(Long memberId,LocalDate startDate,LocalDate endDate);
+    List<Reservation> findByMemberIdAndStartDateBetweenOrderByStartDateAsc(Long memberId,LocalDate startDate,LocalDate endDate);
 
     List<Reservation> findByEndDateBeforeAndReviewListIsNullOrderByIdDesc(LocalDate date);
 
