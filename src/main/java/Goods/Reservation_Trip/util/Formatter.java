@@ -88,12 +88,18 @@ public class Formatter {
 
     //패키지명에서 태그 추출
     public static String getTag(String packageName){
-        return packageName.substring(packageName.indexOf("#"));
+        if(packageName.contains("#")) {
+            return packageName.substring(packageName.indexOf("#"));
+        }
+        return null;
     }
 
     //패키지명에서 태그만 뺀 값
     public static String getPackageNameWithoutTag(String packageName){
-        return packageName.substring(0,packageName.indexOf("#"));
+        if(packageName.contains("#")) {
+            return packageName.substring(0, packageName.indexOf("#"));
+        }
+        return packageName;
     }
 
     //운송장 번호 만드는 함수

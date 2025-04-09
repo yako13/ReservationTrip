@@ -29,15 +29,7 @@ public class MemberController {
     private final MailService mailService;
 
     @GetMapping("/login")
-    private String loginPage(HttpServletRequest request,RedirectAttributes redirectAttributes) {
-        MemberResponseDto memberResponseDto = memberService.getMember(request);
-
-        //이미 로그인 되어있는경우 메인페이지로 이동
-        if(memberResponseDto != null){
-            redirectAttributes.addFlashAttribute("data","이미 로그인 되어있습니다.");
-            return "redirect:/";
-        }
-
+    private String loginPage() {
         return "member/login";
     }
 
@@ -187,6 +179,7 @@ public class MemberController {
         model.addAttribute("phoneNumber", editDto.getPhoneNumber());
         model.addAttribute("gender", editDto.isGender());
         model.addAttribute("birth", editDto.getBirth());
+        model.addAttribute("authCode",editDto.getAuthCode());
 
         //인증번호 일치하지 않을 때
         if (!mailService.validationAuthCode(memberResponseDto.getEmail(), editDto.getAuthCode())) {
@@ -196,6 +189,7 @@ public class MemberController {
 
         //이름과 휴대전화번호가 같은 회원이 있는 경우 수정 불가
         if(!memberService.editMember(memberResponseDto.getEmail(), editDto)) {
+            model.addAttribute("checkName",1); //이미 이메일은 인증한 걸 확인해줌
             model.addAttribute("alert","동일한 이름과 휴대전화번호를 가진 회원이 있습니다. ");
             return "member/edit";
         }
