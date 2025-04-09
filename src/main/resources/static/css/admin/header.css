@@ -218,9 +218,10 @@ p {
 
 #notification-list ul {
     list-style: none;
-    padding: 0;
+    padding: 2px;
     margin: 0;
-    border: 2px solid #ccc;
+    border: 1px solid #a8a8a8;
+    border-radius: 5px;
 }
 
 #notification-list li {
