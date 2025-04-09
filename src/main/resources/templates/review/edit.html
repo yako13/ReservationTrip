@@ -81,7 +81,8 @@
 
         .scoreArea {
             margin: 1rem 0;
-            i{
+
+            i {
                 color: #ccc;
             }
         }
@@ -238,6 +239,7 @@
     </main>
     <footer th:replace="/fragments/memberFooter::memberFooter"></footer>
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         // 기존 이미지 삭제 함수
         function deleteExistingImage(button, index, type) {
@@ -313,7 +315,7 @@
 
             // 전체 개수 검사
             if (currentImageCount + newFiles.length > maxImages) {
-                alert(`최대 ${maxImages}개의 이미지만 업로드할 수 있습니다.`);
+                Swal.fire({ text: `최대 ${maxImages}개의 이미지만 업로드할 수 있습니다.` });
                 // 초과된 파일 제거 후 다시 설정
                 newFiles = newFiles.slice(0, maxImages - currentImageCount);
                 event.target.value = ""; // input 초기화
@@ -425,11 +427,11 @@
             document.getElementById("score").value = scoreLength.length;
 
             if (imageboxCount.length > 5) {
-                alert("리뷰 사진은 최대 5장까지 가능합니다.");
+                Swal.fire({ text: "리뷰 사진은 최대 5장까지 가능합니다." });
             }
 
             if (content.value.length < 10 || content.value.length > 500) {
-                alert("리뷰는 최소 10자 이상 500자 이하여야 합니다.");
+                Swal.fire({ text: "리뷰는 최소 10자 이상 500자 이하여야 합니다." });
             }
             else {
                 document.getElementById("reviewForm").submit();
