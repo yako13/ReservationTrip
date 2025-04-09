@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -112,18 +113,12 @@ public class ReviewService {
 
         Review review = optionalReview.get();
 
-        List<String> images = new ArrayList<>();
-
-        for (ReviewImage reviewImage : review.getReviewImageList()) {
-            images.add(imageManager.createImageUrl(reviewImage.getImageFullName()));
-        }
-
         return ReviewResponseDto.builder()
                 .packageMainImage(imageManager.createImageUrl(review.getAPackage().getMainImage().getImageFullName()))
                 .packageName(review.getAPackage().getPackageName())
                 .content(review.getContent())
                 .rating(review.getRating())
-                .imagesURL(images)
+                .reviewImageList(review.getReviewImageList())
                 .reviewId(reviewId)
                 .build();
     }
@@ -155,18 +150,18 @@ public class ReviewService {
             for (String deletedImage : deletedImageList) {
                 if (deletedImage.isEmpty()) continue;
 
-                if (deletedImage.startsWith("subImage")) {
-                    try {
-                        int index = Integer.parseInt(deletedImage.replace("subImage", ""));
-                        if (index < reviewImageList.size()) {
-                            ReviewImage imageToDelete = reviewImageList.get(index);
-                            fileStorageService.deleteFile(imageToDelete.getImageFullName());
+                if (deletedImage.startsWith("subImage|")) {
+                    String imageName = deletedImage.replace("subImage|", "");
 
-                            reviewImageRepository.delete(imageToDelete); // DB에서 삭제
-                            review.getReviewImageList().remove(imageToDelete); // 리스트에서 제거
-                        }
-                    } catch (NumberFormatException e) {
-                        System.err.println("Invalid subImage index: " + deletedImage);
+                    Optional<ReviewImage> imageToDeleteOpt = review.getReviewImageList().stream()
+                            .filter(img -> img.getImageFullName().equals(imageName))
+                            .findFirst();
+
+                    if (imageToDeleteOpt.isPresent()) {
+                        ReviewImage imageToDelete = imageToDeleteOpt.get();
+                        fileStorageService.deleteFile(imageToDelete.getImageFullName());
+                        reviewImageRepository.delete(imageToDelete);
+                        review.getReviewImageList().remove(imageToDelete);
                     }
                 }
             }
@@ -194,8 +189,8 @@ public class ReviewService {
      * 리뷰 작성 가능한 예약 불러오기
      */
     public List<ReservationDetailsResponseDto> getReviewAblePage(Long memberId) {
-        //리뷰 리스트가 0인 예약만 찾아옴
-        List<Reservation> reservationList = reservationRepository.findByMemberIdAndReviewListIsNullOrderByIdDesc(memberId);
+        //리뷰 리스트가 0이며, 여행 마지막날이 현재 날짜를 지나고, ID 기준 내림차순으로 정렬
+        List<Reservation> reservationList = reservationRepository.findByEndDateBeforeAndReviewListIsNullAndMemberIdOrderByIdDesc(LocalDate.now(),memberId);
 
         if (reservationList.isEmpty()) return null;
 

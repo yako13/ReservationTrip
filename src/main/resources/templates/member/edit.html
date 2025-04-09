@@ -213,17 +213,33 @@
             font-size: 0.9em;
         }
 
-        #authBtn{
-            margin-left: 20.1rem;
+        #authBtn {
+            margin-left: 5rem;
         }
 
-        #timer{
-            margin-left: 2rem; 
+        #timer {
+            margin-left: 2rem;
         }
 
-        #ps{
+        #ps {
             font-size: 0.7rem;
             color: #777777;
+        }
+
+        .emailArea {
+            width: 24.7rem;
+            display: inline-block;
+        }
+
+        .withdrawalArea {
+            display: flex;
+            justify-content: end;
+            margin: 1rem 0;
+        }
+
+        #withdrawalBtn {
+            color: #9c9c9c;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -231,7 +247,8 @@
 <body>
     <header th:replace="/fragments/memberHeader::memberHeader"></header>
     <main>
-        <input type="hidden" th:value="${alert}" id="dataAlert">
+        <input type="hidden" th:value="${alert}" id="flashMessage2">
+        <input type="hidden" th:value="${checkName}" id="checkName">
         <div class="container">
             <div class="titleArea">
                 <h1>회원정보수정</h1>
@@ -249,9 +266,11 @@
                         <tr>
                             <th>이메일</th>
                             <td>
-                                <span th:text="${email}" id="email"></span>
-                                <input type="hidden" th:value="${provider}" id="provider">
-                                <b><span th:if="${provider !=null}"> ([[${provider}]] 소셜 가입회원)</span></b>
+                                <div class="emailArea">
+                                    <span th:text="${email}" id="email"></span>
+                                    <input type="hidden" th:value="${provider}" id="provider">
+                                    <b><span th:if="${provider !=null}"> ([[${provider}]] 소셜 가입회원)</span></b>
+                                </div>
                                 <button id="authBtn" type="button">인증하기</button>
                                 <span id="timer" class="red ml"></span>
                             </td>
@@ -259,7 +278,7 @@
                         <tr class="authArea">
                             <th><span class="red">*</span>이메일 인증번호</th>
                             <td><input type="text" id="authCode" name="authCode" maxlength="6"
-                                    oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                    oninput="this.value = this.value.replace(/[^0-9]/g, '')" th:value="${authCode}">
                                 <button id="authCodeBtn" type="button">인증확인</button>
                             </td>
                         </tr>
@@ -271,7 +290,7 @@
                         <tr th:if="${provider ==null}">
                             <th><span class="red">*</span>비밀번호 확인</th>
                             <td><input type="password" id="userPasswordCheck" placeholder="비밀번호를 재입력해주세요.">
-                                <p  id="passwordAgain" class="info"></p>
+                                <p id="passwordAgain" class="info"></p>
                             </td>
                         </tr>
                         <tr>
@@ -305,24 +324,61 @@
                             </td>
                         </tr>
                     </table>
+                    <div class="withdrawalArea">
+                        <a id="withdrawalBtn">회원 탈퇴</a>
+                    </div>
                     <div class="btnArea">
                         <button type="submit" class="btn">수정</button>
                         <button type="reset" class="resetBtn">초기화</button>
                     </div>
+
                 </form>
             </div>
+
         </div>
     </main>
     <footer th:replace="/fragments/memberFooter::memberFooter"></footer>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script th:src="@{/js/alert.js}"></script>
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const cancelBtn = document.getElementById("withdrawalBtn");
+
+            if (cancelBtn) {
+                cancelBtn.addEventListener("click", () => {
+                    Swal.fire({
+                        text: "회원 탈퇴를 하시면, 복구가 어려운 점을 참고하시기 바랍니다. 정말 탈퇴를 원하시나요?",
+                        icon: "question",
+                        showCancelButton: true,
+                        confirmButtonText: "확인",
+                        cancelButtonText: "취소",
+                        confirmButtonColor: "#4CAF50"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.assign("/permit/withdrawal");
+                        }
+                    });
+
+                });
+            } else {
+                console.error("cancelBtn을 찾을 수 없습니다.");
+            }
+        });
+
         let bol_auth = 0;
 
         window.onload = function () {
             //인증확인버튼 비활성화 
             document.getElementById("authCodeBtn").disabled = true;
             bol_auth = 0;
+
+            let birth = document.getElementById("birth");
+
+            //생년월일 또는 휴대전화번호 체크
+            if (birth.value == null || birth.value == "") {
+                Swal.fire({ text: "기존 정보를 입력하지 않으면 이후 이용에 제한이 있을 수 있습니다." });
+            }
         };
 
         // 메일 인증
@@ -340,7 +396,7 @@
                 display.textContent = minutes + ":" + seconds;
 
                 if (--timer < 0) {
-                    alert("인증 시간이 만료되었습니다. 다시 인증하여 주십시오.");
+                    Swal.fire({ text: "인증 시간이 만료되었습니다. 다시 인증하여 주십시오." });
                     clearInterval(timerInterval); // 타이머 정지
                     document.getElementById("authBtn").disabled = false;
                 }
@@ -352,7 +408,7 @@
 
             //인증확인버튼 활성화
             document.getElementById("authCodeBtn").disabled = false;
-            alert("이메일을 전송중입니다. 잠시만 기다려주십시오.");
+            Swal.fire({ text: "이메일을 전송중입니다.  잠시만 기다려주십시오." });
             var params = { email: $("#email").text() }
 
             $.ajax({
@@ -365,15 +421,15 @@
                             display = document.querySelector('#timer');
                         startTimer(fiveMinutes, display);
                         document.getElementById("authBtn").disabled = true;
-                        alert("인증번호가 발송되었습니다. 이메일을 확인하여 주십시오.");
+                        Swal.fire({ html: "인증번호가 발송되었습니다.<br>이메일을 확인하여 주십시오."});
                     }
                     else {
-                        alert("인증번호가 전송되지 않았습니다. 작성한 이메일을 다시 확인하여 주십시오.");
+                        Swal.fire({ text: "인증번호가 전송되지 않았습니다. 작성한 이메일을 다시 확인하여 주십시오." });
                         document.getElementById("authCodeBtn").disabled = true;
                     }
                 },
                 error: function () {
-                    alert("통신 실패.");
+                    Swal.fire({icon: 'error', text: "통신 실패." });
                 }
             });
         });
@@ -394,16 +450,16 @@
                 success: function (res) {
                     if (res == 1000) {
                         clearInterval(timerInterval); // 인증 성공 시 타이머 정지
-                        alert("인증이 완료되었습니다.");
+                        Swal.fire({ text: "인증이 완료되었습니다." });
                         bol_auth = 1;
                         document.getElementById("authCodeBtn").disabled = true;
                     } else {
-                        alert("인증번호가 일치하지 않습니다.");
+                        Swal.fire({ text: "인증번호가 일치하지 않습니다." });
                         document.getElementById("authBtn").disabled = false;
                     }
                 },
                 error: function () {
-                    alert("통신 실패.");
+                    Swal.fire({icon: 'error', text: "통신 실패." });
                 }
             });
         });
@@ -496,9 +552,12 @@
             e.preventDefault();
             let ValueCheck = SignUpValueCheckAll();
             let valid = true;
+            if (document.getElementById("checkName").value == 1) {
+                bol_auth = 1;
+            }
 
             if (bol_auth == 0) {
-                alert("이메일 인증을 해주십시오.");
+                Swal.fire({ text: "이메일 인증을 해주십시오." });
             }
 
             //OAuth 제공자가 없을 때

@@ -18,6 +18,10 @@ public class TravelerDto {
     private String birth;
     //휴대폰번호
     private String phone; // 선택값이므로 null 허용
+    //여권번호
+    private String passportNum;
+    //예약자 여부
+    private boolean resCheck;
 
     //생년월일 변환된것
     private String birthString;

@@ -78,6 +78,7 @@
     <footer th:replace="/fragments/memberFooter::memberFooter"></footer>
     <script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
     <link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script th:inline="none">
 
@@ -141,7 +142,7 @@
                 dateInput.value = selectedDateStr;
                 prevStartDate = selectedDate;
             } else {
-                alert("조회 종료일보다 조회 시작일이 더 큽니다.");
+                Swal.fire({  text: "조회 종료일보다 조회 시작일이 더 큽니다." });
                 datePicker.setDate(prevStartDate);
                 dateInput.value = formatWithWeekday(prevStartDate);
             }
@@ -167,7 +168,7 @@
                 dateInput2.value = selectedDateStr;
                 prevEndDate = selectedDate;
             } else {
-                alert("조회 종료일보다 조회 시작일이 더 큽니다.");
+                Swal.fire({  text: "조회 종료일보다 조회 시작일이 더 큽니다." });
                 datePicker2.setDate(prevEndDate);
                 dateInput2.value = formatWithWeekday(prevEndDate);
             }
@@ -181,7 +182,7 @@
             if (parseInt(replaceDate(dateInput.value)) <= parseInt(replaceDate(dateInput2.value))) {
                 searchForm.submit();
             } else {
-                alert("조회 종료일보다 조회 시작일이 더 큽니다.");
+                Swal.fire({  text: "조회 종료일보다 조회 시작일이 더 큽니다." });
             }
         });
 

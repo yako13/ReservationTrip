@@ -180,10 +180,10 @@
 
 }
 
-.HanCartProductName p {
+.HanCartProductName span {
   margin: 0;
   margin-bottom: 3px;
-  display: inline-block;
+
 }
 
 
@@ -244,10 +244,11 @@
 }
 
 .HanProductdelete button:hover {
-  color: #000000;
-  background-color: #d1d1d1;
+  border: 1px solid #ff7979;
+  background-color: #ff7979;
+  color: #421212;
+  transform: scale(0.98);
 }
-
 
 
 
@@ -272,8 +273,10 @@
 }
 
 .HanCartTopDeleteA button:Hover {
-  color: #000000;
-  background-color: #d1d1d1;
+  border: 1px solid #ff7979;
+  background-color: #ff7979;
+  color: #421212;
+  transform: scale(0.98);
 }
 
 .HanCartBottomPrice {

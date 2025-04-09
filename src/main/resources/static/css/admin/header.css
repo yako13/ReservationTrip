@@ -43,7 +43,6 @@ header {
 .masterHeader {
     box-sizing: border-box;
     padding: 20px 30px;
-    background-color: #f7dad9;
     height: 50px;
     display: flex;
     justify-content: space-between;
@@ -112,7 +111,6 @@ p {
     font-size: 18px;
     transition: all 0.3s ease;
     color: white;
-    background-color: #333333;
 }
 
 .homePage a:hover {
@@ -168,7 +166,7 @@ p {
 }
 
 .masterHeader {
-    background-color: #6c757d;
+    background-color: #2c394b;
     color: white;
 }
 
@@ -182,6 +180,73 @@ p {
     img {
         margin-top: 20px;
     }
+}
+
+.alarm {
+    display: flex;
+    flex-direction: row;
+    z-index: 50;
+}
+
+#notification-container {
+    display: flex;
+    width: 100%;
+    justify-content: start;
+}
+
+#notification-badge {
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    display: none;
+    cursor: pointer;
+
+}
+
+#notification-list {
+    color: black;
+    position: absolute;
+    top: 30px;
+    width: 400px;
+    background: white;
+    border: 1px solid #ccc;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    padding: 10px;
+    display: none;
+}
+
+#notification-list ul {
+    list-style: none;
+    padding: 2px;
+    margin: 0;
+    border: 1px solid #a8a8a8;
+    border-radius: 5px;
+}
+
+#notification-list li {
+    padding: 8px;
+    height: 3.5rem;
+    border-bottom: 1px solid #a8a8a8;
+    font-size: 14px;
+    line-height: 2rem;
+}
+
+#notification-list li:last-child {
+    border-bottom: none;
+}
+
+#closeIcon {
+    margin: 0;
+    text-align: end;
+    font-size: 1.2rem;
+    height: 1.5rem;
+}
+
+.alertHead {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 0.3rem;
 }
 
 /* 헤더 끝 */
@@ -198,7 +263,7 @@ p {
     z-index: 1;
     top: 50px;
     left: 0;
-    background-color: #adb5bd;
+    background-color: #3a4e63;
     overflow-x: hidden;
     transition: 0.5s;
     padding-top: 60px;
@@ -214,7 +279,7 @@ p {
     padding: 15px 0;
     text-decoration: none;
     font-size: 15px;
-    color: #495057;
+    color: white;
     display: block;
     transition: 0.3s;
     text-align: center;
@@ -225,7 +290,7 @@ p {
 
 .sidenav a:hover,
 .dropdown-btn:hover {
-    background-color: #bbbfc4
+    background-color: #2c394b
 }
 
 /* 드롭다운 스타일 */
@@ -237,7 +302,7 @@ p {
 .dropdown-content {
     max-height: 0;
     overflow: hidden;
-    background-color: #c7cace;
+    background-color: #5e799e;
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -267,7 +332,7 @@ p {
 }
 
 .SlideNavOpenDiv i {
-    color: #5c677d;
+    color: #2c394b;
 }
 
 .SlideShow {
@@ -315,5 +380,7 @@ main {
         font-size: 18px;
     }
 }
+
+
 
 /* 네비 끝 */

@@ -83,6 +83,8 @@ public class MemberService {
         //세션에서 회원 PK 들고오기
         HttpSession session = request.getSession(false);
 
+        if(session == null) return null;
+
         Long memberId = (Long) session.getAttribute("memberId");
 
         if (memberId == null) return null;

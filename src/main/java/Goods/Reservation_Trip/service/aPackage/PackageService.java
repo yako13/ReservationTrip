@@ -46,8 +46,6 @@ public class PackageService {
 
         Package aPackage = Package.builder()
                 .packageName(requestDto.getPackageName())
-                .maximumMember(requestDto.getMaximumMember())
-                .minimumRequired(requestDto.getMinimumRequired())
                 .adultPrice(requestDto.getAdultPrice())
                 .childPrice(requestDto.getChildPrice())
                 .babyPrice(requestDto.getBabyPrice())

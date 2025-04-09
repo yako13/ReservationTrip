@@ -151,6 +151,7 @@
         </div>
     </main>
     <footer th:replace="/fragments/memberFooter::memberFooter"></footer>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         // 약관 동의 시작
         let bol = true;
@@ -242,7 +243,7 @@
             const isPrivacyChecked = check03.classList.contains("fa-solid");
 
             if (!isTermsChecked || !isPrivacyChecked) {
-                alert("필수 약관에 동의해야 회원가입을 진행할 수 있습니다.");
+                Swal.fire({ text: "필수 약관에 동의해야 회원가입을 진행할 수 있습니다." });
                 return; // 이동 차단
             }
 

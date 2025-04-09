@@ -181,6 +181,7 @@
     </main>
     <footer th:replace="/fragments/memberFooter::memberFooter"></footer>
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
 
         window.onload = function () {
@@ -201,7 +202,7 @@
                 display.textContent = minutes + ":" + seconds;
 
                 if (--timer < 0) {
-                    alert("인증 시간이 만료되었습니다. 다시 인증하여 주십시오.");
+                    Swal.fire({ text: "인증 시간이 만료되었습니다. 다시 인증하여 주십시오." });
                     clearInterval(timerInterval); // 타이머 정지
                     document.getElementById("authBtn").disabled = false;
                 }
@@ -211,7 +212,7 @@
         //메일 전송
         $("#authBtn").click(function () {
 
-            alert("이메일을 전송중입니다. 잠시만 기다려주십시오.");
+            Swal.fire({ text: "이메일을 전송중입니다.\n 잠시만 기다려주십시오." });
 
             var params = {
                 email: $("#email").text()
@@ -223,10 +224,10 @@
                 data: params,
                 success: function (res) {
                     if (res == 500) {
-                        alert("해당 이메일이 존재하지 않습니다. 작성하신 이메일을 확인하여 주십시오.")
+                        Swal.fire({ text: "해당 이메일이 존재하지 않습니다. 작성하신 이메일을 확인하여 주십시오." });
                     }
                     else if (res == 1000) {
-                        alert("인증번호가 발송되었습니다. 이메일을 확인하여 주십시오.");
+                        Swal.fire({  html: "인증번호가 발송되었습니다.<br>이메일을 확인하여 주십시오."});
 
                         //타이머
                         var fiveMinutes = 60 * 5,
@@ -241,7 +242,7 @@
                     }
                 },
                 error: function () {
-                    alert("통신 실패.");
+                    Swal.fire({ icon: 'error', text: "통신 실패." });
                 }
             });
         });
@@ -261,19 +262,16 @@
                 data: params,
                 success: function (res) {
                     if (res == 500) {
-                        alert("인증번호가 일치하지 않습니다.")
+                        Swal.fire({ text: "인증번호가 일치하지 않습니다." });
                     }
                     else if (res == 1000) {
                         clearInterval(timerInterval); // 타이머 정지
-                        alert("회원탈퇴가 완료되었습니다.");
+                        Swal.fire({ text: "회원탈퇴가 완료되었습니다." }).then(() => { window.location.href = "/"; });
 
-                        setTimeout(() => {
-                            window.location.href = "/";
-                        }, 1000); // 1000ms = 1초
                     }
                 },
                 error: function () {
-                    alert("통신 실패.");
+                    Swal.fire({ icon: 'error', text: "통신 실패." });
                 }
             });
         });

@@ -30,6 +30,9 @@
 </head>
 
 <body>
+    <!-- 알람용 input -->
+    <input type="hidden" id="flashMessage" th:value="${data}">
+
     <div class="HanSection" id="section1">
         <header th:replace="/fragments/memberHeader::memberHeader"></header>
 
@@ -830,6 +833,13 @@
 
 
     <!-- 달력 스크립트 끝 -->
+
+
+
+    <!-- rttr data 알람 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script th:src="@{/js/alert.js}"></script>
 
 
 

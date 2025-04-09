@@ -4,10 +4,11 @@ import Goods.Reservation_Trip.entity.Dib;
 import Goods.Reservation_Trip.entity.Member;
 import Goods.Reservation_Trip.entity.Package;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
-
+@Repository
 public interface HanDibRepository extends JpaRepository<Dib,Long> {
 
     //세션의 이메일 정보와 찜 pk로 찜 엔티티 찾아옴
