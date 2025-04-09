@@ -8,6 +8,13 @@
 
     <link rel="stylesheet" th:href="@{/css/mainPage.css}">
     <link rel="stylesheet" th:href="@{/css/reservation/reservationComplete.css}">
+    <style>
+        body {
+            background-color: #efefef;
+            margin: 0;
+
+        }
+    </style>
 
 </head>
 
@@ -15,7 +22,7 @@
 
     <!-- 헤더 시작 -->
 
-    <header th:replace="/fragments/memberHeader::memberHeader"></header>
+    <!-- <header th:replace="/fragments/memberHeader::memberHeader"></header> -->
     <!-- 헤더 끝 -->
 
 
@@ -39,30 +46,35 @@
                 <hr class="HanHr1">
 
                 <div class="HanResComMidDiv">
+                    <div class="HanCkSubmitMidText HanCkSubmitMidFlex">
+                        <!-- <p class="HanCkSubmitP1" style="min-width: 50px;">상품명 : </p> -->
 
-
-                    <div class="HanCkSubmitMidText HanCheckoutNum">
-
-                        <p class="HanCkSubmitP1">예약번호 : </p>
-                        <p class="HanCkSubmitP2">2025030301</p>
-
-                    </div>
-
-                    <div class="HanCkSubmitMidText">
-                        <p class="HanCkSubmitP1">상품명 : </p>
-
-                        <div>
-                            <p class="HanCkSubmitP2">
+                        <div style="max-width: 345px;">
+                            <p class="HanCkSubmitP2" th:text="${hanSubmitCompleteDto.packageName}">
                                 [출발확정] 오사카 3박 4일</p>
 
                         </div>
                     </div>
 
-                    <div class="HanCkSubmitMidText">
+                    <div class="HanCkSubmitMidText HanCheckoutNum">
+
+                        <p class="HanCkSubmitP1">예약번호 : </p>
+                        <p th:text="${hanSubmitCompleteDto.code}" class="HanCkSubmitP2">2025030301</p>
+
+                    </div>
+
+                    <div class="HanCkSubmitMidText HanCheckoutNum">
+
+                        <p class="HanCkSubmitP1">출발일 : </p>
+                        <p th:text="${hanSubmitCompleteDto.startDate}" class="HanCkSubmitP2">25.01.02(금)</p>
+
+                    </div>
+
+                    <div class="HanCkSubmitMidText HanCkSubmitMidColor">
 
                         <p class="HanCkSubmitP1">결제금액 : </p>
 
-                        <p class="HanCkSubmitP2">1,000,000원</p>
+                        <p class="HanCkSubmitP2" th:text="${hanSubmitCompleteDto.totalPay}">1,000,000원</p>
 
                     </div>
 
@@ -71,9 +83,12 @@
                 </div>
 
 
+
+
+
                 <div class="HanCkSubmitA">
 
-                    <a class="HanCheckoutList" th:href="@{/member/checkout/list}">예약내역 보기</a>
+                    <a class="HanCheckoutList" th:href="@{/member/reservation/list}">예약내역 보기</a>
                     <a class="HanHome" th:href="@{/}">홈으로 가기</a>
 
                 </div>
@@ -89,7 +104,7 @@
 
     <!-- 푸터 시작 -->
 
-    <footer th:replace="/fragments/memberFooter::memberFooter"></footer>
+    <!-- <footer th:replace="/fragments/memberFooter::memberFooter"></footer> -->
 
     <!-- 푸터 끝 -->
 

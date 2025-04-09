@@ -1,11 +1,15 @@
 package Goods.Reservation_Trip.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
+
 @Controller
+@RequiredArgsConstructor
 public class HanTestController {
-    
+
+
     @GetMapping("/test10")
     public String test10Go() {
 
@@ -20,20 +24,7 @@ public class HanTestController {
         return "mainPage";
     }
 
-    //예약 페이지
-    @GetMapping("/reservation")
-    public String reservationGo() {
 
 
-        return "reservation/reservation";
-    }
-
-    //예약 완료 페이지
-    @GetMapping("/reservation/Complete")
-    public String reservationCompleteGo() {
-
-
-        return "reservation/reservationComplete";
-    }
 
 }

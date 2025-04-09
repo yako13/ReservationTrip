@@ -36,7 +36,8 @@ public class MemberService {
     public boolean join(JoinDto joinDto) {
 
         //이름과 휴대전화번호가 중복된 회원이 있는 경우 가입 불가
-        if(memberRepository.findByNameAndPhoneNumber(joinDto.getName(), joinDto.getPhoneNumber()).isPresent()) return false;
+        if (memberRepository.findByNameAndPhoneNumber(joinDto.getName(), joinDto.getPhoneNumber()).isPresent())
+            return false;
 
         Member member = Member.builder()
                 .email(joinDto.getEmail())
@@ -82,6 +83,8 @@ public class MemberService {
         //세션에서 회원 PK 들고오기
         HttpSession session = request.getSession(false);
 
+        if(session == null) return null;
+
         Long memberId = (Long) session.getAttribute("memberId");
 
         if (memberId == null) return null;
@@ -107,7 +110,7 @@ public class MemberService {
     }
 
     //회원수정
-    public boolean editMember(String email,EditDto editDto) {
+    public boolean editMember(String email, EditDto editDto) {
         //가져온 이메일로 DB에서 회원찾기
         Optional<Member> optionalMember = memberRepository.findByEmail(email);
 
@@ -119,7 +122,7 @@ public class MemberService {
         String password = editDto.getPassword();
 
         //비밀번호 입력을 안했을 시
-        if(editDto.getPassword().isEmpty()){
+        if (editDto.getPassword().isEmpty()) {
             password = member.getPassword();
         }
 
@@ -127,10 +130,10 @@ public class MemberService {
         String birth = editDto.getBirth();
         String phoneNumber = editDto.getPhoneNumber();
 
-        //이름이랑 휴대전화번호가 중복될 경우 수정 불가
-        Optional<Member> aMember = memberRepository.findByNameAndPhoneNumber(name,phoneNumber);
 
-        if(aMember.isPresent()) return false;
+        Optional<Member> aMember = memberRepository.findByNameAndPhoneNumber(name, phoneNumber);
+        //이름이랑 휴대전화번호가 중복될 경우 수정 불가
+        if (aMember.isPresent() && !aMember.get().getEmail().equals(member.getEmail())) return false;
 
         //회원정보 수정
         member.editMember(passwordEncoder.encode(password), name, birth, phoneNumber);
@@ -142,7 +145,7 @@ public class MemberService {
 
     }
 
-    public void memberWithdrawal(String email){
+    public void memberWithdrawal(String email) {
         Optional<Member> optionalMember = memberRepository.findByEmail(email);
 
         if (optionalMember.isEmpty()) throw new RuntimeException("잘못된 접근");

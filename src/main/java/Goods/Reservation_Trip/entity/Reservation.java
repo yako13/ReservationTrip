@@ -1,27 +1,35 @@
 package Goods.Reservation_Trip.entity;
 
+import Goods.Reservation_Trip.base.BaseTime;
 import Goods.Reservation_Trip.enums.ReservationState;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Comment;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Table(name = "reservation")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
-public class Reservation {
+@Setter
+public class Reservation extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "reservation_id")
     private Long id;
+
+    @Column(name="reservation_code")
+    @Comment("예약번호")
+    private String code;
 
     @JoinColumn(name = "package_id")
     @ManyToOne
@@ -49,6 +57,22 @@ public class Reservation {
     private String aid;
 
     @Column(nullable = false)
+    @Comment("카카오 페이 결제 승인 시각")
+    private LocalDateTime approvedAt;
+
+    @Column( nullable = false)
+    @Comment("성인 총 결제 금액")
+    private BigDecimal adultSumPrice;
+
+    @Column( nullable = false)
+    @Comment("아동 총 결제 금액")
+    private BigDecimal childSumPrice;
+
+    @Column( nullable = false)
+    @Comment("유아 총 결제 금액")
+    private BigDecimal babySumPrice;
+
+    @Column(nullable = false)
     @Comment("카카오페이 결제 고유 번호")
     private String tid;
 
@@ -60,7 +84,7 @@ public class Reservation {
     @Comment("카카오페이 발급사명")
     private String issuerCorp;
 
-    @Column(name = "pur_corp", nullable = false)
+    @Column(name = "pur_corp")
     @Comment("카카오페이 매입사명")
     private String purCorp;
 
@@ -68,12 +92,15 @@ public class Reservation {
     @Comment("총 결제 금액")
     private BigDecimal totalPay;
 
-    @Column(name = "pur_corp_code", nullable = false)
+    @Column(name = "pur_corp_code")
     @Comment("매입사 코드")
     private String purCorpCode;
 
-    @Column(nullable = false)
-    @Comment("카드사 승인 번호")
-    private String approved;
+    @OneToMany(mappedBy = "reservation",cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReservationDetails> reservationDetailsList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "reservation",cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Review> reviewList = new ArrayList<>();
+
 }
 

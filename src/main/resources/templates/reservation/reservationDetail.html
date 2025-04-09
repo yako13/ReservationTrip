@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>예약하기</title>
+
+    <link rel="stylesheet" th:href="@{/css/mainPage.css}" />
+    <link rel="stylesheet" th:href="@{/css/reservation/reservationDetail.css}" />
+    <style>
+        .HanResStat {
+            display: inline-block;
+            margin: 4px;
+
+        }
+
+        .HanResStatDiv {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            color: #777;
+            font-size: 14px;
+        }
+
+        .HanTitleDiv {
+            display: flex;
+            justify-content: flex-start;
+            gap: 18px;
+
+        }
+
+        .HanTrip p.HanTitleP2 {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            padding: 2px 4px;
+            font-size: 10px;
+            border-radius: 3px;
+            color: white;
+            background-color: #2cafec;
+            margin: 10px 0;
+
+
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <!-- 헤더 시작 -->
+
+    <header th:replace="/fragments/memberHeader::memberHeader"></header>
+    <!-- 헤더 끝 -->
+
+
+    <!-- 메인 시작 -->
+
+    <div class="HanResDiv">
+
+        <div class="section-title2" style="margin-top: 40px;">
+            <img th:src="@{/images/ticket2.svg}" width="32px">
+            <span>예약상세</span>
+        </div>
+
+        <!-- 예약 정보 -->
+        <div class="HanResCard" style="margin-top: 20px;">
+
+            <div class="section-title">
+                <img th:src="@{/images/package.svg}" width="17px">
+                <span>상품정보</span>
+            </div>
+
+            <div class="HanResStatDiv">
+                <p class="HanResStat">예약완료</p>
+            </div>
+
+            <div class="HanResNumDiv">
+                <!--        <p>예약번호 : 202501010111</p>-->
+                <p>예약번호 : [[${resDetailPageDto.reservation.code}]]</p>
+
+                <!--            <p>예약일 : 25.05.20(화) 10:00</p>-->
+                <p>예약일 : [[${resDetailPageDto.resDate}]]</p>
+
+            </div>
+
+            <div class="tripTitleDiv">
+
+                <div class="tripTitle">
+
+                    <img th:src="@{/images/pick1.jpg}" width="50px" height="50px" class="HanPrdImg">
+                    <span th:text="${resDetailPageDto.reservation.aPackage.packageName}">[출발확정] 오사카 3박 4일 </span>
+
+                </div>
+
+                <p class="tripTitlePay" th:text="${resDetailPageDto.adultPriceString}">500,000원</p>
+            </div>
+
+            <div class="HanInfoGroup">
+
+                <div class="HanDateDiv">
+
+                    <p class="info-label">출발일</p>
+                    <p class="info-value" th:text="${resDetailPageDto.tripStartString}">25.05.01(목)</p>
+
+                </div>
+
+                <div class="highlight" th:text="${resDetailPageDto.tripDuration}">3박 4일</div>
+
+                <div class="HanDateDiv">
+                    <p class="info-label">도착일</p>
+                    <p class="info-value" th:text="${resDetailPageDto.tripEndString}">25.05.04(일)</p>
+                </div>
+
+
+            </div>
+
+            <div class="airline-info">
+
+                <div class="HanFlex1">
+
+                    <p>항공정보 : </p>
+
+                    <div>
+
+                        <!--출국 비행기-->
+                        <p th:text="${resDetailPageDto.packageSchedule.packageScheduleDetails.airlineOut.name}">제주항공</p>
+                        <!--<p>서울(ICN) → 후쿠오카(FUK)</p>-->
+                        <p>
+                            [[${resDetailPageDto.packageSchedule.packageScheduleDetails.departurePointOut.name}]] →
+                            [[${resDetailPageDto.packageSchedule.packageScheduleDetails.arrivalPointOut.name}]]
+                        </p>
+
+
+                        <!--귀국 비행기-->
+                        <p th:text="${resDetailPageDto.packageSchedule.packageScheduleDetails.airlineReturn.name}"
+                            style="font-weight: bold; margin-top: 8px;">에어부산</p>
+                        <!--<p>서울(ICN) → 후쿠오카(FUK)</p>-->
+                        <p>[[${resDetailPageDto.packageSchedule.packageScheduleDetails.departurePointReturn.name}]] →
+                            [[${resDetailPageDto.packageSchedule.packageScheduleDetails.arrivalPointReturn.name}]]
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="HanFlex1">
+                    <p>항공출발 : </p>
+                    <!--                <p >25.05.01(목) 09:35 ｜ 항공편 7C1403</p>-->
+                    <p>[[${resDetailPageDto.tripStartString}]]
+                        [[${resDetailPageDto.packageSchedule.packageScheduleDetails.departureTimeOut}]] ｜ 항공편
+                        [[${resDetailPageDto.packageSchedule.packageScheduleDetails.flightNumberOut}]]</p>
+                </div>
+
+                <div class="HanFlex1">
+
+                    <p>항공도착 : </p>
+                    <!--                <p>25.05.04(일) 13:30 ｜ 항공편 7C1404</p>-->
+                    <p>[[${resDetailPageDto.tripEndString}]]
+                        [[${resDetailPageDto.packageSchedule.packageScheduleDetails.arrivalTimeReturn}]] ｜ 항공편
+                        [[${resDetailPageDto.packageSchedule.packageScheduleDetails.flightNumberReturn}]]</p>
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+        <!-- 예약자 정보 -->
+
+        <div class="HanResCard">
+            <div class="section-title">
+
+                <img th:src="@{/images/people.svg}" width="20px">
+                <span>예약자 정보</span>
+
+            </div>
+
+            <div class="HanInfoGroup2">
+
+                <div class="HanFlex1">
+
+                    <p class="HanLight">이름 / 성별 : </p>
+                    <!--<p class="HanBold">홍길동 / 남</p>-->
+                    <p class="HanBold">[[${resDetailPageDto.resvMan.reservationDetails.name}]] /
+                        [[${resDetailPageDto.resvMan.gender}]]</p>
+
+                </div>
+
+                <div class="HanFlex1">
+                    <p class="HanLight">생년월일 : </p>
+                    <p class="HanBold" th:text="${resDetailPageDto.resvMan.birthString}">1991.01.01</p>
+                </div>
+
+                <div class="HanFlex1">
+                    <p class="HanLight">휴대폰번호 : </p>
+                    <p class="HanBold" th:text="${resDetailPageDto.resvMan.phoneString}">010-1111-2222</p>
+                </div>
+
+                <div class="HanFlex1">
+                    <p class="HanLight">여권번호 : </p>
+                    <p class="HanBold" th:text="${resDetailPageDto.resvMan.reservationDetails.passportNum}">M123T1234
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 여행자 정보 입력 -->
+
+        <div class="HanResCard">
+
+            <div class="section-title" style="margin-bottom: -5px;">
+
+                <img th:src="@{/images/peopleMany.svg}" width="24px" style="margin-top: 1px;">
+                <span>여행자 정보</span>
+
+            </div>
+
+            <div class="HanTripHr"></div>
+
+            <div th:each="resAdult, iStat : ${resDetailPageDto.resAdultList}" th:if="${resDetailPageDto.adultCnt > 0}">
+
+                <hr class="HanHr1">
+
+
+                <div class="HanTrip">
+                    <div class="HanTitleDiv">
+
+                        <p class="HanTitleP">성인 [[${iStat.index + 1}]]</p>
+
+                        <p class="HanTitleP2" th:if="${resAdult.reservationDetails.defaultReservation}">예약자</p>
+
+                    </div>
+                    <div class="HanNameDiv">
+
+                        <p class="HanP1">이름 / 성별 : </p>
+                        <!--                    <p>홍길동 / 남 </p>-->
+                        <p>[[${resAdult.reservationDetails.name}]] / [[${resAdult.gender}]]</p>
+
+                    </div>
+
+                    <div class="HanNameDiv">
+
+                        <p class="HanP1">생년월일 : </p>
+                        <!--<p>1994.01.01</p>-->
+                        <p th:text="${resAdult.birthString}">1991.01.01</p>
+
+                    </div>
+
+                    <div class="HanNameDiv">
+
+                        <p class="HanP1">휴대폰번호 : </p>
+                        <!--<p>010-1111-2222</p>-->
+                        <p th:text="${resAdult.phoneString ?: '미입력'}">010-1111-2222</p>
+                    </div>
+
+                    <div class="HanNameDiv">
+
+                        <p class="HanP1">여권 번호 : </p>
+                        <!--<p>M123T1234</p>-->
+                        <p th:text="${resAdult.reservationDetails.passportNum}">M123T1234</p>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div th:each="resChild, iStat : ${resDetailPageDto.resChildList}" th:if="${resDetailPageDto.childCnt > 0}">
+
+                <hr class="HanHr1">
+
+                <div class="HanTrip">
+                    <p class="HanTitleP">아동 [[${iStat.index + 1}]]</p>
+
+
+                    <div class="HanNameDiv">
+
+                        <p class="HanP1">이름 / 성별 : </p>
+                        <!--<p>홍길동 / 남 </p>-->
+                        <p>[[${resChild.reservationDetails.name}]] / [[${resChild.gender}]]</p>
+
+                    </div>
+
+                    <div class="HanNameDiv">
+
+                        <p class="HanP1">생년월일 : </p>
+                        <!--<p>1994.01.01</p>-->
+                        <p th:text="${resChild.birthString}">1991.01.01</p>
+
+                    </div>
+
+                    <div class="HanNameDiv">
+
+                        <p class="HanP1">휴대폰번호 : </p>
+                        <!--<p>010-1111-2222</p>-->
+                        <p th:text="${resChild.phoneString ?: '미입력'}">010-1111-2222</p>
+
+                    </div>
+
+                    <div class="HanNameDiv">
+
+                        <p class="HanP1">여권 번호 : </p>
+                        <!--<p>M123T1234</p>-->
+                        <p th:text="${resChild.reservationDetails.passportNum}">M123T1234</p>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div th:each="resBaby, iStat : ${resDetailPageDto.resBabyList}" th:if="${resDetailPageDto.babyCnt > 0}">
+
+                <hr class="HanHr1">
+
+                <div class="HanTrip">
+                    <p class="HanTitleP">유아 [[${iStat.index + 1}]]</p>
+
+
+                    <div class="HanNameDiv">
+
+                        <p class="HanP1">이름 / 성별 : </p>
+                        <!--<p>홍길동 / 남 </p>-->
+                        <p>[[${resBaby.reservationDetails.name}]] / [[${resBaby.gender}]]</p>
+
+                    </div>
+
+                    <div class="HanNameDiv">
+
+                        <p class="HanP1">생년월일 : </p>
+                        <!--<p>1994.01.01</p>-->
+                        <p th:text="${resBaby.birthString}">1991.01.01</p>
+
+                    </div>
+
+                    <div class="HanNameDiv">
+
+                        <p class="HanP1">휴대폰번호 : </p>
+                        <!--<p>010-1111-2222</p>-->
+                        <p th:text="${resBaby.phoneString ?: '미입력'}">010-1111-2222</p>
+
+                    </div>
+
+                    <div class="HanNameDiv">
+
+                        <p class="HanP1">여권 번호 : </p>
+                        <!--<p>M123T1234</p>-->
+                        <p th:text="${resBaby.reservationDetails.passportNum}">M123T1234</p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="HanResCard">
+            <div class="section-title"><img th:src="@{/images/pay1.svg}" width="20px"><span>결제 정보</span></div>
+
+            <div class="HanInfoGroup2">
+
+                <div class="HanFlex1" th:if="${resDetailPageDto.adultCnt > 0}">
+                    <p class="HanLight">성인 [[${resDetailPageDto.adultCnt}]]명 :</p>
+                    <p class="HanLight" th:text="${resDetailPageDto.adultSumPriceString}">500,000원</p>
+                </div>
+
+                <div class="HanFlex1" th:if="${resDetailPageDto.childCnt > 0}">
+                    <p class="HanLight">아동 [[${resDetailPageDto.childCnt}]]명 : </p>
+                    <p class="HanLight" th:text="${resDetailPageDto.childSumPriceString}">500,000원</p>
+                </div>
+
+                <div class="HanFlex1" th:if="${resDetailPageDto.babyCnt > 0}">
+                    <p class="HanLight">유아 [[${resDetailPageDto.babyCnt}]]명 : </p>
+                    <p class="HanLight" th:text="${resDetailPageDto.babySumPriceString}">500,000원</p>
+                </div>
+
+                <hr class="HanHr1">
+
+                <div class="HanFlex1">
+                    <p class="HanBold HanTotal" style="font-size: 18px;">총 결제 금액 : </p>
+                    <p class="HanBold HanTotal" style="font-size: 18px;" th:text="${resDetailPageDto.totalPriceString}">
+                        1,000,000원</p>
+                </div>
+
+            </div>
+            <div class="HanPayDiv">
+
+
+                <p class="HanBold2 HanMargin0">결제수단 :</p>
+
+                <div class="HanKakaoPay">
+
+                    <img th:src="@{/images/kakaoPay2.svg}" width="123px">
+                    <!-- <p>카카오페이</p> -->
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="HanPayButtonDiv ">
+            <button class="HanCancel" th:if="${resDetailPageDto.cancelButton}">예약 취소</button>
+            <button class="HanCancelReq" th:if="${resDetailPageDto.cancelButtonReq}">예약 취소 요청중</button>
+            <button class="HanReview" th:if="${resDetailPageDto.reviewButton}">리뷰 쓰기</button>
+        </div>
+
+    </div>
+
+    <!-- 푸터 시작 -->
+
+    <footer th:replace="/fragments/memberFooter::memberFooter"></footer>
+
+    <!-- 푸터 끝 -->
+
+
+    <!-- ========================= scroll-top ========================= -->
+    <button id="scrollToTopBtn">
+
+    </button>
+
+    <!-- 탑 스크롤 스크립트 -->
+    <script th:src="@{/js/scrollTop.js}"></script>
+
+
+</body>
+
+</html>

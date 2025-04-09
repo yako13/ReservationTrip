@@ -70,15 +70,23 @@
 
 }
 
+.HanCkSubmitMidColor{
+  color: #43bff8;
 
+}
 
 .HanCkSubmitMidText {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-end;
   gap: 50px;
   margin-bottom: 50px;
 
+}
+
+.HanCkSubmitMidFlex{
+  justify-content: center;
+  align-items: flex-start;
 }
 
 .HanCkSubmitMidText.HanCheckoutNum {
@@ -105,7 +113,7 @@
 .HanCkSubmitMidText p.HanCkSubmitP1 {
   width: 120px;
   color: #363636;
-  font-size: 14px;
+  font-size: 16px;
 
 
 }
@@ -113,7 +121,14 @@
 .HanCkSubmitMidText p.HanCkSubmitP2 {
   font-size: 20px;
 
+
 }
+
+.HanCkSubmitMidText p.HanCkSubmitP3 {
+  font-size: 24px;
+
+}
+
 
 .HanHr1 {
   border: 0;

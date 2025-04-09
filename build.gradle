@@ -42,6 +42,7 @@ dependencies {
 	implementation 'org.springframework.security:spring-security-crypto:5.7.1' //비밀번호 엔코더 넣기위함
 	implementation 'org.springframework.boot:spring-boot-starter-mail'//자바 메일
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis' //레디스
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 }
 
 tasks.named('test') {

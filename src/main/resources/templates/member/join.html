@@ -6,24 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>냥만여행 회원가입</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/mainPage.css}">
     <style>
-
-        main{
+        /* main{
             background-color: #f1f0f1;
-        }
+        } */
 
         .container {
             box-sizing: border-box;
-            margin: 5rem auto;
+            margin: 2rem auto;
             display: flex;
             justify-content: center;
             flex-direction: column;
             text-align: center;
             width: 70%;
             background-color: white;
-            /* border: 1px solid #ccc; */
             padding: 5rem;
-            /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.295); */
         }
 
         .formArea {
@@ -35,37 +33,11 @@
             }
         }
 
-        .bar {
-            margin: 2rem auto;
-            display: flex;
-            justify-content: center;
-            width: 100%;
-            font-size: 1.2rem;
-
-            div {
-                border: #818181 1px solid;
-                width: 33%;
-                background-color: #ccc;
-
-                &:first-child {
-                    border-right: none;
-                }
-
-                &:nth-child(2) {
-                    background-color: #818181;
-                    color: white;
-                }
-
-                &:last-child {
-                    border-left: none;
-                }
-            }
-        }
-
 
         .joinTable th {
             text-align: start;
-            width: 12rem;
+            width: 17rem;
+            font-size: 1.1rem;
         }
 
         .joinTable td {
@@ -79,8 +51,9 @@
 
             input[type="text"],
             input[type="password"] {
-                width: 20rem;
-                height: 2rem;
+                font-size: 1rem;
+                width: 25rem;
+                height: 2.5rem;
                 border: 1px #ccc solid;
                 border-radius: 4px;
                 padding-left: 0.5rem;
@@ -93,13 +66,14 @@
 
             label {
                 margin-right: 1rem;
+                font-size: 1.1rem;
             }
 
         }
 
         .joinTable tr {
             border-top: 1px solid #ccc;
-            height: 5rem;
+            height: 6rem;
 
             &:last-child {
                 border-bottom: 1px solid #ccc;
@@ -149,14 +123,14 @@
 
         #authBtn,
         #authCodeBtn {
-            border: none;
-            border-radius: 4px;
-            height: 2rem;
+            margin-left: 4rem;
+            height: 2.5rem;
             background-color: #43bff8;
             color: #ffffff;
             border: none;
             border-radius: 7px;
             transition: all 0.3s ease;
+            font-size: 1rem;
 
             &:hover {
                 background-color: #3e8cf1;
@@ -170,14 +144,14 @@
 
         .btn {
             margin: 0 auto;
-            width: 7rem;
-            height: 2rem;
+            width: 10rem;
+            height: 3rem;
             background-color: #43bff8;
             color: #ffffff;
             border: none;
             border-radius: 7px;
             transition: all 0.3s ease;
-            font-size: 1.2rem;
+            font-size: 1.4rem;
 
             &:hover {
                 background-color: #3e8cf1;
@@ -188,16 +162,16 @@
 
         .resetBtn {
             margin: 0 auto;
-            width: 7rem;
-            height: 2rem;
+            width: 10rem;
+            height: 3rem;
             transition: all 0.3s ease;
-            margin-left: 2rem;
+            margin-left: 5rem;
             border: none;
             background-color: #ececec;
             color: #333;
-            font-size: 1.2rem;
+            font-size: 1.4rem;
             border-radius: 7px;
-            
+
             &:hover {
                 background-color: #e0e0e0;
                 color: #333;
@@ -206,7 +180,7 @@
         }
 
         .info {
-            font-size: 0.8rem;
+            font-size: 1rem;
         }
 
         .radioArea {
@@ -231,31 +205,40 @@
         #timer {
             margin-left: 2rem;
             color: red;
+            font-weight: 600;
         }
 
         .inputRed {
             border: red solid 1px !important;
         }
+
+        .titleArea {
+            margin-bottom: 5rem;
+        }
+
+        #userPasswordCheck {
+            margin-top: 1.2rem;
+
+        }
+
+        #passwordAgain {
+            height: 0.8em;
+            margin: 0.3rem 0;
+            color: red;
+            font-size: 0.9em;
+        }
     </style>
 </head>
 
 <body>
+    <header th:replace="/fragments/memberHeader::memberHeader"></header>
     <main>
-        <input type="hidden" th:value="${alert}" id="dataAlert">
+        <input type="hidden" th:value="${checkName}" id="checkName">
+        <input type="hidden" th:value="${alert}" id="flashMessage">
         <div class="container">
             <div class="titleArea">
                 <h1>회원가입</h1>
-            </div>
-            <div class="bar">
-                <div>
-                    <p>약관동의</p>
-                </div>
-                <div>
-                    <p>정보 입력</p>
-                </div>
-                <div>
-                    <p>가입 완료</p>
-                </div>
+                <hr>
             </div>
             <div class="essential">
                 <span class="red">*</span>
@@ -267,51 +250,52 @@
                         <tr>
                             <th><span class="red">*</span>이메일</th>
                             <td><input type="text" placeholder="nyangmanTravel@gmail.com" name="email" id="email"
-                                    class="joinInput" th:value="${email}"></td>
-                            <td>
+                                    class="joinInput" th:value="${email}">
                                 <button id="authBtn" type="button">인증하기</button>
                                 <span id="timer"></span>
                             </td>
+
                         </tr>
                         <tr class="authArea">
                             <th><span class="red">*</span>이메일 인증번호</th>
-                            <td><input type="text" id="authCode" name="authCode" class="joinInput" maxlength="6" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></td>
-                            <td>
+                            <td><input type="text" id="authCode" name="authCode" class="joinInput" maxlength="6"
+                                    oninput="this.value = this.value.replace(/[^0-9]/g, '')" th:value="${authCode}">
                                 <button id="authCodeBtn" type="button">인증확인</button>
                             </td>
                         </tr>
                         <tr>
                             <th><span class="red">*</span>비밀번호 <i class="fa-solid fa-eye-slash" id="eye"></i></th>
-                            <td><input type="password" name="password" id="userPassword" class="joinInput"
-                                    th:value="${password}"></td>
-                            <td class="info" id="passwordError">비밀번호는 대소문자, 숫자, 특수문자 조합으로 8~15자리여야합니다.</td>
+                            <td>
+                                <input type="password" name="password" id="userPassword" class="joinInput"
+                                    th:value="${password}" placeholder="대소문자, 숫자, 특수문자(!@#$%^*+=-) 조합, 8~15자">
+                            </td>
                         </tr>
                         <tr>
                             <th><span class="red">*</span>비밀번호 확인</th>
-                            <td><input type="password" id="userPasswordCheck" class="joinInput" th:value="${password}">
+                            <td><input type="password" id="userPasswordCheck" class="joinInput" th:value="${password}"
+                                    placeholder="비밀번호를 재입력해주세요.">
+                                <p id="passwordAgain" class="info"></p>
                             </td>
-                            <td id="passwordAgain" class="info">비밀번호를 재입력해주세요.</td>
                         </tr>
                         <tr>
                             <th><span class="red">*</span>이름</th>
-                            <td><input type="text" placeholder="홍길동" name="name" class="joinInput" id="userName"
-                                    th:value="${name}"></td>
-                            <td class="info" id="nameError">이름은 한글 2~5자 또는 성과 이름을 구분하여 영문 1~10자리씩이여야 합니다.</td>
+                            <td><input type="text" placeholder="한글 2~5자 또는 성과 이름을 구분하여 영문 1~10자" name="name"
+                                    class="joinInput" id="userName" th:value="${name}">
+                            </td>
                         </tr>
                         <tr>
                             <th><span class="red">*</span>생년월일</th>
-                            <td><input type="text" placeholder="20000101" name="birth" maxlength="8"
+                            <td><input type="text" placeholder="숫자 8자 ex)19990505" name="birth" maxlength="8"
                                     oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="joinInput"
-                                    id="birth" th:value="${birth}"></td>
-                            <td class="info" id="birthError">생년월일은 숫자만 가능하며 정확한 날짜여야합니다.</td>
+                                    id="birth" th:value="${birth}">
+                            </td>
                         </tr>
                         <tr>
                             <th><span class="red">*</span>휴대전화번호</th>
-                            <td><input type="text" placeholder="01012341234" name="phoneNumber" maxlength="11"
+                            <td><input type="text" placeholder="010, 011, 016, 017, 018, 019로 시작하며, 숫자 10~11자"
+                                    name="phoneNumber" maxlength="11"
                                     oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="joinInput"
-                                    id="phoneNumber" th:value="${phoneNumber}"></td>
-                            <td class="info" id="phoneError">휴대전화번호는 010, 011, 016, 017, 018, 019로 시작하며, 숫자 10~11자리여야
-                                합니다.
+                                    id="phoneNumber" th:value="${phoneNumber}">
                             </td>
                         </tr>
                         <tr>
@@ -334,6 +318,8 @@
             </div>
         </div>
     </main>
+    <footer th:replace="/fragments/memberFooter::memberFooter"></footer>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script th:src="@{/js/alert.js}"></script>
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script>
@@ -406,7 +392,7 @@
             });
         });
 
-       
+
         //인증 번호
         $("#authCodeBtn").click(function () {
             bol_auth = 0;
@@ -478,7 +464,7 @@
                 bol_check_password = 0;
             }
             else {
-                passwordAgain.innerText = "비밀번호를 재입력해주세요.";
+                passwordAgain.innerText = "";
                 passwordAgain.style.color = "black";
                 bol_check_password = 1;
             }
@@ -521,6 +507,7 @@
 
         //창 로드시 필수 입력칸에 이벤트 걸어준다
         window.addEventListener("load", focusEvent);
+        window.addEventListener("load", checkPassword);
 
         function focusEvent() {
             // 필수 입력칸에 focusout시 값이 다 있는지 체크
@@ -569,52 +556,49 @@
             e.preventDefault();
             let ValueCheck = SignUpValueCheckAll();
             let valid = true;
+            if(document.getElementById("checkName").value == 1){
+                bol_auth =1;
+            }
+
             if (bol_auth == 0) {
                 alert("이메일 인증을 해주십시오.");
             }
 
             if (password_check.test(userPassword.value)) {
                 userPassword.classList.remove("inputRed");
-                passwordError.classList.remove("red");
             }
             else {
                 userPassword.classList.add("inputRed");
-                passwordError.classList.add("red");
                 valid = false;
             }
             if (name_check.test(userName.value)) {
                 userName.classList.remove("inputRed");
-                nameError.classList.remove("red");
             }
             else {
                 userName.classList.add("inputRed");
-                nameError.classList.add("red");
                 valid = false;
             }
 
             //현재날짜보단 작고 1925년생보단 많아야함
             if (birth_check.test(birth.value) && parseInt(birth.value) < parseInt(formattedDate) && parseInt(birth.value) > 19250328) {
                 birth.classList.remove("inputRed");
-                birthError.classList.remove("red");
             }
             else {
                 birth.classList.add("inputRed");
-                birthError.classList.add("red");
                 valid = false;
             }
 
             if (phone_check.test(phone.value)) {
                 phone.classList.remove("inputRed");
-                phoneError.classList.remove("red");
             }
             else {
                 phone.classList.add("inputRed");
-                phoneError.classList.add("red");
                 valid = false;
             }
             if (document.getElementById("male").checked || document.getElementById("female").checked) { }
             else {
                 valid = false;
+                alert("성별이 선택되지 않았습니다.");
             }
 
             if (ValueCheck === 0 && valid === true && bol_auth === 1 && bol_check_password === 1) {

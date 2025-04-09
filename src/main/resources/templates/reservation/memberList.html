@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>냥만여행 회원예약내역</title>
+    <link rel="stylesheet" th:href="@{https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/mainPage.css}">
+    <link rel="stylesheet" th:href="@{/css/reservation/memberList.css}">
+</head>
+
+<body>
+    <header th:replace="/fragments/memberHeader::memberHeader"></header>
+    <div class="container">
+        <div class="titleArea">
+            <h2>예약내역</h2>
+            <hr>
+        </div>
+        <form class="formArea" action="/member/reservation/search" method="get" role="search" id="searchForm">
+            <div class="radioArea">
+                <span id="radioText">기간 조회</span>
+                <input type="radio" value="createdAt" id="createdAt" name="searchSelect" checked>
+                <label for="createdAt">예약일 기준</label>
+                <input type="radio" value="startedAt" id="startedAt" name="searchSelect">
+                <label for="startedAt">출발일 기준</label>
+            </div>
+
+            <div class="HanSearchDate">
+                <!-- 날짜 입력 input -->
+                <div id="startInput">
+                    <input type="text" id="departure-input" name="startDate" readonly th:value="${startDate}">
+                </div>
+                ~
+                <div id="endInput">
+                    <input type="text" id="departure-input2" name="endDate" readonly th:value="${endDate}">
+                </div>
+
+                <!-- 달력 표시용 컨테이너 -->
+                <div id="tui-datepicker"></div>
+                <div id="tui-datepicker2"></div>
+            </div>
+            <button type="submit" id="searchBtn">조회</button>
+        </form>
+        <div>
+            <p>총 [[${size}]]건</p>
+        </div>
+        <div>
+            <table class="reservationTable">
+                <tr>
+                    <th>예약일/예약코드</th>
+                    <th>상품명</th>
+                    <th>결제 금액</th>
+                    <th>인원</th>
+                    <th>출발일/귀국일</th>
+                    <th>예약상태</th>
+                </tr>
+                <tr th:if="${reservationList!=null} " th:each="reservation : ${reservationList}"
+                    th:onclick="window.location.href='/member/reservation/details/' + [[${reservation.reservationPK}]];"
+                    class="tableTr">
+                    <td><span>[[${reservation.createdAt}]]</span><br> [[${reservation.code}]]</td>
+                    <td class="packageName" th:text="${reservation.packageName}"></td>
+                    <td>[[${reservation.totalPay}]]</td>
+                    <td th:text="${reservation.reservationMembers}"></td>
+                    <td>[[${reservation.startDate}]] ~ [[${reservation.endDate}]]</td>
+                    <td th:text="${reservation.reservationState}" class="reservationState">예약완료</td>
+                </tr>
+            </table>
+        </div>
+        <div th:if="${size==0}" class="imageArea">
+            <img th:src="@{/images/info.svg}" id="infoImage">
+            <p>예약내역이 없습니다.</p>
+        </div>
+
+    </div>
+    <footer th:replace="/fragments/memberFooter::memberFooter"></footer>
+    <script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
+    <link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css">
+    <script>
+        function scrollToCenter(el) {
+            const rect = el.getBoundingClientRect();
+            const offset = rect.top + window.scrollY - (window.innerHeight / 2) + (rect.height / 2) + 100;
+            window.scrollTo({
+                top: offset,
+                behavior: 'smooth'
+            });
+        }
+
+        // 날짜 input
+        const dateInput = document.getElementById('departure-input');
+        const dateInput2 = document.getElementById('departure-input2');
+        if (dateInput) {
+            dateInput.addEventListener('click', () => {
+                scrollToCenter(dateInput);
+            });
+        }
+
+
+        if (dateInput2) {
+            dateInput2.addEventListener('click', () => {
+                scrollToCenter(dateInput2);
+            });
+        }
+    </script>
+
+    <!-- 달력 스크립트 -->
+    <!-- 달력 라이브러리 -->
+    <script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
+    <link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css">
+
+    <script th:inline="none">
+        const fullyBooked = [];
+        const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
+
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const weekday = weekdays[date.getDay()];
+            return `${year}.${month}.${day}`;
+        }
+
+        // 오늘 날짜 가져오기
+        const today = new Date();
+        const todayFormatted = formatDate(today);
+
+        const datePicker = new tui.DatePicker('#tui-datepicker', {
+            input: {
+                element: dateInput,
+                format: 'yyyy.MM.dd'
+            },
+            language: 'ko',
+            selectableRanges: [[new Date('2024-01-01'), new Date('2030-12-31')]],
+            disabledDate: function (date) {
+                const d = date.toISOString().split('T')[0];
+                return fullyBooked.includes(d);
+            }
+        });
+        datePicker.setDate(today);
+
+        const datePicker2 = new tui.DatePicker('#tui-datepicker2', {
+            input: {
+                element: dateInput2,
+                format: 'yyyy.MM.dd'
+            },
+            language: 'ko',
+            selectableRanges: [[new Date('2024-01-01'), new Date('2030-12-31')]],
+            disabledDate: function (date) {
+                const d = date.toISOString().split('T')[0];
+                return fullyBooked.includes(d);
+            }
+        });
+        datePicker2.setDate(today);
+
+        let prevStartDate = today;
+        let prevEndDate = today;
+
+        datePicker.on('change', (e) => {
+            const selectedDate = datePicker.getDate();
+            if (parseInt(replaceDate(formatDate(selectedDate))) <= parseInt(replaceDate(dateInput2.value))) {
+                dateInput.value = formatDate(selectedDate);
+                prevStartDate = selectedDate; // 유효한 경우 업데이트
+            } else {
+                alert("조회 종료일보다 조회 시작일이 더 큽니다.");
+                datePicker.setDate(prevStartDate); // 원래 날짜로 복원
+                dateInput.value = formatDate(prevStartDate);
+            }
+        });
+
+        // 입력 필드 초기값을 오늘 날짜로 설정
+        dateInput.value = todayFormatted;
+        // 입력 필드 초기값을 오늘 날짜로 설정
+
+        dateInput2.value = todayFormatted;
+
+
+
+
+        datePicker2.on('change', (e) => {
+            const selectedDate = datePicker2.getDate();
+            if (parseInt(replaceDate(dateInput.value)) <= parseInt(replaceDate(formatDate(selectedDate)))) {
+                dateInput2.value = formatDate(selectedDate);
+                prevEndDate = selectedDate; // 유효한 경우 업데이트
+            } else {
+                alert("조회 종료일보다 조회 시작일이 더 큽니다.");
+                datePicker2.setDate(prevEndDate); // 원래 날짜로 복원
+                dateInput2.value = formatDate(prevEndDate);
+            }
+        });
+
+
+
+
+        let searchBtn = document.getElementById("searchBtn");
+        let searchForm = document.getElementById("searchForm");
+
+        searchBtn.addEventListener("click", submitBtn);
+
+        //날짜 시작일과 날짜 종료일 비교
+        function submitBtn(e) {
+            e.preventDefault();
+
+            if (parseInt(replaceDate(dateInput.value)) <= parseInt(replaceDate(dateInput2.value))) {
+                searchForm.submit();
+            }
+            else {
+                alert("조회 종료일보다 조회 시작일이 더 큽니다.");
+            }
+        }
+
+        function replaceDate(date) {
+            return date.replaceAll('.', '');
+        }
+        const reservationStateElements = document.querySelectorAll(".reservationState");
+        //예약에 따라 색깔 다르게 적용
+        reservationStateElements.forEach((reservationStateElement, index) => {
+            const reservationState = reservationStateElement.textContent;
+
+            if (reservationState == "예약완료") {
+                reservationStateElement.style.color = "blue";
+            }
+            else if (reservationState == "예약보류") {
+                reservationStateElement.style.color = "green";
+            }
+            else {
+                reservationStateElement.style.color = "red";
+            }
+        });
+    </script>
+</body>
+
+</html>

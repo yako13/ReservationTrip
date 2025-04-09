@@ -6,14 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>냥만여행 약관동의</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/mainPage.css}"/>
     <style>
-        main{
+        /* main{
             background-color: #f1f0f1;
-        }
+        } */
 
         .container {
             box-sizing: border-box;
-            margin: 5rem auto;
+            margin: 2rem auto;
             display: flex;
             justify-content: center;
             flex-direction: column;
@@ -25,29 +26,6 @@
             /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.295); */
         }
 
-        .bar {
-            margin: 2rem auto;
-            display: flex;
-            justify-content: center;
-            width: 100%;
-            font-size: 1.2rem;
-
-            div {
-                border: #818181 1px solid;
-                width: 33%;
-                background-color: #ccc;
-
-                &:first-child {
-                    border-right: none;
-                    background-color: #818181;
-                    color: white;
-                }
-
-                &:last-child {
-                    border-left: none;
-                }
-            }
-        }
 
         .agreeArea {
             text-align: start;
@@ -62,7 +40,7 @@
             color: black;
             border: 1px solid #ccc;
             outline: none;
-            width: 100%;
+            width: 99%;
             height: 7rem;
         }
 
@@ -79,7 +57,7 @@
         .btn {
             margin: 0 auto;
             width: 10rem;
-            height: 2rem;
+            height: 3rem;
             background-color: #43bff8;
             color: #ffffff;
             border: none;
@@ -98,25 +76,24 @@
         .red {
             color: red;
         }
+
+        i{
+            color: #43bff8;
+        }
+
+        .titleArea{
+            margin-bottom: 5rem;
+        }
     </style>
 </head>
 
 <body>
+    <header th:replace="/fragments/memberHeader::memberHeader"></header>
     <main>
         <div class="container">
             <div class="titleArea">
-                <h1>회원가입</h1>
-            </div>
-            <div class="bar">
-                <div>
-                    <p>약관동의</p>
-                </div>
-                <div>
-                    <p>정보 입력</p>
-                </div>
-                <div>
-                    <p>가입 완료</p>
-                </div>
+                <h1>이용약관</h1>
+                <hr>
             </div>
             <div class="agreeArea">
                 <div class="allAgree">
@@ -173,6 +150,7 @@
             <button class="btn">확인</button>
         </div>
     </main>
+    <footer th:replace="/fragments/memberFooter::memberFooter"></footer>
     <script>
         // 약관 동의 시작
         let bol = true;

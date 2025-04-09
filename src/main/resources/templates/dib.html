@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>찜 목록</title>
+
+    <link rel="stylesheet" th:href="@{/css/mainPage.css}">
+    <link rel="stylesheet" th:href="@{/css/dib.css}">
+
+</head>
+
+<style>
+    /* 회색 처리 스타일 */
+    .product-item.closed {
+        background-color: #d8d8d8;
+        opacity: 0.9;
+    }
+
+    /* 마감 뱃지 스타일 */
+    .deadline-badge {
+        background-color: #ff5e57;
+        color: white;
+        font-size: 10px;
+        padding: 2px 6px;
+        margin-left: 8px;
+        border-radius: 4px;
+    }
+
+
+    .HanCartProductTitle {
+        display: flex;
+        gap: 10px;
+        width: 100%;
+    }
+
+    .HanCartProductTitle span {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+    }
+
+   
+</style>
+
+<body>
+    <!-- 헤더 시작 -->
+
+    <header th:replace="/fragments/memberHeader::memberHeader"></header>
+
+
+    <!-- 메인 시작 -->
+    <div class="HanCartBody">
+
+        <div class="HanCartMain">
+
+            <!-- 찜 목록이 있을때 시작-->
+
+            <div th:unless="${dibNo}" id="cartItemsContainer">
+
+                <div class="HanCartTop">
+                    <div class="HanCartTopTitle HanCartCheckbox">
+
+                        <img th:src="@{/images/heart.png}" width="24px" height="24px">
+                        <p class="HanCartTopTitleP">찜 목록</p>
+                    </div>
+
+
+                    <div class="HanCartTopDeleteA">
+
+                        <button id="removeAllButton" type="button">전체 삭제</button>
+
+                    </div>
+                </div>
+
+                <ul>
+
+                    <hr class="HanCartHr">
+
+                    <!-- 찜 목록 시작 -->
+
+                    <li class="product-item" th:each="DibPageDtoList : ${DibPageDtoList}"
+                        th:attr="data-dib-id=${DibPageDtoList.dib.id}"
+                        th:classappend="${DibPageDtoList.deadline} ? 'closed'">
+
+                        <div class="HanCartInfo">
+                            <div class="HanCartImgDiv">
+                                <a> <img th:src="@{/images/pick1.jpg}" alt=""></a>
+                            </div>
+
+                            <div class="HanCartProductName">
+                                <div class="HanCartProductTitle">
+                                    <span th:text="${DibPageDtoList.dib.packageEntity.packageName}">[출발확정]후쿠오카 3박
+                                        4일</span>
+
+                                    <!-- 마감 뱃지 표시 -->
+                                    <span th:if="${DibPageDtoList.deadline}" class="deadline-badge">마감</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="HanCartHrRight"></div>
+
+                        <div>
+                            <div class="HanProductPriceDiv">
+                                <span class="HanProductSumCnt">여행 날짜</span>
+                                <span>[[${DibPageDtoList.tripStart}]] ~ [[${DibPageDtoList.tripEnd}]]</span>
+                                <div><span class="total-item-price"></span></div>
+                            </div>
+                        </div>
+
+                        <div class="HanCartHrRight"></div>
+
+                        <div>
+                            <div class="HanProductPriceDiv">
+                                <span class="HanProductSumCnt">상품 금액</span>
+                                <span class="HanProductPrice" th:text="${DibPageDtoList.price}">1,612,000</span>
+                            </div>
+                        </div>
+
+                        <div class="HanProductdelete">
+                            <button type="button">삭제</button>
+                        </div>
+                    </li>
+
+                    <!-- 찜 목록 끝 -->
+
+
+                    <hr class="HanCartHrBottom">
+                </ul>
+            </div>
+
+
+            <!-- 찜 목록이 없을때 시작-->
+
+            <div th:if="${dibNo}" style="padding-bottom:55px">
+
+                <div class="HanCartPDiv">
+
+                    <img src="/images/info.svg" width="40" height="40px">
+                    <p class="HanCartPDivP1">찜에 담긴 상품이 없습니다.</p>
+                    <p class="HanCartPDivP2">원하는 여행을 찜해보세요!</p>
+
+                </div>
+
+            </div>
+
+            <!-- 찜 목록이 없을때 끝-->
+
+        </div>
+
+
+    </div>
+
+    <!-- 찜 목록이 있을때 끝-->
+
+
+    <!-- 메인 끝 -->
+
+
+    <!-- 푸터 시작 -->
+
+    <footer th:replace="/fragments/memberFooter::memberFooter"></footer>
+
+    <!-- 푸터 끝 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- 스위트 알람 라이브러리 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+
+        $(document).ready(function () {
+            // 삭제 버튼 클릭 시
+            $('#cartItemsContainer').on('click', '.HanProductdelete button', function () {
+                const productItem = $(this).closest('.product-item');
+                const dibId = productItem.data('dib-id'); // data-dib-id 속성 읽기
+
+                if (!dibId) return;
+
+                // 서버에 삭제 요청
+                $.ajax({
+                    type: 'POST', // 또는 DELETE, 서버 방식에 맞게
+                    url: '/dib/delete', // 서버 삭제 처리 주소
+                    data: { dibDel: dibId }, // 서버에서 이 파라미터로 처리하게
+                    success: function (response) {
+                        // 성공 시 해당 li 삭제
+                        productItem.remove();
+
+                        // 남은 찜 아이템 개수 확인 후 처리
+                        if ($('#cartItemsContainer .product-item').length === 0) {
+                            $('#cartItemsContainer').remove(); // 찜 목록 전체 삭제
+                            $('.HanCartMain').append(`
+                        <div style="padding-bottom:55px">
+                            <div class="HanCartPDiv">
+                                <img src="/images/info.svg" width="40" height="40px">
+                                <p class="HanCartPDivP1">찜에 담긴 상품이 없습니다.</p>
+                                <p class="HanCartPDivP2">원하는 여행을 찜해보세요!</p>
+                            </div>
+                        </div>
+                    `);
+                        }
+                    },
+                    error: function (xhr) {
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: '삭제 실패',
+                            text: '삭제에 실패했습니다. 다시 시도해주세요.',
+                            confirmButtonText: '확인'
+                        });
+
+                    }
+                });
+            });
+
+
+
+
+            // 전체 삭제 버튼
+            $('#removeAllButton').on('click', function () {
+                Swal.fire({
+                    title: '전체 삭제하시겠어요?',
+                    text: '찜 목록이 모두 삭제됩니다.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: '삭제',
+                    cancelButtonText: '취소',
+                    confirmButtonColor: '#2cafec', //  로그인 버튼 색상
+                    cancelButtonColor: '#ff7979'      // 취소 버튼 색상
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            type: 'POST',
+                            url: '/dib/deleteAll', // 서버에서 전체 삭제 처리할 URL
+                            success: function () {
+                                $('#cartItemsContainer').remove(); // 찜 목록 전체 제거
+                                $('.HanCartMain').append(`
+                        <div style="padding-bottom:55px">
+                            <div class="HanCartPDiv">
+                                <img src="/images/info.svg" width="40" height="40px">
+                                <p class="HanCartPDivP1">찜에 담긴 상품이 없습니다.</p>
+                                <p class="HanCartPDivP2">원하는 여행을 찜해보세요!</p>
+                            </div>
+                        </div>
+                    `);
+                            },
+                            error: function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: '삭제 실패',
+                                    text: '전체 삭제 중 문제가 발생했습니다.',
+                                    confirmButtonText: '확인'
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+
+
+
+        });
+
+
+    </script>
+
+
+</body>
+
+</html>

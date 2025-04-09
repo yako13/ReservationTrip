@@ -194,6 +194,7 @@ body {
   border-radius: 6px;
   font-size: 13px;
   height: 20px;
+  line-height: 20px;
 }
 
 .btn-link {
@@ -245,7 +246,7 @@ body {
 }
 
 .HanTrip p {
-  font-size: 12px;
+  font-size: 13px;
   margin: 4px;
 
 }
@@ -260,11 +261,11 @@ body {
 }
 
 .HanTrip p.HanTitleP {
-  text-align: center;
+
   font-size: 17px;
   font-weight: 600;
-  margin: 6px 0;
-  margin-bottom: 8px;
+  margin: 8px 0;
+  margin-bottom: 10px;
 
 }
 
@@ -317,7 +318,6 @@ body {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-
 
 }
 
@@ -418,14 +418,13 @@ body {
 }
 
 
-
 /* 결제하기 버튼 */
 .HanPayButtonDiv {
+  width: 800px;
   display: flex;
   justify-content: center;
-  gap: 43px;
-  margin: 0;
-  margin-top: 26px;
+  margin: 20px 0;
+  margin-bottom: 40px;
 }
 
 
@@ -436,8 +435,8 @@ body {
   padding: 10px 20px;
   border: none;
   border-radius: 8px;
-  background-color: #43bff8;
-  color: #ffffff;
+  background-color: #d1d1d1;
+  color: #252525;
   font-size: 22px;
   font-weight: bolder;
   cursor: pointer;
@@ -449,7 +448,39 @@ body {
 }
 
 .HanPayButtonDiv button:hover {
+  background-color: #ff7979;
+  color: #ffffff;
+  transform: scale(0.98);
+}
+
+.HanPayButtonDiv .HanReview {
+  background-color: #43bff8;
+  color: #ffffff;
+}
+
+/* .HanCardNewButton .HanSubmit {
+  background-color: #fff6a6;
+  color: #363636;
+} */
+
+.HanPayButtonDiv .HanCancel:hover {
+  background-color: #ff7979;
+  color: #ffffff;
+  transform: scale(0.98);
+}
+
+.HanPayButtonDiv .HanReview:hover {
   background-color: #3e8cf1;
   color: #ebebeb;
   transform: scale(0.98);
 }
+
+.HanPayButtonDiv .HanCancelReq {
+  background-color: #d1d1d1;
+  color: #252525;
+  pointer-events: none;   /* 클릭 막기 */
+  cursor: default;
+}
+
+
+

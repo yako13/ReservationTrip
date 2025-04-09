@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Table(name = "member")
 @Getter
@@ -74,6 +75,15 @@ public class Member extends BaseTime {
     @Comment(value = "개인정보 수집 동의 여부, 동의1 미동의0")
     private boolean privacyAgreement;
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Reservation> reservationList;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Dib> dibList;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Review> reviewList;
+
     public void setPassword(String password){
         this.password = password;
     }
@@ -83,6 +93,13 @@ public class Member extends BaseTime {
         this.name = name;
         this.birth = birth;
         this.phoneNumber = phoneNumber;
+    }
+
+    public void changeMember(String name,String birth,String phoneNumber,boolean gender){
+        this.name = name;
+        this.birth = birth;
+        this.phoneNumber = phoneNumber;
+        this.gender = gender;
     }
 
     public void setWithdrawalAt(){

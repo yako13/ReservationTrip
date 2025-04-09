@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>카카오 페이 팝업창</title>
+</head>
+
+<body>
+
+  <p>결제가 완료되었습니다. 창을 닫는 중...</p>
+
+  <body>
+    <p>결제가 완료되었습니다. 창을 닫는 중...</p>
+    <script>
+      const kakaoPayResponse = {
+
+        aid: '[[${kakaoPay.aid}]]',
+        tid: '[[${kakaoPay.tid}]]',
+        amount: [[${ kakaoPay.amount }]],
+        payType: '[[${kakaoPay.payType}]]',
+        approvedAt: '[[${#temporals.format(kakaoPay.approvedAt, 'yyyy-MM-dd HH:mm:ss')}]]',
+          // optional fields (카드일 때만 존재)
+        purCorp: '[[${kakaoPay.purCorp} ?: '']]',
+        purCorpCode: '[[${kakaoPay.purCorpCode} ?: '']]',
+        issuerCorp: '[[${kakaoPay.issuerCorp} ?: '']]',
+        approved: '[[${kakaoPay.approved} ?: '']]'
+
+        };
+
+      // null-safe 처리 (빈 문자열이면 제거하거나 사용자가 판단)
+      console.log(kakaoPayResponse);
+
+      window.opener.postMessage(kakaoPayResponse, window.location.origin);
+      window.close();
+    </script>
+
+  </body>
+
+</body>
+
+</html>
