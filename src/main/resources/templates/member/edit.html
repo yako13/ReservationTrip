@@ -246,7 +246,7 @@
 <body>
     <header th:replace="/fragments/memberHeader::memberHeader"></header>
     <main>
-        <input type="hidden" th:value="${alert}" id="dataAlert">
+        <input type="hidden" th:value="${alert}" id="flashMessage">
         <div class="container">
             <div class="titleArea">
                 <h1>회원정보수정</h1>
@@ -336,6 +336,7 @@
         </div>
     </main>
     <footer th:replace="/fragments/memberFooter::memberFooter"></footer>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script th:src="@{/js/alert.js}"></script>
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script>
