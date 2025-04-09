@@ -2,6 +2,7 @@ package Goods.Reservation_Trip.dto.member.req;
 
 import Goods.Reservation_Trip.base.BaseTime;
 import Goods.Reservation_Trip.entity.Member;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,6 +14,7 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 public class CustomOauth2UserDetails extends BaseTime implements UserDetails, OAuth2User {
+    @Getter
     private final Member member;
     private Map<String, Object> attributes;
 

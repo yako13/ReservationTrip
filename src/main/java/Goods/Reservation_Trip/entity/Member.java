@@ -95,6 +95,13 @@ public class Member extends BaseTime {
         this.phoneNumber = phoneNumber;
     }
 
+    public void changeMember(String name,String birth,String phoneNumber,boolean gender){
+        this.name = name;
+        this.birth = birth;
+        this.phoneNumber = phoneNumber;
+        this.gender = gender;
+    }
+
     public void setWithdrawalAt(){
         this.withdrawalAt = LocalDateTime.now();
         this.role = MemberRole.CANCELLATION;
