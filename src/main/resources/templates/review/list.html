@@ -60,7 +60,7 @@
         }
 
         .HanCkListMain ul li:last-child {
-            padding-bottom: 30px;
+            padding-bottom: 15px;
             border-bottom: 2px solid #ccc;
         }
 
@@ -325,6 +325,7 @@
         }
 
         .editLinkArea {
+            width: 100px;
             a {
                 color: #43bff8;
                 font-weight: 600;
@@ -429,7 +430,7 @@
                                 <p th:text="${reviewList.content}">
                                 </p>
                             </div>
-                            <div class="reviewImageArea">
+                            <div class="reviewImageArea" th:if="${!#lists.isEmpty(reviewList.imagesURL)}">
                                 <a th:each="images : ${reviewList.imagesURL}" th:href="@{${images}}"><img
                                         th:src="@{${images}}"></a>
 

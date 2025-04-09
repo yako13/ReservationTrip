@@ -206,11 +206,22 @@
     <script>
         let session = document.getElementById("session");
 
+
         window.addEventListener("load", function () {
-            if (session.value != "") {
-                Swal.fire({ text: "이미 로그인되어있는 상태입니다." }).then(() => {window.location.href = "/"})
+            let session = document.getElementById("session");
+
+            // 현재 페이지가 로그인 페이지일 때만 체크하도록
+            if (window.location.pathname === "/login") {
+                if (session && session.value !== "") {
+                    Swal.fire({
+                        text: "이미 로그인되어있는 상태입니다."
+                    }).then(() => {
+                        window.location.href = "/";
+                    });
+                }
             }
-        })
+        });
+
     </script>
 </body>
 
