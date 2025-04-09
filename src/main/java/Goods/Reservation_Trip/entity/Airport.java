@@ -23,7 +23,7 @@ public class Airport {
     private String code;
 
     @Column(nullable = false)
-    @Comment("공핳 이름")
+    @Comment("공항 이름")
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
