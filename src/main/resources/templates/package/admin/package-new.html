@@ -263,6 +263,9 @@
     input {
       font-size: 1.3rem;
     }
+    input[type="time"] {
+      width: 140px;
+    }
     .category__container {
       font-size: 1.1rem;
       width: 230px;
@@ -461,11 +464,17 @@
             <div class="a3">
               <div class="input__flex">
                 <label>예약 가능 인원수</label>
-                <input type="number" name="aPackage.maximumMember" />
+                <input
+                  type="number"
+                  name="packageSchedule.maximumMember"
+                  id="maximumMember" />
               </div>
               <div class="input__flex">
                 <label>최소 출발 인원</label>
-                <input type="number" name="aPackage.minimumRequired" />
+                <input
+                  type="number"
+                  name="packageSchedule.minimumRequired"
+                  id="minimumRequired" />
               </div>
               <input
                 type="hidden"
@@ -1177,6 +1186,8 @@
       const airlineOut = document.getElementById("airlineOut").value;
       const departureDateOut =
         document.getElementById("departureDateOut").value;
+      const maximumMember = document.getElementById("maximumMember").value;
+      const minimumRequired = document.getElementById("minimumRequired").value;
       const arrivalDateOut = document.getElementById("arrivalDateOut").value;
       const flightNumberOut = document.getElementById("flightNumberOut").value;
       const departureTimeOut =
@@ -1209,6 +1220,8 @@
         !arrivalPointOut ||
         !airlineOut ||
         !departureDateOut ||
+        !maximumMember ||
+        !minimumRequired ||
         // !arrivalDateOut ||
         !flightNumberOut ||
         !departureTimeOut ||
@@ -1260,6 +1273,8 @@
         row.innerHTML = `
             <td><input type="text" readonly name="packageSchedule[${rowCount}].departureDateOut" value="${formattedDate}"></td>
             <td><button type="button" class="btn btn-red" onclick="removeRow(this)">삭제</button></td>
+            <td><input type="hidden" name="packageSchedule[${rowCount}].maximumMember" value="${maximumMember}"></td>
+            <td><input type="hidden" name="packageSchedule[${rowCount}].minimumRequired" value="${minimumRequired}"></td>
             <td><input type="hidden" name="packageSchedule[${rowCount}].details.departurePointOutId" value="${departurePointOut}">
             <td><input type="hidden" name="packageSchedule[${rowCount}].details.arrivalPointOutId" value="${arrivalPointOut}">
             <td><input type="hidden" name="packageSchedule[${rowCount}].details.arrivalPointReturnId" value="${arrivalPointReturn}">

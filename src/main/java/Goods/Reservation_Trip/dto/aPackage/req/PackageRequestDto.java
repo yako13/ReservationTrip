@@ -23,16 +23,6 @@ public class PackageRequestDto {
     private String packageName;
 
     /**
-     * 최대 에약 가능 인원
-     */
-    private int maximumMember;
-
-    /**
-     * 출발에 필요한 최소 예약 인원
-     */
-    private int minimumRequired;
-
-    /**
      * 성인 1인당 금액
      */
     private BigDecimal adultPrice;

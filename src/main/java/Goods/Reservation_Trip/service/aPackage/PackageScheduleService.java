@@ -33,6 +33,8 @@ public class PackageScheduleService {
         for (PackageScheduleRequestDto scheduleRequestDto : requestDto) {
                 PackageSchedule packageSchedule = PackageSchedule.builder()
                         .aPackage(aPackage)
+                        .maximumMember(scheduleRequestDto.getMaximumMember())
+                        .minimumRequired(scheduleRequestDto.getMinimumRequired())
                         .departureDateOut(scheduleRequestDto.getDepartureDateOut())
                         .arrivalDateOut(scheduleRequestDto.getArrivalDateOut())
                         .departureDateReturn(scheduleRequestDto.getDepartureDateReturn())

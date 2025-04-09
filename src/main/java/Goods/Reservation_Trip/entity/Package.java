@@ -28,14 +28,6 @@ public class Package extends BaseTime {
     @Comment(value = "여행지 상품명")
     private String packageName;
 
-    @Column(name = "maximum_member", nullable = false)
-    @Comment("예약가능 최대 인원")
-    private int maximumMember;
-
-    @Column(name = "minimum_required", nullable = false)
-    @Comment("최소 예약 필요 인원")
-    private int minimumRequired;
-
     @Column(name = "adult_price", nullable = false)
     @Comment("성인 인당 가격")
     private BigDecimal adultPrice;
