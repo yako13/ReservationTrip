@@ -5,6 +5,7 @@ import Goods.Reservation_Trip.service.member.MemberService;
 import Goods.Reservation_Trip.service.reservation.ReservationService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,7 +18,7 @@ public class ReservationCancellationController {
 
     private final MemberService memberService;
 
-    @PostMapping("/member/{reservationCode}/cancel")
+    @GetMapping("/member/{reservationCode}/cancel")
     public String cancelReservation(@PathVariable String reservationCode, HttpServletRequest request){
         MemberResponseDto memberResponseDto = memberService.getMember(request);
         reservationService.sendCancelNotification(reservationCode,memberResponseDto.getId());

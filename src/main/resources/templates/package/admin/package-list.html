@@ -7,7 +7,7 @@
   </head>
   <style>
     body {
-      padding: 1.5em;
+      margin: 0;
     }
     table {
       border: 1px #a39485 solid;
@@ -167,8 +167,8 @@
   <body>
     <header th:replace="fragments/adminHeader::masterHeader"></header>
     <nav th:replace="fragments/adminHeader::masterNav"></nav>
+    <main id="main">
     <h1>package list</h1>
-    <main>
       <div class="orderList">
         <p><b>등록 내역</b> : <b id="red">[[${page.totalElements}]]</b>건</p>
       </div>
@@ -305,7 +305,11 @@
       </nav>
     </main>
   </body>
+  <script th:src="@{/js/adminNav.js}"></script>
+
   <script>
+
+
     document
       .getElementById("mainCategory")
       .addEventListener("change", function () {
@@ -391,5 +395,5 @@
     document.addEventListener("DOMContentLoaded", function () {
       const checkboxes = document.querySelectorAll("input[type=checkbox]");
     });
-  </script>
+  </>
 </html>

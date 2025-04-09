@@ -59,7 +59,7 @@
 
         }
 
-        .HanCheckBox label{
+        .HanCheckBox label {
             display: flex;
             align-items: center;
             gap: 5px;
@@ -87,6 +87,15 @@
         .HanCheckBox input:checked {
             background: url(/images/checkBoxOn22.svg) no-repeat center center;
             background-size: 18px 18px;
+        }
+
+        .HanCheckBox input.HanRed {
+            box-shadow: 0 0 0 2px #fc4545;
+            border-radius: 3px;
+        }
+
+        .HanCheckBox input.HanRed+span {
+            color: #fc4545;
         }
     </style>
 
@@ -190,8 +199,8 @@
                 <div class="HanInfoGroup2">
 
                     <div class="HanFlex1" th:if="${resvPageDto.gender}">
-                        <p class="HanLight">이름 / 성별 : </p>
-                        <p class="HanBold">[[${resvPageDto.memberResponseDto.name}]] / [[${resvPageDto.gender}]]</p>
+                        <p class="HanLight">이름 : </p>
+                        <p class="HanBold">[[${resvPageDto.memberResponseDto.name}]] </p>
                     </div>
 
                     <div class="HanFlex1" th:unless="${resvPageDto.gender}">
@@ -199,10 +208,10 @@
                         <p class="HanBold">[[${resvPageDto.memberResponseDto.name}]]</p>
                     </div>
 
-
-                    <div class="HanFlex1" th:if="${resvPageDto.memberResponseDto.birth}">
+                    <div class="HanFlex1" th:if="${resvPageDto.birth}">
                         <p class="HanLight">생년월일 : </p>
-                        <p class="HanBold" th:text="${resvPageDto.memberResponseDto.birth}">1991.01.01</p>
+                        <p class="HanBold" th:text="${resvPageDto.birth}">1991.01.01</p>
+           
                     </div>
 
                     <div class="HanFlex1" th:if="${resvPageDto.phoneNum}">
@@ -241,8 +250,9 @@
                         <!-- i == 0일 때만 보여주기 -->
                         <div th:if="${i == 0}" class="HanCheckBox">
                             <label>
-                                <input type="checkbox" class="sameAsReserverCheckbox" data-index="0">
-                                <span>예약자와 동일</span>
+                                <input type="checkbox" class="sameAsReserverCheckbox" data-index="0"
+                                    th:name="adult[__${i}__].resCheck" value="true" />
+                                <span style="margin-bottom:2px">예약자 동일</span>
                             </label>
                         </div>
 
@@ -316,7 +326,7 @@
                             <div>
                                 <p>이름</p>
                                 <input type="text" class="HanNameReq" placeholder="이름을 입력해주세요" style="width: 500px;"
-                                     maxlength="15" th:name="child[__${i}__].name" />
+                                    maxlength="15" th:name="child[__${i}__].name" />
                             </div>
 
 
@@ -379,7 +389,7 @@
                             <div>
                                 <p>이름</p>
                                 <input type="text" class="HanNameReq" placeholder="이름을 입력해주세요" style="width: 500px;"
-                                     maxlength="15" th:name="baby[__${i}__].name" />
+                                    maxlength="15" th:name="baby[__${i}__].name" />
                             </div>
 
                             <div>
@@ -581,10 +591,10 @@
                 }
             });
 
-            // 생년월일 검사: 숫자만, 길이 8자리
+            // 생년월일 검사: 형식이 정확한 날짜(예: 19900101 ~ 20991231)
             birthInputs.forEach(input => {
                 const value = input.value.trim();
-                if (!/^\d{8}$/.test(value)) {
+                if (!/^(19|20)\d{2}(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])$/.test(value)) {
                     invalidBirthFields.push(input);
                     input.classList.add('HanRed');
                 } else {
@@ -592,16 +602,33 @@
                 }
             });
 
-            // 휴대폰 번호 검사: 입력된 경우만 검사, 숫자 10~11자리
+            // 휴대폰 번호 검사: 입력된 경우만 검사, 010~019 시작 + 7~8자리 숫자
             phoneInputs.forEach(input => {
                 const value = input.value.trim();
-                if (value !== '' && !/^\d{10,11}$/.test(value)) {
+                if (value !== '' && !/^(010|011|016|017|018|019)[0-9]{7,8}$/.test(value)) {
                     invalidPhoneFields.push(input);
                     input.classList.add('HanRed');
                 } else {
                     input.classList.remove('HanRed');
                 }
             });
+            // 예약자 체크박스 검사
+            const sameAsCheckbox = document.querySelector('.sameAsReserverCheckbox');
+            if (sameAsCheckbox && !sameAsCheckbox.checked) {
+                sameAsCheckbox.classList.add('HanRed'); // 빨간 테두리 추가
+
+                Swal.fire({
+                    icon: 'warning',
+                    title: '예약자 정보가 누락되었습니다.',
+                    html: '‘예약자 동일’ 항목을 체크해 주세요. <br>※ 본 사이트는 대리 예약이 불가능하며, 반드시 본인이 예약을 <br>진행해야 합니다.',
+                    confirmButtonText: '확인'
+                });
+
+                sameAsCheckbox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            } else if (sameAsCheckbox) {
+                sameAsCheckbox.classList.remove('HanRed'); // 체크했으면 제거
+            }
 
             // 성별 라디오 검사
             const genderGroups = new Set();
@@ -740,7 +767,7 @@
     </script>
 
     <!-- 이름부분 입력할때마다 정규식 검사하는 곳 -->
-    <script  th:src="@{/js/reservationName.js}"></script>
+    <script th:src="@{/js/reservationName.js}"></script>
 
     <!-- 체크박스 눌렀을때 예약자 정보를 밑에 input에 복사해주는 함수 -->
     <script>
@@ -758,6 +785,8 @@
                     const femaleRadio = document.querySelector(`input[id="Afemale${index}"]`);
 
                     if (this.checked) {
+                        this.classList.remove('HanRed');
+
                         const name = `[[${resvPageDto.memberResponseDto.name}]]`;
                         const birth = `[[${resvPageDto.memberResponseDto.birth}]]`;
                         const phone = `[[${resvPageDto.phoneNum}]]`;
@@ -780,25 +809,15 @@
                             phoneInput.classList.remove('HanRed');
                         }
 
-                        if (gender !== 'null') {
-                            if (gender === '남' && maleRadio) maleRadio.checked = true;
-                            else if (gender === '여' && femaleRadio) femaleRadio.checked = true;
-
-                            const genderWrapper = maleRadio?.closest('.HanGenderRadio');
-                            genderWrapper?.classList.remove('HanRedGender');
-
-                            const genderP = genderWrapper?.closest('.HanNameDiv')?.querySelector('.HanRedPGender');
-                            if (genderP) genderP.style.display = 'none';
-                        }
 
                     } else {
+                        this.classList.add('HanRed');
+
                         // 체크 해제 시 초기화
                         if (nameInput) nameInput.value = '';
                         if (birthInput) birthInput.value = '';
                         if (phoneInput) phoneInput.value = '';
                         if (passportInput) passportInput.value = '';
-                        if (maleRadio) maleRadio.checked = false;
-                        if (femaleRadio) femaleRadio.checked = false;
                     }
                 });
             }

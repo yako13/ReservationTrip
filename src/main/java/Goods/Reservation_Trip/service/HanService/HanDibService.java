@@ -34,6 +34,7 @@ public class HanDibService {
     private final PackageRepository packageRepository;
 
     private final MemberService memberService;
+    private final HanMemberService hanMemberService;
 
     private final HanDibRepository hanDibRepository;
 
@@ -105,10 +106,10 @@ public class HanDibService {
 
                 boolean deadline = false;
 
-                if(PackageScheduleCheck.getPackageStatus() != AVAILABLE){
-                    log.info("마감여부" + PackageScheduleCheck.getPackageStatus() );
+                if (PackageScheduleCheck.getPackageStatus() != AVAILABLE) {
+                    log.info("마감여부" + PackageScheduleCheck.getPackageStatus());
                     log.info("여행이 마감된 상태입니다");
-                    deadline =true;
+                    deadline = true;
 
                 }
 
@@ -120,9 +121,9 @@ public class HanDibService {
                         //찜 목록에 있는 상품 가격을 변환
                         .price(Formatter.changeBigDecimalFormat(dib.getPackageEntity().getFuelSurchargeIncluded()))
                         //여행 시작일
-                        .tripStart(Formatter.formatDateAndDay(tripStart) )
+                        .tripStart(Formatter.formatDateAndDay(tripStart))
                         //여행 종료일
-                        .tripEnd( Formatter.formatDateAndDay(PackageScheduleCheck.getArrivalDateReturn()) )
+                        .tripEnd(Formatter.formatDateAndDay(PackageScheduleCheck.getArrivalDateReturn()))
                         //마감여부
                         .deadline(deadline)
 
@@ -167,7 +168,7 @@ public class HanDibService {
     }
 
     //찜 추가  (0 실패 1 성공)
-    public int addDib(MemberResponseDto memberResponseDto, Long packagePk,LocalDate tripStart) {
+    public int addDib(MemberResponseDto memberResponseDto, Long packagePk, LocalDate tripStart) {
 
         Member memberEntity = memberRepository.findById(memberResponseDto.getId()).orElse(null);
 
@@ -227,13 +228,12 @@ public class HanDibService {
             return 2;
         }
         //예약 가능이 아닐경우 실패
-        if(PackageScheduleCheck.getPackageStatus() !=AVAILABLE){
+        if (PackageScheduleCheck.getPackageStatus() != AVAILABLE) {
 
             log.error("예약이 꽉찼거나 불가합니다");
 
             return 3;
         }
-
 
 
         Dib dib = Dib.builder()
@@ -271,6 +271,32 @@ public class HanDibService {
         hanDibRepository.delete(dib);
 
         return 1;
+    }
+
+    //패키지 상세 들어갈때 찜 했는지 여부를 알려주는것
+    public boolean packageDibCheck(HttpServletRequest request, Long packagePk) {
+
+        MemberResponseDto memberResponseDto = hanMemberService.getMember(request);
+
+        boolean isLiked = false;
+
+        //세션이 있을경우
+        if (memberResponseDto != null) {
+
+            Member member = memberRepository.findById(memberResponseDto.getId()).orElse(null);
+
+            //세션에 맴버 정보가 있을경우
+            if (member != null) {
+
+                Package aPackage = packageRepository.findById(1L).orElse(null);
+
+                isLiked = hanDibRepository.existsByMemberAndPackageEntity(member, aPackage);
+            }
+
+
+        }
+
+        return isLiked;
     }
 
 
