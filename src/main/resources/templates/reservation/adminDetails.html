@@ -7,7 +7,7 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-    <title>관리자 주문 상세 내역</title>
+    <title>냥만여행 관리자 예약상세내역</title>
     <script src="https://kit.fontawesome.com/f3f72a2177.js" crossorigin="anonymous"></script>
     <link th:href="@{/css/admin/header.css}" rel="stylesheet">
     </link>
@@ -412,7 +412,7 @@
 <body>
     <header th:replace="fragments/adminHeader::masterHeader"></header>
     <nav th:replace="fragments/adminHeader::masterNav"></nav>
-    <input type="hidden" th:value="${alert}" id="dataAlert">
+    <input type="hidden" th:value="${alert}" id="flashMessage">
     <main id="main" th:each="reservationList : ${reservationList}">
         <div class="container">
             <h2>예약 상세 내역</h2>
@@ -634,7 +634,9 @@
             <img th:src="@{/images/upArrow1.svg}" id="topBtn">
         </div>
     </main>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script th:src="@{/js/adminNav.js}"></script>
+    <script th:src="@{/js/alert.js}"></script>
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script>
         //예약 상태 수정 

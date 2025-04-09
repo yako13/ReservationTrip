@@ -1,21 +1,25 @@
-function toggleDropdown(button) {
-    let dropdown = button.parentElement;
-    let content = dropdown.querySelector(".dropdown-content");
-
-    if (dropdown.classList.contains("active")) {
-        content.style.maxHeight = "0px";
-        content.style.opacity = "0";
-        setTimeout(() => {
-            dropdown.classList.remove("active");
-        }, 300); // transition 시간 후 active 제거
-    } else {
-        dropdown.classList.add("active");
-        content.style.maxHeight = content.scrollHeight + "px"; // 실제 높이로 설정
-        content.style.opacity = "1";
-    }
-}
 window.addEventListener('DOMContentLoaded', (event) => {
     openNav();
+
+    const title = document.title;
+
+    let targetDropdownId = null;
+
+    if (title.includes("상품")) {
+        targetDropdownId = "productDropdown";
+    } else if (title.includes("예약")) {
+        targetDropdownId = "reservationDropdown";
+    } else if (title.includes("매출")) {
+        targetDropdownId = "salesDropdown";
+    }
+
+    if (targetDropdownId) {
+        const dropdown = document.getElementById(targetDropdownId);
+        const content = dropdown.querySelector(".dropdown-content");
+        dropdown.classList.add("active");
+        content.style.maxHeight = content.scrollHeight + "px";
+        content.style.opacity = "1";
+    }
 });
 
 function openNav() {
@@ -33,21 +37,29 @@ function closeNav() {
     setTimeout(delay, 300);
 }
 
+function toggleDropdown(button) {
+    let dropdown = button.parentElement;
+    let content = dropdown.querySelector(".dropdown-content");
+
+    if (dropdown.classList.contains("active")) {
+        content.style.maxHeight = "0px";
+        content.style.opacity = "0";
+        setTimeout(() => {
+            dropdown.classList.remove("active");
+        }, 300); // transition 시간 후 active 제거
+    } else {
+        dropdown.classList.add("active");
+        content.style.maxHeight = content.scrollHeight + "px"; // 실제 높이로 설정
+        content.style.opacity = "1";
+    }
+}
+
+
 function delay() {
     document.querySelector(".SlideNavOpenDiv").classList.add("SlideShow");
 }
 
-if (document.title.includes("주문")) {
-    document.getElementById("barMenuCheckout").style.backgroundColor = "#7d8597";
-}
 
-if (document.title.includes("매출")) {
-    document.getElementById("barMenuSales").style.backgroundColor = "#7d8597";
-}
-
-if (document.title.includes("상품")) {
-    document.getElementById("barMenuProduct").style.backgroundColor = "#7d8597";
-}
 const notificationList = document.getElementById("notification-list");
 document.addEventListener("DOMContentLoaded", function () {
     // 알림 개수 및 목록을 LocalStorage에서 불러오기

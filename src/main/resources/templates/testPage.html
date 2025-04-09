@@ -63,26 +63,5 @@
       form.submit();
     }
 </script>
-
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const cancelBtn = document.getElementById("withdrawalBtn");
-
-      if (cancelBtn) {
-        cancelBtn.addEventListener("click", () => {
-          var answer = confirm("회원 탈퇴를 하시면, 복구가 어려운 점을 참고하시기 바랍니다. 정말 탈퇴를 원하시나요?");
-
-          if (answer) {
-            window.location.assign("/permit/withdrawal");
-          }
-        });
-      } else {
-        console.error("cancelBtn을 찾을 수 없습니다.");
-      }
-    });
-</script>
-
-
-
 </body>
 </html>

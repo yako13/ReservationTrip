@@ -29,7 +29,15 @@ public class MemberController {
     private final MailService mailService;
 
     @GetMapping("/login")
-    private String loginPage() {
+    private String loginPage(HttpServletRequest request,RedirectAttributes redirectAttributes) {
+        MemberResponseDto memberResponseDto = memberService.getMember(request);
+
+        //이미 로그인 되어있는경우 메인페이지로 이동
+        if(memberResponseDto != null){
+            redirectAttributes.addFlashAttribute("data","이미 로그인 되어있습니다.");
+            return "redirect:/";
+        }
+
         return "member/login";
     }
 
@@ -71,6 +79,7 @@ public class MemberController {
     @PostMapping("/join")
     public String join(@Valid JoinDto joinDto, Model model, Errors errors,RedirectAttributes attributes) throws AuthenticationException {
         model.addAttribute("email", joinDto.getEmail());
+        model.addAttribute("authCode",joinDto.getAuthCode());
         model.addAttribute("password", joinDto.getPassword());
         model.addAttribute("name", joinDto.getName());
         model.addAttribute("phoneNumber", joinDto.getPhoneNumber());
@@ -90,6 +99,7 @@ public class MemberController {
 
         //이름 및 휴대전화번호가 중복인 회원이 있는 경우
         if(!memberService.join(joinDto)) {
+            model.addAttribute("checkName",1); //이미 이메일은 인증한 걸 확인해줌
             model.addAttribute("alert", "동일한 이름과 휴대전화번호를 가진 회원이 있습니다. ");
             return "member/join";
         }
