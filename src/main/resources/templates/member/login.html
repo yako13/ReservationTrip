@@ -156,9 +156,8 @@
                 color: gray;
             }
 
-            #logoImg{
-                width:15rem;
-            }
+
+
     </style>
 </head>
 
@@ -169,11 +168,11 @@
             <input type="hidden" th:if="${param.error}" value="로그인에 실패하였습니다." id="dataAlert">
             <input type="hidden" th:value="${alert}" id="dataAlert2">
             <div class="logoArea">
-                <img th:src="@{/images/logoFull300.png}" id="logoImg">
+                <img th:src="@{/images/logoFull130.png}" id="logoImg">
             </div>
             <div class="loginText">
-                <h2>로그인</h2>
-                <p>모든 순간 두근두근, 여행은 냥만여행</p>
+                <h1>로그인</h1>
+<!--                <p>모든 순간 두근두근, 여행은 <span id="blue">냥만여행</span></p>-->
             </div>
             <div class="formArea">
                 <form th:action="@{/login}" th:method="post" class="form">
