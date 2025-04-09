@@ -279,11 +279,11 @@ public class ReservationService {
 
         //예약일 기준으로 검색
         if (searchDto.getSearchSelect().equals("createdAt")) {
-            reservationList = reservationRepository.findByMemberIdAndCreatedAtBetween(memberId, startDateTime, endDateTime);
+            reservationList = reservationRepository.findByMemberIdAndCreatedAtBetweenOrderByCreatedAtAsc(memberId, startDateTime, endDateTime);
 
             //시작일 기준으로 검색
         } else if (searchDto.getSearchSelect().equals("startedAt")) {
-            reservationList = reservationRepository.findByMemberIdAndStartDateBetween(memberId, startDate, endDate);
+            reservationList = reservationRepository.findByMemberIdAndStartDateBetweenOrderByStartDateAsc(memberId, startDate, endDate);
         } else {
             throw new RuntimeException("잘못된 접근");
         }

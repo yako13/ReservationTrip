@@ -233,7 +233,8 @@
 <body>
     <header th:replace="/fragments/memberHeader::memberHeader"></header>
     <main>
-        <input type="hidden" th:value="${alert}" id="dataAlert">
+        <input type="hidden" th:value="${checkName}" id="checkName">
+        <input type="hidden" th:value="${alert}" id="flashMessage">
         <div class="container">
             <div class="titleArea">
                 <h1>회원가입</h1>
@@ -258,7 +259,7 @@
                         <tr class="authArea">
                             <th><span class="red">*</span>이메일 인증번호</th>
                             <td><input type="text" id="authCode" name="authCode" class="joinInput" maxlength="6"
-                                    oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                    oninput="this.value = this.value.replace(/[^0-9]/g, '')" th:value="${authCode}">
                                 <button id="authCodeBtn" type="button">인증확인</button>
                             </td>
                         </tr>
@@ -318,6 +319,7 @@
         </div>
     </main>
     <footer th:replace="/fragments/memberFooter::memberFooter"></footer>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script th:src="@{/js/alert.js}"></script>
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script>
@@ -505,6 +507,7 @@
 
         //창 로드시 필수 입력칸에 이벤트 걸어준다
         window.addEventListener("load", focusEvent);
+        window.addEventListener("load", checkPassword);
 
         function focusEvent() {
             // 필수 입력칸에 focusout시 값이 다 있는지 체크
@@ -553,6 +556,10 @@
             e.preventDefault();
             let ValueCheck = SignUpValueCheckAll();
             let valid = true;
+            if(document.getElementById("checkName").value == 1){
+                bol_auth =1;
+            }
+
             if (bol_auth == 0) {
                 alert("이메일 인증을 해주십시오.");
             }
