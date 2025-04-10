@@ -477,6 +477,9 @@
                         else if (res == 100) {
                             Swal.fire({ text: "일치하는 이름의 카테고리가 없습니다." });
                         }
+                        else if (res ==700){
+                            Swal.fire({ text: "하위 카테고리가 존재하여 삭제 할 수 없습니다." });
+                        }
                         else {
                             Swal.fire({ text: "이미 해당 카테고리의 패키지가 존재 할 경우 삭제가 불가합니다." });
                         }
