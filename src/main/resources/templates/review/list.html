@@ -326,6 +326,7 @@
 
         .editLinkArea {
             width: 100px;
+
             a {
                 color: #43bff8;
                 font-weight: 600;
@@ -352,6 +353,7 @@
             p {
                 width: 100%;
             }
+
             padding: 10rem 0;
             text-align: center;
             border-bottom: solid 1px #c2c2c2;
@@ -359,6 +361,10 @@
 
         .deletebtn {
             cursor: pointer;
+        }
+
+        .reviewContent {
+            font-size: 1.2rem;
         }
     </style>
 </head>
@@ -426,7 +432,7 @@
                                 <span th:if="${reviewList.modified}">(수정됨)</span>
                             </div>
                             <div>
-                                <p th:text="${reviewList.content}">
+                                <p th:text="${reviewList.content}" class="reviewContent">
                                 </p>
                             </div>
                             <div class="reviewImageArea" th:if="${!#lists.isEmpty(reviewList.imagesURL)}">
@@ -498,6 +504,10 @@
                         success: function (res) {
                             if (res == 1000) {
                                 $(".review" + params).remove();
+
+                                if ($(".rating").length === 0) {
+                                    location.reload();
+                                }
                             }
                             else {
                                 Swal.fire({ text: "리뷰를 삭제 할 수 없습니다." });
