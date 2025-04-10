@@ -1,8 +1,14 @@
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css');
 
 @font-face {
-    font-family: 'NanumSquareRound';
-    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NanumSquareRound.woff') format('woff');
+    font-family: 'SUIT-Regular';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+*{
+    font-family: 'SUIT-Regular'; 
 }
 
 @font-face {
@@ -10,11 +16,6 @@
     src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2408@1.0/Ownglyph_jiwoosonang.woff2') format('woff2');
     font-weight: normal;
     font-style: normal;
-}
-
-* {
-    font-family: NanumSquareRound;
-
 }
 
 a {
@@ -89,7 +90,7 @@ p {
 
 
 .headerTitleADiv {
-    width: 350px;
+    width: 450px;
     display: flex;
     justify-content: space-between;
     align-items: center;
