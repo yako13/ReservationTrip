@@ -21,7 +21,7 @@ public class PackageOption extends BaseTime {
     private Long id;
 
     @JoinColumn(name = "package_id")
-    @ManyToOne
+    @OneToOne
     private Package aPackage;
 
     @Column(nullable = false, columnDefinition = "BOOLEAN")
