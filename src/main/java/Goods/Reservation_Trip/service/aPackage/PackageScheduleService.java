@@ -40,6 +40,7 @@ public class PackageScheduleService {
                         .departureDateReturn(scheduleRequestDto.getDepartureDateReturn())
                         .arrivalDateReturn(scheduleRequestDto.getArrivalDateReturn())
                         .packageStatus(PackageStatus.AVAILABLE)
+                        .reservedMemberCount(0)
                         .build();
 
             scheduleList.add(packageSchedule);
