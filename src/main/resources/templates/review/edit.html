@@ -69,7 +69,7 @@
         }
 
         #content {
-            margin: 3rem 0;
+            margin: 3rem 0 0.5rem 0;
             width: 95.8%;
             resize: none;
             color: black;
@@ -77,6 +77,7 @@
             outline: none;
             height: 20rem;
             padding: 1rem;
+            font-size: 1.1rem;
         }
 
         .scoreArea {
@@ -183,6 +184,14 @@
             overflow: hidden;
             border: 0;
         }
+
+        h4 {
+            padding-top: 0.5rem;
+        }
+
+        #textLength{
+            text-align: end;
+        }
     </style>
 </head>
 
@@ -200,7 +209,9 @@
             </div>
 
             <form id="reviewForm" th:action="@{/member/review/edit}" th:method="post" enctype="multipart/form-data">
-                <textarea id="content" name="content" placeholder="후기를 작성해주세요." th:text="${content}"></textarea>
+                <textarea id="content" name="content" placeholder="후기를 작성해주세요. 후기 내용은 최소 10자 이상 500자 이하여야 합니다."
+                    maxlength="500" th:text="${content}"></textarea>
+                <p id="textLength">(0/500)</p>
                 <input type="hidden" name="reviewId" th:value="${reviewId}">
                 <input type="hidden" name="rating" id="score" th:value="${rating}">
 
@@ -348,6 +359,7 @@
                     document.querySelector(".upload-name").value = fileName;
                 });
             }
+
         });
 
 
@@ -417,6 +429,20 @@
                 document.getElementById("reviewForm").submit();
             }
         })
+
+        //글자수 세기
+        let textLength = document.getElementById("textLength");
+
+        content.addEventListener("input", getContentLength);
+
+        function getContentLength() {
+            textLength.innerText = "(" + content.value.length + "/500)"
+            if (content.value.length > 500) {
+                Swal.fire({ text: "후기 내용은 500자를 초과할 수 없습니다." });
+            }
+        }
+
+        window.addEventListener("load",getContentLength);
 
 
 

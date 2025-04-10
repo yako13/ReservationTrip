@@ -28,6 +28,10 @@ public class Package extends BaseTime {
     @Comment(value = "여행지 상품명")
     private String packageName;
 
+    @Column(name = "average_rating",nullable = false)
+    @Comment(value = "평균 평점")
+    private double averageRating =0.;
+
     @Column(name = "adult_price", nullable = false)
     @Comment("성인 인당 가격")
     private BigDecimal adultPrice;

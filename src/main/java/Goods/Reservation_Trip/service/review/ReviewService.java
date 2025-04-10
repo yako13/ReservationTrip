@@ -4,12 +4,14 @@ import Goods.Reservation_Trip.config.ImageManager;
 import Goods.Reservation_Trip.dto.reservation.res.ReservationDetailsResponseDto;
 import Goods.Reservation_Trip.dto.review.req.ReviewDto;
 import Goods.Reservation_Trip.dto.review.res.ReviewResponseDto;
+import Goods.Reservation_Trip.entity.Package;
 import Goods.Reservation_Trip.entity.Reservation;
 import Goods.Reservation_Trip.entity.Review;
 import Goods.Reservation_Trip.entity.ReviewImage;
 import Goods.Reservation_Trip.repository.ReservationRepository;
 import Goods.Reservation_Trip.repository.ReviewImageRepository;
 import Goods.Reservation_Trip.repository.ReviewRepository;
+import Goods.Reservation_Trip.repository.aPackage.PackageRepository;
 import Goods.Reservation_Trip.util.FileStorageService;
 import Goods.Reservation_Trip.util.Formatter;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +40,8 @@ public class ReviewService {
 
     private final FileStorageService fileStorageService;
 
+//    private final PackageRepository packageRepository;
+
     /**
      * 리뷰 페이지
      */
@@ -58,6 +62,55 @@ public class ReviewService {
     }
 
     /**
+     * 평점 등록
+     */
+    public double setAverageRating(Package aPackage,int reviewRating){
+
+        int totalRating = 0;
+
+        for(Review review : aPackage.getReviewList()){
+            totalRating += review.getRating();
+        }
+        //첫째자리까지 반올림
+        return Math.round(((double)(totalRating + reviewRating) / (aPackage.getReviewList().size() + 1)) * 10) / 10.0;
+
+    }
+
+    /**
+     * 평점 수정
+     */
+    public double editAverageRating(Package aPackage,int reviewRating,int newReviewRating){
+
+        int totalRating = 0;
+
+        for(Review review : aPackage.getReviewList()){
+            totalRating += review.getRating();
+        }
+
+        totalRating = totalRating -reviewRating + newReviewRating; // 총 평점 = 기존 총 평점 - 기존 리뷰 평점 + 새 리뷰 평점
+
+        //첫째자리까지 반올림
+        return Math.round(((double)(totalRating) / (aPackage.getReviewList().size() )) * 10) / 10.0;
+
+    }
+
+    /**
+     * 평점 삭제
+     */
+    public double deleteAverageRating(Package aPackage,int reviewRating){
+
+        int totalRating = 0;
+
+        for(Review review : aPackage.getReviewList()){
+            totalRating += review.getRating();
+        }
+        
+        //첫째자리까지 반올림
+        return Math.round(((double)(totalRating - reviewRating) / (aPackage.getReviewList().size() - 1)) * 10) / 10.0;
+
+    }
+
+    /**
      * 리뷰 저장
      */
     public void registerReview(ReviewDto reviewDto, Long memberId) {
@@ -71,16 +124,24 @@ public class ReviewService {
         if (!memberId.equals(reservation.getMember().getId())) {
             throw new RuntimeException("잘못된 접근");
         }
+        Review review = new Review();
 
         //리뷰는 1개만 가능
         if (!reservation.getReviewList().isEmpty()) throw new RuntimeException("리뷰는 한개만 등록가능");
 
-        Review review = new Review();
-        review.setAPackage(reservation.getAPackage());
+        Package aPackage = reservation.getAPackage();
+
+        //평균 평점 등록
+        double averageRating = setAverageRating(aPackage,reviewDto.getRating());
+        aPackage.setAverageRating(averageRating);
+
+        review.setAPackage(aPackage);
         review.setMember(reservation.getMember());
         review.setContent(reviewDto.getContent());
         review.setRating(reviewDto.getRating());
         review.setReservation(reservation);
+
+
 
         reviewRepository.save(review);
 
@@ -136,6 +197,13 @@ public class ReviewService {
         //다른 사람의 예약 리뷰 수정을 시도할 경우
         if (!review.getMember().getId().equals(memberId)) throw new RuntimeException("잘못된 접근");
 
+        Package aPackage = review.getAPackage();
+
+        //평균 평점 수정
+        double averageRating = editAverageRating(aPackage, review.getRating(),reviewDto.getRating());
+        aPackage.setAverageRating(averageRating);
+
+        review.setAPackage(aPackage);
         review.setContent(reviewDto.getContent());
         review.setRating(reviewDto.getRating());
 
@@ -216,7 +284,7 @@ public class ReviewService {
      * 리뷰 리스트
      */
     public List<ReviewResponseDto> getReviewList(Long memberId) {
-        List<Review> reviewList = reviewRepository.findByMemberId(memberId);
+        List<Review> reviewList = reviewRepository.findByMemberIdOrderByCreatedAtDesc(memberId);
 
         List<ReviewResponseDto> responseDtoList = new ArrayList<>();
 
@@ -263,7 +331,20 @@ public class ReviewService {
         //다른 사람 리뷰 삭제 불가
         if (!review.getMember().getId().equals(memberId)) return "500";
 
-        reviewRepository.delete(review);
+        Package aPackage = review.getAPackage();
+
+        //평균 평점 수정
+        double averageRating = deleteAverageRating(aPackage, review.getRating());
+
+        //리뷰와 패키지 간의 연결을 유지시키므로 orphan 상태가 아님
+        aPackage.setAverageRating(averageRating);
+        
+        //관계 끊어줌
+        aPackage.getReviewList().remove(review);
+        review.setAPackage(null);
+
+        //orphanRemoval 이 있으면 생략가능
+        //reviewRepository.delete(review);
 
         return "1000";
     }
