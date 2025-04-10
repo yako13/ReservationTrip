@@ -41,6 +41,22 @@ public class PackageController {
         model.addAttribute("packageList", adminPackageListDto.getContent());
         model.addAttribute("page", adminPackageListDto);
         model.addAttribute("currentPage", adminPackageListDto.getNumber());
+        model.addAttribute("size", size);
         return "package/admin/package-list";
+    }
+
+    @GetMapping("/admin/package/search/index")
+    public String adminPackageSearchList(@RequestParam(defaultValue = "0") int page,
+                                         @RequestParam(defaultValue = "20") int size,
+                                         @RequestParam(value = "keyword", required = false, defaultValue = "") String name,
+                                         Model model) {
+        Page<AdminPackageListResponseDto> adminPackageListResponseDtoPage = combinePackageService.getAdminPackageSearchList(page, size, name);
+        model.addAttribute("packageList", adminPackageListResponseDtoPage.getContent());
+        model.addAttribute("page", adminPackageListResponseDtoPage);
+        model.addAttribute("currentPage", adminPackageListResponseDtoPage.getNumber());
+        model.addAttribute("size", size);
+        model.addAttribute("keywordQuery", name);
+
+        return "package/admin/package-search";
     }
 }

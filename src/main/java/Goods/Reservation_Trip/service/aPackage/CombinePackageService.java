@@ -4,6 +4,7 @@ import Goods.Reservation_Trip.config.ImageManager;
 import Goods.Reservation_Trip.dto.aPackage.res.AdminPackageListResponseDto;
 import Goods.Reservation_Trip.entity.Package;
 import Goods.Reservation_Trip.entity.PackageSchedule;
+import Goods.Reservation_Trip.repository.aPackage.PackageScheduleDetailsCustomRepository;
 import Goods.Reservation_Trip.repository.aPackage.PackageScheduleDetailsRepository;
 import Goods.Reservation_Trip.util.Formatter;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,8 @@ import org.springframework.stereotype.Service;
 public class CombinePackageService {
 
     private final PackageScheduleDetailsRepository packageScheduleDetailsRepository;
+
+    private final PackageScheduleDetailsCustomRepository packageScheduleDetailsCustomRepository;
 
     private final ImageManager imageManager;
 
@@ -40,8 +43,31 @@ public class CombinePackageService {
                     .departurePointOut(packageScheduleDetails.getDeparturePointOut().getName())
                     .arrivalPointOut(packageScheduleDetails.getArrivalPointOut().getName())
                     .period(aPackage.getPeriod())
+                    .departureDateOut(packageSchedule.getDepartureDateOut())
+                    .arrivalDateReturn(packageSchedule.getArrivalDateReturn())
+                    .createdAt(Formatter.getLocalDate(aPackage.getCreatedAt()))
+                    .modifiedAt(Formatter.getLocalDate(aPackage.getModifiedAt()))
+                    .build();
+        });
+    }
+
+    public Page<AdminPackageListResponseDto> getAdminPackageSearchList(int page, int size, String name) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        return packageScheduleDetailsCustomRepository.findAvailableEarliestByPackageNameContaining(name, pageable).map(packageScheduleDetails -> {
+            String packageMainImagePath = null;
+            Package aPackage = packageScheduleDetails.getPackageSchedule().getAPackage();
+            PackageSchedule packageSchedule = packageScheduleDetails.getPackageSchedule();
+            if (aPackage.getMainImage() != null) {
+                packageMainImagePath = imageManager.createImageUrl(aPackage.getMainImage().getImageFullName());
+            }
+            return AdminPackageListResponseDto.builder()
+                    .id(aPackage.getId())
                     .name(aPackage.getPackageName())
+                    .mainImagePath(packageMainImagePath)
                     .fuelSurchargeIncluded(aPackage.getFuelSurchargeIncluded())
+                    .departurePointOut(packageScheduleDetails.getDeparturePointOut().getName())
+                    .arrivalPointOut(packageScheduleDetails.getArrivalPointOut().getName())
+                    .period(aPackage.getPeriod())
                     .departureDateOut(packageSchedule.getDepartureDateOut())
                     .arrivalDateReturn(packageSchedule.getArrivalDateReturn())
                     .createdAt(Formatter.getLocalDate(aPackage.getCreatedAt()))
