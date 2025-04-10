@@ -7,5 +7,5 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PackageOptionRepository extends JpaRepository<PackageOption, Long> {
-//    List<PackageOption> findByAPackageId(Long packageId);
+//    Optional<PackageOption> findByAPackageId(Long packageId);
 }
