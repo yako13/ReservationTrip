@@ -24,6 +24,9 @@ public class Package extends BaseTime {
     @Column(name = "package_id")
     private Long id;
 
+    @OneToOne(mappedBy = "aPackage")
+    private PackageOption packageOption;
+
     @Column(name = "package_name", nullable = false)
     @Comment(value = "여행지 상품명")
     private String packageName;
@@ -97,9 +100,6 @@ public class Package extends BaseTime {
 
     @OneToMany(mappedBy = "aPackage", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviewList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "aPackage", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PackageOption> optionList = new ArrayList<>();
 
     public void addPackageSchedules(List<PackageSchedule> schedules) {
         this.packageScheduleList.addAll(schedules);

@@ -24,7 +24,7 @@ public class PackageScheduleDetails extends BaseTime {
     private Long id;
 
     @JoinColumn(name = "package_schedule_id")
-    @ManyToOne
+    @OneToOne
     private PackageSchedule packageSchedule;
 
     @JoinColumn(name = "airline_out_id")

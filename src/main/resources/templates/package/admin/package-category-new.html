@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>냥만여행 카테고리생성</title>
+    <title>냥만여행 상품 카테고리생성</title>
     <link th:href="@{/css/admin/header.css}" rel="stylesheet">
     </link>
     <style>
@@ -75,9 +75,7 @@
         }
 
         @media screen and (min-width: 600px) {
-            .rwd-table tr:hover:not(:first-child) {
-                background-color: #f4f6f8;
-            }
+
 
             .rwd-table td:before {
                 display: none;
@@ -154,7 +152,7 @@
 
         #treeArea {
             border: 1px solid #8b8b8b;
-            min-height: 20rem;
+            min-height: 30rem;
         }
 
         .categoryBtn {
@@ -164,16 +162,18 @@
         }
 
         .categoryBtnArea {
-            text-align: center;
+            text-align: end;
             background-color: #f4f6f8;
 
             button {
-                font-size: 1.2rem;
-                margin-top: 2px;
-            }
+                font-size: 1.1rem;
+                margin-top: 10px;
+            padding-left: 0.5rem;
+            padding-right: 1rem;
 
-            button:hover {
-                font-weight: 600;
+                i{
+                    color: #2c394b;
+                }
             }
         }
 
@@ -183,6 +183,9 @@
             height: 1.5rem;
             padding: 5px;
             font-size: 1.1rem;
+            &:focus{
+                outline: none;
+            }
         }
 
         [type="radio"] {
@@ -289,9 +292,9 @@
                 <div class="categoryArea">
                     <div id="treeArea">
                         <div class="categoryBtnArea">
-                            <button onclick="toggleAll(true)" class="categoryBtn">open all</button>
-                            <span>|</span>
-                            <button onclick="toggleAll(false)" class="categoryBtn">close all</button>
+                            <span style="margin-right: 15rem;">카테고리 목록</span>
+                            <button onclick="toggleAll(true)" class="categoryBtn"><i class="fa-solid fa-bars"></i></button>
+                            <button onclick="toggleAll(false)" class="categoryBtn"><i class="fa-solid fa-ellipsis-vertical"></i></button>
                             <hr>
                         </div>
                         <ul>
@@ -313,7 +316,7 @@
                     </div>
                 </div>
                 <div class="formArea">
-                    <h4>카테고리 추가 및 삭제</h4>
+                    <h4><i class="fa-solid fa-list-ul"></i> 카테고리 추가 및 삭제</h4>
                     <table class="rwd-table">
                         <form th:action="@{/admin/category/new}" th:method="post" id="categoryForm">
                             <tbody>
@@ -337,14 +340,14 @@
                                 <tr id="parents">
                                     <th>상위 카테고리명</th>
                                     <td>
-                                        <input type="text" maxlength="10" placeholder="상위 카테고리명을 왼쪽 목록에서 선택해주세요."
-                                            id="parentsName" name="parentsName">
+                                        <input type="text" maxlength="10" placeholder="상위 카테고리명을 좌측 목록에서 선택해주세요."
+                                            id="parentsName" name="parentsName" readonly>
                                     </td>
                                 </tr>
                             </tbody>
                     </table>
                     <div class="btnArea">
-                        <button type="submit" id="submitBtn">등록</button>
+                        <button type="button" id="submitBtn">등록</button>
                         <button type="button" id="deleteBtn">삭제</button>
                     </div>
                     </form>
@@ -386,27 +389,30 @@
         const name_check = /^[가-힣]{1,10}$/;
 
         //카테고리 등록
-        $("#submitBtn").click(function (event) {
-            event.preventDefault();
+        $("#submitBtn").click(function () {
+
+            if (document.getElementById("categoryName").value == "") {
+
+                Swal.fire({ text: "등록 하실 카테고리명을 입력해주세요." });
+            }
 
             if (!name_check.test(document.getElementById("categoryName").value)) {
 
-                Swal.fire({ text: "등록 하실 카테고리명을 입력해주세요. 카테고리명은 한글 10자이내입니다." });
+                Swal.fire({ html: "등록 하실 카테고리명을 입력해주세요.<br> 카테고리명은 한글 10자이내입니다." });
             }
-
-            if (!$("#major").is(":checked")) {
-                if (document.getElementById("parentsName").value == "") {
-                    Swal.fire({ text: "상위 카테고리명은 필수입니다." });
+            else {
+                if (!$("#major").is(":checked")) {
+                    if (document.getElementById("parentsName").value == "") {
+                        Swal.fire({ text: "상위 카테고리명은 필수입니다." });
+                    }
+                    else {
+                        ajax();
+                    }
                 }
                 else {
                     ajax();
                 }
             }
-            else {
-                ajax();
-            }
-
-
         })
 
         function ajax() {
@@ -446,9 +452,10 @@
         $("#deleteBtn").click(deleteCategory);
 
         function deleteCategory() {
+
             if (!name_check.test(document.getElementById("categoryName").value)) {
 
-                Swal.fire({ text: "삭제하실 카테고리명을 입력해주세요. 카테고리명은 한글 10자이내입니다." });
+                Swal.fire({ html: "삭제하실 카테고리명을 입력해주세요.<br> 카테고리명은 한글 10자이내입니다." });
             }
             else {
 
