@@ -307,7 +307,7 @@
               th:classappend="${page.first} ? 'disabled' : ''">
               <a
                 class="page-link"
-                th:href="@{/admin/package/list(page=0, size=${size})}"
+                th:href="@{/admin/package/search/index(keyword=${keywordQuery}, page=0, size=${size})}"
                 aria-label="First">
                 <span>&laquo;</span>
               </a>
@@ -319,7 +319,7 @@
               th:classappend="${page.hasPrevious()} ? '' : 'disabled'">
               <a
                 class="page-link"
-                th:href="@{/admin/package/list(page=${currentPage - 1}, size=${size})}"
+                th:href="@{/admin/package/search/index(keyword=${keywordQuery}, page=${currentPage - 1}, size=${size})}"
                 aria-label="Previous">
                 <span>&lt;</span>
               </a>
@@ -333,7 +333,7 @@
               th:classappend="${pageNum == currentPage} ? 'active' : ''">
               <a
                 class="page-link"
-                th:href="@{/admin/package/list(page=${pageNum}, size=${size})}"
+                th:href="@{/admin/package/search/index(keyword=${keywordQuery}, page=${pageNum}, size=${size})}"
                 th:text="${pageNum + 1}"></a>
             </li>
 
@@ -343,7 +343,7 @@
               th:classappend="${page.hasNext()} ? '' : 'disabled'">
               <a
                 class="page-link"
-                th:href="@{/admin/package/list(page=${currentPage + 1}, size=${size})}"
+                th:href="@{/admin/package/search/index(keyword=${keywordQuery}, page=${currentPage + 1}, size=${size})}"
                 aria-label="Next">
                 <span>&gt;</span>
               </a>
@@ -355,7 +355,7 @@
               th:classappend="${page.last} ? 'disabled' : ''">
               <a
                 class="page-link"
-                th:href="@{/admin/package/list(page=${page.totalPages - 1}, size=${size})}"
+                th:href="@{/admin/package/search/index(keyword=${keywordQuery}, page=${page.totalPages - 1}, size=${size})}"
                 aria-label="Last">
                 <span>&raquo;</span>
               </a>
