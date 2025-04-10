@@ -24,8 +24,7 @@ public class Package extends BaseTime {
     @Column(name = "package_id")
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "package_option_id")
+    @OneToOne(mappedBy = "aPackage")
     private PackageOption packageOption;
 
     @Column(name = "package_name", nullable = false)
