@@ -53,7 +53,7 @@ public class ReviewService {
         Reservation reservation = optionalReservation.get();
 
         //리뷰는 1개만 가능
-        if (!reservation.getReviewList().isEmpty()) return null;
+        if (reservation.getReview() != null) return null;
 
         return ReviewResponseDto.builder()
                 .packageMainImage(imageManager.createImageUrl(reservation.getAPackage().getMainImage().getImageFullName()))
@@ -64,49 +64,49 @@ public class ReviewService {
     /**
      * 평점 등록
      */
-    public double setAverageRating(Package aPackage,int reviewRating){
+    public double setAverageRating(Package aPackage, int reviewRating) {
 
         int totalRating = 0;
 
-        for(Review review : aPackage.getReviewList()){
+        for (Review review : aPackage.getReviewList()) {
             totalRating += review.getRating();
         }
         //첫째자리까지 반올림
-        return Math.round(((double)(totalRating + reviewRating) / (aPackage.getReviewList().size() + 1)) * 10) / 10.0;
+        return Math.round(((double) (totalRating + reviewRating) / (aPackage.getReviewList().size() + 1)) * 10) / 10.0;
 
     }
 
     /**
      * 평점 수정
      */
-    public double editAverageRating(Package aPackage,int reviewRating,int newReviewRating){
+    public double editAverageRating(Package aPackage, int reviewRating, int newReviewRating) {
 
         int totalRating = 0;
 
-        for(Review review : aPackage.getReviewList()){
+        for (Review review : aPackage.getReviewList()) {
             totalRating += review.getRating();
         }
 
-        totalRating = totalRating -reviewRating + newReviewRating; // 총 평점 = 기존 총 평점 - 기존 리뷰 평점 + 새 리뷰 평점
+        totalRating = totalRating - reviewRating + newReviewRating; // 총 평점 = 기존 총 평점 - 기존 리뷰 평점 + 새 리뷰 평점
 
         //첫째자리까지 반올림
-        return Math.round(((double)(totalRating) / (aPackage.getReviewList().size() )) * 10) / 10.0;
+        return Math.round(((double) (totalRating) / (aPackage.getReviewList().size())) * 10) / 10.0;
 
     }
 
     /**
      * 평점 삭제
      */
-    public double deleteAverageRating(Package aPackage,int reviewRating){
+    public double deleteAverageRating(Package aPackage, int reviewRating) {
 
         int totalRating = 0;
 
-        for(Review review : aPackage.getReviewList()){
+        for (Review review : aPackage.getReviewList()) {
             totalRating += review.getRating();
         }
-        
+
         //첫째자리까지 반올림
-        return Math.round(((double)(totalRating - reviewRating) / (aPackage.getReviewList().size() - 1)) * 10) / 10.0;
+        return Math.round(((double) (totalRating - reviewRating) / (aPackage.getReviewList().size() - 1)) * 10) / 10.0;
 
     }
 
@@ -127,12 +127,14 @@ public class ReviewService {
         Review review = new Review();
 
         //리뷰는 1개만 가능
-        if (!reservation.getReviewList().isEmpty()) throw new RuntimeException("리뷰는 한개만 등록가능");
+        if (reservation.getReview() != null) {
+            throw new RuntimeException("리뷰는 한개만 등록가능");
+        }
 
         Package aPackage = reservation.getAPackage();
 
         //평균 평점 등록
-        double averageRating = setAverageRating(aPackage,reviewDto.getRating());
+        double averageRating = setAverageRating(aPackage, reviewDto.getRating());
         aPackage.setAverageRating(averageRating);
 
         review.setAPackage(aPackage);
@@ -140,7 +142,6 @@ public class ReviewService {
         review.setContent(reviewDto.getContent());
         review.setRating(reviewDto.getRating());
         review.setReservation(reservation);
-
 
 
         reviewRepository.save(review);
@@ -200,7 +201,7 @@ public class ReviewService {
         Package aPackage = review.getAPackage();
 
         //평균 평점 수정
-        double averageRating = editAverageRating(aPackage, review.getRating(),reviewDto.getRating());
+        double averageRating = editAverageRating(aPackage, review.getRating(), reviewDto.getRating());
         aPackage.setAverageRating(averageRating);
 
         review.setAPackage(aPackage);
@@ -258,7 +259,7 @@ public class ReviewService {
      */
     public List<ReservationDetailsResponseDto> getReviewAblePage(Long memberId) {
         //리뷰 리스트가 0이며, 여행 마지막날이 현재 날짜를 지나고, ID 기준 내림차순으로 정렬
-        List<Reservation> reservationList = reservationRepository.findByEndDateBeforeAndReviewListIsNullAndMemberIdOrderByIdDesc(LocalDate.now(),memberId);
+        List<Reservation> reservationList = reservationRepository.findByEndDateBeforeAndReviewIsNullAndMemberIdOrderByIdDesc(LocalDate.now(), memberId);
 
         if (reservationList.isEmpty()) return null;
 
@@ -338,7 +339,7 @@ public class ReviewService {
 
         //리뷰와 패키지 간의 연결을 유지시키므로 orphan 상태가 아님
         aPackage.setAverageRating(averageRating);
-        
+
         //관계 끊어줌
         aPackage.getReviewList().remove(review);
         review.setAPackage(null);
