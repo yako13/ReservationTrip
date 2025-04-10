@@ -399,7 +399,7 @@ public class ReservationService {
 //
 //        PackageOption packageOption = optionalPackageOption.get();
 //
-//        List<String> optionList = Formatter.getPackageOptions(packageOption);
+//        List<String> optionList = Formatter.getPackageOption(packageOption);
 
         return ReservationDetailsResponseDto.builder()
                 .reservationPK(reservation.getId()) //예약 PK
@@ -434,7 +434,7 @@ public class ReservationService {
                 .e_destination(packageDetails.getArrivalPointReturn().getName()) //여행 종료일 도착지
                 .s_airlineName(packageDetails.getAirlineOut().getName()) //출국 항공사명
                 .e_airlineName(packageDetails.getAirlineReturn().getName()) //귀국 항공사명
-//                .option(optionList)
+//                .option(optionList) //옵션
                 .build();
     }
 
