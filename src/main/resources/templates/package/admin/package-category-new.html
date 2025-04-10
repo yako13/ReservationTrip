@@ -344,7 +344,7 @@
                             </tbody>
                     </table>
                     <div class="btnArea">
-                        <button type="submit" id="submitBtn">등록</button>
+                        <button type="button" id="submitBtn">등록</button>
                         <button type="button" id="deleteBtn">삭제</button>
                     </div>
                     </form>
@@ -386,27 +386,30 @@
         const name_check = /^[가-힣]{1,10}$/;
 
         //카테고리 등록
-        $("#submitBtn").click(function (event) {
-            event.preventDefault();
+        $("#submitBtn").click(function () {
+
+            if (document.getElementById("categoryName").value == "") {
+
+                Swal.fire({ text: "등록 하실 카테고리명을 입력해주세요." });
+            }
 
             if (!name_check.test(document.getElementById("categoryName").value)) {
 
                 Swal.fire({ text: "등록 하실 카테고리명을 입력해주세요. 카테고리명은 한글 10자이내입니다." });
             }
-
-            if (!$("#major").is(":checked")) {
-                if (document.getElementById("parentsName").value == "") {
-                    Swal.fire({ text: "상위 카테고리명은 필수입니다." });
+            else {
+                if (!$("#major").is(":checked")) {
+                    if (document.getElementById("parentsName").value == "") {
+                        Swal.fire({ text: "상위 카테고리명은 필수입니다." });
+                    }
+                    else {
+                        ajax();
+                    }
                 }
                 else {
                     ajax();
                 }
             }
-            else {
-                ajax();
-            }
-
-
         })
 
         function ajax() {
@@ -446,6 +449,7 @@
         $("#deleteBtn").click(deleteCategory);
 
         function deleteCategory() {
+
             if (!name_check.test(document.getElementById("categoryName").value)) {
 
                 Swal.fire({ text: "삭제하실 카테고리명을 입력해주세요. 카테고리명은 한글 10자이내입니다." });
