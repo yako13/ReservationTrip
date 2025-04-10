@@ -15,4 +15,6 @@ public interface PackageCategoryRepository extends JpaRepository<PackageCategory
 
     // 카테고리 이름이 있는지
     boolean existsByName(String name);
+
+    List<PackageCategory> findByParentIdAndDepth(Long parentId,int depth);
 }
