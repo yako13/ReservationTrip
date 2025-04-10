@@ -108,6 +108,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             member = findMember.get();
 
             // 이메일은 존재하지만, provider가 다르면 중복된 계정으로 간주하여 로그인 불가 처리
+            if(member.getProvider()==null){
+                throw new RuntimeException("이메일이 중복되어 가입이 불가합니다.");
+            }
             if (!member.getProvider().equals(provider)) {
                 throw new RuntimeException("이메일이 중복되어 가입이 불가합니다.");
             }

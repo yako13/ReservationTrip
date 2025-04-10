@@ -125,7 +125,8 @@
                     <div>
 
                         <!--출국 비행기-->
-                        <p th:text="${resDetailPageDto.packageSchedule.packageScheduleDetails.airlineOut.name}">제주항공</p>
+                        <p th:text="${resDetailPageDto.packageSchedule.packageScheduleDetails.airlineOut.name}"
+                        style="font-weight: bold;" >제주항공</p>
                         <!--<p>서울(ICN) → 후쿠오카(FUK)</p>-->
                         <p>
                             [[${resDetailPageDto.packageSchedule.packageScheduleDetails.departurePointOut.name}]] →

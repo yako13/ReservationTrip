@@ -24,17 +24,16 @@ public class Package extends BaseTime {
     @Column(name = "package_id")
     private Long id;
 
+    @OneToOne(mappedBy = "aPackage")
+    private PackageOption packageOption;
+
     @Column(name = "package_name", nullable = false)
     @Comment(value = "여행지 상품명")
     private String packageName;
 
-    @Column(name = "maximum_member", nullable = false)
-    @Comment("예약가능 최대 인원")
-    private int maximumMember;
-
-    @Column(name = "minimum_required", nullable = false)
-    @Comment("최소 예약 필요 인원")
-    private int minimumRequired;
+    @Column(name = "average_rating",nullable = false)
+    @Comment(value = "평균 평점")
+    private double averageRating =0.;
 
     @Column(name = "adult_price", nullable = false)
     @Comment("성인 인당 가격")
@@ -101,9 +100,6 @@ public class Package extends BaseTime {
 
     @OneToMany(mappedBy = "aPackage", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviewList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "aPackage", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PackageOption> optionList = new ArrayList<>();
 
     public void addPackageSchedules(List<PackageSchedule> schedules) {
         this.packageScheduleList.addAll(schedules);

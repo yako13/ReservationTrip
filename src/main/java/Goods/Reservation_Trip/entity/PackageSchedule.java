@@ -27,6 +27,18 @@ public class PackageSchedule extends BaseTime {
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Package aPackage;
 
+    @Column(name = "maximum_member", nullable = false)
+    @Comment("예약가능 최대 인원")
+    private int maximumMember;
+
+    @Column(name = "minimum_required", nullable = false)
+    @Comment("최소 예약 필요 인원")
+    private int minimumRequired;
+
+    @Column(name = "reserved_member_count", nullable = false, columnDefinition = "INT DEFAULT 0")
+    @Comment("일정을 예약한 인원수, 기본값 0")
+    private int reservedMemberCount;
+
     @Column(name = "departure_date_out", nullable = false)
     @Comment("여행 출국 날짜")
     private LocalDate departureDateOut;

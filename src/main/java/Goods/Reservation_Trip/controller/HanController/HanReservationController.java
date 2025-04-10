@@ -34,6 +34,27 @@ public class HanReservationController {
             return "redirect:/";
         }
 
+        if(form.getTripStart() ==null ){
+
+            log.error("출발일 정보가 없습니다!!");
+            rttr.addFlashAttribute("data", "출발일을 선택 하셔야 합니다");
+            return "redirect:/";
+        }
+
+        if(form.getAdultCnt() <=0){
+
+            log.error("성인이 한명도 없습니다 (예약자로 한명은 무조건 성인 이여야 합니다)");
+            rttr.addFlashAttribute("data", "예약자 한명은 있어야 합니다");
+            return "redirect:/";
+        }
+
+        if(form.getBabyCnt() <0 ||form.getChildCnt() <0){
+
+            log.error("아동과 유아가 음수가 될수가 없습니다");
+            rttr.addFlashAttribute("data", "에러가 발생했습니다 다시 시도해주세요");
+            return "redirect:/";
+        }
+
         log.info("여행출발일 : " + form.getTripStart());
 
         ResvPageDto resvPageDto = hanReservationService.ReservationPage(request, form);
@@ -41,6 +62,10 @@ public class HanReservationController {
         if (resvPageDto == null) {
 
             log.error("서비스에서 오류발생(hanReservationService.ReservationPage)");
+
+            rttr.addFlashAttribute("data", "에러가 발생했습니다");
+
+            return "redirect:/";
 
         }
 
@@ -100,6 +125,7 @@ public class HanReservationController {
         if (id == null) {
 
             log.error("예약 상세 페이지로 가는 컨트롤러에서 에러발생 (Long id가 null입니다)");
+            rttr.addFlashAttribute("data", "오류가 발생했습니다. 다시 시도해주세요");
             return "redirect:/";
 
         }
@@ -121,13 +147,6 @@ public class HanReservationController {
         return "reservation/reservationDetail";
     }
 
-//    @GetMapping("/member/reservationDetail")
-//    public String reservationDetailGoTest(HttpServletRequest request, Model model, PackResvDto form,
-//                                          RedirectAttributes rttr) {
-//
-//
-//        return "reservation/reservationDetail";
-//    }
 
 
 }

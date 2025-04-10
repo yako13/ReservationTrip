@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import static Goods.Reservation_Trip.enums.ReservationState.REQUEST;
 
@@ -135,6 +136,8 @@ public class HanReservationService {
                 .tripDuration(Formatter.TripDuration(tripStartDate, tripEndDate))
                 //회원 정보 Dto(memberResponseDto)
                 .memberResponseDto(memberEntity)
+                //회원 생년월일 변환
+                .birth(Formatter.formatBirthDate(memberEntity.getBirth()) )
                 //회원 성별
                 .gender(gender)
                 //패키지 엔티티
@@ -273,16 +276,32 @@ public class HanReservationService {
         if (form.getChild() != null) allTravelers.addAll(form.getChild());
         if (form.getBaby() != null) allTravelers.addAll(form.getBaby());
 
+        //예약자 정보를 담을곳
+        TravelerDto travelerDto = new TravelerDto();
+
+        //예약자 정보를 회원정보로 업데이트 하기위해 체크
+        boolean memberResCheck = false;
+
         // 3. 반복문으로 간단히 저장
         for (TravelerDto traveler : allTravelers) {
             //예약자 여부
             boolean resCheck = false;
 
-            //세션의 회원 정보와 form의 여행자 정보가 이름 생년월일 성별이 같다면 그사람을 예약자로 저장
-            if (traveler.getName().equals(memberEntity.getName()) && traveler.getBirth().equals(memberEntity.getBirth()) &&
-                    traveler.getGender() == memberEntity.isGender()) {
+            //예약자 버튼을 체크했을경우에만
+            if (traveler.isResCheck()) {
+
                 resCheck = true;
+
+                memberResCheck = true;
+
+                travelerDto = traveler;
             }
+
+            //세션의 회원 정보와 form의 여행자 정보가 이름 생년월일 성별이 같다면 그사람을 예약자로 저장
+//            if (traveler.getName().equals(memberEntity.getName()) && traveler.getBirth().equals(memberEntity.getBirth()) &&
+//                    traveler.getGender() == memberEntity.isGender()) {
+//                resCheck = true;
+//            }
 
             ReservationDetails detail = ReservationDetails.builder()
                     //예약 엔티티
@@ -307,6 +326,34 @@ public class HanReservationService {
             hanReservationDetailsRepository.save(detail);
 
         }
+
+
+        //예약자일경우 회원 정보 업데이트
+        if (memberResCheck && travelerDto != null && travelerDto.getName() != null&&
+                travelerDto.getBirth()!=null && travelerDto.getPhone() !=null) {
+
+            String name = travelerDto.getName();
+            String birth = travelerDto.getBirth();
+            String phone = travelerDto.getPhone();
+
+             boolean nameCheck = isValidKoreanName(name);
+            boolean birthCheck = isValidBirthDate(birth);
+            boolean phoneCheck = isValidPhoneNumber(phone);
+
+            if(nameCheck && birthCheck && phoneCheck){
+
+                memberEntity.changeMember
+                        (name, birth, phone, travelerDto.getGender());
+
+            }else {
+
+                log.info("예약자 정보가 잘못 입력되어있습니다 (정규식 통과 실패)");
+            }
+
+
+
+        }
+
 
         //예약 완료 페이지로 보내줄 정보 담기
         HanSubmitCompleteDto hanSubmitCompleteDto = HanSubmitCompleteDto.builder()
@@ -508,7 +555,7 @@ public class HanReservationService {
 
         //여행 도착일 보다 현재 날짜가 미래이거나 같을때 리뷰 버튼 활성화
         if (!tripEndDate.isAfter(LocalDate.now())) {
-            log.info("여행 종료일 :" +tripEndDate);
+            log.info("여행 종료일 :" + tripEndDate);
             reviewButton = true;
         }
 
@@ -560,6 +607,26 @@ public class HanReservationService {
                 .build();
 
         return resDetailPageDto;
+    }
+
+    // 정규식 패턴 정의
+    private final Pattern KOREAN_NAME_PATTERN = Pattern.compile("^[가-힣]+$");
+    private final Pattern BIRTH_PATTERN = Pattern.compile("^(19|20)\\d{2}(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])$");
+    private final Pattern PHONE_PATTERN = Pattern.compile("^(010|011|016|017|018|019)[0-9]{7,8}$");
+
+    // 이름 검사
+    public  boolean isValidKoreanName(String name) {
+        return name != null && !name.trim().isEmpty() && KOREAN_NAME_PATTERN.matcher(name.trim()).matches();
+    }
+
+    // 생년월일 검사
+    public  boolean isValidBirthDate(String birth) {
+        return birth != null && BIRTH_PATTERN.matcher(birth.trim()).matches();
+    }
+
+    // 휴대폰 번호 검사
+    public  boolean isValidPhoneNumber(String phone) {
+        return phone != null && phone.trim().isEmpty() || PHONE_PATTERN.matcher(phone.trim()).matches();
     }
 
 

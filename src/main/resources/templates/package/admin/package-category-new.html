@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>냥만여행 카테고리생성</title>
+    <link th:href="@{/css/admin/header.css}" rel="stylesheet">
+    </link>
+    <style>
+        table {
+            font-size: 12px;
+        }
+
+        .rwd-table {
+            border: 1px #a39485 solid;
+            font-size: 1.1rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .rwd-table th {
+            border-top: none;
+            color: white;
+            background-color: #2c394b;
+            width: 10rem;
+        }
+
+        .rwd-table tr {
+            border-top: 1px solid #808080;
+            border-bottom: 1px solid #808080;
+            background-color: #ffffff;
+        }
+
+        .rwd-table tr:nth-child(odd):not(:first-child) {
+            background-color: #ffffff;
+        }
+
+        .rwd-table th {
+            display: none;
+        }
+
+        .rwd-table td {
+            display: block;
+            height: 2rem;
+        }
+
+        .rwd-table td:first-child {
+            margin-top: 0.5em;
+        }
+
+
+
+        .rwd-table {
+            color: #333;
+            border-radius: 0.4em;
+            overflow: hidden;
+        }
+
+        .rwd-table tr {
+            border-color: #ccc;
+        }
+
+        .rwd-table th,
+        .rwd-table td {
+            padding: 0.5em 1em;
+        }
+
+        @media screen and (max-width: 601px) {
+            .rwd-table tr:nth-child(2) {
+                border-top: none;
+            }
+        }
+
+        @media screen and (min-width: 600px) {
+            .rwd-table tr:hover:not(:first-child) {
+                background-color: #f4f6f8;
+            }
+
+            .rwd-table td:before {
+                display: none;
+            }
+
+            .rwd-table th,
+            .rwd-table td {
+                display: table-cell;
+                padding: 0.25em 0.5em;
+            }
+
+            .rwd-table th:first-child,
+            .rwd-table td:first-child {
+                padding-left: 0;
+            }
+
+            .rwd-table th:last-child,
+            .rwd-table td:last-child {
+                padding-right: 0;
+            }
+
+            .rwd-table th,
+            .rwd-table td {
+                padding: 1em;
+            }
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 20px;
+            margin-bottom: 10px;
+
+            li {
+                padding-left: 20px;
+                margin-bottom: 5px;
+            }
+        }
+
+        .folder {
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .container {
+            display: block;
+            min-height: 800px;
+            margin-left: 32px;
+            margin-right: 50px;
+        }
+
+        h2 {
+            text-align: left;
+            margin-top: 80px;
+        }
+
+        .innerContainer {
+            padding-top: 30px;
+            display: flex;
+        }
+
+        .categoryArea {
+            width: 40rem;
+
+        }
+
+        .formArea {
+            width: 100%;
+            margin-left: 5rem;
+        }
+
+        #treeArea {
+            border: 1px solid #8b8b8b;
+            min-height: 20rem;
+        }
+
+        .categoryBtn {
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .categoryBtnArea {
+            text-align: center;
+            background-color: #f4f6f8;
+
+            button {
+                font-size: 1.2rem;
+                margin-top: 2px;
+            }
+
+            button:hover {
+                font-weight: 600;
+            }
+        }
+
+        input[type="text"] {
+            width: 24rem;
+            border: none;
+            height: 1.5rem;
+            padding: 5px;
+            font-size: 1.1rem;
+        }
+
+        [type="radio"] {
+            appearance: none;
+            border: max(2px, 0.1em) solid gray;
+            border-radius: 50%;
+            width: 1.2em;
+            height: 1.2em;
+            transition: border 0.2s ease-in-out;
+
+        }
+
+        [type="radio"]:checked {
+            border: 0.6em solid #3e82ff;
+        }
+
+        [type="radio"]:focus-visible {
+            outline-offset: max(4px, 0.1em);
+            outline: max(2px, 0.1em) dotted #3e82ff;
+        }
+
+        [type="radio"]:hover {
+            box-shadow: 0 0 0 max(2px, 0.2em) lightgray;
+            cursor: pointer;
+        }
+
+        [type="radio"]:hover+span {
+            cursor: pointer;
+        }
+
+        [type="radio"]:disabled {
+            background-color: lightgray;
+            box-shadow: none;
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        [type="radio"]:disabled+span {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        #parents {
+            display: none;
+        }
+
+        label {
+            margin-right: 10px;
+        }
+
+        .btnArea {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        #submitBtn {
+            background-color: #43bff8;
+            color: #ffffff;
+            border: none;
+            transition: all 0.3s ease;
+            width: 7rem;
+            font-size: 1.3rem;
+            height: 3rem;
+            border-radius: 7px;
+
+            &:hover {
+                background-color: #3e8cf1;
+                color: #555252;
+                transform: scale(0.98);
+
+            }
+
+        }
+
+        #deleteBtn {
+            background-color: #ff7979;
+            color: #ffffff;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 1.3rem;
+            width: 7rem;
+            height: 3rem;
+            margin-left: 2rem;
+            border-radius: 7px;
+
+            &:hover {
+                transform: scale(0.98);
+                background-color: #ff4b4b;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header th:replace="fragments/adminHeader::masterHeader"></header>
+    <nav th:replace="fragments/adminHeader::masterNav"></nav>
+    <!-- 메인 시작 -->
+    <main id="main">
+        <div class="container">
+            <h2>카테고리 생성·관리</h2>
+            <hr />
+            <div class="innerContainer">
+                <div class="categoryArea">
+                    <div id="treeArea">
+                        <div class="categoryBtnArea">
+                            <button onclick="toggleAll(true)" class="categoryBtn">open all</button>
+                            <span>|</span>
+                            <button onclick="toggleAll(false)" class="categoryBtn">close all</button>
+                            <hr>
+                        </div>
+                        <ul>
+                            <li th:each="category : ${categoryList}">
+                                <i class="fa-solid fa-caret-down"></i> <span class="folder" onclick="toggle(this)"
+                                    th:text="${category.major}"></span>
+                                <ul>
+                                    <li th:each="medium,stat : ${category.medium}">
+                                        <i class="fa-solid fa-caret-down"></i> <span class="folder"
+                                            onclick="toggle(this)" th:text="${medium}"></span>
+                                        <ul>
+                                            <li th:each="sub : ${category.sub[__${stat.index}__]}">└ [[${sub}]]</li>
+
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="formArea">
+                    <h4>카테고리 추가 및 삭제</h4>
+                    <table class="rwd-table">
+                        <form th:action="@{/admin/category/new}" th:method="post" id="categoryForm">
+                            <tbody>
+                                <tr>
+                                    <th>카테고리명</th>
+                                    <td><input placeholder="카테고리명(10자이내 한글)" name="categoryName" type="text"
+                                            id="categoryName" maxlength="10"></td>
+                                </tr>
+                                <tr>
+                                    <th>분류</th>
+                                    <td style="display: flex; padding-top: 25px;">
+                                        <input type="radio" name="depth" value="1" id="major" class="categoryCheck"
+                                            checked>
+                                        <label for="major">대분류</label>
+                                        <input type="radio" name="depth" value="2" id="medium" class="categoryCheck">
+                                        <label for="medium">중분류</label>
+                                        <input type="radio" name="depth" value="3" id="sub" class="categoryCheck">
+                                        <label for="sub">소분류</label>
+                                    </td>
+                                </tr>
+                                <tr id="parents">
+                                    <th>상위 카테고리명</th>
+                                    <td>
+                                        <input type="text" maxlength="10" placeholder="상위 카테고리명을 왼쪽 목록에서 선택해주세요."
+                                            id="parentsName" name="parentsName">
+                                    </td>
+                                </tr>
+                            </tbody>
+                    </table>
+                    <div class="btnArea">
+                        <button type="submit" id="submitBtn">등록</button>
+                        <button type="button" id="deleteBtn">삭제</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function toggle(element) {
+            const nextUl = element.nextElementSibling;
+            if (nextUl) nextUl.classList.toggle("hidden");
+        }
+
+        function toggleAll(open) {
+            document.querySelectorAll("#treeArea ul ul").forEach(ul => {
+                if (open) ul.classList.remove("hidden");
+                else ul.classList.add("hidden");
+            });
+        }
+
+        let parents = document.getElementById("parents");
+
+        //대분류 선택이 아닐 시 상위분류이름 나타나게 함
+        $(".categoryCheck").click(function (event) {
+            if (!($("#major").is(":checked"))) {
+                parents.style.display = "table-row";
+            }
+            else {
+                parents.style.display = "none";
+            }
+        })
+
+        $("span").click(function (event) {
+            parentsName.value = event.target.innerText;
+        })
+
+        const name_check = /^[가-힣]{1,10}$/;
+
+        //카테고리 등록
+        $("#submitBtn").click(function (event) {
+            event.preventDefault();
+
+            if (!name_check.test(document.getElementById("categoryName").value)) {
+
+                Swal.fire({ text: "등록 하실 카테고리명을 입력해주세요. 카테고리명은 한글 10자이내입니다." });
+            }
+
+            if (!$("#major").is(":checked")) {
+                if (document.getElementById("parentsName").value == "") {
+                    Swal.fire({ text: "상위 카테고리명은 필수입니다." });
+                }
+                else {
+                    ajax();
+                }
+            }
+            else {
+                ajax();
+            }
+
+
+        })
+
+        function ajax() {
+            var params = {
+                categoryName: $("#categoryName").val(),
+                depth: $("input[name='depth']:checked").val(),
+                parentsName: $("#parentsName").val()
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/admin/category/new",
+                data: params,
+                success: function (res) {
+                    if (res == 1000) {
+                        Swal.fire({ text: "등록이 완료되었습니다." }).then(() => {
+                            location.reload();
+                        });
+                    }
+                    else if (res == 100) {
+                        Swal.fire({ text: "동일한 이름의 카테고리가 있습니다." });
+                    }
+                    else if (res == 700) {
+                        Swal.fire({ text: "상위 카테고리명에는 등록할 카테고리의 바로 윗 단계 분류만 입력 가능합니다." });
+                    }
+                    else {
+                        Swal.fire({ text: "일치하는 상위 카테고리가 없습니다." });
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    Swal.fire({ icon: 'error', text: "통신불가." });
+                }
+            })
+        }
+
+        //카테고리 삭제
+        $("#deleteBtn").click(deleteCategory);
+
+        function deleteCategory() {
+            if (!name_check.test(document.getElementById("categoryName").value)) {
+
+                Swal.fire({ text: "삭제하실 카테고리명을 입력해주세요. 카테고리명은 한글 10자이내입니다." });
+            }
+            else {
+
+
+                var params = {
+                    categoryName: $("#categoryName").val()
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "/admin/category/delete",
+                    data: params,
+                    success: function (res) {
+                        if (res == 1000) {
+                            Swal.fire({ text: "삭제가 완료되었습니다." }).then(() => {
+                                location.reload();
+                            });
+                        }
+                        else if (res == 100) {
+                            Swal.fire({ text: "일치하는 이름의 카테고리가 없습니다." });
+                        }
+                        else {
+                            Swal.fire({ text: "이미 해당 카테고리의 패키지가 존재 할 경우 삭제가 불가합니다." });
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        Swal.fire({ icon: 'error', text: "통신불가." });
+                    }
+                })
+
+            }
+        }
+
+
+
+    </script>
+    <script th:src="@{/js/adminNav.js}"></script>
+
+</body>
+
+</html>

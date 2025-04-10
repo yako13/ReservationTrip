@@ -14,6 +14,7 @@
             height: auto;
             display: flex;
             flex-direction: column;
+            min-height: 35rem;
         }
 
         .HanCkListMain {
@@ -59,7 +60,7 @@
         }
 
         .HanCkListMain ul li:last-child {
-            padding-bottom: 30px;
+            padding-bottom: 15px;
             border-bottom: 2px solid #ccc;
         }
 
@@ -324,6 +325,8 @@
         }
 
         .editLinkArea {
+            width: 100px;
+
             a {
                 color: #43bff8;
                 font-weight: 600;
@@ -351,13 +354,17 @@
                 width: 100%;
             }
 
-            padding: 5rem 0;
+            padding: 10rem 0;
             text-align: center;
             border-bottom: solid 1px #c2c2c2;
         }
 
         .deletebtn {
             cursor: pointer;
+        }
+
+        .reviewContent {
+            font-size: 1.2rem;
         }
     </style>
 </head>
@@ -425,10 +432,10 @@
                                 <span th:if="${reviewList.modified}">(수정됨)</span>
                             </div>
                             <div>
-                                <p th:text="${reviewList.content}">
+                                <p th:text="${reviewList.content}" class="reviewContent">
                                 </p>
                             </div>
-                            <div class="reviewImageArea">
+                            <div class="reviewImageArea" th:if="${!#lists.isEmpty(reviewList.imagesURL)}">
                                 <a th:each="images : ${reviewList.imagesURL}" th:href="@{${images}}"><img
                                         th:src="@{${images}}"></a>
 
@@ -456,6 +463,7 @@
     <footer th:replace="/fragments/memberFooter::memberFooter"></footer>
     <!-- 메인 끝 -->
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         //리뷰 별 색깔
         let star = document.querySelectorAll(".fa-star");
@@ -479,25 +487,39 @@
         //삭제
         $(".deletebtn").click(function (event) {
 
-            if (confirm("정말 리뷰를 삭제하시겠습니까?")) {
-                var params = event.target.id;
+            Swal.fire({
+                text: "정말 리뷰를 삭제하시겠습니까?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "확인",
+                cancelButtonText: "취소",
+                confirmButtonColor: "#4CAF50"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var params = event.target.id;
 
-                $.ajax({
-                    type: "POST",
-                    url: "/member/review/delete/" + params,
-                    success: function (res) {
-                        if (res == 1000) {
-                            $(".review" + params).remove();
+                    $.ajax({
+                        type: "POST",
+                        url: "/member/review/delete/" + params,
+                        success: function (res) {
+                            if (res == 1000) {
+                                $(".review" + params).remove();
+
+                                if ($(".rating").length === 0) {
+                                    location.reload();
+                                }
+                            }
+                            else {
+                                Swal.fire({ text: "리뷰를 삭제 할 수 없습니다." });
+                            }
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            Swal.fire({ icon: 'error', text: "통신불가." });
                         }
-                        else {
-                            alert("리뷰를 삭제 할 수 없습니다.");
-                        }
-                    },
-                    error: function (XMLHttpRequest, textStatus, errorThrown) {
-                        alert("통신 실패.")
-                    }
-                })
-            }
+                    })
+                }
+            });
+
         })
     </script>
 </body>

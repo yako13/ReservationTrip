@@ -3,6 +3,10 @@
     min-height: 35rem;
 }
 
+.reservationTable th:nth-child(2){
+    width: 20rem;
+}
+
 .formArea {
     margin-top: 2rem;
     display: flex;

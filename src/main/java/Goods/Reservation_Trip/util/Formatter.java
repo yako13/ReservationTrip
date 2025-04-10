@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.time.temporal.ChronoUnit;
@@ -15,6 +16,36 @@ import java.util.Locale;
 import java.util.Random;
 
 public class Formatter {
+
+    //패키지 옵션
+    public static List<String> getPackageOption(PackageOption packageOption){
+        List<String> optionList = new ArrayList<>();
+        if(packageOption.isHotelFee()){
+            optionList.add("호텔비 포함");
+        }
+        else {
+            optionList.add("호텔비 미포함");
+        }
+        if(packageOption.isGuide()){
+            optionList.add("가이드 있음");
+        }
+        else {
+            optionList.add("가이드 없음");
+        }
+        if(packageOption.isAirfare()){
+            optionList.add("항공료 포함");
+        }
+        else {
+            optionList.add("항공료 미포함");
+        }
+        if(packageOption.isNoShopping()){
+            optionList.add("쇼핑 없음");
+        }
+        else {
+            optionList.add("쇼핑 필수");
+        }
+        return optionList;
+    }
 
 
     public static String changeBigDecimalFormat(BigDecimal bigDecimal) {
@@ -68,6 +99,7 @@ public class Formatter {
     }
 
 
+
     //주문번호 숫자에 붙여주는 1~1000자리 숫자
     public class IncrementalCounter {
         private static int counter = 0; // 클래스 변수로 유지
@@ -80,7 +112,7 @@ public class Formatter {
 
     //주문 번호 만드는 함수
     public static String getReservationCode(LocalDateTime localDateTime) {
-        if (localDateTime != null) {
+        if(localDateTime !=null) {
             String dateTimePart = localDateTime.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
             String counterPart = IncrementalCounter.getNextNumber(); // 3자리 숫자 추가
             return dateTimePart + counterPart;
@@ -89,48 +121,19 @@ public class Formatter {
     }
 
     //패키지명에서 태그 추출
-    public static String getTag(String packageName) {
-        return packageName.substring(packageName.indexOf("#"));
+    public static String getTag(String packageName){
+        if(packageName.contains("#")) {
+            return packageName.substring(packageName.indexOf("#"));
+        }
+        return null;
     }
 
     //패키지명에서 태그만 뺀 값
-    public static String getPackageNameWithoutTag(String packageName) {
-        return packageName.substring(0, packageName.indexOf("#"));
-    }
-
-    //생년월일 분류
-    public static String getBirth(String birth){
-      return   birth.substring(0,4)+"."+birth.substring(4,6)+"."+birth.substring(6);
-    }
-
-    //패키지 옵션 분류
-    public static List<String> getPackageOptions(PackageOption packageOption){
-        List<String> optionList = new ArrayList<>();
-        if(packageOption.isNoShopping()){
-            optionList.add("쇼핑 필수 아님");
+    public static String getPackageNameWithoutTag(String packageName){
+        if(packageName.contains("#")) {
+            return packageName.substring(0, packageName.indexOf("#"));
         }
-        else {
-            optionList.add("쇼핑 필수");
-        }
-        if(packageOption.isGuide()){
-            optionList.add("가이드 동반");
-        }
-        else{
-            optionList.add("가이드 동반 안함");
-        }
-        if(packageOption.isAirfare()){
-            optionList.add("항공료 포함");
-        }
-        else {
-            optionList.add("항공료 포함 안함");
-        }
-        if(packageOption.isHotelFee()){
-            optionList.add("숙박비 포함");
-        }
-        else {
-            optionList.add("숙박비 포함 안함");
-        }
-        return optionList;
+        return packageName;
     }
 
     //운송장 번호 만드는 함수
@@ -147,6 +150,10 @@ public class Formatter {
         return String.format("%04d-%04d-%04d", part1, part2, part3);
     }
 
+    //생년월일 분류
+    public static String getBirth(String birth){
+        return   birth.substring(0,4)+"."+birth.substring(4,6)+"."+birth.substring(6);
+    }
 
     //-----HanPart 끝------
 
@@ -184,6 +191,19 @@ public class Formatter {
         return String.format("%s(%s) %s", formattedDate, dayOfWeek, time);
     }
 
+    // 25.05.01(목) 09:35 형식으로 포매팅
+    public static String formatDayAndTime(LocalDate date, LocalTime time) {
+        if (date == null || time == null) {
+            throw new IllegalArgumentException("date 또는 time이 null입니다");
+        }
+
+        String formattedDate = date.format(DateTimeFormatter.ofPattern("yy.MM.dd"));
+        String dayOfWeek = date.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN);
+        String formattedTime = time.format(DateTimeFormatter.ofPattern("HH:mm"));
+
+        return String.format("%s(%s) %s", formattedDate, dayOfWeek, formattedTime);
+    }
+
     //25.01.01 식으로 생년월일을 변환해주는 함수
     public static String formatBirthDate(String birthDate) {
         if (birthDate == null || birthDate.length() != 8) {
@@ -215,6 +235,9 @@ public class Formatter {
 
         return tripDuration;
     }
+
+
+
 
 
     //--Han Part2 끝--

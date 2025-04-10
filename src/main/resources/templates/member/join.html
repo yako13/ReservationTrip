@@ -233,7 +233,8 @@
 <body>
     <header th:replace="/fragments/memberHeader::memberHeader"></header>
     <main>
-        <input type="hidden" th:value="${alert}" id="dataAlert">
+        <input type="hidden" th:value="${checkName}" id="checkName">
+        <input type="hidden" th:value="${alert}" id="flashMessage">
         <div class="container">
             <div class="titleArea">
                 <h1>회원가입</h1>
@@ -258,7 +259,7 @@
                         <tr class="authArea">
                             <th><span class="red">*</span>이메일 인증번호</th>
                             <td><input type="text" id="authCode" name="authCode" class="joinInput" maxlength="6"
-                                    oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                    oninput="this.value = this.value.replace(/[^0-9]/g, '')" th:value="${authCode}">
                                 <button id="authCodeBtn" type="button">인증확인</button>
                             </td>
                         </tr>
@@ -318,6 +319,7 @@
         </div>
     </main>
     <footer th:replace="/fragments/memberFooter::memberFooter"></footer>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script th:src="@{/js/alert.js}"></script>
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script>
@@ -328,8 +330,7 @@
             const agreed = sessionStorage.getItem("agreedToTerms");
 
             if (agreed !== "true") {
-                alert("이용약관에 동의해야 회원가입이 가능합니다.");
-                window.location.href = "/terms/agree"; // 이용약관 페이지로 되돌리기
+                Swal.fire({ text: "이용약관에 동의해야 회원가입이 가능합니다." }).then(() => { window.location.href = "/terms/agree" });
             }
         };
 
@@ -349,7 +350,7 @@
                 display.textContent = minutes + ":" + seconds;
 
                 if (--timer < 0) {
-                    alert("인증 시간이 만료되었습니다. 다시 인증하여 주십시오.");
+                    Swal.fire({ text: "인증 시간이 만료되었습니다. 다시 인증하여 주십시오." });
                     clearInterval(timerInterval); // 타이머 정지
                     document.getElementById("authBtn").disabled = false;
                 }
@@ -361,7 +362,7 @@
 
             //인증확인버튼 활성화
             document.getElementById("authCodeBtn").disabled = false;
-            alert("이메일을 전송중입니다. 잠시만 기다려주십시오.");
+            Swal.fire({ text: "이메일을 전송중입니다. 잠시만 기다려주십시오." });
             var params = { email: $("#email").val() }
 
             $.ajax({
@@ -374,18 +375,18 @@
                             display = document.querySelector('#timer');
                         startTimer(fiveMinutes, display);
                         document.getElementById("authBtn").disabled = true;
-                        alert("인증번호가 발송되었습니다. 이메일을 확인하여 주십시오.");
+                        Swal.fire({  html: "인증번호가 발송되었습니다.<br>이메일을 확인하여 주십시오." });
                     } else if (res == 600) {
-                        alert("중복된 이메일입니다. 작성한 이메일을 다시 확인하여 주십시오.");
+                        Swal.fire({ text: "중복된 이메일입니다. 작성한 이메일을 다시 확인하여 주십시오." });
                         document.getElementById("authCodeBtn").disabled = true;
                     }
                     else {
-                        alert("인증번호가 전송되지 않았습니다. 작성한 이메일을 다시 확인하여 주십시오.");
+                        Swal.fire({ text: "인증번호가 전송되지 않았습니다. 작성한 이메일을 다시 확인하여 주십시오." });
                         document.getElementById("authCodeBtn").disabled = true;
                     }
                 },
                 error: function () {
-                    alert("통신 실패.");
+                    Swal.fire({ icon: 'error', text: "통신 실패." });
                 }
             });
         });
@@ -406,16 +407,16 @@
                 success: function (res) {
                     if (res == 1000) {
                         clearInterval(timerInterval); // 인증 성공 시 타이머 정지
-                        alert("인증이 완료되었습니다.");
+                        Swal.fire({ text: "인증이 완료되었습니다." });
                         bol_auth = 1;
                         document.getElementById("authCodeBtn").disabled = true;
                     } else {
-                        alert("인증번호가 일치하지 않습니다.");
+                        Swal.fire({ text: "인증번호가 일치하지 않습니다." });
                         document.getElementById("authBtn").disabled = false;
                     }
                 },
                 error: function () {
-                    alert("통신 실패.");
+                    Swal.fire({ icon: 'error', text: "통신 실패." });
                 }
             });
         });
@@ -505,6 +506,7 @@
 
         //창 로드시 필수 입력칸에 이벤트 걸어준다
         window.addEventListener("load", focusEvent);
+        window.addEventListener("load", checkPassword);
 
         function focusEvent() {
             // 필수 입력칸에 focusout시 값이 다 있는지 체크
@@ -553,8 +555,12 @@
             e.preventDefault();
             let ValueCheck = SignUpValueCheckAll();
             let valid = true;
+            if (document.getElementById("checkName").value == 1) {
+                bol_auth = 1;
+            }
+
             if (bol_auth == 0) {
-                alert("이메일 인증을 해주십시오.");
+                Swal.fire({ text: "이메일 인증을 해주십시오." });
             }
 
             if (password_check.test(userPassword.value)) {
@@ -591,7 +597,7 @@
             if (document.getElementById("male").checked || document.getElementById("female").checked) { }
             else {
                 valid = false;
-                alert("성별이 선택되지 않았습니다.");
+                Swal.fire({ text: "성별이 선택되지 않았습니다." });
             }
 
             if (ValueCheck === 0 && valid === true && bol_auth === 1 && bol_check_password === 1) {

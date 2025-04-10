@@ -13,16 +13,15 @@
 <a th:href="@{/reservation/Complete}">예약완료페이지</a>
 <br>
 <a th:href="@{/dib}">찜목록</a>
+<a th:href="@{/package/1}">패키지 상세(pk1)</a>
 <br>
 <a th:href="@{/member/reservation/details/1}">예약상세(pk1)</a>
 <br>
-<a th:href="@{/package/details}">패키지 상세</a>
-
 <a th:href="@{/member/edit}">회원수정페이지</a>
-<a id="withdrawalBtn">회원 탈퇴</a>
 <a th:href="@{/member/reservation/list}">주문리스트</a>
 <a th:href="@{/admin/reservation/list}">관리자주문리스트</a>
 <a th:href="@{/member/review/list/able}">회원등록가능리뷰</a>
+<a th:href="@{/admin/package/category/new}">카테고리생성</a>
 
 
 <form th:action="@{/reservation}" th:method="get" id="HanResvForm">
@@ -63,26 +62,5 @@
       form.submit();
     }
 </script>
-
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const cancelBtn = document.getElementById("withdrawalBtn");
-
-      if (cancelBtn) {
-        cancelBtn.addEventListener("click", () => {
-          var answer = confirm("회원 탈퇴를 하시면, 복구가 어려운 점을 참고하시기 바랍니다. 정말 탈퇴를 원하시나요?");
-
-          if (answer) {
-            window.location.assign("/permit/withdrawal");
-          }
-        });
-      } else {
-        console.error("cancelBtn을 찾을 수 없습니다.");
-      }
-    });
-</script>
-
-
-
 </body>
 </html>

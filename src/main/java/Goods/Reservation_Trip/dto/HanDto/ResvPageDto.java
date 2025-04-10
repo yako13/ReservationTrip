@@ -37,6 +37,9 @@ public class ResvPageDto { //예약 페이지를 보여주기위한 dto
     //회원 전화번호 변환
     private String phoneNum;
 
+    //회원 생년월일 변환
+    private String birth;
+
     //패키지 엔티티
     private Package packageEntity;
 

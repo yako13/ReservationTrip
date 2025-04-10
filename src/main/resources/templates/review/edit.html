@@ -69,7 +69,7 @@
         }
 
         #content {
-            margin: 3rem 0;
+            margin: 3rem 0 0.5rem 0;
             width: 95.8%;
             resize: none;
             color: black;
@@ -77,11 +77,13 @@
             outline: none;
             height: 20rem;
             padding: 1rem;
+            font-size: 1.1rem;
         }
 
         .scoreArea {
             margin: 1rem 0;
-            i{
+
+            i {
                 color: #ccc;
             }
         }
@@ -182,6 +184,14 @@
             overflow: hidden;
             border: 0;
         }
+
+        h4 {
+            padding-top: 0.5rem;
+        }
+
+        #textLength{
+            text-align: end;
+        }
     </style>
 </head>
 
@@ -192,14 +202,19 @@
             <div>
                 <h3>✏️후기 수정</h3>
             </div>
+
             <div class="packageArea">
                 <img th:src="@{${packageMainImage}}" alt="" id="packageImg">
                 <h4 th:text="${packageName}"></h4>
             </div>
+
             <form id="reviewForm" th:action="@{/member/review/edit}" th:method="post" enctype="multipart/form-data">
-                <textarea id="content" name="content" placeholder="후기를 작성해주세요." th:text="${content}"></textarea>
+                <textarea id="content" name="content" placeholder="후기를 작성해주세요. 후기 내용은 최소 10자 이상 500자 이하여야 합니다."
+                    maxlength="500" th:text="${content}"></textarea>
+                <p id="textLength">(0/500)</p>
                 <input type="hidden" name="reviewId" th:value="${reviewId}">
                 <input type="hidden" name="rating" id="score" th:value="${rating}">
+
                 <div class="scoreArea">
                     <p id="rating">⭐별점</p>
                     <i class="fa-solid fa-star fa-2xl" id="star1"></i>
@@ -208,24 +223,27 @@
                     <i class="fa-solid fa-star fa-2xl" id="star4"></i>
                     <i class="fa-solid fa-star fa-2xl" id="star5"></i>
                 </div>
+
                 <div class="filebox">
                     <input class="upload-name" value="첨부파일" placeholder="첨부파일: 최대 다섯장만 등록 가능합니다.">
-                    <label for="file">파일찾기</label>
-                    <input type="file" id="file" multiple name="reviewImages"
-                        onchange="previewMultipleImages(event, 'subImagePreview', 5, 'file')">
+                    <label for="subImage">파일찾기</label>
+                    <input type="file" id="subImage" multiple name="reviewImages"
+                        onchange="previewMultipleImages(event, 'subImagePreview', 5, 'subImage')">
                 </div>
-                <div class="subImageContainer" id="existingSubImage">
-                    <div id="subImagePreview" class="preview-container">
-                        <div class="image-container subImage-image-container" th:each="sub, iterStat : ${reviewImages}"
-                            id="subImageContainer-[[${iterStat.index}]]">
-                            <img th:src="@{${sub}}" class="thumbnail" />
-                            <button class="btn-delete" type="button"
-                                th:attr="onclick=|deleteExistingImage(this, [[${iterStat.index}]], 'subImage')|">
-                                <i class="fa-solid fa-square-xmark" style="color: #ff0000"></i>
-                            </button>
-                        </div>
-                    </div>
+
+                <!-- 기존 이미지들 -->
+
+                <div class="image-container subImage-image-container" th:each="img, iterStat : ${reviewImages}"
+                    th:attr="data-image-name=${img.imageFullName}, id='subImageContainer-' + ${iterStat.index}">
+                    <img th:src="@{'/productImages/'+${img.imageFullName}}" class="thumbnail" />
+                    <button type="button"
+                        th:attr="onclick=|deleteExistingImage(this, '${img.imageFullName}', 'subImage')|"
+                        class="btn-delete">
+                        <i class="fa-solid fa-square-xmark" style="color: #ff0000;"></i>
+                    </button>
                 </div>
+                <div id="subImagePreview" class="preview-container"></div>
+                <!-- 삭제된 이미지 정보 전송 -->
                 <input type="hidden" id="deletedImages" name="deletedImages" value="" />
 
                 <div class="btnArea">
@@ -238,67 +256,47 @@
     </main>
     <footer th:replace="/fragments/memberFooter::memberFooter"></footer>
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // 기존 이미지 삭제 함수
-        function deleteExistingImage(button, index, type) {
-            // id 기반 삭제 시도
-            let imageContainer = document.getElementById(`${type}Container-${index}`);
-
-            if (!imageContainer) {
-                imageContainer = button.closest("div");
-            }
-
+        // 기존 이미지 삭제 함수 (파일명 기반)
+        function deleteExistingImage(button, imageName, type) {
+            // 이미지 컨테이너 제거
+            let imageContainer = button.closest("div");
             if (imageContainer) {
-                imageContainer.remove(); // 화면에서 즉시 삭제
+                imageContainer.remove(); // 화면에서 제거
             }
+
             // 삭제된 이미지 목록 업데이트
             const deletedImagesInput = document.getElementById("deletedImages");
             let deletedImages = deletedImagesInput.value
                 ? deletedImagesInput.value.split(",")
                 : [];
 
-            let deleteItem = `${type}${index}`;
+            const deleteItem = `${type}|${imageName}`; // 예: subImage|파일명.jpg
 
             if (!deletedImages.includes(deleteItem)) {
                 deletedImages.push(deleteItem);
             }
 
             deletedImagesInput.value = deletedImages.join(",");
-
-
-            // 파일 input에서도 해당 파일 제거하기
-            const fileInput = document.getElementById("file");
-            if (fileInput && fileInput.files.length > 0) {
-                let dataTransfer = new DataTransfer(); // 새로운 DataTransfer 객체 생성
-                let files = Array.from(fileInput.files); // 현재 선택된 파일 배열 변환
-
-                // index에 해당하는 파일 제외하고 다시 추가
-                files.splice(index, 1);
-
-                files.forEach(file => {
-                    dataTransfer.items.add(file);
-                });
-
-                fileInput.files = dataTransfer.files; // 새로운 파일 목록 반영
-            }
+            console.log("삭제 이미지 목록:", deletedImagesInput.value);
         }
 
         // 새로 추가한 이미지 삭제
         function deleteNewImage(index, type) {
-            console.log(`새 이미지 삭제 실행: type=${type}, index=${index}`);
-
             const imageContainer = document.getElementById(`new${type}-${index}`);
             if (imageContainer) {
-                imageContainer.remove(); // 화면에서 즉시 삭제
+                imageContainer.remove();
             }
 
+            // 새 이미지 삭제 시 input 초기화 (여러 파일 업로드할 경우 유의)
             const fileInput = document.getElementById(type);
             if (fileInput) {
-                fileInput.value = ""; // 파일 선택 초기화
+                fileInput.value = "";
             }
         }
 
-        // 서브, 설명 이미지 미리보기 기능 (동적 추가)
+        // 새 이미지 미리보기
         const newImageIndex = {};
 
         function previewMultipleImages(event, previewId, maxImages, type) {
@@ -307,19 +305,15 @@
 
             if (!previewContainer || !files) return;
 
-            // 현재 미리보기된 이미지 개수
             let currentImageCount = previewContainer.childElementCount;
-            let newFiles = Array.from(files); // 선택된 파일을 배열로 변환
+            let newFiles = Array.from(files);
 
-            // 전체 개수 검사
             if (currentImageCount + newFiles.length > maxImages) {
-                alert(`최대 ${maxImages}개의 이미지만 업로드할 수 있습니다.`);
-                // 초과된 파일 제거 후 다시 설정
+                Swal.fire({ text: `최대 ${maxImages}개의 이미지만 업로드할 수 있습니다.` });
                 newFiles = newFiles.slice(0, maxImages - currentImageCount);
-                event.target.value = ""; // input 초기화
+                event.target.value = "";
             }
 
-            // newImageIndex[type]가 없으면 초기화
             if (!newImageIndex[type]) {
                 newImageIndex[type] = 0;
             }
@@ -355,30 +349,30 @@
             }
         }
 
+        // DOM 로드 후 파일명 미리보기 세팅
         document.addEventListener("DOMContentLoaded", function () {
-            const subImageInput = document.getElementById("file");
-            const dataTransfer = new DataTransfer(); //
+            const subImageInput = document.getElementById("subImage");
 
-            subImageInput.addEventListener("change", function () {
-                let fileArr = subImageInput.files;
+            if (subImageInput) {
+                subImageInput.addEventListener("change", function () {
+                    const fileName = Array.from(subImageInput.files).map(f => f.name).join(', ');
+                    document.querySelector(".upload-name").value = fileName;
+                });
+            }
 
-                if (fileArr && fileArr.length > 0) {
-                    for (let i = 0; i < fileArr.length; i++) {
-                        dataTransfer.items.add(fileArr[i]);
-                    }
-
-                    subImageInput.files = dataTransfer.files;
-                }
-            });
         });
 
 
 
-        $("#file").on('change', function () {
-            var fileName = $("#file").val();
-            $(".upload-name").val(fileName);
+        $("#subImage").on('change', function () {
+            const files = this.files;
+            if (files.length > 0) {
+                const fileNames = Array.from(files).map(file => file.name).join(', ');
+                $(".upload-name").val(fileNames);
+            } else {
+                $(".upload-name").val("첨부파일");
+            }
         });
-
         let s = document.querySelectorAll(".fa-star");
 
         window.addEventListener("load", changeStar);
@@ -425,16 +419,30 @@
             document.getElementById("score").value = scoreLength.length;
 
             if (imageboxCount.length > 5) {
-                alert("리뷰 사진은 최대 5장까지 가능합니다.");
+                Swal.fire({ text: "리뷰 사진은 최대 5장까지 가능합니다." });
             }
 
             if (content.value.length < 10 || content.value.length > 500) {
-                alert("리뷰는 최소 10자 이상 500자 이하여야 합니다.");
+                Swal.fire({ text: "리뷰는 최소 10자 이상 500자 이하여야 합니다." });
             }
             else {
                 document.getElementById("reviewForm").submit();
             }
         })
+
+        //글자수 세기
+        let textLength = document.getElementById("textLength");
+
+        content.addEventListener("input", getContentLength);
+
+        function getContentLength() {
+            textLength.innerText = "(" + content.value.length + "/500)"
+            if (content.value.length > 500) {
+                Swal.fire({ text: "후기 내용은 500자를 초과할 수 없습니다." });
+            }
+        }
+
+        window.addEventListener("load",getContentLength);
 
 
 
