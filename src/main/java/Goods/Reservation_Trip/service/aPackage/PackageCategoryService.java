@@ -127,8 +127,11 @@ public class PackageCategoryService {
         if(packageSize>0){
             return 500;
         }
-
-
+        
+        //하위 카테고리가 존재한다면
+        if(!packageCategory.getChildren().isEmpty()){
+            return 700;
+        }
 
         packageCategoryRepository.delete(packageCategory);
 

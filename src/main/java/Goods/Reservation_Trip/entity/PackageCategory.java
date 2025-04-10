@@ -39,14 +39,9 @@ public class PackageCategory {
     @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
     private List<PackageCategory> children;
 
-    @OneToMany(mappedBy = "mainCategory", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Package> mainPackageList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "subCategory", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Package> subCategoryList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "smallCategory", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Package> smallCategoryList = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "package_id")
+    private Package aPackage;
 
     public PackageCategory(Long id, String name, PackageCategory parent, int depth) {
         this.id = id;
