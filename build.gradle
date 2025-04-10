@@ -15,14 +15,15 @@ java {
 
 // querydsl
 def querydslVersion = "5.0.0"
-def generated = "src/main/generated"
+
+def generated = layout.buildDirectory.dir("generated/querydsl").get().asFile
 
 sourceSets {
-	main.java.srcDirs += [generated]
+	main.java.srcDirs += generated
 }
 
 tasks.withType(JavaCompile).configureEach {
-	options.generatedSourceOutputDirectory = file(generated)
+	options.annotationProcessorGeneratedSourcesDirectory = generated
 }
 // querydsl
 
