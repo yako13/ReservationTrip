@@ -1,7 +1,9 @@
 package Goods.Reservation_Trip.repository.aPackage;
 
 import Goods.Reservation_Trip.entity.PackageCategory;
+import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,4 +19,8 @@ public interface PackageCategoryRepository extends JpaRepository<PackageCategory
     boolean existsByName(String name);
 
     List<PackageCategory> findByParentIdAndDepth(Long parentId,int depth);
+
+    @Query("SELECT COUNT(p) FROM Package p WHERE p.mainCategory.id = :id OR p.subCategory.id = :id OR p.smallCategory.id = :id")
+    int countByAnyCategory(@Param("id") Long id);
+
 }

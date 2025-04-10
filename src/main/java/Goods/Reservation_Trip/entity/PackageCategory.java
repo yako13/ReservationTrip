@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Comment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Table(name = "package_category")
@@ -37,6 +38,15 @@ public class PackageCategory {
 
     @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
     private List<PackageCategory> children;
+
+    @OneToMany(mappedBy = "mainCategory", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Package> mainPackageList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "subCategory", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Package> subCategoryList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "smallCategory", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Package> smallCategoryList = new ArrayList<>();
 
     public PackageCategory(Long id, String name, PackageCategory parent, int depth) {
         this.id = id;

@@ -108,4 +108,30 @@ public class PackageCategoryService {
 
         return 1000;
     }
+
+    /**
+     * 카테고리 삭제
+     */
+    public int deleteCategory(String categoryName){
+        Optional<PackageCategory> optionalPackageCategory = packageCategoryRepository.findByName(categoryName);
+
+        //일치하는 카테고리명이 없다면
+        if(optionalPackageCategory.isEmpty()) return 100;
+
+        PackageCategory packageCategory = optionalPackageCategory.get();
+
+        //해당 카테고리에서 패키지가 존재한다면
+
+        int packageSize = packageCategoryRepository.countByAnyCategory(packageCategory.getId());
+
+        if(packageSize>0){
+            return 500;
+        }
+
+
+
+        packageCategoryRepository.delete(packageCategory);
+
+        return 1000;
+    }
 }

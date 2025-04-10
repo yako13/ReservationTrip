@@ -251,11 +251,28 @@
 
             &:hover {
                 background-color: #3e8cf1;
-                color: #ebebeb;
+                color: #555252;
                 transform: scale(0.98);
 
             }
 
+        }
+
+        #deleteBtn {
+            background-color: #ff7979;
+            color: #ffffff;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 1.3rem;
+            width: 7rem;
+            height: 3rem;
+            margin-left: 2rem;
+            border-radius: 7px;
+
+            &:hover {
+                transform: scale(0.98);
+                background-color: #ff4b4b;
+            }
         }
     </style>
 </head>
@@ -296,13 +313,13 @@
                     </div>
                 </div>
                 <div class="formArea">
-                    <h4>상품 분류 추가</h4>
+                    <h4>카테고리 추가 및 삭제</h4>
                     <table class="rwd-table">
                         <form th:action="@{/admin/category/new}" th:method="post" id="categoryForm">
                             <tbody>
                                 <tr>
-                                    <th>상품분류명</th>
-                                    <td><input placeholder="상품분류명(10자이내 한글)" name="categoryName" type="text"
+                                    <th>카테고리명</th>
+                                    <td><input placeholder="카테고리명(10자이내 한글)" name="categoryName" type="text"
                                             id="categoryName" maxlength="10"></td>
                                 </tr>
                                 <tr>
@@ -318,16 +335,17 @@
                                     </td>
                                 </tr>
                                 <tr id="parents">
-                                    <th>상위분류이름</th>
+                                    <th>상위 카테고리명</th>
                                     <td>
-                                        <input type="text" maxlength="10" placeholder="상위분류이름을 왼쪽 목록에서 선택해주세요."
+                                        <input type="text" maxlength="10" placeholder="상위 카테고리명을 왼쪽 목록에서 선택해주세요."
                                             id="parentsName" name="parentsName">
                                     </td>
                                 </tr>
                             </tbody>
                     </table>
                     <div class="btnArea">
-                        <button type="submit" id="submitBtn">제출</button>
+                        <button type="submit" id="submitBtn">등록</button>
+                        <button type="button" id="deleteBtn">삭제</button>
                     </div>
                     </form>
                 </div>
@@ -367,26 +385,24 @@
 
         const name_check = /^[가-힣]{1,10}$/;
 
+        //카테고리 등록
         $("#submitBtn").click(function (event) {
             event.preventDefault();
 
-            if (document.getElementById("categoryName").value == "") {
-                Swal.fire({ text: "상품분류명은 필수입니다." });
-            }
             if (!name_check.test(document.getElementById("categoryName").value)) {
 
-                Swal.fire({ text: "상품분류명은 한글 10자이내입니다." });
+                Swal.fire({ text: "등록 하실 카테고리명을 입력해주세요. 카테고리명은 한글 10자이내입니다." });
             }
 
             if (!$("#major").is(":checked")) {
                 if (document.getElementById("parentsName").value == "") {
-                    Swal.fire({ text: "상위 분류 이름은 필수입니다." });
+                    Swal.fire({ text: "상위 카테고리명은 필수입니다." });
                 }
                 else {
                     ajax();
                 }
             }
-            else{
+            else {
                 ajax();
             }
 
@@ -406,12 +422,14 @@
                 data: params,
                 success: function (res) {
                     if (res == 1000) {
-                        location.reload();
+                        Swal.fire({ text: "등록이 완료되었습니다." }).then(() => {
+                            location.reload();
+                        });
                     }
                     else if (res == 100) {
                         Swal.fire({ text: "동일한 이름의 카테고리가 있습니다." });
                     }
-                    else if( res ==700){
+                    else if (res == 700) {
                         Swal.fire({ text: "상위 카테고리명에는 등록할 카테고리의 바로 윗 단계 분류만 입력 가능합니다." });
                     }
                     else {
@@ -423,6 +441,48 @@
                 }
             })
         }
+
+        //카테고리 삭제
+        $("#deleteBtn").click(deleteCategory);
+
+        function deleteCategory() {
+            if (!name_check.test(document.getElementById("categoryName").value)) {
+
+                Swal.fire({ text: "삭제하실 카테고리명을 입력해주세요. 카테고리명은 한글 10자이내입니다." });
+            }
+            else {
+
+
+                var params = {
+                    categoryName: $("#categoryName").val()
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "/admin/category/delete",
+                    data: params,
+                    success: function (res) {
+                        if (res == 1000) {
+                            Swal.fire({ text: "삭제가 완료되었습니다." }).then(() => {
+                                location.reload();
+                            });
+                        }
+                        else if (res == 100) {
+                            Swal.fire({ text: "일치하는 이름의 카테고리가 없습니다." });
+                        }
+                        else {
+                            Swal.fire({ text: "이미 해당 카테고리의 패키지가 존재 할 경우 삭제가 불가합니다." });
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        Swal.fire({ icon: 'error', text: "통신불가." });
+                    }
+                })
+
+            }
+        }
+
+
 
     </script>
     <script th:src="@{/js/adminNav.js}"></script>
