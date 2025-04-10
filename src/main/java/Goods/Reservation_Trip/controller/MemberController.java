@@ -71,6 +71,7 @@ public class MemberController {
     @PostMapping("/join")
     public String join(@Valid JoinDto joinDto, Model model, Errors errors,RedirectAttributes attributes) throws AuthenticationException {
         model.addAttribute("email", joinDto.getEmail());
+        model.addAttribute("authCode",joinDto.getAuthCode());
         model.addAttribute("password", joinDto.getPassword());
         model.addAttribute("name", joinDto.getName());
         model.addAttribute("phoneNumber", joinDto.getPhoneNumber());
@@ -90,6 +91,7 @@ public class MemberController {
 
         //이름 및 휴대전화번호가 중복인 회원이 있는 경우
         if(!memberService.join(joinDto)) {
+            model.addAttribute("checkName",1); //이미 이메일은 인증한 걸 확인해줌
             model.addAttribute("alert", "동일한 이름과 휴대전화번호를 가진 회원이 있습니다. ");
             return "member/join";
         }
@@ -177,6 +179,7 @@ public class MemberController {
         model.addAttribute("phoneNumber", editDto.getPhoneNumber());
         model.addAttribute("gender", editDto.isGender());
         model.addAttribute("birth", editDto.getBirth());
+        model.addAttribute("authCode",editDto.getAuthCode());
 
         //인증번호 일치하지 않을 때
         if (!mailService.validationAuthCode(memberResponseDto.getEmail(), editDto.getAuthCode())) {
@@ -186,6 +189,7 @@ public class MemberController {
 
         //이름과 휴대전화번호가 같은 회원이 있는 경우 수정 불가
         if(!memberService.editMember(memberResponseDto.getEmail(), editDto)) {
+            model.addAttribute("checkName",1); //이미 이메일은 인증한 걸 확인해줌
             model.addAttribute("alert","동일한 이름과 휴대전화번호를 가진 회원이 있습니다. ");
             return "member/edit";
         }

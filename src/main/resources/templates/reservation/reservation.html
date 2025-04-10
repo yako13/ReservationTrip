@@ -23,7 +23,8 @@
 
 
         .HanBirthReq.HanRed+.HanRedP,
-        .HanPhoneReq.HanRed+.HanRedP {
+        .HanPhoneReq.HanRed+.HanRedP,
+        .HanPassportNumReq.HanRed+.HanRedP {
             display: block;
         }
 
@@ -39,6 +40,61 @@
         .HanRedGender label {
             border: 1px solid #fc4545;
             box-shadow: 0 0 0 1px #fc4545;
+            color: #fc4545;
+        }
+
+        .HanRedPNameCheck {
+            font-size: 12px;
+            display: none;
+            color: #fc4545;
+        }
+
+        .HanCheckBox {
+            margin: 10px 0;
+            margin-bottom: 7px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            width: 100%;
+
+        }
+
+        .HanCheckBox label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+
+        .HanCheckBox input {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            box-sizing: border-box;
+            outline: none;
+            border: none;
+            padding: 0;
+            margin: 0;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            background: url(/images/checkBoxOff22.svg) no-repeat center center;
+            background-size: 18px 18px;
+
+        }
+
+        .HanCheckBox input:checked {
+            background: url(/images/checkBoxOn22.svg) no-repeat center center;
+            background-size: 18px 18px;
+        }
+
+        .HanCheckBox input.HanRed {
+            box-shadow: 0 0 0 2px #fc4545;
+            border-radius: 3px;
+        }
+
+        .HanCheckBox input.HanRed+span {
             color: #fc4545;
         }
     </style>
@@ -73,7 +129,7 @@
 
                     </div>
 
-                    <div class="highlight" th:text="${resvPageDto.packageSchedule.period}">3박 4일</div>
+                    <div class="highlight">3박 4일</div>
 
                     <div class="HanDateDiv">
                         <p class="info-label">도착일</p>
@@ -91,17 +147,18 @@
 
                         <div>
                             <!--출국 비행기-->
-                            <p th:text="${resvPageDto.packageSchedule.airlineOut.getName}" style="font-weight: bold;">
+                            <p th:text="${resvPageDto.packageSchedule.packageScheduleDetails.airlineOut.name}"
+                                style="font-weight: bold;">
                                 제주항공</p>
                             <p>
-                                [[${resvPageDto.packageSchedule.departurePointOut.getName}]] →
-                                [[${resvPageDto.packageSchedule.arrivalPointOut.getName}]]
+                                [[${resvPageDto.packageSchedule.packageScheduleDetails.departurePointOut.name}]] →
+                                [[${resvPageDto.packageSchedule.packageScheduleDetails.arrivalPointOut.name}]]
                             </p>
                             <!--귀국 비행기-->
-                            <p th:text="${resvPageDto.packageSchedule.airlineReturn.getName}"
+                            <p th:text="${resvPageDto.packageSchedule.packageScheduleDetails.airlineReturn.name}"
                                 style="font-weight: bold; margin-top: 8px;">에어부산</p>
-                            <p>[[${resvPageDto.packageSchedule.departurePointReturn.getName}]] →
-                                [[${resvPageDto.packageSchedule.arrivalPointReturn.getName}]]</p>
+                            <p>[[${resvPageDto.packageSchedule.packageScheduleDetails.departurePointReturn.name}]] →
+                                [[${resvPageDto.packageSchedule.packageScheduleDetails.arrivalPointReturn.name}]]</p>
                         </div>
 
                     </div>
@@ -110,16 +167,18 @@
 
                         <p>항공출발 : </p>
                         <!--                <p >25.05.01(목) 09:35 ｜ 항공편 7C1403</p>-->
-                        <p>[[${resvPageDto.tripStartString}]] [[${resvPageDto.packageSchedule.departureTimeOut}]] ｜ 항공편
-                            [[${resvPageDto.packageSchedule.flightNumberOut}]]</p>
+                        <p>[[${resvPageDto.tripStartString}]]
+                            [[${resvPageDto.packageSchedule.packageScheduleDetails.departureTimeOut}]] ｜ 항공편
+                            [[${resvPageDto.packageSchedule.packageScheduleDetails.flightNumberOut}]]</p>
                     </div>
 
                     <div class="HanFlex1">
 
                         <p>항공도착 : </p>
                         <!--                <p>25.05.04(일) 13:30 ｜ 항공편 7C1404</p>-->
-                        <p>[[${resvPageDto.tripEndString}]] [[${resvPageDto.packageSchedule.arrivalTimeReturn}]] ｜ 항공편
-                            [[${resvPageDto.packageSchedule.flightNumberReturn}]]</p>
+                        <p>[[${resvPageDto.tripEndString}]]
+                            [[${resvPageDto.packageSchedule.packageScheduleDetails.arrivalTimeReturn}]] ｜ 항공편
+                            [[${resvPageDto.packageSchedule.packageScheduleDetails.flightNumberReturn}]]</p>
                     </div>
 
                 </div>
@@ -139,22 +198,29 @@
 
                 <div class="HanInfoGroup2">
 
-                    <div class="HanFlex1">
-                        <p class="HanLight">이름 / 성별 : </p>
-                        <p class="HanBold">[[${resvPageDto.memberResponseDto.name}]] / [[${resvPageDto.gender}]]</p>
+                    <div class="HanFlex1" th:if="${resvPageDto.gender}">
+                        <p class="HanLight">이름 : </p>
+                        <p class="HanBold">[[${resvPageDto.memberResponseDto.name}]] </p>
                     </div>
 
-                    <div class="HanFlex1">
+                    <div class="HanFlex1" th:unless="${resvPageDto.gender}">
+                        <p class="HanLight">이름 : </p>
+                        <p class="HanBold">[[${resvPageDto.memberResponseDto.name}]]</p>
+                    </div>
+
+                    <div class="HanFlex1" th:if="${resvPageDto.birth}">
                         <p class="HanLight">생년월일 : </p>
-                        <p class="HanBold" th:text="${resvPageDto.memberResponseDto.birth}">1991.01.01</p>
+                        <p class="HanBold" th:text="${resvPageDto.birth}">1991.01.01</p>
+           
                     </div>
 
-                    <div class="HanFlex1">
+                    <div class="HanFlex1" th:if="${resvPageDto.phoneNum}">
                         <p class="HanLight">휴대폰번호 : </p>
                         <p class="HanBold" th:text="${resvPageDto.phoneNum}">010-1111-2222</p>
                     </div>
 
                 </div>
+
             </div>
 
             <!-- 여행자 정보 입력 -->
@@ -181,6 +247,16 @@
 
                         <p class="HanTitleP">성인 [[${i + 1}]]</p>
 
+                        <!-- i == 0일 때만 보여주기 -->
+                        <div th:if="${i == 0}" class="HanCheckBox">
+                            <label>
+                                <input type="checkbox" class="sameAsReserverCheckbox" data-index="0"
+                                    th:name="adult[__${i}__].resCheck" value="true" />
+                                <span style="margin-bottom:2px">예약자 동일</span>
+                            </label>
+                        </div>
+
+
                         <div class="HanNameDiv">
 
                             <input type="hidden" th:name="adult[__${i}__].ageGroup" value="ADULT" />
@@ -188,7 +264,7 @@
                             <div>
                                 <p>이름</p>
                                 <input class="HanNameReq" type="text" placeholder="이름을 입력해주세요" style="width: 500px;"
-                                    oninput="removeEngNum(this);" maxlength="15" th:name="adult[__${i}__].name" />
+                                    maxlength="15" th:name="adult[__${i}__].name" />
                             </div>
 
                             <div class="HanGenderRadio">
@@ -206,6 +282,7 @@
                         </div>
                         <p class="HanRedPName">이름을 입력해주세요</p>
                         <p class="HanRedPGender">성별을 입력해주세요</p>
+                        <p class="HanRedPNameCheck">이름을 한글로 입력해주세요</p>
 
 
 
@@ -219,6 +296,12 @@
                             oninput="this.value = this.value.replace(/[^0-9]/g, '')" th:name="adult[__${i}__].phone" />
 
                         <p class="HanRedP">휴대폰 번호를 정확히 입력해주세요</p>
+
+                        <p>여권번호</p>
+                        <input type="text" class="HanPassportNumReq" placeholder="여권번호를 입력해주세요" maxlength="9"
+                            th:name="adult[__${i}__].passportNum" />
+
+                        <p class="HanRedP">여권번호를 정확히 입력해주세요</p>
 
 
                     </div>
@@ -243,7 +326,7 @@
                             <div>
                                 <p>이름</p>
                                 <input type="text" class="HanNameReq" placeholder="이름을 입력해주세요" style="width: 500px;"
-                                    oninput="removeEngNum(this);" maxlength="15" th:name="child[__${i}__].name" />
+                                    maxlength="15" th:name="child[__${i}__].name" />
                             </div>
 
 
@@ -264,6 +347,7 @@
 
                         <p class="HanRedPName">이름을 입력해주세요</p>
                         <p class="HanRedPGender">성별을 입력해주세요</p>
+                        <p class="HanRedPNameCheck">이름을 한글로 입력해주세요</p>
 
 
                         <p>생년월일</p>
@@ -275,6 +359,14 @@
                         <input type="text" class="HanPhoneReq" placeholder="휴대폰번호를 입력해주세요" maxlength="11"
                             oninput="this.value = this.value.replace(/[^0-9]/g, '')" th:name="child[__${i}__].phone" />
                         <p class="HanRedP">휴대폰 번호를 정확히 입력해주세요</p>
+
+                        <p>여권번호</p>
+                        <input type="text" class="HanPassportNumReq" placeholder="여권번호를 입력해주세요" maxlength="9"
+                            th:name="child[__${i}__].passportNum" />
+
+                        <p class="HanRedP">여권번호를 정확히 입력해주세요</p>
+
+
                     </div>
 
                 </div>
@@ -297,7 +389,7 @@
                             <div>
                                 <p>이름</p>
                                 <input type="text" class="HanNameReq" placeholder="이름을 입력해주세요" style="width: 500px;"
-                                    oninput="removeEngNum(this);" maxlength="15" th:name="baby[__${i}__].name" />
+                                    maxlength="15" th:name="baby[__${i}__].name" />
                             </div>
 
                             <div>
@@ -318,6 +410,7 @@
 
                         <p class="HanRedPName">이름을 입력해주세요</p>
                         <p class="HanRedPGender">성별을 입력해주세요</p>
+                        <p class="HanRedPNameCheck">이름을 한글로 입력해주세요</p>
 
 
 
@@ -330,6 +423,13 @@
                         <input type="text" class="HanPhoneReq" placeholder="휴대폰번호를 입력해주세요" maxlength="11"
                             oninput="this.value = this.value.replace(/[^0-9]/g, '')" th:name="baby[__${i}__].phone" />
                         <p class="HanRedP">휴대폰 번호를 정확히 입력해주세요</p>
+
+                        <p>여권번호</p>
+                        <input type="text" class="HanPassportNumReq" placeholder="여권번호를 입력해주세요" maxlength="9"
+                            th:name="baby[__${i}__].passportNum" />
+
+                        <p class="HanRedP">여권번호를 정확히 입력해주세요</p>
+
                     </div>
 
                 </div>
@@ -444,18 +544,30 @@
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- 결제전 검사하는 함수 -->
     <script>
-
-        function removeEngNum(input) {
-            // 숫자(0-9), 영어(A-Z, a-z), 특수문자 제거
-            input.value = input.value.replace(/[A-Za-z0-9~!@#$%^&*()_+|<>?:{}\[\],.\/;'"\-=\\`]/g, '');
-        }
-
-
         function startKakaoPay() {
             const nameInputs = document.querySelectorAll('.HanNameReq');
             const birthInputs = document.querySelectorAll('.HanBirthReq');
             const phoneInputs = document.querySelectorAll('.HanPhoneReq');
+            const passportInputs = document.querySelectorAll('.HanPassportNumReq');
+            let invalidPassportFields = [];
+
+            //여권번호  검사
+            passportInputs.forEach(input => {
+                const value = input.value.trim().toUpperCase(); // 대문자 강제 변환
+                const regex = /^M\d{3}[A-Z]\d{4}$/;
+
+                if (!regex.test(value)) {
+                    input.classList.add('HanRed');
+                    invalidPassportFields.push(input);
+                } else {
+                    input.classList.remove('HanRed');
+                }
+            });
+
+
 
             let emptyNameFields = [];
             let invalidKoreanFields = [];
@@ -479,10 +591,10 @@
                 }
             });
 
-            // 생년월일 검사: 숫자만, 길이 8자리
+            // 생년월일 검사: 형식이 정확한 날짜(예: 19900101 ~ 20991231)
             birthInputs.forEach(input => {
                 const value = input.value.trim();
-                if (!/^\d{8}$/.test(value)) {
+                if (!/^(19|20)\d{2}(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])$/.test(value)) {
                     invalidBirthFields.push(input);
                     input.classList.add('HanRed');
                 } else {
@@ -490,16 +602,33 @@
                 }
             });
 
-            // 휴대폰 번호 검사: 입력된 경우만 검사, 숫자 10~11자리
+            // 휴대폰 번호 검사: 입력된 경우만 검사, 010~019 시작 + 7~8자리 숫자
             phoneInputs.forEach(input => {
                 const value = input.value.trim();
-                if (value !== '' && !/^\d{10,11}$/.test(value)) {
+                if (value !== '' && !/^(010|011|016|017|018|019)[0-9]{7,8}$/.test(value)) {
                     invalidPhoneFields.push(input);
                     input.classList.add('HanRed');
                 } else {
                     input.classList.remove('HanRed');
                 }
             });
+            // 예약자 체크박스 검사
+            const sameAsCheckbox = document.querySelector('.sameAsReserverCheckbox');
+            if (sameAsCheckbox && !sameAsCheckbox.checked) {
+                sameAsCheckbox.classList.add('HanRed'); // 빨간 테두리 추가
+
+                Swal.fire({
+                    icon: 'warning',
+                    title: '예약자 정보가 누락되었습니다.',
+                    html: '‘예약자 동일’ 항목을 체크해 주세요. <br>※ 본 사이트는 대리 예약이 불가능하며, 반드시 본인이 예약을 <br>진행해야 합니다.',
+                    confirmButtonText: '확인'
+                });
+
+                sameAsCheckbox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            } else if (sameAsCheckbox) {
+                sameAsCheckbox.classList.remove('HanRed'); // 체크했으면 제거
+            }
 
             // 성별 라디오 검사
             const genderGroups = new Set();
@@ -516,9 +645,9 @@
                 if (radios.length > 0) {
                     const wrapper = radios[0].closest('.HanGenderRadio');
                     const parent = wrapper?.closest('.HanNameDiv');
-                    const genderErrorP = parent?.nextElementSibling?.classList.contains('HanRedPGender')
-                        ? parent.nextElementSibling
-                        : parent?.parentElement?.querySelector('.HanRedPGender');
+
+                    // 해당 성별 그룹 내 p.HanRedPGender 찾기
+                    const genderErrorP = parent?.querySelector('.HanRedPGender');
 
                     if (wrapper) {
                         if (!isChecked) {
@@ -534,7 +663,6 @@
             });
 
 
-
             // 에러 메시지 처리
             let errorMsg = '';
             if (emptyNameFields.length > 0 || invalidKoreanFields.length > 0) {
@@ -546,9 +674,13 @@
             if (invalidPhoneFields.length > 0) {
                 errorMsg += '휴대폰 번호는 10~11자리 숫자로 입력해주세요.<br>';
             }
+            if (invalidPassportFields.length > 0) {
+                errorMsg += '여권번호는 "M123A4567" 형식으로 입력해주세요<br>';
+            }
             if (uncheckedGenderGroups.length > 0) {
                 errorMsg += '모든 인원의 성별을 선택해주세요.';
             }
+
 
             if (errorMsg !== '') {
                 Swal.fire({
@@ -570,7 +702,12 @@
                 } else if (uncheckedGenderGroups.length > 0) {
                     const firstRadio = document.querySelector(`input[name="${uncheckedGenderGroups[0]}"]`);
                     if (firstRadio) firstRadio.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                } else if (invalidPhoneFields.length > 0) {
+                    invalidPhoneFields[0].focus();
+                } else if (invalidPassportFields.length > 0) {
+                    invalidPassportFields[0].focus();
                 }
+
 
                 return;
             }
@@ -580,7 +717,6 @@
             const totalPrice = document.getElementById("totalPrice").value;
             requestKakaoPay(packagePk, totalPrice);
         }
-
 
 
         function requestKakaoPay(packagePk, totalPrice) {
@@ -629,7 +765,69 @@
 
 
     </script>
-    
+
+    <!-- 이름부분 입력할때마다 정규식 검사하는 곳 -->
+    <script th:src="@{/js/reservationName.js}"></script>
+
+    <!-- 체크박스 눌렀을때 예약자 정보를 밑에 input에 복사해주는 함수 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const checkbox = document.querySelector('.sameAsReserverCheckbox');
+
+            if (checkbox) {
+                checkbox.addEventListener('change', function () {
+                    const index = this.dataset.index;
+                    const nameInput = document.querySelector(`input[name="adult[${index}].name"]`);
+                    const birthInput = document.querySelector(`input[name="adult[${index}].birth"]`);
+                    const phoneInput = document.querySelector(`input[name="adult[${index}].phone"]`);
+                    const passportInput = document.querySelector(`input[name="adult[${index}].passportNum"]`);
+                    const maleRadio = document.querySelector(`input[id="Amale${index}"]`);
+                    const femaleRadio = document.querySelector(`input[id="Afemale${index}"]`);
+
+                    if (this.checked) {
+                        this.classList.remove('HanRed');
+
+                        const name = `[[${resvPageDto.memberResponseDto.name}]]`;
+                        const birth = `[[${resvPageDto.memberResponseDto.birth}]]`;
+                        const phone = `[[${resvPageDto.phoneNum}]]`;
+                        const gender = `[[${resvPageDto.gender}]]`;
+
+                        if (name !== 'null' && nameInput) {
+                            nameInput.value = name;
+                            nameInput.classList.remove('HanRed');
+                            const wrapper = nameInput.closest('.HanNameDiv');
+                            wrapper?.classList.remove('HanRedName');
+                        }
+
+                        if (birth !== 'null' && birthInput) {
+                            birthInput.value = birth.replaceAll('.', '');
+                            birthInput.classList.remove('HanRed');
+                        }
+
+                        if (phone !== 'null' && phoneInput) {
+                            phoneInput.value = phone.replaceAll('-', '');
+                            phoneInput.classList.remove('HanRed');
+                        }
+
+
+                    } else {
+                        this.classList.add('HanRed');
+
+                        // 체크 해제 시 초기화
+                        if (nameInput) nameInput.value = '';
+                        if (birthInput) birthInput.value = '';
+                        if (phoneInput) phoneInput.value = '';
+                        if (passportInput) passportInput.value = '';
+                    }
+                });
+            }
+        });
+
+
+
+    </script>
+
+    <!-- 입력할때 에러메세지 제거해주는 함수 -->
     <script th:src="@{/js/reservationRemoveErr.js}"></script>
 
 

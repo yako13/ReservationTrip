@@ -210,7 +210,7 @@
                                 </div>
                                 <div class="inputArea">
                                     <label for="phoneNumber">휴대전화번호</label>
-                                    <input type="text" name="phoneNumber" placeholder="휴대전화번호" id="phoneNumber">
+                                    <input maxlength="11" type="text" name="phoneNumber" placeholder="숫자만 입력하세요." id="phoneNumber"  oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                                 </div>
                                 <button id="findBtn" type="button">확인</button>
                             </form>
@@ -229,6 +229,7 @@
     </main>
     <footer th:replace="/fragments/memberFooter::memberFooter"></footer>
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         //메일 전송
         $("#findBtn").click(function () {
@@ -248,11 +249,11 @@
                         document.querySelector(".foundMail").innerText = res;
                     }
                     else {
-                        alert("아이디를 찾을 수 없습니다.");
+                        Swal.fire({ icon: 'error',text: "아이디를 찾을 수 없습니다." });
                     }
                 },
                 error: function () {
-                    alert("통신 실패.");
+                    Swal.fire({ icon: 'error',text: "통신 실패." });
                 }
             });
         });

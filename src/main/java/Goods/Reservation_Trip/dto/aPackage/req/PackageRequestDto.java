@@ -16,20 +16,11 @@ import java.util.List;
 @NoArgsConstructor
 public class PackageRequestDto {
 
+    private Long id;
     /**
      * 패키지명
      */
     private String packageName;
-
-    /**
-     * 최대 에약 가능 인원
-     */
-    private int maximumMember;
-
-    /**
-     * 출발에 필요한 최소 예약 인원
-     */
-    private int minimumRequired;
 
     /**
      * 성인 1인당 금액
@@ -60,6 +51,11 @@ public class PackageRequestDto {
      * 간단 설명글
      */
     private String description;
+
+    /**
+     * 여행 일수
+     */
+    private int period;
 
     /**
      * 메인 이미지

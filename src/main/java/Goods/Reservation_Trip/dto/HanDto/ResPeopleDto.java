@@ -19,4 +19,8 @@ public class ResPeopleDto {
     //휴대폰번호 변환된것
     private String phoneString; // 선택값이므로 null 허용
 
+    //성별 변환한것
+    private String gender;
+
+
 }

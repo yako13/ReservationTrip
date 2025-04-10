@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <!--  -->
+    <!-- Roboto 폰트 및 Material Icons 추가 -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet" />
+
+    <!-- timepicker-ui 스타일시트 추가 -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/timepicker-ui@2.6.1/dist/timepicker-ui.css" />
+
+    <!-- timepicker-ui 스크립트 추가 -->
+    <script src="https://cdn.jsdelivr.net/npm/timepicker-ui@2.6.1/dist/timepicker-ui.umd.js"></script>
+    <style>
+      .date__input {
+      }
+      .numInputWrapper {
+      }
+    </style>
+  </head>
+  <body>
+    <input
+      type="text"
+      id="departureTimeReturn"
+      class="date__input"
+      value="12:10 " />
+
+    <!--  -->
+
+    <div class="timepicker-ui">
+      <input type="text" value="12:00 AM" />
+    </div>
+  </body>
+  <script>
+    flatpickr(".date__input", {
+      dateFormat: "Y-m-d",
+      enableTime: true,
+      noCalendar: true,
+      dateFormat: "H:i",
+      time_24hr: true,
+      allowInput: true,
+    });
+  </script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // 컨테이너 요소 선택
+      const timepickerContainer = document.querySelector(".timepicker-ui");
+
+      // 옵션 설정 (필요에 따라 수정 가능)
+      const options = {
+        // 예: 24시간 형식 사용
+        time24: true,
+        // 예: 'OK' 버튼 레이블 변경
+        okLabel: "확인",
+      };
+
+      // 시간 선택기 초기화
+      const timepicker = new window.tui.TimepickerUI(
+        timepickerContainer,
+        options
+      );
+
+      // 시간 선택기 생성
+      timepicker.create();
+    });
+  </script>
+</html>

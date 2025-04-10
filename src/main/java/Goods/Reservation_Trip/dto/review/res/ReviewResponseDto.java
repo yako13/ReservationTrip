@@ -1,5 +1,6 @@
 package Goods.Reservation_Trip.dto.review.res;
 
+import Goods.Reservation_Trip.entity.ReviewImage;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -37,7 +38,13 @@ public class ReviewResponseDto {
     //작성 날짜
     private String createdAt;
 
-    //이미지 url
+    //수정 여부
+    private boolean modified;
+
+    //이미지
+    private List<ReviewImage> reviewImageList;
+
+    //이미지url
     private List<String> imagesURL;
 
 }

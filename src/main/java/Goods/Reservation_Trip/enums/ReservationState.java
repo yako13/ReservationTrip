@@ -6,7 +6,7 @@ import lombok.Getter;
 public enum ReservationState implements BaseEnum  {
     CANCEL("예약취소"),
     WAIT("예약보류"),
-    REQUEST("예약취소신청"),
+    REQUEST("예약취소요청"),
     CONFIRM("예약완료");
 
     private final String name;

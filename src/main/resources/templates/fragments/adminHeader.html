@@ -23,11 +23,14 @@
                 </div>
                 <span id="bell">🔔</span>
             </div>
-            
+
             <div id="notification-container">
                 <div id="notification-badge">0</div> <!-- 알림 개수 표시 -->
                 <div id="notification-list" class="hidden">
-                    <p id="closeIcon">X</p>
+                    <div class="alertHead">
+                        <span>🔔알림</span>
+                        <span id="closeIcon">X</span>
+                    </div>
                     <ul id="notification-items">
                     </ul> <!-- 알림 목록 -->
                 </div>
@@ -65,16 +68,16 @@
         </div>
 
         <div id="mySidenav" class="sidenav">
-            <div class="dropdown">
+            <div class="dropdown" id="productDropdown">
                 <button class="dropdown-btn" onclick="toggleDropdown(this)"><i class="menu-icon fa fa-barcode"></i> 상품
                     관리 <i class="arrow fa fa-angle-down"></i></button>
                 <div class="dropdown-content">
-                    <a th:href="@{/admin/product/list}">상품 목록</a>
-                    <a th:href="@{/admin/product/add}">상품 추가</a>
+                    <a th:href="@{/admin/package/list}">상품 목록</a>
+                    <a th:href="@{/admin/package/new}">상품 추가</a>
                 </div>
             </div>
 
-            <div class="dropdown">
+            <div class="dropdown" id="reservationDropdown">
                 <button class="dropdown-btn" onclick="toggleDropdown(this)"><i class="menu-icon fa fa-list-alt"></i> 예약
                     관리 <i class="arrow fa fa-angle-down"></i></button>
                 <div class="dropdown-content">
@@ -82,7 +85,7 @@
                 </div>
             </div>
 
-            <div class="dropdown">
+            <div class="dropdown" id="salesDropdown">
                 <button class="dropdown-btn" onclick="toggleDropdown(this)"><i class="fa-solid fa-chart-line"></i> 매출 현황
                     <i class="arrow fa fa-angle-down"></i></button>
                 <div class="dropdown-content">

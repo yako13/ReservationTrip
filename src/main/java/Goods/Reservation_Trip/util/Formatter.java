@@ -4,22 +4,23 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
+import java.time.temporal.ChronoUnit;
 import java.util.Locale;
 import java.util.Random;
 
 public class Formatter {
 
 
-
-    public static String changeBigDecimalFormat(BigDecimal bigDecimal){
+    public static String changeBigDecimalFormat(BigDecimal bigDecimal) {
         DecimalFormat decimalFormat = new DecimalFormat("###,###");
         return decimalFormat.format(bigDecimal) + " 원";
     }
 
 
-    public static String getLocalDate(LocalDateTime localDateTime){
+    public static String getLocalDate(LocalDateTime localDateTime) {
         if (localDateTime == null) {
             return null;
         }
@@ -27,22 +28,21 @@ public class Formatter {
     }
 
 
-
-    public static String changePhoneNumber(String phoneNumber){
-        if(phoneNumber.length()==11){
-            return phoneNumber.substring(0,3)+"-"+phoneNumber.substring(3,7)+"-"+phoneNumber.substring(7,11);
+    public static String changePhoneNumber(String phoneNumber) {
+        if (!phoneNumber.isEmpty()) {
+            if (phoneNumber.length() == 11) {
+                return phoneNumber.substring(0, 3) + "-" + phoneNumber.substring(3, 7) + "-" + phoneNumber.substring(7, 11);
+            } else if (phoneNumber.length() == 10) {
+                return phoneNumber.substring(0, 3) + "-" + phoneNumber.substring(3, 6) + "-" + phoneNumber.substring(6, 10);
+            }
+            throw new RuntimeException("잘못된 전화번호");
         }
-        else if(phoneNumber.length()==10){
-            return phoneNumber.substring(0,3)+"-"+phoneNumber.substring(3,6)+"-"+phoneNumber.substring(6,10);
-        }
-        throw new RuntimeException("잘못된 전화번호");
+        return "";
     }
 
-    public static String changeCardNumber(String cardNumber){
-        return cardNumber.substring(0,4)+"-"+cardNumber.substring(4,8)+"-****-****";
+    public static String changeCardNumber(String cardNumber) {
+        return cardNumber.substring(0, 4) + "-" + cardNumber.substring(4, 8) + "-****-****";
     }
-
-
 
 
     //--Han Part 시작--
@@ -88,12 +88,18 @@ public class Formatter {
 
     //패키지명에서 태그 추출
     public static String getTag(String packageName){
-        return packageName.substring(packageName.indexOf("#"));
+        if(packageName.contains("#")) {
+            return packageName.substring(packageName.indexOf("#"));
+        }
+        return null;
     }
 
     //패키지명에서 태그만 뺀 값
     public static String getPackageNameWithoutTag(String packageName){
-        return packageName.substring(0,packageName.indexOf("#"));
+        if(packageName.contains("#")) {
+            return packageName.substring(0, packageName.indexOf("#"));
+        }
+        return packageName;
     }
 
     //운송장 번호 만드는 함수
@@ -110,6 +116,10 @@ public class Formatter {
         return String.format("%04d-%04d-%04d", part1, part2, part3);
     }
 
+    //생년월일 분류
+    public static String getBirth(String birth){
+        return   birth.substring(0,4)+"."+birth.substring(4,6)+"."+birth.substring(6);
+    }
 
     //-----HanPart 끝------
 
@@ -129,6 +139,7 @@ public class Formatter {
 
         return result;
     }
+
     //25.01.01(화) 22:00 방식으로 포메팅 하는것
     public static String formatDateTimeWithDay(LocalDateTime localDateTime) {
         if (localDateTime == null) {
@@ -146,7 +157,20 @@ public class Formatter {
         return String.format("%s(%s) %s", formattedDate, dayOfWeek, time);
     }
 
+    // 25.05.01(목) 09:35 형식으로 포매팅
+    public static String formatDayAndTime(LocalDate date, LocalTime time) {
+        if (date == null || time == null) {
+            throw new IllegalArgumentException("date 또는 time이 null입니다");
+        }
 
+        String formattedDate = date.format(DateTimeFormatter.ofPattern("yy.MM.dd"));
+        String dayOfWeek = date.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN);
+        String formattedTime = time.format(DateTimeFormatter.ofPattern("HH:mm"));
+
+        return String.format("%s(%s) %s", formattedDate, dayOfWeek, formattedTime);
+    }
+
+    //25.01.01 식으로 생년월일을 변환해주는 함수
     public static String formatBirthDate(String birthDate) {
         if (birthDate == null || birthDate.length() != 8) {
             throw new IllegalArgumentException("생년월일은 8자리여야 합니다 (예: 20150101)");
@@ -159,10 +183,27 @@ public class Formatter {
         return String.format("%s.%s.%s", year, month, day);
     }
 
+    //BigDecimal을 원단위와 원을 붙여주는 함수 그리고 원 앞에 뛰어쓰기 없는 버전
     public static String BigDecimalFormat(BigDecimal bigDecimal) {
         DecimalFormat decimalFormat = new DecimalFormat("###,###");
         return decimalFormat.format(bigDecimal) + "원";
     }
+
+    //몇박 몇일 계산 해주는 함수
+    public static String TripDuration(LocalDate startDate, LocalDate endDate) {
+
+        long days = ChronoUnit.DAYS.between(startDate, endDate) + 1; // 며칠
+
+        long nights = days - 1; // 몇 박
+
+        //몇박 몇일로 출력
+        String tripDuration = nights + "박 " + days + "일";
+
+        return tripDuration;
+    }
+
+
+
 
 
     //--Han Part2 끝--

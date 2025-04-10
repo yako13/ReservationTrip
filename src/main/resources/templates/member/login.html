@@ -6,6 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>냥만여행 로그인</title>
     <style>
+        @font-face {
+            font-family: 'SUIT-Regular';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Regular.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        * {
+            font-family: 'SUIT-Regular';
+        }
 
 
         body {
@@ -74,7 +84,7 @@
             background-color: #43bff8;
             color: #ffffff;
             border: none;
-            font-size:1.2rem;
+            font-size: 1.2rem;
             border-radius: 7px;
             transition: all 0.3s ease;
 
@@ -144,10 +154,6 @@
             text-decoration: none;
             color: gray;
         }
-
-        #logoImg{
-            width:15rem;
-        }
     </style>
 </head>
 
@@ -155,14 +161,15 @@
     <main>
         <div class="frontContainer">
             <div class="container">
-                <input type="hidden" th:if="${param.error}" value="로그인에 실패하였습니다." id="dataAlert">
-                <input type="hidden" th:value="${alert}" id="dataAlert2">
+                <input type="hidden" th:if="${param.error}" value="로그인에 실패하였습니다." id="flashMessage">
+                <input type="hidden" th:value="${alert}" id="flashMessage2">
+                <input type="hidden" th:value="${session.memberId}" id="session">
                 <div class="logoArea">
-                    <img th:src="@{/images/logoFull300.png}" id="logoImg">
+                    <img th:src="@{/images/logoFull130.png}" id="logoImg">
                 </div>
                 <div class="loginText">
-                    <h2>로그인</h2>
-                    <p>모든 순간 두근두근, 여행은 냥만여행</p>
+                    <h1>로그인</h1>
+                    <!--                <p>모든 순간 두근두근, 여행은 <span id="blue">냥만여행</span></p>-->
                 </div>
                 <div class="formArea">
                     <form th:action="@{/login}" th:method="post" class="form">
@@ -186,15 +193,36 @@
                     <p>OR</p>
                 </div>
                 <div class="snsLoginArea">
-                    <p>소설 계정으로 간편 로그인</p>
+                    <p>소셜 계정으로 간편 로그인</p>
                     <a href="/oauth2/authorization/google"><img th:src="@{/images/google.png}"></a>
                     <a href="/oauth2/authorization/naver"><img th:src="@{/images/naver2.png}"></a>
                     <a href="/oauth2/authorization/kakao"><img th:src="@{/images/kakao.png}"></a>
                 </div>
             </div>
         </div>
-        <script th:src="@{/js/alert.js}"></script>
     </main>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:src="@{/js/alert.js}"></script>
+    <script>
+        let session = document.getElementById("session");
+
+
+        window.addEventListener("load", function () {
+            let session = document.getElementById("session");
+
+            // 현재 페이지가 로그인 페이지일 때만 체크하도록
+            if (window.location.pathname === "/login") {
+                if (session && session.value !== "") {
+                    Swal.fire({
+                        text: "이미 로그인되어있는 상태입니다."
+                    }).then(() => {
+                        window.location.href = "/";
+                    });
+                }
+            }
+        });
+
+    </script>
 </body>
 
 </html>

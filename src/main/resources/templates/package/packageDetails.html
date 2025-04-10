@@ -23,6 +23,13 @@
             color: #e26d69 !important;
         }
 
+        /* 일요일 + 비활성화 (disabled-date 또는 tui-is-blocked) */
+        .tui-calendar td.disabled-date.tui-calendar-sun,
+        .tui-calendar td.tui-is-blocked.tui-calendar-sun {
+            color: #e8b1ae !important;
+        }
+
+
         .tui-datepicker .tui-is-selectable.tui-is-selected,
         .tui-datepicker.tui-rangepicker .tui-is-selectable.tui-is-selected {
             background-color: #5eccff;
@@ -32,17 +39,12 @@
             display: block !important;
         }
 
-        .HanPackImgDiv {
-            width: 800px;
-            margin: 0 auto;
-            margin-top: 16px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
 
-        .HanPackImgDiv img {
-            width: 800px;
+        td.tui-calendar-date.disabled-date {
+            color: #ccc !important;
+            background-color: #f0f0f0 !important;
+            pointer-events: none;
+            cursor: default;
         }
     </style>
 
@@ -62,17 +64,32 @@
 
             <div class="carouselContainer">
 
-                <div class="carouselTrack" id="track">
+                <!--캐러셀 부분-->
 
-                    <div class="carouselSlide"><img th:src="@{/images/pick1.jpg}" alt="1"></div>
-                    <div class="carouselSlide"><img th:src="@{/images/pick2.jpg}" alt="2"></div>
-                    <div class="carouselSlide"><img th:src="@{/images/pick3.jpg}" alt="3"></div>
+                <!-- carouselImg 리스트가 하나라도 들어있을경우 -->
+                <div class="carouselTrack" id="track" th:if="${packPageDto.carouselImgYes}">
+
+                    <div class="carouselSlide" th:each="carouselImg : ${packPageDto.carouselImg}">
+                        <img th:src="@{'/productImages/'+ ${carouselImg.getImageFullName}}" alt="cal">
+                    </div>
 
                 </div>
 
-                <div class="arrow left" onclick="moveSlide(-1)"><img th:src="@{/images/arrow_left3.svg}" width="50px">
+                <!-- carouselImg 리스트가 하나도 없을경우 -->
+                <div class="carouselTrack" id="track" th:unless="${packPageDto.carouselImgYes}">
+
+                    <div class="carouselSlide"><img th:src="@{/images/noImage.png}" alt="cal">
+                    </div>
+                    <div class="carouselSlide"><img th:src="@{/images/noImage.png}" alt="cal2">
+                    </div>
+
                 </div>
-                <div class="arrow right" onclick="moveSlide(1)"><img th:src="@{/images/arrow_right3.svg}" width="50px">
+
+                <div class="arrow left" onclick="moveSlide(-1)" th:if="${packPageDto.carouselImgOne}"><img
+                        th:src="@{/images/arrow_left3.svg}" width="50px">
+                </div>
+                <div class="arrow right" onclick="moveSlide(1)" th:if="${packPageDto.carouselImgOne}"><img
+                        th:src="@{/images/arrow_right3.svg}" width="50px">
                 </div>
 
                 <div class="HanCarouselCounter" id="HanCarouselCounter">1/3</div>
@@ -81,8 +98,9 @@
             <div class="HanPackInfoDiv">
 
                 <div class="title">
-                    <p class="HanTitleP">규슈 3일~4일 #100%출발확정 #마감임박</p>
-                    <p class="">규슈의 오키나와를 연상케하는 이토시마 해변 알바호텔과 유후인 온천호텔 그리고 규슈 핵심 인기 관광지까지 특별함을 선사합니다.</p>
+                    <p class="HanTitleP" th:text="${packPageDto.packageEntity.packageName}">규슈 3일~4일 #100%출발확정 #마감임박</p>
+                    <p class="" th:text="${packPageDto.packageEntity.description}">규슈의 오키나와를 연상케하는 이토시마 해변 알바호텔과 유후인
+                        온천호텔 그리고 규슈 핵심 인기 관광지까지 특별함을 선사합니다.</p>
                 </div>
 
                 <hr class="HanPackHr" />
@@ -121,7 +139,7 @@
 
                 <div class="HanPackPrice">
                     <span class="HanTitlePriceP2">성인 1인</span>
-                    <span class="HanTitlePriceP1">449,000원</span>
+                    <span class="HanTitlePriceP1" th:text="${packPageDto.adultPriceString}">449,000원</span>
 
                 </div>
 
@@ -141,39 +159,24 @@
                     <div class="HanPackPriceInfoDiv">
                         <p class="HanInfoP1">성인</p>
                         <p class="HanInfoP2">만 12세 이상</p>
-                        <p class="HanInfoP3">449,000원</p>
-                        <p class="HanInfoP4">유류할증료 38,000원</p>
-                        <p class="HanInfoP4">제세공과금 0원 포함</p>
+                        <p class="HanInfoP3" th:text="${packPageDto.adultPriceString}">449,000원</p>
+                        <p class="HanInfoP4" th:text="${packPageDto.fuelSurcharge}">유류할증료 38,000원</p>
                     </div>
 
                     <div class="HanPackPriceInfoDiv">
                         <p class="HanInfoP1">아동</p>
                         <p class="HanInfoP2">만 12세 미만</p>
-                        <p class="HanInfoP3">449,000원</p>
-                        <p class="HanInfoP4">유류할증료 38,000원</p>
-                        <p class="HanInfoP4">제세공과금 0원 포함</p>
+                        <p class="HanInfoP3" th:text="${packPageDto.childPriceString}">449,000원</p>
+                        <p class="HanInfoP4" th:text="${packPageDto.fuelSurcharge}">유류할증료 38,000원</p>
                     </div>
 
                     <div class="HanPackPriceInfoDiv">
                         <p class="HanInfoP1">유아</p>
                         <p class="HanInfoP2">만 2세 미만</p>
-                        <p class="HanInfoP3">44,900원</p>
-                        <p class="HanInfoP4">유류할증료 38,000원</p>
-                        <p class="HanInfoP4">제세공과금 0원 포함</p>
+                        <p class="HanInfoP3" th:text="${packPageDto.babyPriceString}">44,900원</p>
+                        <p class="HanInfoP4">유류할증료 0원</p>
                     </div>
 
-
-                </div>
-
-                <h2>여행정보</h2>
-
-                <div class="HanPackContainer">
-
-                    <p><strong>일정:</strong> 3박 4일, 제주항공<br>
-                        출발: 2025.05.01(목) 09:35 → 11:00<br>
-                        도착: 2025.05.04(일) 12:00 → 13:30</p>
-                    <p><strong>여행도시:</strong> 후쿠오카-야나가와-구스-아소-다자이후-후쿠오카</p>
-                    <p><strong>예약현황:</strong> 예약 5명, 좌석 8석 남음 (총 21명)</p>
 
                 </div>
 
@@ -181,12 +184,120 @@
 
                 <div class="HanPackContainer">
 
-                    <div class="HanPackImgDiv">
 
-                        <img src="/images/pr4.jpg" alt="">
+                    <div class="HanPackTripDate">
+
+                        <p class="HanPackTripTitle">일정 : </p>
+
+                        <div class="HanPackTripInfo">
+
+                            <div class="HanPackHanP2">
+                                <img th:src="@{/images/cal4.svg}" width="21px" style="margin-top: 2px;">
+                                <p th:text="${packPageDto.tripDate}">3박 4일</p>
+
+                            </div>
+
+
+                            <div class="HanPackAirline">
+
+
+                                <p class="HanPackHanP HanPackHanPCenter2">
+
+                                    <img th:src="@{/images/airplan5.svg}" width="19px">
+                                    <span style="font-weight: bold;"
+                                        th:text="${packPageDto.PackageScheduleDetails.airlineOut.name}">제주항공</span>
+
+                                </p>
+                                <p class="HanPackHanP HanPackHanPCenter">
+                                    출발 :
+                                    <img th:src="@{/images/airplanGo.svg}" width="16px"
+                                        style="margin-left: 4px; margin-bottom: -2px;">
+
+                                    <span> [[${packPageDto.tripStartUp}]]</span> →
+                                    <img th:src="@{/images/airplanLanding.svg}" width="16px"
+                                        style="margin-left: 4px; margin-bottom: -2px;">
+
+                                    <span>[[${packPageDto.tripStartDown}]]</span>
+
+                                </p>
+                                <p class="HanPackHanP HanPackHanPCenter2" style="margin-top: 25px;">
+
+                                    <img th:src="@{/images/airplan5.svg}" width="19px" class="leftIcon">
+                                    <span style="font-weight: bold;"
+                                        th:text="${packPageDto.PackageScheduleDetails.airlineReturn.name}">제주항공</span>
+
+                                </p>
+                                <p class="HanPackHanP HanPackHanPCenter">
+                                    도착 :
+                                    <img th:src="@{/images/airplanGo.svg}" width="16px"
+                                        style="margin-left: 4px; margin-bottom: -2px;">
+
+                                    <span>[[${packPageDto.tripEndUp}]]</span> →
+                                    <img th:src="@{/images/airplanLanding.svg}" width="16px"
+                                        style="margin-left: 4px; margin-bottom: -2px;">
+
+                                    <span>[[${packPageDto.tripEndDown}]]</span>
+                                </p>
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+                    <div class="HanPackTripDate">
+
+                        <p class="HanPackTripTitle">예약현황 : </p>
+
+                        <div>
+
+                            <p class="HanPackHanP3">
+                                <img th:src="@{/images/userCheck.svg}" width="16px" class="HanPadding">
+                                예약인원 :
+                                <span>5명</span>
+                            </p>
+
+                            <p class="HanPackHanP3">
+                                <img th:src="@{/images/userPlus.svg}" width="16px" class="HanPadding">예약가능 인원 :
+                                <span>20명</span>
+                            </p>
+
+                            <p class="HanPackHanP3">
+
+                                <img th:src="@{/images/userMany.svg}" width="16px" class="HanPadding">
+                                최소 출발 인원수 :
+                                <span>30명</span>
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+                <h2>여행정보</h2>
+
+                <!-- 이미지가 있을때 -->
+                <div class="HanPackContainer" th:if="${packPageDto.infoImgYes}">
+
+
+                    <div class="HanPackImgDiv" th:each="infoImg : ${packPageDto.infoImg}">
+
+                        <img th:src="@{'/productImages/'+ ${infoImg.getImageFullName}}">
+
                     </div>
 
                 </div>
+
+                <!-- 이미지가 없을때 -->
+                <div class="HanPackContainer" th:unless="${packPageDto.infoImgYes}">
+
+
+
+                </div>
+
+
 
                 <h2>예약시 유의사항</h2>
 
@@ -224,7 +335,8 @@
                             <p class="HanDivRightP2">출발일 선택</p>
                         </div>
 
-                        <div id="wrapper" style="height: 380px; width: 280px;"></div>
+
+                        <div id="datepicker-wrapper" style="height: 380px; width: 280px;"></div>
 
 
                         <input type="hidden" id="datepicker-input" aria-label="Date-Time">
@@ -242,7 +354,7 @@
 
                             <div>
                                 <p class="HanP1">성인</p>
-                                <p class="HanP2">100,000원</p>
+                                <p class="HanP2" th:text="${packPageDto.adultPriceString}">100,000원</p>
                             </div>
 
                             <div class="HanProductSpinner">
@@ -259,12 +371,12 @@
                         <div class="HanPackPriceSpinnerDiv">
                             <div>
                                 <p class="HanP1">아동</p>
-                                <p class="HanP2">100,000원</p>
+                                <p class="HanP2" th:text="${packPageDto.childPriceString}">100,000원</p>
                             </div>
                             <div class="HanProductSpinner">
 
                                 <button type="button" onclick="changeQty('child', -1)">-</button>
-                                <input type="text" class="quantity" id="child" value="1" readonly>
+                                <input type="text" class="quantity" id="child" value="0" readonly>
                                 <button type="button" onclick="changeQty('child', 1)">+</button>
 
                             </div>
@@ -274,12 +386,12 @@
                         <div class="HanPackPriceSpinnerDiv">
                             <div>
                                 <p class="HanP1">유아</p>
-                                <p class="HanP2">100,000원</p>
+                                <p class="HanP2" th:text="${packPageDto.babyPriceString}">100,000원</p>
                             </div>
                             <div class="HanProductSpinner">
 
                                 <button type="button" onclick="changeQty('infant', -1)">-</button>
-                                <input type="text" class="quantity" id="infant" value="1" readonly>
+                                <input type="text" class="quantity" id="infant" value="0" readonly>
                                 <button type="button" onclick="changeQty('infant', 1)">+</button>
 
                             </div>
@@ -308,14 +420,14 @@
                 <!-- <input type="hidden" th:value="${aPackage.id}" id="packagePk"> -->
                 <input type="hidden" value="1" id="packagePk">
 
+
                 <div class="HanCkSubmitA">
                     <button type="submit" class="HanCheckoutList">예약하기</button>
 
                     <!-- 찜 아이콘: data-like="false"로 찜 여부 표시 -->
                     <a id="dib" th:attr="data-like=${isLiked}">
                         <img id="dibHeartIcon"
-                             th:src="${isLiked} ? @{/images/dibheartOn.svg} : @{/images/dibheartOff.svg}"
-                             width="30px">
+                            th:src="${isLiked} ? @{/images/dibheartOn.svg} : @{/images/dibheartOff.svg}" width="30px">
                     </a>
 
 
@@ -327,6 +439,17 @@
 
 
     </div>
+
+    <!-- 예약가능한 날짜를 담아주는 input -->
+    <input type="hidden" id="available-dates" th:value="${#strings.arrayJoin(packPageDto.availableDateList, ',')}" />
+    <!-- 가격을 담아주는 input -->
+
+    <!-- 성인 -->
+    <input type="hidden" th:value="${packPageDto.packageEntity.fuelSurchargeIncluded}" id="adultPrice">
+    <!-- 아동 -->
+    <input type="hidden" th:value="${packPageDto.packageEntity.fuelSurchargeIncluded}" id="childPrice">
+    <!-- 유아 -->
+    <input type="hidden" th:value="${packPageDto.packageEntity.babyPrice}" id="babyPrice">
 
 
     <!-- 푸터 시작 -->
@@ -343,53 +466,67 @@
 
 
     <script>
+        window.addEventListener('load', () => {
+            const track = document.getElementById('track');
+            const HanCarouselCounter = document.getElementById('HanCarouselCounter');
 
-        const track = document.getElementById('track');
-        const slides = track.children;
-        const HanCarouselCounter = document.getElementById('HanCarouselCounter');
-        const totalSlides = slides.length;
+            const realSlides = track.querySelectorAll('.carouselSlide');
+            const realTotal = realSlides.length;
 
-        const firstClone = slides[0].cloneNode(true);
-        const lastClone = slides[totalSlides - 1].cloneNode(true);
-        track.appendChild(firstClone);
-        track.insertBefore(lastClone, slides[0]);
+            // 이미지 1장일 땐 캐러셀 비활성화
+            if (realTotal <= 1) {
+                HanCarouselCounter.textContent = `1/1`;
+                return;
+            }
 
-        let index = 1;
-        let currentIndex = 0;
-        let isAnimating = false; //  애니메이션 중 여부
-        const realTotal = totalSlides; // 복제 전 슬라이드 개수
-        track.style.transform = `translateX(-${index * 100}%)`;
+            // 복제
+            const firstClone = realSlides[0].cloneNode(true);
+            const lastClone = realSlides[realTotal - 1].cloneNode(true);
+            track.appendChild(firstClone);
+            track.insertBefore(lastClone, realSlides[0]);
 
-        function moveSlide(step) {
-            if (isAnimating) return; // 애니메이션 중이면 무시
-            isAnimating = true;
+            let index = 1;
+            let currentIndex = 0;
+            let isAnimating = false;
 
-            index += step;
-            track.style.transition = 'transform 0.5s ease-in-out';
             track.style.transform = `translateX(-${index * 100}%)`;
+            HanCarouselCounter.textContent = `1/${realTotal}`;
 
-            setTimeout(() => {
-                // 무한 루프 처리
-                if (index === realTotal + 1) {
-                    track.style.transition = 'none';
-                    index = 1;
-                    track.style.transform = `translateX(-${index * 100}%)`;
-                }
-                if (index === 0) {
-                    track.style.transition = 'none';
-                    index = realTotal;
-                    track.style.transform = `translateX(-${index * 100}%)`;
-                }
+            function moveSlide(step) {
+                if (isAnimating) return;
+                isAnimating = true;
 
-                currentIndex = index - 1;
-                if (currentIndex < 0) currentIndex = realTotal - 1;
-                if (currentIndex >= realTotal) currentIndex = 0;
-                HanCarouselCounter.textContent = `${currentIndex + 1}/${realTotal}`;
+                index += step;
+                track.style.transition = 'transform 0.5s ease-in-out';
+                track.style.transform = `translateX(-${index * 100}%)`;
 
-                isAnimating = false; //  애니메이션 끝나면 다시 클릭 허용
-            }, 500); // transition 시간과 일치해야 함
-        }
+                setTimeout(() => {
+                    if (index === realTotal + 1) {
+                        track.style.transition = 'none';
+                        index = 1;
+                        track.style.transform = `translateX(-${index * 100}%)`;
+                    }
+                    if (index === 0) {
+                        track.style.transition = 'none';
+                        index = realTotal;
+                        track.style.transform = `translateX(-${index * 100}%)`;
+                    }
+
+                    currentIndex = index - 1;
+                    if (currentIndex < 0) currentIndex = realTotal - 1;
+                    if (currentIndex >= realTotal) currentIndex = 0;
+
+                    HanCarouselCounter.textContent = `${currentIndex + 1}/${realTotal}`;
+                    isAnimating = false;
+                }, 500);
+            }
+
+            // 왼쪽/오른쪽 화살표와 연결된 버튼 함수는 기존 그대로 유지
+            window.moveSlide = moveSlide;
+        });
     </script>
+
+
 
 
     <script>
@@ -399,12 +536,16 @@
                 e.preventDefault();
 
                 const packagePk = $('#packagePk').val();
+                const selectedDate = $('#datepicker-input').val();
                 const isLiked = $(this).attr('data-like') === 'true';
 
                 $.ajax({
                     type: 'POST',
                     url: isLiked ? '/dib/cancel' : '/dib/add',
-                    data: { packagePk: packagePk },
+                    data: {
+                        packagePk: packagePk,
+                        selectedDate: selectedDate
+                    },
                     success: function (response) {
                         if (response.status === 'NOT_LOGGED_IN') {
                             Swal.fire({
@@ -414,13 +555,35 @@
                                 showCancelButton: true,
                                 confirmButtonText: '로그인',
                                 cancelButtonText: '취소',
-                                confirmButtonColor: '#2cafec', //  로그인 버튼 색상 
-                                cancelButtonColor: '#ff7979'      // 취소 버튼 색상
-       
+                                confirmButtonColor: '#2cafec',
+                                cancelButtonColor: '#ff7979'
                             }).then((result) => {
                                 if (result.isConfirmed) {
                                     window.location.href = '/login';
                                 }
+                            });
+                            return;
+                        }
+
+                        if (response.status === 'NOT_DAY') {
+                            Swal.fire({
+                                icon: 'info',
+                                title: '여행 일정이 없습니다',
+                                text: '다른 날짜를 선택해주세요.',
+                                confirmButtonText: '확인',
+                                confirmButtonColor: '#2cafec'
+                            });
+                            return;
+                        }
+
+                        //  날짜 마감된 경우 처리
+                        if (response.status === 'DAY_FULL') {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: '예약 마감',
+                                text: '현재 날짜는 마감되었습니다.',
+                                confirmButtonText: '확인',
+                                confirmButtonColor: '#2cafec'
                             });
                             return;
                         }
@@ -433,7 +596,9 @@
                             $('#dibHeartIcon').attr('src', '/images/dibheartOn.svg');
                             $('#dib').attr('data-like', 'true');
                         }
-                    },
+                    }
+
+                    ,
                     error: function () {
                         Swal.fire({
                             icon: 'error',
@@ -448,41 +613,52 @@
         });
 
 
-
-
-
     </script>
 
     <script>
-        const prices = {
-            adult: 1599900,
-            child: 1599900,
-            infant: 156190
-        };
+        //가격 정보 초기화
+        const adultPrice = Number(document.getElementById("adultPrice").value);
+        const childPrice = Number(document.getElementById("childPrice").value);
+        const babyPrice = Number(document.getElementById("babyPrice").value);
 
+        //수량 변경 함수
         function changeQty(type, delta) {
             const input = document.getElementById(type);
-            let qty = parseInt(input.value);
-            qty = Math.max(0, qty + delta); // 수량은 음수 불가
-            input.value = qty;
-            calculateTotal();
+            const newQty = getUpdatedQuantity(type, input.value, delta); // type도 함께 전달
+            input.value = newQty;
+
+            updateTotalPrice();
         }
 
-        function calculateTotal() {
+        //수량 계산 (최소 1 보장)
+        function getUpdatedQuantity(type, currentValue, delta) {
+            let qty = parseInt(currentValue);
+            let updated = qty + delta;
+
+            if (type === 'adult') {
+                return Math.max(1, updated); // 성인은 최소 1
+            } else {
+                return Math.max(0, updated); // 나머지는 최소 0
+            }
+        }
+
+        //총 가격 계산
+        function updateTotalPrice() {
             const adultQty = parseInt(document.getElementById('adult').value);
             const childQty = parseInt(document.getElementById('child').value);
             const infantQty = parseInt(document.getElementById('infant').value);
 
             const total =
-                prices.adult * adultQty +
-                prices.child * childQty +
-                prices.infant * infantQty;
+                adultPrice * adultQty +
+                childPrice * childQty +
+                babyPrice * infantQty;
 
             document.getElementById('totalPrice').textContent =
                 total.toLocaleString('ko-KR') + '원';
         }
 
-        window.addEventListener('load', calculateTotal);
+        //페이지 로드 시 초기 계산
+        window.addEventListener('load', updateTotalPrice);
     </script>
 
 
@@ -492,51 +668,137 @@
     <!-- 달력 라이브러리 -->
     <script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
 
+    <script id="available-dates-script" type="application/json" th:inline="none">
+    [
+        [
+            $
+            {
+                packPageDto.availableDateList
+            }
+        ]
+    ]
+</script>
+
     <script th:inline="none">
-        const datepicker = new tui.DatePicker('#wrapper', {
-            date: new Date(),
+        const raw = document.getElementById('available-dates').value;
+        const availableDates = raw.split(',');
+        const allowedDates = availableDates.map(d => new Date(d).setHours(0, 0, 0, 0));
+
+        const minDate = new Date(Math.min(...allowedDates));
+        const maxDate = new Date(Math.max(...allowedDates));
+
+        const datepicker = new tui.DatePicker('#datepicker-wrapper', {
+            date: minDate,
             input: {
                 element: '#datepicker-input',
                 format: 'yyyy-MM-dd'
             },
             language: 'ko',
-            showAlways: true
+            showAlways: true,
+            selectableRanges: [[minDate, maxDate]]
         });
 
+        // 4. 날짜 텍스트 업데이트
         const daysKo = ['일', '월', '화', '수', '목', '금', '토'];
         const hanPackDateSpan = document.querySelector('#HanPackDate');
-        const todayTitle = document.querySelector('.tui-calendar-title-today');
-
-        function updateHanPackDate(date) {
-            const day = date.getDay();
-            const formattedDate = `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
-            hanPackDateSpan.textContent = `${formattedDate} (${daysKo[day]})`;
-            // input에도 반영
-            document.querySelector('#datepicker-input').value = formattedDate;
-        }
 
         function pad(n) {
             return n < 10 ? '0' + n : n;
         }
 
-        // 초기 날짜 표시
-        updateHanPackDate(datepicker.getDate());
+        function formatDate(date) {
+            return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+        }
 
-        // 달력 날짜 선택 시 업데이트
-        datepicker.on('change', function () {
-            updateHanPackDate(datepicker.getDate());
+        function updateHanPackDate(date) {
+            const day = date.getDay();
+            const formatted = formatDate(date);
+            hanPackDateSpan.textContent = `${formatted} (${daysKo[day]})`;
+            document.querySelector('#datepicker-input').value = formatted;
+        }
+
+        // 5. 날짜 선택 이벤트
+        datepicker.on('change', () => {
+            const selected = datepicker.getDate();
+            const ts = selected.setHours(0, 0, 0, 0);
+
+            if (!allowedDates.includes(ts)) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: '선택 불가',
+                    text: '이 날짜는 선택할 수 없습니다.',
+                    confirmButtonText: '확인',
+                    confirmButtonColor: '#2cafec'  // 원하는 색상으로 변경 가능
+                });
+
+                datepicker.setDate(null);
+                document.getElementById('datepicker-input').value = '';
+                hanPackDateSpan.textContent = '';
+                return;
+            }
+
+
+            const formattedDate = formatDate(selected);
+
+            // ✅ 날짜를 서버에 전송
+            $.ajax({
+                type: 'POST',
+                url: '/reservation/select-date', // 실제 컨트롤러 경로로 수정
+                data: {
+                    selectedDate: formattedDate
+                },
+                success: function (response) {
+                    console.log('서버 응답:', response);
+
+                    // ✅ Ajax 응답이 성공한 이후에 날짜 표시 갱신
+                    updateHanPackDate(selected);
+                },
+                error: function (xhr) {
+                    console.error('날짜 전송 실패:', xhr);
+
+                    // 선택 취소 처리 (선택 취소는 선택사항)
+                    datepicker.setDate(null);
+                    document.getElementById('datepicker-input').value = '';
+                    hanPackDateSpan.textContent = '';
+                }
+            });
         });
 
+        // 6. 비허용 날짜 회색 처리
+        function applyDisabledStyles() {
+            document.querySelectorAll('.tui-calendar-date.tui-is-selectable').forEach(cell => {
+                const ts = parseInt(cell.getAttribute('data-timestamp'), 10);
+                if (!allowedDates.includes(ts)) {
+                    cell.classList.add('disabled-date');
+                }
+            });
+        }
 
+        // 7. 렌더 감지 → 회색 적용
+        const observer = new MutationObserver(() => {
+            setTimeout(applyDisabledStyles, 10);
+        });
+        observer.observe(document.querySelector('.tui-datepicker'), {
+            childList: true,
+            subtree: true
+        });
+
+        // 8. 초기 표시
+        setTimeout(() => {
+            const initDate = datepicker.getDate();
+            if (allowedDates.includes(initDate.setHours(0, 0, 0, 0))) {
+                updateHanPackDate(initDate);
+            } else {
+                datepicker.setDate(null);
+                document.getElementById('datepicker-input').value = '';
+                hanPackDateSpan.textContent = '';
+            }
+            applyDisabledStyles();
+        }, 100);
     </script>
 
 
     <!-- 달력 스크립트 끝 -->
-
-
-
-
-
 
 
 </body>
