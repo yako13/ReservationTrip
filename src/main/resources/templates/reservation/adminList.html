@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>판매자 헤더</title>
+    <title>냥만여행 관리자 예약목록</title>
     <link th:href="@{/css/admin/header.css}" rel="stylesheet">
     </link>
     <link th:href="@{/css/pagenation.css}" rel="stylesheet">
@@ -14,62 +14,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <style>
-        .alarm {
-            display: flex;
-            flex-direction: row;
-            z-index: 50;
-        }
-
-        #notification-container {
-            display: flex;
-            width: 100%;
-            justify-content: start;
-        }
-
-        #notification-badge {
-            color: white;
-            font-size: 14px;
-            font-weight: bold;
-            display: none;
-            cursor: pointer;
-
-        }
-
-        #notification-list {
-            color: black;
-            position: absolute;
-            top: 30px;
-            width: 400px;
-            background: white;
-            border: 1px solid #ccc;
-            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
-            border-radius: 5px;
-            padding: 10px;
-            display: none;
-        }
-
-        #notification-list ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        #notification-list li {
-            padding: 8px;
-            border-bottom: 1px solid #eee;
-            font-size: 14px;
-        }
-
-        #notification-list li:last-child {
-            border-bottom: none;
-        }
-
-        #closeIcon{
-            margin: 0;
-            text-align: end;
-            font-size: 1.2rem;
-            height: 1.5rem;
-        }
+        @font-face {
+        font-family: 'SUIT-Regular';
+        src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Regular.woff2') format('woff2');
+        font-weight: normal;
+        font-style: normal;
+    }
+    
+    *{
+        font-family: 'SUIT-Regular'; 
+    }
     </style>
 </head>
 
@@ -97,6 +51,7 @@
                             <option value="packageName" th:selected="${searchSelect=='packageName'}">
                                 패키지명
                             </option>
+                            <option value="countryName" th:selected="${searchSelect =='countryName'}">국가명</option>
                         </select>
                         <input type="text" class="searchForm" id="searchInput" name="keyword"
                             placeholder="검색어를 입력하세요." />
@@ -147,7 +102,7 @@
                             <span th:text="${paging.totalElements + '건의 상품 / '}">10건의 상품 / </span>
                             <span
                                 th:text="${(paging.number + 1) + (paging.number * size) - paging.totalPages + (paging.totalPages - paging.number)}"></span>
-                                -
+                            -
                             <span th:text="${(paging.number * size) + #lists.size(paging.content) + '건'}"></span>
                         </span>
                     </div>
@@ -232,109 +187,6 @@
         </nav>
     </main>
     <!-- 메인 끝 -->
-    <script>
-        const notificationList = document.getElementById("notification-list");
-        document.addEventListener("DOMContentLoaded", function () {
-            // 알림 개수 및 목록을 LocalStorage에서 불러오기
-            let notifications = JSON.parse(localStorage.getItem("notifications")) || [];
-            let notificationCount = parseInt(localStorage.getItem("notificationCount")) || 0;
-
-            // UI 업데이트
-            updateNotificationBadge();
-            updateNotificationList();
-
-            // WebSocket 연결
-            const socket = new SockJS('/ws');
-            const stompClient = Stomp.over(socket);
-
-            stompClient.connect({}, function (frame) {
-                console.log('Connected to WebSocket');
-
-                // 예약 취소 알림을 구독
-                stompClient.subscribe('/topic/admin', function (notification) {
-                    const message = JSON.parse(notification.body);
-                    showNotification(message.message);
-                    refreshReservationList(); // 예약 리스트 새로고침
-                });
-            });
-
-            // 알림 표시 함수
-            function showNotification(msg) {
-                const notificationBadge = document.getElementById("notification-badge");
-
-                // 최신 알림 5개 유지
-                notifications.unshift(msg);
-                if (notifications.length > 5) {
-                    notifications.pop();
-                }
-
-                // 알림 개수 증가 & LocalStorage 저장
-                notificationCount++;
-                localStorage.setItem("notifications", JSON.stringify(notifications)); // 알림 목록 저장
-                localStorage.setItem("notificationCount", notificationCount); // 개수 저장
-
-                // UI 업데이트
-                updateNotificationBadge();
-                updateNotificationList();
-            }
-
-            // 알림 개수 UI 업데이트
-            function updateNotificationBadge() {
-                const notificationBadge = document.getElementById("notification-badge");
-                if (notificationCount > 0) {
-                    notificationBadge.innerText = notificationCount + "건의 예약취소요청이 있습니다.";
-                    notificationBadge.style.display = "block";
-                } else {
-                    notificationBadge.style.display = "none";
-                }
-            }
-
-            // 알림 목록 UI 업데이트
-            function updateNotificationList() {
-                const notificationList = document.getElementById("notification-items");
-                notificationList.innerHTML = ""; // 기존 목록 초기화
-
-                notifications.forEach((msg) => {
-                    const listItem = document.createElement("li");
-                    listItem.innerText = msg;
-                    notificationList.appendChild(listItem);
-                });
-            }
-
-            // 배지 클릭 시 알림 목록 보이기/숨기기 + 개수 초기화
-            document.getElementById("notification-badge").addEventListener("click", function () {
-
-
-                if (notificationList.classList.contains("hidden")) {
-                    notificationList.classList.remove("hidden");
-                    notificationList.style.display = "block";
-
-                    // 개수 초기화 & LocalStorage 반영
-                    notificationCount = 0;
-                    localStorage.setItem("notificationCount", notificationCount);
-                    updateNotificationBadge();
-                } else {
-                    notificationList.classList.add("hidden");
-                    notificationList.style.display = "none";
-                }
-            });
-        });
-
-        let closeIcon = document.getElementById("closeIcon");
-        closeIcon.addEventListener("click", function () {
-            notificationList.classList.add("hidden");
-            notificationList.style.display = "none";
-        })
-
-        let bell = document.getElementById("bell");
-        bell.addEventListener("click", function () {
-            notificationList.classList.remove("hidden");
-            notificationList.style.display = "block";
-        })
-
-
-
-    </script>
     <script>
         const reservationStateElements = document.querySelectorAll(".reservationState");
 

@@ -79,6 +79,9 @@ public class Member extends BaseTime {
     private List<Reservation> reservationList;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Dib> dibList;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviewList;
 
     public void setPassword(String password){
@@ -90,6 +93,13 @@ public class Member extends BaseTime {
         this.name = name;
         this.birth = birth;
         this.phoneNumber = phoneNumber;
+    }
+
+    public void changeMember(String name,String birth,String phoneNumber,boolean gender){
+        this.name = name;
+        this.birth = birth;
+        this.phoneNumber = phoneNumber;
+        this.gender = gender;
     }
 
     public void setWithdrawalAt(){

@@ -5,18 +5,21 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Comment;
 
-@Table(name = "dip")
+import java.time.LocalDate;
+
+@Table(name = "dib")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
 @Builder
-public class Dip {
+@Entity
+public class Dib {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "dip_id")
+    @Column(name = "dib_id")
     private Long id;
 
     @JoinColumn(name = "member_id", nullable = false)
@@ -25,5 +28,9 @@ public class Dip {
 
     @JoinColumn(name = "package_id", nullable = false)
     @ManyToOne
-    private Package aPackage;
+    private Package packageEntity;
+
+    @Column
+    @Comment("여행 시작일")
+    private LocalDate tripStart;
 }

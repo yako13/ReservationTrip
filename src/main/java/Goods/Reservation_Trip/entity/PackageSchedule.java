@@ -1,15 +1,13 @@
 package Goods.Reservation_Trip.entity;
 
-import Goods.Reservation_Trip.enums.Airline;
-import Goods.Reservation_Trip.enums.ArrivalPoint;
-import Goods.Reservation_Trip.enums.DeparturePoint;
+import Goods.Reservation_Trip.base.BaseTime;
 import Goods.Reservation_Trip.enums.PackageStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Comment;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.util.List;
 
 @Table(name = "package_schedule")
 @Getter
@@ -18,7 +16,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @Builder
 @Entity
-public class PackageSchedule {
+public class PackageSchedule extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,6 +26,14 @@ public class PackageSchedule {
     @JoinColumn(name = "package_id")
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Package aPackage;
+
+    @Column(name = "maximum_member", nullable = false)
+    @Comment("예약가능 최대 인원")
+    private int maximumMember;
+
+    @Column(name = "minimum_required", nullable = false)
+    @Comment("최소 예약 필요 인원")
+    private int minimumRequired;
 
     @Column(name = "departure_date_out", nullable = false)
     @Comment("여행 출국 날짜")
@@ -46,65 +52,11 @@ public class PackageSchedule {
     private LocalDate arrivalDateReturn;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "departure_point_out", nullable = false, columnDefinition = "VARCHAR(50)")
-    @Comment("출국 비행기 출발지")
-    private DeparturePoint departurePointOut;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "arrival_point_out", nullable = false, columnDefinition = "VARCHAR(50)")
-    @Comment("출국 비행기 도착지")
-    private ArrivalPoint arrivalPointOut;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "departure_point_return", nullable = false, columnDefinition = "VARCHAR(50)")
-    @Comment("귀국 비행기 출발지")
-    private DeparturePoint departurePointReturn;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "arrival_point_return", nullable = false, columnDefinition = "VARCHAR(50)")
-    @Comment("귀국 비행기 도착지")
-    private ArrivalPoint arrivalPointReturn;
-
-    @Column(nullable = false)
-    @Comment("여행 기간??? 3박 4일???")
-    private String period;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "air_line_out", nullable = false, columnDefinition = "VARCHAR(50)")
-    @Comment("출국 항공사 명")
-    private Airline airlineOut;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "air_line_return", nullable = false, columnDefinition = "VARCHAR(50)")
-    @Comment("귀국 항공사 명")
-    private Airline airlineReturn;
-
-    @Column(name = "flight_number_out", nullable = false)
-    @Comment("출국 항공편 번호")
-    private String flightNumberOut;
-
-    @Column(name = "flight_number_return", nullable = false)
-    @Comment("귀국 항공편 번호")
-    private String flightNumberReturn;
-
-    @Column(name = "departure_time_out")
-    @Comment("출국 출발 시간")
-    private LocalTime departureTimeOut;
-
-    @Column(name = "arrival_time_out")
-    @Comment("출국 도착 시간")
-    private LocalTime arrivalTimeOut;
-
-    @Column(name = "departure_time_return", nullable = false)
-    @Comment("귀국 출발 시간")
-    private LocalTime departureTimeReturn;
-
-    @Column(name = "arrival_time_return", nullable = false)
-    @Comment("귀국 도착 시간")
-    private LocalTime arrivalTimeReturn;
-
-    @Enumerated(EnumType.STRING)
+    @Comment("예약 가능 상태")
     private PackageStatus packageStatus;
+
+    @OneToOne(mappedBy ="packageSchedule", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private PackageScheduleDetails packageScheduleDetails;
 
     public void setAPackage(Package aPackage) {
         this.aPackage = aPackage;

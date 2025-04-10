@@ -3,6 +3,10 @@
     min-height: 35rem;
 }
 
+.reservationTable th:nth-child(2){
+    width: 20rem;
+}
+
 .formArea {
     margin-top: 2rem;
     display: flex;
@@ -145,4 +149,9 @@
 
 .tableTr{
     cursor:pointer;
+}
+
+.packageName{
+    color: rgba(255, 41, 70, 0.904);
+    font-weight: 600;
 }

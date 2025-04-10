@@ -4,13 +4,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>판매자 헤더</title>
+    <title>냥만여행 관리자 예약목록</title>
     <link th:href="@{/css/admin/header.css}" rel="stylesheet">
     </link>
     <link th:href="@{/css/pagenation.css}" rel="stylesheet">
     </link>
     <link th:href="@{/css/admin/reservationList.css}" rel="stylesheet">
 </link>
+<style>
+    @font-face {
+    font-family: 'SUIT-Regular';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+*{
+    font-family: 'SUIT-Regular'; 
+}
+</style>
 </head>
 
 <body>
@@ -37,6 +49,7 @@
                             <option value="packageName" th:selected="${searchSelect=='packageName'}">
                                 패키지명
                             </option>
+                            <option value="countryName" th:selected="${searchSelect =='countryName'}">국가명</option>
                         </select>
                         <input type="text" class="searchForm" id="searchInput" name="keyword"
                             placeholder="검색어를 입력하세요." />

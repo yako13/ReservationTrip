@@ -32,7 +32,8 @@
 
         .joinTable th {
             text-align: start;
-            width: 12rem;
+            width: 17rem;
+            font-size: 1.1rem;
         }
 
         .joinTable td {
@@ -46,8 +47,9 @@
 
             input[type="text"],
             input[type="password"] {
-                width: 20rem;
-                height: 2rem;
+                font-size: 1rem;
+                width: 25rem;
+                height: 2.5rem;
                 border: 1px #ccc solid;
                 border-radius: 4px;
                 padding-left: 0.5rem;
@@ -60,13 +62,14 @@
 
             label {
                 margin-right: 1rem;
+                font-size: 1.1rem;
             }
 
         }
 
         .joinTable tr {
             border-top: 1px solid #ccc;
-            height: 5rem;
+            height: 6rem;
 
             &:last-child {
                 border-bottom: 1px solid #ccc;
@@ -118,7 +121,9 @@
         #authCodeBtn {
             border: none;
             border-radius: 4px;
-            height: 2rem;
+            height: 2.5rem;
+            margin-left: 4rem;
+            font-size: 1rem;
         }
 
 
@@ -127,8 +132,8 @@
         .resetBtn {
             margin: 0 auto;
             width: 7rem;
-            height: 2rem;
-            font-size: 1.2rem;
+            height: 3rem;
+            font-size: 1.4rem;
             transition: all 0.3s ease;
             border-radius: 7px;
             border: none;
@@ -149,7 +154,7 @@
         }
 
         .resetBtn {
-            margin-left: 2rem;
+            margin-left: 5rem;
             background-color: #ececec;
             color: #333;
 
@@ -161,7 +166,7 @@
         }
 
         .info {
-            font-size: 0.8rem;
+            font-size: 1rem;
         }
 
         .radioArea {
@@ -187,12 +192,54 @@
             border: red solid 1px !important;
         }
 
-        .titleArea{
+        .titleArea {
             margin-bottom: 5rem;
         }
 
-        .ml{
+        .ml {
             margin-bottom: 2rem;
+        }
+
+
+        #userPasswordCheck {
+            margin-top: 1.2rem;
+
+        }
+
+        #passwordAgain {
+            height: 0.8em;
+            margin: 0.3rem 0;
+            color: red;
+            font-size: 0.9em;
+        }
+
+        #authBtn {
+            margin-left: 5rem;
+        }
+
+        #timer {
+            margin-left: 2rem;
+        }
+
+        #ps {
+            font-size: 0.7rem;
+            color: #777777;
+        }
+
+        .emailArea {
+            width: 24.7rem;
+            display: inline-block;
+        }
+
+        .withdrawalArea {
+            display: flex;
+            justify-content: end;
+            margin: 1rem 0;
+        }
+
+        #withdrawalBtn {
+            color: #9c9c9c;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -200,7 +247,8 @@
 <body>
     <header th:replace="/fragments/memberHeader::memberHeader"></header>
     <main>
-        <input type="hidden" th:value="${alert}" id="dataAlert">
+        <input type="hidden" th:value="${alert}" id="flashMessage2">
+        <input type="hidden" th:value="${checkName}" id="checkName">
         <div class="container">
             <div class="titleArea">
                 <h1>회원정보수정</h1>
@@ -210,6 +258,7 @@
             <div class="essential">
                 <span class="red">*</span>
                 <span>필수입력사항</span>
+                <p id="ps">※ 비밀번호가 빈칸일 경우에는 비밀번호가 변경되지 않습니다.</p>
             </div>
             <div class="formArea">
                 <form id="editForm" th:action="@{/member/edit}" th:method="post">
@@ -217,11 +266,11 @@
                         <tr>
                             <th>이메일</th>
                             <td>
-                                <span th:text="${email}" id="email"></span>
-                                <input type="hidden" th:value="${provider}" id="provider">
-                                <b><span th:if="${provider !=null}"> ([[${provider}]] 소셜 가입회원)</span></b>
-                            </td>
-                            <td>
+                                <div class="emailArea">
+                                    <span th:text="${email}" id="email"></span>
+                                    <input type="hidden" th:value="${provider}" id="provider">
+                                    <b><span th:if="${provider !=null}"> ([[${provider}]] 소셜 가입회원)</span></b>
+                                </div>
                                 <button id="authBtn" type="button">인증하기</button>
                                 <span id="timer" class="red ml"></span>
                             </td>
@@ -229,43 +278,38 @@
                         <tr class="authArea">
                             <th><span class="red">*</span>이메일 인증번호</th>
                             <td><input type="text" id="authCode" name="authCode" maxlength="6"
-                                    oninput="this.value = this.value.replace(/[^0-9]/g, '')"></td>
-                            <td>
+                                    oninput="this.value = this.value.replace(/[^0-9]/g, '')" th:value="${authCode}">
                                 <button id="authCodeBtn" type="button">인증확인</button>
                             </td>
                         </tr>
                         <tr th:if="${provider ==null}">
                             <th><span class="red">*</span>비밀번호 <i class="fa-solid fa-eye-slash" id="eye"></i></th>
                             <td><input type="password" name="password" id="userPassword"
-                                    placeholder="입력을 하지 않을 시에는 기존 비밀번호로 저장됩니다."></td>
-                            <td class="info" id="passwordError">비밀번호는 대소문자, 숫자, 특수문자 조합으로 8~15자리여야합니다.</td>
+                                    placeholder="대소문자, 숫자, 특수문자(!@#$%^*+=-) 조합, 8~15자"></td>
                         </tr>
                         <tr th:if="${provider ==null}">
                             <th><span class="red">*</span>비밀번호 확인</th>
-                            <td><input type="password" id="userPasswordCheck">
+                            <td><input type="password" id="userPasswordCheck" placeholder="비밀번호를 재입력해주세요.">
+                                <p id="passwordAgain" class="info"></p>
                             </td>
-                            <td id="passwordAgain" class="info">비밀번호를 재입력해주세요.</td>
                         </tr>
                         <tr>
                             <th><span class="red">*</span>이름</th>
-                            <td><input type="text" placeholder="홍길동" name="name" class="joinInput" id="userName"
-                                    th:value="${name}"></td>
-                            <td class="info" id="nameError">이름은 한글 2~5자 또는 성과 이름을 구분하여 영문 1~10자리씩이여야 합니다.</td>
+                            <td><input type="text" placeholder="한글 2~5자 또는 성과 이름을 구분하여 영문 1~10자" name="name"
+                                    class="joinInput" id="userName" th:value="${name}"></td>
                         </tr>
                         <tr>
                             <th><span class="red">*</span>생년월일</th>
-                            <td><input type="text" placeholder="20000101" name="birth" maxlength="8"
+                            <td><input type="text" placeholder="숫자 8자 ex)19990505" name="birth" maxlength="8"
                                     oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="joinInput"
                                     id="birth" th:value="${birth}"></td>
-                            <td class="info" id="birthError">생년월일은 숫자만 가능하며 정확한 날짜여야합니다.</td>
                         </tr>
                         <tr>
                             <th><span class="red">*</span>휴대전화번호</th>
-                            <td><input type="text" placeholder="01012341234" name="phoneNumber" maxlength="11"
+                            <td><input type="text" placeholder="010, 011, 016, 017, 018, 019로 시작하며, 숫자 10~11자"
+                                    name="phoneNumber" maxlength="11"
                                     oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="joinInput"
                                     id="phoneNumber" th:value="${phoneNumber}"></td>
-                            <td class="info" id="phoneError">휴대전화번호는 010, 011, 016, 017, 018, 019로 시작하며, 숫자 10~11자리여야
-                                합니다.
                             </td>
                         </tr>
                         <tr>
@@ -280,24 +324,61 @@
                             </td>
                         </tr>
                     </table>
+                    <div class="withdrawalArea">
+                        <a id="withdrawalBtn">회원 탈퇴</a>
+                    </div>
                     <div class="btnArea">
                         <button type="submit" class="btn">수정</button>
                         <button type="reset" class="resetBtn">초기화</button>
                     </div>
+
                 </form>
             </div>
+
         </div>
     </main>
     <footer th:replace="/fragments/memberFooter::memberFooter"></footer>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script th:src="@{/js/alert.js}"></script>
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const cancelBtn = document.getElementById("withdrawalBtn");
+
+            if (cancelBtn) {
+                cancelBtn.addEventListener("click", () => {
+                    Swal.fire({
+                        text: "회원 탈퇴를 하시면, 복구가 어려운 점을 참고하시기 바랍니다. 정말 탈퇴를 원하시나요?",
+                        icon: "question",
+                        showCancelButton: true,
+                        confirmButtonText: "확인",
+                        cancelButtonText: "취소",
+                        confirmButtonColor: "#4CAF50"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.assign("/permit/withdrawal");
+                        }
+                    });
+
+                });
+            } else {
+                console.error("cancelBtn을 찾을 수 없습니다.");
+            }
+        });
+
         let bol_auth = 0;
 
         window.onload = function () {
             //인증확인버튼 비활성화 
             document.getElementById("authCodeBtn").disabled = true;
             bol_auth = 0;
+
+            let birth = document.getElementById("birth");
+
+            //생년월일 또는 휴대전화번호 체크
+            if (birth.value == null || birth.value == "") {
+                Swal.fire({ text: "기존 정보를 입력하지 않으면 이후 이용에 제한이 있을 수 있습니다." });
+            }
         };
 
         // 메일 인증
@@ -315,7 +396,7 @@
                 display.textContent = minutes + ":" + seconds;
 
                 if (--timer < 0) {
-                    alert("인증 시간이 만료되었습니다. 다시 인증하여 주십시오.");
+                    Swal.fire({ text: "인증 시간이 만료되었습니다. 다시 인증하여 주십시오." });
                     clearInterval(timerInterval); // 타이머 정지
                     document.getElementById("authBtn").disabled = false;
                 }
@@ -327,7 +408,7 @@
 
             //인증확인버튼 활성화
             document.getElementById("authCodeBtn").disabled = false;
-            alert("이메일을 전송중입니다. 잠시만 기다려주십시오.");
+            Swal.fire({ text: "이메일을 전송중입니다.  잠시만 기다려주십시오." });
             var params = { email: $("#email").text() }
 
             $.ajax({
@@ -340,15 +421,15 @@
                             display = document.querySelector('#timer');
                         startTimer(fiveMinutes, display);
                         document.getElementById("authBtn").disabled = true;
-                        alert("인증번호가 발송되었습니다. 이메일을 확인하여 주십시오.");
+                        Swal.fire({ html: "인증번호가 발송되었습니다.<br>이메일을 확인하여 주십시오."});
                     }
                     else {
-                        alert("인증번호가 전송되지 않았습니다. 작성한 이메일을 다시 확인하여 주십시오.");
+                        Swal.fire({ text: "인증번호가 전송되지 않았습니다. 작성한 이메일을 다시 확인하여 주십시오." });
                         document.getElementById("authCodeBtn").disabled = true;
                     }
                 },
                 error: function () {
-                    alert("통신 실패.");
+                    Swal.fire({icon: 'error', text: "통신 실패." });
                 }
             });
         });
@@ -369,16 +450,16 @@
                 success: function (res) {
                     if (res == 1000) {
                         clearInterval(timerInterval); // 인증 성공 시 타이머 정지
-                        alert("인증이 완료되었습니다.");
+                        Swal.fire({ text: "인증이 완료되었습니다." });
                         bol_auth = 1;
                         document.getElementById("authCodeBtn").disabled = true;
                     } else {
-                        alert("인증번호가 일치하지 않습니다.");
+                        Swal.fire({ text: "인증번호가 일치하지 않습니다." });
                         document.getElementById("authBtn").disabled = false;
                     }
                 },
                 error: function () {
-                    alert("통신 실패.");
+                    Swal.fire({icon: 'error', text: "통신 실패." });
                 }
             });
         });
@@ -471,51 +552,46 @@
             e.preventDefault();
             let ValueCheck = SignUpValueCheckAll();
             let valid = true;
+            if (document.getElementById("checkName").value == 1) {
+                bol_auth = 1;
+            }
 
             if (bol_auth == 0) {
-                alert("이메일 인증을 해주십시오.");
+                Swal.fire({ text: "이메일 인증을 해주십시오." });
             }
 
             //OAuth 제공자가 없을 때
-            if ((provider.value == null) && userPassword.value !="" ) {
+            if ((provider.value == null) && userPassword.value != "") {
                 if (password_check.test(userPassword.value)) {
                     userPassword.classList.remove("inputRed");
-                    passwordError.classList.remove("red");
                 }
                 else {
                     userPassword.classList.add("inputRed");
-                    passwordError.classList.add("red");
                     valid = false;
                 }
             }
             if (name_check.test(userName.value)) {
                 userName.classList.remove("inputRed");
-                nameError.classList.remove("red");
             }
             else {
                 userName.classList.add("inputRed");
-                nameError.classList.add("red");
                 valid = false;
             }
 
             //현재날짜보단 작고 1925년생보단 많아야함
             if (birth_check.test(birth.value) && parseInt(birth.value) < parseInt(formattedDate) && parseInt(birth.value) > 19250328) {
                 birth.classList.remove("inputRed");
-                birthError.classList.remove("red");
             }
             else {
                 birth.classList.add("inputRed");
-                birthError.classList.add("red");
                 valid = false;
             }
 
             if (phone_check.test(phone.value)) {
                 phone.classList.remove("inputRed");
-                phoneError.classList.remove("red");
             }
             else {
                 phone.classList.add("inputRed");
-                phoneError.classList.add("red");
                 valid = false;
             }
             if (document.getElementById("male").checked || document.getElementById("female").checked) { }
@@ -564,7 +640,7 @@
                 bol_check_password = 0;
             }
             else {
-                passwordAgain.innerText = "비밀번호를 재입력해주세요.";
+                passwordAgain.innerText = "";
                 passwordAgain.style.color = "black";
                 bol_check_password = 1;
             }

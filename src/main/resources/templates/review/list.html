@@ -7,7 +7,6 @@
     <title>냥만여행 리뷰 관리</title>
 
     <link rel="stylesheet" th:href="@{/css/mainPage.css}">
-    <link rel="stylesheet" th:href="@{/css/checkout/checkoutList.css}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
     <style>
         .HanCkListBody {
@@ -15,6 +14,7 @@
             height: auto;
             display: flex;
             flex-direction: column;
+            min-height: 35rem;
         }
 
         .HanCkListMain {
@@ -60,7 +60,7 @@
         }
 
         .HanCkListMain ul li:last-child {
-            padding-bottom: 30px;
+            padding-bottom: 15px;
             border-bottom: 2px solid #ccc;
         }
 
@@ -307,7 +307,7 @@
             margin: 3rem 0;
             display: flex;
             justify-content: start;
-            gap: 3rem;
+            gap: 3.6rem;
 
             img {
                 width: 10rem;
@@ -317,13 +317,16 @@
 
         .reviewArea {
             padding: 1rem 2rem;
-            i{
+
+            i {
                 color: #ccc;
             }
 
         }
 
         .editLinkArea {
+            width: 100px;
+
             a {
                 color: #43bff8;
                 font-weight: 600;
@@ -334,120 +337,191 @@
             }
         }
 
+        .y {
+            color: rgb(255, 217, 0) !important;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        #infoImage {
+            width: 8rem;
+        }
+
+        .imageArea {
+            p {
+                width: 100%;
+            }
+
+            padding: 10rem 0;
+            text-align: center;
+            border-bottom: solid 1px #c2c2c2;
+        }
+
+        .deletebtn {
+            cursor: pointer;
+        }
+
+        .reviewContent {
+            font-size: 1.2rem;
+        }
     </style>
 </head>
 
 <body>
+    <header th:replace="/fragments/memberHeader::memberHeader"></header>
 
+    <!-- 메인 시작 -->
 
-<!-- 메인 시작 -->
+    <div class="HanCkListBody">
+        <div class="HanCkListMain">
+            <div class="linkArea">
+                <a th:href="@{/member/review/list/able}">작성 가능 리뷰</a>
+                <a>작성한 리뷰</a>
+            </div>
 
-<div class="HanCkListBody">
+            <ul>
+                <!-- 카트 아이템 시작 -->
 
-    <div class="titleArea">
-        <h2>리뷰관리</h2>
-        <hr>
-    </div>
-    <div class="HanCkListMain">
+                <li th:if="${reviewList!=null}" th:each="reviewList : ${reviewList}"
+                    th:class="review+${reviewList.reviewId}">
 
+                    <!-- 카트 아이템 항목 시작 -->
+                    <div>
+                        <div class="HanCkListInfoDiv">
 
-        <div th:if="${#lists.size(checkoutList)<1} " class="HanCkListTop none">
+                            <div class="HanCkListInfo">
 
-            <p>주문 내역 없음</p>
+                                <div class="HanCkListImgDiv">
 
-        </div>
-
-        <div class="linkArea">
-            <a>작성 가능 리뷰</a>
-            <a>작성한 리뷰</a>
-        </div>
-
-        <ul>
-            <!-- 카트 아이템 시작 -->
-
-            <li th:if="${checkoutList!=null} " th:each="checkout : ${checkoutList}">
-
-                <!-- 카트 아이템 항목 시작 -->
-                <div>
-                    <div class="HanCkListInfoDiv" th:each="product : ${checkout.productList}">
-
-                        <div class="HanCkListInfo">
-
-                            <div class="HanCkListImgDiv">
-
-                                <a th:href="@{'/product/details/'+${product.id}}"><img src="/images/다낭.jpg"
-                                                                                       alt=""></a>
-
-                            </div>
-
-
-                            <div class="HanCkListProductName">
-                                <div class="HanCkListProductNameDiv">
-
-                                    <b>
-                                        <p class="HanCkListProductNameP" th:text="${product.name}">[다낭]3박5일
-                                            여행풀코스(가이드X)</p>
-                                        <br>
-                                        <p id="tag">#자유여행 #연인 #가족 #추가비용없음 #대한항공</p>
-                                    </b>
+                                    <img th:src="@{${reviewList.packageMainImage}}" alt="">
 
                                 </div>
+
+
+                                <div class="HanCkListProductName">
+                                    <div class="HanCkListProductNameDiv">
+
+                                        <b>
+                                            <p class="HanCkListProductNameP" th:text="${reviewList.packageName}"></p>
+                                        </b>
+
+                                    </div>
+                                </div>
+                                <div class="editLinkArea">
+                                    <a th:href="@{'/member/review/edit/'+ ${reviewList.reviewId}}">수정</a>
+                                    <span>|</span>
+                                    <a class="deletebtn" th:id="${reviewList.reviewId}">삭제</a>
+                                </div>
+
+
                             </div>
-                            <div class="editLinkArea">
-                                <a>수정</a>
-                                <span>|</span>
-                                <a>삭제</a>
+
+                        </div>
+                        <hr color="#ebebeb">
+                        <div class="reviewArea">
+                            <div class="review">
+                                <input type="hidden" th:value="${reviewList.rating}" class="rating">
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <span>[[${reviewList.createdAt}]]</span>
+                                <span th:if="${reviewList.modified}">(수정됨)</span>
                             </div>
+                            <div>
+                                <p th:text="${reviewList.content}" class="reviewContent">
+                                </p>
+                            </div>
+                            <div class="reviewImageArea" th:if="${!#lists.isEmpty(reviewList.imagesURL)}">
+                                <a th:each="images : ${reviewList.imagesURL}" th:href="@{${images}}"><img
+                                        th:src="@{${images}}"></a>
 
-
-                        </div>
-
-                    </div>
-                    <hr color="#ebebeb">
-                    <div class="reviewArea">
-                        <div>
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <span>2025.01.01</span>
-                        </div>
-                        <div>
-                            <p>
-                                배송 받자마자 건전지 사서 바로 훈련해봤어요
-                                유튜브 영상 참고해서 훈련시켰는데 생각보다 훈련이 안되길래 돈 버렸나 싶었거든요? 그래도 일주일 정도 밥 줄 때 틈틈이 훈련 시키니까 오늘 결국
-                                성공했어요
-                                ㅋㅌㅋㅋㅋ
-                            </p>
-                        </div>
-                        <div class="reviewImageArea">
-                            <img src="images/google.png">
-                            <img src="images/google.png">
-                            <img src="images/google.png">
-                            <img src="images/google.png">
-                            <img src="images/google.png">
+                            </div>
                         </div>
                     </div>
-                </div>
 
-            </li>
-            <!-- 카트 아이템 항목 끝 -->
-
+                </li>
+                <!-- 카트 아이템 항목 끝 -->
 
 
-        </ul>
+
+            </ul>
+            <div th:if="${#lists.size(reviewList) < 1}" class="imageArea">
+                <img th:src="@{/images/info.svg}" id="infoImage">
+                <p>등록하신 리뷰가 없습니다.</p>
+            </div>
+        </div>
+
 
     </div>
+    <img th:src="@{/images/topBtn.png}" id="topBtn">
+    </div>
 
+    <footer th:replace="/fragments/memberFooter::memberFooter"></footer>
+    <!-- 메인 끝 -->
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        //리뷰 별 색깔
+        let star = document.querySelectorAll(".fa-star");
+        let rating = document.querySelectorAll(".rating");
 
-</div>
-<img th:src="@{/images/topBtn.png}" id="topBtn">
-</div>
+        window.addEventListener("load", changeStar);
 
+        function changeStar() {
+            const reviews = document.querySelectorAll(".review");
 
-<!-- 메인 끝 -->
+            reviews.forEach(review => {
+                const rating = review.querySelector(".rating").value;
+                const stars = review.querySelectorAll(".fa-star");
 
+                for (let i = 0; i < rating; i++) {
+                    stars[i].classList.add("y");
+                }
+            });
+        }
+
+        //삭제
+        $(".deletebtn").click(function (event) {
+
+            Swal.fire({
+                text: "정말 리뷰를 삭제하시겠습니까?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "확인",
+                cancelButtonText: "취소",
+                confirmButtonColor: "#4CAF50"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var params = event.target.id;
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/member/review/delete/" + params,
+                        success: function (res) {
+                            if (res == 1000) {
+                                $(".review" + params).remove();
+
+                                if ($(".rating").length === 0) {
+                                    location.reload();
+                                }
+                            }
+                            else {
+                                Swal.fire({ text: "리뷰를 삭제 할 수 없습니다." });
+                            }
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            Swal.fire({ icon: 'error', text: "통신불가." });
+                        }
+                    })
+                }
+            });
+
+        })
+    </script>
 </body>
 
 </html>

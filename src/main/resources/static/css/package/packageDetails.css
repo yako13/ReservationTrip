@@ -564,12 +564,12 @@ body {
   padding-bottom: 30px;
   display: flex;
   justify-content: center;
-  gap: 30px;
+  gap: 10px;
 
 }
 
 .HanCkSubmitA button {
-  width: 100%;
+  width: 208px;
   padding: 16px 0;
   box-sizing: border-box;
   display: flex;
@@ -590,20 +590,134 @@ body {
   color: #ffffff;
 }
 
-
-.HanCkSubmitA .HanHome {
-  background-color: #ececec;
-  color: #333;
-}
-
 .HanCkSubmitA .HanCheckoutList:hover {
   background-color: #3e8cf1;
   color: #ebebeb;
   transform: scale(0.98);
 }
 
-.HanCkSubmitA .HanHome:hover {
-  background-color: #e0e0e0;
-  color: #333;
+.HanCkSubmitA a {
+  border: 1px solid #ccc;
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: white;
+  color: #ffffff;
+}
+
+.HanCkSubmitA a:hover {
+  background-color: #dadada;
+  color: #ebebeb;
   transform: scale(0.98);
+}
+
+
+
+.HanPackImgDiv {
+  width: 800px;
+  margin: 0 auto;
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.HanPackImgDiv img {
+  width: 800px;
+}
+
+.HanPackTripDate {
+  box-sizing: border-box;
+  padding: 10px;
+  padding-bottom: 5px;
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.HanPackTripInfo {
+  width: 600px;
+  display: flex;
+  flex-direction: column;
+
+  align-items: flex-start;
+
+}
+
+.HanPackTripTitle {
+  margin: 0;
+  font-weight: bold;
+
+  width: 150px;
+
+}
+
+.HanPackHanP {
+  margin: 0;
+  margin-bottom: 5px;
+
+}
+
+.HanPackHanP2 {
+  width: 550px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+  margin: 0;
+  margin-bottom: 40px;
+  border-radius: 4px;
+
+}
+
+.HanPackHanP2 p {
+  margin: 0;
+  display: inline-block;
+}
+
+.HanPadding {
+  padding-right: 10px;
+}
+
+.HanPackHanP3 {
+  margin: 0;
+  margin-bottom: 10px;
+}
+
+
+
+.HanPackHanPCenter {
+  margin: 15px 0;
+  text-align: center;
+
+}
+
+.HanPackHanPCenter2 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  margin: 15px 0;
+  margin-bottom: 17px;
+}
+
+.HanPackAirline {
+  width: 550px;
+  background-color: #f9f9f9;
+  border-radius: 7px;
+  padding: 5px;
+  box-sizing: border-box;
+  margin-bottom: 30px;
+}
+
+.leftIcon {
+  transform: scaleX(-1);
+
 }

@@ -158,6 +158,7 @@ body {
   border-radius: 6px;
   font-size: 13px;
   height: 20px;
+  line-height: 20px;
 }
 
 .btn-link {
@@ -211,6 +212,14 @@ body {
 .HanTrip p {
   font-size: 12px;
   margin: 4px;
+margin-top: 5px;
+
+}
+
+.HanTrip .HanP1 {
+  font-size: 12px;
+  margin: 4px;
+  margin-top: 6px;
 
 }
 
