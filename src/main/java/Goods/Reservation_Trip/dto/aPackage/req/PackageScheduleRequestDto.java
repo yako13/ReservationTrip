@@ -32,6 +32,11 @@ public class PackageScheduleRequestDto {
     private int minimumRequired;
 
     /**
+     * 일정을 예약한 인원수
+     */
+    private int reservedMemberCount;
+
+    /**
      * 예약 가능 상태
      */
     @Enumerated(EnumType.STRING)

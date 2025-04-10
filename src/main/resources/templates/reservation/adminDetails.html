@@ -247,7 +247,7 @@
                 height: 40px;
                 border-radius: 4px;
                 border: none;
-                
+
                 line-height: 40px;
             }
         }
@@ -286,10 +286,11 @@
 
         .listBtn:hover {
             background-color: #e0e0e0;
-                color: #333;
-                transform: scale(0.98);
+            color: #333;
+            transform: scale(0.98);
 
         }
+
         .selectBox {
             margin-top: 0;
             width: 100px;
@@ -372,37 +373,40 @@
 
         .personTable {
             margin: 0;
-            th,td{
+
+            th,
+            td {
                 text-align: center;
             }
-            th:first-child{
+
+            th:first-child {
                 width: 2rem;
             }
         }
 
-        .packageTable{
-            th:first-child{
+        .packageTable {
+            th:first-child {
                 width: 3rem;
             }
 
-            th:nth-child(2){
+            th:nth-child(2) {
                 width: 1rem;
             }
 
-            th:last-child{
+            th:last-child {
                 width: 4rem;
             }
         }
 
-        .tableHead{
+        .tableHead {
             border-right: 1px solid white;
         }
 
-        .price{
+        .price {
             text-align: start !important;
         }
 
-        .fuelSurcharge{
+        .fuelSurcharge {
             margin: 5px 0;
             color: #ff0000;
         }
@@ -534,14 +538,14 @@
                             <td th:text="${reservationList.packageName}"></td>
                             <td class="price">
                                 <p th:each="pricesByAgeGroup : ${reservationList.pricesByAgeGroup}"
-                                    th:text="${pricesByAgeGroup}" ></p>
-                                    <p class="fuelSurcharge">*유류할증료([[${reservationList.fuelSurcharge}]]) 미포함 금액</p>
+                                    th:text="${pricesByAgeGroup}"></p>
+                                <p class="fuelSurcharge">*유류할증료([[${reservationList.fuelSurcharge}]]) 미포함 금액</p>
                             </td>
                             <td>
                                 <p th:text="${reservationList.hotel}"></p>
                             </td>
                             <td>
-                                <!-- <p th:each="option : ${reservationList.option}" th:text="${option}"></p> -->
+                                <p th:each="option : ${reservationList.option}" th:text="${option}"></p>
                             </td>
                         </tr>
 
@@ -549,7 +553,7 @@
                 </table>
             </div>
             <!-- /주문패키지정보 -->
-             <!-- 출입국 정보 -->
+            <!-- 출입국 정보 -->
             <div class="ordererInfo">
                 <div class="tableTitle">
                     <p><b><i class="fa-solid fa-plane"></i> 출입국 정보</b></p>
@@ -652,13 +656,13 @@
                 data: params,
                 success: function (res) {
                     if (res == 500) {
-                        alert("수정을 실패했습니다.")
+                        Swal.fire({ text: "수정을 실패했습니다." });
                     } else {
-                        alert("수정이 완료되었습니다.");
+                        Swal.fire({ text: "수정이 완료되었습니다." });
                     }
                 },
                 error: function () {
-                    alert("통신 실패.");
+                    Swal.fire({ icon: 'error', text: "통신 실패." });
                 }
             });
         });

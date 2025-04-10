@@ -1,5 +1,7 @@
 package Goods.Reservation_Trip.util;
 
+import Goods.Reservation_Trip.entity.PackageOption;
+
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
@@ -8,10 +10,42 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
 public class Formatter {
+
+    //패키지 옵션
+    public static List<String> getPackageOption(PackageOption packageOption){
+        List<String> optionList = new ArrayList<>();
+        if(packageOption.isHotelFee()){
+            optionList.add("호텔비 포함");
+        }
+        else {
+            optionList.add("호텔비 미포함");
+        }
+        if(packageOption.isGuide()){
+            optionList.add("가이드 있음");
+        }
+        else {
+            optionList.add("가이드 없음");
+        }
+        if(packageOption.isAirfare()){
+            optionList.add("항공료 포함");
+        }
+        else {
+            optionList.add("항공료 미포함");
+        }
+        if(packageOption.isNoShopping()){
+            optionList.add("쇼핑 없음");
+        }
+        else {
+            optionList.add("쇼핑 필수");
+        }
+        return optionList;
+    }
 
 
     public static String changeBigDecimalFormat(BigDecimal bigDecimal) {
@@ -88,12 +122,18 @@ public class Formatter {
 
     //패키지명에서 태그 추출
     public static String getTag(String packageName){
-        return packageName.substring(packageName.indexOf("#"));
+        if(packageName.contains("#")) {
+            return packageName.substring(packageName.indexOf("#"));
+        }
+        return null;
     }
 
     //패키지명에서 태그만 뺀 값
     public static String getPackageNameWithoutTag(String packageName){
-        return packageName.substring(0,packageName.indexOf("#"));
+        if(packageName.contains("#")) {
+            return packageName.substring(0, packageName.indexOf("#"));
+        }
+        return packageName;
     }
 
     //운송장 번호 만드는 함수

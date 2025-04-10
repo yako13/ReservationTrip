@@ -393,13 +393,13 @@ public class ReservationService {
         PackageScheduleDetails packageDetails = packageScheduleCheck.getPackageScheduleDetails();
 
         //패키지 옵션
-//        Optional<PackageOption> optionalPackageOption = packageOptionRepository.findByAPackageId(reservation.getAPackage().getId());
-//
-//        if(optionalPackageOption.isEmpty()) throw new RuntimeException("패키지 옵션 없음");
-//
-//        PackageOption packageOption = optionalPackageOption.get();
-//
-//        List<String> optionList = Formatter.getPackageOptions(packageOption);
+        Optional<PackageOption> optionalPackageOption = packageOptionRepository.findByPackageId(reservation.getAPackage().getId());
+
+        if(optionalPackageOption.isEmpty()) throw new RuntimeException("패키지 옵션 없음");
+
+        PackageOption packageOption = optionalPackageOption.get();
+
+        List<String> optionList = Formatter.getPackageOption(packageOption);
 
         return ReservationDetailsResponseDto.builder()
                 .reservationPK(reservation.getId()) //예약 PK
@@ -434,7 +434,7 @@ public class ReservationService {
                 .e_destination(packageDetails.getArrivalPointReturn().getName()) //여행 종료일 도착지
                 .s_airlineName(packageDetails.getAirlineOut().getName()) //출국 항공사명
                 .e_airlineName(packageDetails.getAirlineReturn().getName()) //귀국 항공사명
-//                .option(optionList)
+                .option(optionList) //옵션
                 .build();
     }
 
