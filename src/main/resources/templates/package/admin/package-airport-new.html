@@ -549,13 +549,17 @@
                         });
                     }
                     else if (res == 100) {
-                        Swal.fire({ text: "동일한 이름의 공항이 있습니다." });
+                        Swal.fire({ text: "동일한 이름이나 코드로 등록할 수 없습니다." });
                     }
+                    else if (res == 300) {
+                        Swal.fire({ text: "동일한 공항을 등록하실려는 경우, 정확한 이름과 코드를 입력하셔야합니다." });
+                    }
+
                     else if (res == 700) {
                         Swal.fire({ text: "동일한 이름의 공항코드가 있습니다." });
                     }
                     else {
-                        Swal.fire({ text: "일치하는 지역이 없습니다." });
+                        Swal.fire({ text: "일치하는 지역이 없습니다." }); // res == 500
                     }
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {

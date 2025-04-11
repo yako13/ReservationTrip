@@ -43,7 +43,7 @@ public class PackageCategory {
     @JoinColumn(name = "package_id")
     private Package aPackage;
 
-    @OneToMany(mappedBy = "category",cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToMany(mappedBy = "categoryList",cascade = CascadeType.ALL)
     private List<Airport> airportList=new ArrayList<>();
 
     public PackageCategory(Long id, String name, PackageCategory parent, int depth) {
