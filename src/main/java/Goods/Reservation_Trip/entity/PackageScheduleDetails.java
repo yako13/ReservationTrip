@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Table(name = "package_schedule_details")
 @NoArgsConstructor
@@ -80,5 +82,6 @@ public class PackageScheduleDetails extends BaseTime {
     @Column(name = "arrival_time_return", nullable = false)
     @Comment("귀국 도착 시간")
     private LocalTime arrivalTimeReturn;
+
 
 }
