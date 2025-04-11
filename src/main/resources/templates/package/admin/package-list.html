@@ -208,6 +208,17 @@
       flex-direction: column;
       gap: 16px;
     }
+    .sort__container {
+      display: flex;
+      float: right;
+      gap: 10px;
+    }
+    select {
+      font-size: 1rem;
+    }
+    .text__right {
+      align-self: center;
+    }
   </style>
   <body>
     <header th:replace="fragments/adminHeader::masterHeader"></header>
@@ -244,18 +255,57 @@
               </div>
             </div>
           </div>
-          <div>
-            <select id="mainCategory" name="mainCategoryId">
-              <option value="" selected>카테고리를 선택하세요</option>
+          <div class="sort__container">
+            <div>
+              <form action="/admin/package/list" method="get" id="filterForm">
+                <select id="mainCategory" name="mainCategoryId">
+                  <option value="" selected>대분류</option>
+                </select>
+                <select id="subCategory" name="subCategoryId">
+                  <option value="">중분류</option>
+                </select>
+                <select id="smallCategory" name="smallCategoryId">
+                  <option value="">소분류</option>
+                </select>
+              </form>
+            </div>
+            <select name="sizeSelect" id="sizeSelect" onchange="">
+              <option value="10" th:selected="${size==10}">10개</option>
+              <option value="20" th:selected="${size==20}">20개</option>
+              <option value="30" th:selected="${size==30}">30개</option>
             </select>
-            <select id="subCategory" name="subCategoryId">
-              <option value="#">중분류</option>
+
+            <select name="sortSelect" id="sortSelect" onchange="">
+              <option value="default" th:selected="${sortSelect == 'default'}">
+                최신순
+              </option>
+              <option
+                value="price_asc"
+                th:selected="${sortSelect == 'price_asc'}">
+                가격낮은순
+              </option>
+              <option
+                value="price_desc"
+                th:selected="${sortSelect == 'price_desc'}">
+                가격높은순
+              </option>
             </select>
-            <select id="smallCategory" name="smallCategoryId">
-              <option value="#">소분류</option>
-            </select>
+            <span th:if="${page.totalElements != 0}" class="text__right">
+              <span th:text="${page.totalElements + '건의 상품 / '}"></span>
+              <span
+                th:text="${(page.number + 1) + (page.number * size) - page.totalPages + (page.totalPages - page.number)}"></span>
+              -
+              <span
+                th:text="${(page.number * size) + #lists.size(page.content) + '건'}"></span>
+            </span>
+            <span th:unless="${page.totalElements != 0}" class="text__right">
+              <span>0건의 상품</span>
+            </span>
           </div>
-          <table>
+          <div th:unless="${page.totalElements != 0}" class="text__center">
+            <h3>등록하신 상품이 없습니다.</h3>
+          </div>
+          <table th:if="${page.totalElements != 0}">
             <thead>
               <tr>
                 <th>순번</th>
@@ -272,7 +322,7 @@
                 <th>삭제</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody id="packageList">
               <tr th:each="package : ${packageList}">
                 <td th:text="${package.id}"></td>
                 <td>
@@ -368,45 +418,33 @@
 </html>
 <script th:src="@{/js/adminNav.js}"></script>
 <script>
-  document
-    .getElementById("mainCategory")
-    .addEventListener("change", function () {
-      document.getElementById("hiddenMainCategoryId").value = this.value;
+  async function loadCategories() {
+    const response = await fetch("/api/categories");
+    const data = await response.json();
+
+    const mainCategorySelect = document.getElementById("mainCategory");
+    resetSelect(mainCategorySelect, "대분류");
+
+    data.forEach((mainCategory) => {
+      const option = document.createElement("option");
+      option.value = mainCategory.id;
+      option.textContent = mainCategory.name;
+      mainCategorySelect.appendChild(option);
     });
 
-  function loadCategories() {
-    fetch("/api/categories")
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("API 응답 데이터:", data);
-        const mainCategorySelect = document.getElementById("mainCategory");
-        resetSelect(mainCategorySelect, "대분류 선택"); // 초기화
-
-        data.forEach((mainCategory) => {
-          const option = document.createElement("option");
-          option.value = mainCategory.id;
-          option.textContent = mainCategory.name;
-          mainCategorySelect.appendChild(option);
-        });
-
-        // 대분류 변경 시 중분류 로딩
-        mainCategorySelect.addEventListener("change", function () {
-          const selectedMainCategory = data.find((c) => c.id == this.value);
-          loadSubCategories(selectedMainCategory?.children || []);
-        });
-      })
-      .catch((error) =>
-        console.error("카테고리 데이터를 가져오는데 실패했습니다:", error)
-      );
+    mainCategorySelect.addEventListener("change", () => {
+      const selected = data.find((c) => c.id == mainCategorySelect.value);
+      loadSubCategories(selected?.children || []);
+      fetchFilteredList(); // 필터링된 리스트 호출
+    });
   }
 
-  // 중분류 로딩
   function loadSubCategories(subCategories) {
     const subCategorySelect = document.getElementById("subCategory");
-    resetSelect(subCategorySelect, "중분류 선택"); // 초기화
+    resetSelect(subCategorySelect, "중분류");
 
     const smallCategorySelect = document.getElementById("smallCategory");
-    resetSelect(smallCategorySelect, "소분류 선택"); // 중분류가 바뀌면 소분류도 초기화
+    resetSelect(smallCategorySelect, "소분류");
 
     subCategories.forEach((subCategory) => {
       const option = document.createElement("option");
@@ -415,17 +453,18 @@
       subCategorySelect.appendChild(option);
     });
 
-    // 중분류 변경 시 소분류 로딩
-    subCategorySelect.addEventListener("change", function () {
-      const selectedSubCategory = subCategories.find((c) => c.id == this.value);
-      loadSmallCategories(selectedSubCategory?.children || []);
+    subCategorySelect.addEventListener("change", () => {
+      const selected = subCategories.find(
+        (c) => c.id == subCategorySelect.value
+      );
+      loadSmallCategories(selected?.children || []);
+      fetchFilteredList();
     });
   }
 
-  // 소분류 로딩
   function loadSmallCategories(smallCategories) {
     const smallCategorySelect = document.getElementById("smallCategory");
-    resetSelect(smallCategorySelect, "소분류 선택"); // 초기화
+    resetSelect(smallCategorySelect, "소분류");
 
     smallCategories.forEach((smallCategory) => {
       const option = document.createElement("option");
@@ -433,22 +472,69 @@
       option.textContent = smallCategory.name;
       smallCategorySelect.appendChild(option);
     });
+
+    smallCategorySelect.addEventListener("change", fetchFilteredList);
   }
 
-  // 셀렉트 박스를 초기화하는 함수
   function resetSelect(selectElement, placeholderText) {
-    selectElement.innerHTML = ""; // 기존 옵션 초기화
-    const defaultOption = document.createElement("option");
-    defaultOption.value = "";
-    defaultOption.textContent = `-- ${placeholderText} --`;
-    defaultOption.disabled = true;
-    defaultOption.selected = true;
-    selectElement.appendChild(defaultOption);
+    selectElement.innerHTML = "";
+    const option = document.createElement("option");
+    option.value = "";
+    option.textContent = placeholderText;
+    option.disabled = false;
+    option.selected = true;
+    selectElement.appendChild(option);
   }
 
-  // 페이지 로드 시 대분류 로딩
-  document.addEventListener("DOMContentLoaded", loadCategories);
-  document.addEventListener("DOMContentLoaded", function () {
-    const checkboxes = document.querySelectorAll("input[type=checkbox]");
+  async function fetchFilteredList() {
+    const mainId = document.getElementById("mainCategory").value;
+    const subId = document.getElementById("subCategory").value;
+    const smallId = document.getElementById("smallCategory").value;
+
+    const params = new URLSearchParams();
+    if (mainId) params.append("mainCategoryId", mainId);
+    if (subId) params.append("subCategoryId", subId);
+    if (smallId) params.append("smallCategoryId", smallId);
+
+    const response = await fetch(
+      `/admin/package/list/json?${params.toString()}`
+    );
+    const data = await response.json();
+
+    renderPackageList(data.content);
+  }
+
+  function renderPackageList(packages) {
+    const container = document.getElementById("packageList");
+    container.innerHTML = "";
+
+    if (packages.length === 0) {
+      container.innerHTML = '<tr><td colspan="12">결과가 없습니다.</td></tr>';
+      return;
+    }
+
+    packages.forEach((package) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+      <td>${package.id}</td>
+      <td><img src="${package.mainImagePath}" height="100px"/></td>
+      <td>${package.name}</td>
+      <td>${package.fuelSurchargeIncluded}</td>
+      <td>${package.departurePointOut}</td>
+      <td>${package.arrivalPointOut}</td>
+      <td>${package.departureDateOut}</td>
+      <td>${package.arrivalDateReturn}</td>
+      <td>${package.createdAt}</td>
+      <td>${package.modifiedAt}</td>
+      <td><button type="button" class="btn btn-edit">수정하기</button></td>
+      <td><button type="button" class="btn btn-delete">삭제하기</button></td>
+    `;
+      container.appendChild(tr);
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", async () => {
+    await loadCategories();
+    await fetchFilteredList(); // 초기 데이터도 표시
   });
 </script>

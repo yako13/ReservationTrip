@@ -23,6 +23,7 @@ public class PackageScheduleService {
     private final PackageScheduleDetailsService packageScheduleDetailsService;
 
 
+    @Transactional
     public List<PackageSchedule> saveAll(Package aPackage, List<PackageScheduleRequestDto> requestDto) {
         if (requestDto == null) {
             throw new IllegalArgumentException("스케줄 요청 데이터가 null입니다.");
