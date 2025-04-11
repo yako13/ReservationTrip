@@ -89,7 +89,7 @@ public class Package extends BaseTime {
     private PackageCategory smallCategory;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "package_status", nullable = false, columnDefinition = "VARCHAR(50)")
+    @Column(name = "package_status", nullable = false)
     @Comment("예약 가능 상태")
     private PackageStatus packageStatus;
 
