@@ -59,6 +59,7 @@ public class HanReservationController {
 
         ResvPageDto resvPageDto = hanReservationService.ReservationPage(request, form);
 
+
         if (resvPageDto == null) {
 
             log.error("서비스에서 오류발생(hanReservationService.ReservationPage)");
@@ -66,7 +67,17 @@ public class HanReservationController {
             rttr.addFlashAttribute("data", "에러가 발생했습니다");
 
             return "redirect:/";
+        }
 
+        //로그인 안했을시
+        if(resvPageDto.isLoginNo()){
+
+            log.info("로그인 안함");
+
+            rttr.addFlashAttribute("data", "로그인이 필요한 기능입니다");
+
+            //원래 패키지 상세 페이지로 돌려보냄
+            return "redirect:/package/" + form.getPackagePk();
         }
 
         model.addAttribute("resvPageDto", resvPageDto);
