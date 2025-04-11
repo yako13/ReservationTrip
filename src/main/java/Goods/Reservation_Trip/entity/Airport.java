@@ -35,7 +35,7 @@ public class Airport {
             joinColumns = @JoinColumn(name = "airport_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
-    private List<PackageCategory> categoryList = new ArrayList<>();
+    private List<PackageCategory> categoryList;
 
 
 }
