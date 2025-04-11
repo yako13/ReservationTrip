@@ -2,6 +2,7 @@ package Goods.Reservation_Trip.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
@@ -11,6 +12,7 @@ import org.hibernate.annotations.Comment;
 @AllArgsConstructor
 @Getter
 @Entity
+@Builder
 public class Airport {
 
     @Id
@@ -29,5 +31,6 @@ public class Airport {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private PackageCategory category;
+
 
 }
