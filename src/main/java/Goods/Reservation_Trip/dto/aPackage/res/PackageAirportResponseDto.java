@@ -11,14 +11,11 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PackageCategoryResponseDto {
-
-    //대분류
-    String major;
-
-    //중분류
-    List<String> medium;
+public class PackageAirportResponseDto {
 
     //소분류
-    List<List<PackageAirportResponseDto>> sub;
+    private String sub;
+
+    //공항
+    private List<String> airport;
 }
