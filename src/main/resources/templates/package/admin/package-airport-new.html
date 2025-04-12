@@ -435,7 +435,7 @@
                                 <tr>
                                     <th>지역명</th>
                                     <td>
-                                        <input type="text" maxlength="10" placeholder="공항을 등록할 지역을 좌측 목록에서 선택해주세요."
+                                        <input type="text" maxlength="10" placeholder="등록하거나 삭제 할 지역을 좌측 목록에서 선택해주세요."
                                             id="parentsName" name="parentsName" readonly>
                                     </td>
                                 </tr>
@@ -549,13 +549,20 @@
                         });
                     }
                     else if (res == 100) {
-                        Swal.fire({ text: "동일한 이름의 공항이 있습니다." });
+                        Swal.fire({ text: "동일한 이름이나 코드로 등록할 수 없습니다." });
                     }
+                    else if (res == 300) {
+                        Swal.fire({ text: "동일한 공항을 등록하실려는 경우, 정확한 이름과 코드를 입력하셔야합니다." });
+                    }
+                    else if (res == 400) {
+                        Swal.fire({ text: "동일한 카테고리에 등록 할 수 없습니다." });
+                    }
+
                     else if (res == 700) {
                         Swal.fire({ text: "동일한 이름의 공항코드가 있습니다." });
                     }
                     else {
-                        Swal.fire({ text: "일치하는 지역이 없습니다." });
+                        Swal.fire({ text: "일치하는 지역이 없습니다." }); // res == 500
                     }
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -573,10 +580,15 @@
                 Swal.fire({ text: "공항명을 입력하거나 공항코드를 입력해주세요." });
                 return;
             }
+            if (document.getElementById("parentsName").value == "") {
+                Swal.fire({ text: "지역명은 필수입니다." });
+                return;
+            }
 
             var params = {
                 airportName: $("#airportName").val(),
-                airportCode: $("#airportCode").val()
+                airportCode: $("#airportCode").val(),
+                parentsName: $("#parentsName").val()
             }
 
             $.ajax({
@@ -600,6 +612,12 @@
                     }
                     else if (res == 700) {
                         Swal.fire({ text: "일치하는 코드의 공항이 없습니다." });
+                    }
+                    else if(res==900){
+                        Swal.fire({ text: "일치하는 지역이 없습니다." }); 
+                    }
+                    else if(res==1100){
+                        Swal.fire({ text: "해당 지역에 속한 공항이 아닙니다." }); 
                     }
                     else {
                         Swal.fire({icon: 'error',  text: "오류 발생" });

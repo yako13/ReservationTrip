@@ -15,11 +15,33 @@ public interface AirportRepository extends JpaRepository<Airport, Long> {
 
     Optional<Airport> findByName(String name);
 
-    List<Airport> findByCategoryId(Long categoryId);
+    @Query("SELECT a FROM Airport a JOIN a.categoryList c WHERE c.id = :categoryId")
+    List<Airport> findByCategoryId(@Param("categoryId") Long categoryId);
+
+    @Query("""
+    SELECT COUNT(a) > 0 
+    FROM Airport a 
+    JOIN a.categoryList c 
+    WHERE 
+        (c.id = :categoryId1 AND a.name = :name)
+        OR 
+        (c.id = :categoryId2 AND a.code = :code)
+    """)
+    boolean existsByCategoryIdAndNameOrCategoryIdAndCode(
+            @Param("categoryId1") Long categoryId1,
+            @Param("name") String name,
+            @Param("categoryId2") Long categoryId2,
+            @Param("code") String code
+    );
+
+    List<Airport> findByCategoryListIsEmpty();
 
     Optional<Airport> findByNameAndCode(String name,String code);
 
     Optional<Airport> findByCode(String code);
+
+    //이름 또는 코드
+    Optional<Airport> findByNameOrCode( String name ,String code);
 
     //공항이랑 연결된 스케쥴이 있는지 확인
     @Query(value = "SELECT EXISTS ( SELECT 1 FROM package_schedule_details WHERE departure_point_out = :airportId OR arrival_point_out = :airportId OR departure_point_return = :airportId OR arrival_point_return = :airportId) ", nativeQuery = true)

@@ -105,7 +105,7 @@ public class PackageCategoryAndAirportService {
      */
     public PackageAirportResponseDto getKoreaAirportList() {
         //카테고리 아이디가 null이면 한국공항
-        List<Airport> airportList = airportRepository.findByCategoryId(null);
+        List<Airport> airportList = airportRepository.findByCategoryListIsEmpty();
         return PackageAirportResponseDto.builder()
                 .sub("한국")
                 .airport(airportList.stream().map(airport -> airport.getName() + "(" + airport.getCode() + ")").toList())
@@ -185,27 +185,22 @@ public class PackageCategoryAndAirportService {
      * 공항 등록
      */
     public int registerAirport(PackageAirportDto airportDto) {
-        Optional<Airport> optionalAirport = airportRepository.findByName(airportDto.getAirportName());
-
-        //동일한 이름의 공항이 있는 경우
-        if (optionalAirport.isPresent()) return 100;
 
         //dto의 공항 코드를 대문자로 변경
         String code = airportDto.getAirportCode().toUpperCase();
 
-        Optional<Airport> optionalAirport2 = airportRepository.findByCode(code);
-
-        //동일한 코드의 공항이 있는 경우
-        if (optionalAirport2.isPresent()) return 700;
-
-
         //일치하는 지역(카테고리)이 없는 경우
         //경우 1: 한국
         if (airportDto.getParentsName().equals("한국")) {
+
+            //동일한 코드나 동일한 이름으로 등록 불가
+            Optional<Airport> optionalAirport = airportRepository.findByNameOrCode(airportDto.getAirportName(), airportDto.getAirportCode());
+
+            if (optionalAirport.isPresent()) return 100;
+
             Airport airport = Airport.builder()
                     .name(airportDto.getAirportName())
                     .code(code)
-                    .category(null)
                     .build();
 
             airportRepository.save(airport);
@@ -220,11 +215,42 @@ public class PackageCategoryAndAirportService {
 
         PackageCategory packageCategory = optionalPackageCategory.get();
 
+        //공항명 또는 공항코드가 존재하지만 일치하지 않을 때
+        // 예)김해국제공항 코드가 PUS 인데 공항명은 김해국제공항으로 적어놓고 공항코드는 PSS로 했을 경우
+        Optional<Airport> optionalAirport2 = airportRepository.findByNameOrCode(airportDto.getAirportName(), airportDto.getAirportCode());
+        if (optionalAirport2.isPresent()) {
+            Optional<Airport> optionalAirport = airportRepository.findByNameAndCode(airportDto.getAirportName(), airportDto.getAirportCode());
+
+            if (optionalAirport.isEmpty()) return 300;
+
+            Airport airport = optionalAirport.get();
+
+            //같은 카테고리에는 등록 불가
+            if (airportRepository.existsByCategoryIdAndNameOrCategoryIdAndCode
+                    (packageCategory.getId(), airportDto.getAirportName(), packageCategory.getId(), airportDto.getAirportCode()))
+                return 400;
+
+            //한국이 아닌경우는 동일한 공항 추가 가능
+            if (airport.getCategoryList() == null) {
+                airport.setCategoryList(new ArrayList<>());
+            }
+            airport.getCategoryList().add(packageCategory);
+
+            airportRepository.save(airport);
+
+            return 1000;
+        }
+
         Airport airport = Airport.builder()
                 .name(airportDto.getAirportName())
                 .code(code)
-                .category(packageCategory)
                 .build();
+
+
+        if (airport.getCategoryList() == null) {
+            airport.setCategoryList(new ArrayList<>());
+        }
+        airport.getCategoryList().add(packageCategory);
 
         airportRepository.save(airport);
 
@@ -236,6 +262,8 @@ public class PackageCategoryAndAirportService {
      */
     public int deleteAirport(PackageAirportDto airportDto) {
 
+        Airport airport = new Airport();
+
         //공항명과 공항코드를 둘다 작성하였는데 일치하지 않을 때
         // 예)김해국제공항 코드가 PUS 인데 공항명은 김해국제공항으로 적어놓고 공항코드는 PSS로 했을 경우
         if (airportDto.getAirportName() != "" && airportDto.getAirportCode() != "") {
@@ -243,14 +271,11 @@ public class PackageCategoryAndAirportService {
 
             if (optionalAirport.isEmpty()) return 100;
 
-            Airport airport = optionalAirport.get();
+            airport = optionalAirport.get();
 
             //공항과 연결된 패키지 스케쥴이 있을 경우
-            if (airportRepository.isAirportUsedRaw(airport.getId())==1) return 500;
+            if (airportRepository.isAirportUsedRaw(airport.getId()) == 1) return 500;
 
-            airportRepository.delete(airport);
-
-            return 1000;
         }
 
         //공항명으로 찾을경우 (공항코드가 null인경우)
@@ -258,14 +283,11 @@ public class PackageCategoryAndAirportService {
             Optional<Airport> optionalAirport = airportRepository.findByName(airportDto.getAirportName());
             if (optionalAirport.isEmpty()) return 300;
 
-            Airport airport = optionalAirport.get();
+            airport = optionalAirport.get();
 
             //공항과 연결된 패키지 스케쥴이 있을 경우
-            if (airportRepository.isAirportUsedRaw(airport.getId())==1) return 500;
+            if (airportRepository.isAirportUsedRaw(airport.getId()) == 1) return 500;
 
-            airportRepository.delete(airport);
-
-            return 1000;
         }
 
         //공항코드로 찾을경우 (공항명이 null인경우)
@@ -273,17 +295,29 @@ public class PackageCategoryAndAirportService {
             Optional<Airport> optionalAirport = airportRepository.findByCode(airportDto.getAirportCode());
             if (optionalAirport.isEmpty()) return 700;
 
-            Airport airport = optionalAirport.get();
+            airport = optionalAirport.get();
 
             //공항과 연결된 패키지 스케쥴이 있을 경우
-            if (airportRepository.isAirportUsedRaw(airport.getId())==1) return 500;
+            if (airportRepository.isAirportUsedRaw(airport.getId()) == 1) return 500;
 
-            airportRepository.delete(airport);
-
-            return 1000;
         }
 
+        //해당지역이 없는 경우
+        Optional<PackageCategory> optionalPackageCategory = packageCategoryRepository.findByName(airportDto.getParentsName());
 
-        return 900;
+        if (optionalPackageCategory.isEmpty()) return 900;
+
+        PackageCategory packageCategory = optionalPackageCategory.get();
+
+        //해당 지역에 연결되어있지 않은 경우
+        if (!airportRepository.existsByCategoryIdAndNameOrCategoryIdAndCode
+                (packageCategory.getId(), airportDto.getAirportName(), packageCategory.getId(), airportDto.getAirportCode()))
+            return 1100;
+
+        airport.getCategoryList().remove(packageCategory);
+        airportRepository.save(airport);
+
+        return 1000;
+
     }
 }
