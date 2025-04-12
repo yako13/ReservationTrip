@@ -20,6 +20,8 @@ public interface PackageCategoryRepository extends JpaRepository<PackageCategory
 
     List<PackageCategory> findByParentIdAndDepth(Long parentId,int depth);
 
+    Optional<PackageCategory> findByNameAndDepth(String name,int depth);
+
     @Query("SELECT COUNT(p) FROM Package p WHERE p.mainCategory.id = :id OR p.subCategory.id = :id OR p.smallCategory.id = :id")
     int countByAnyCategory(@Param("id") Long id);
 
