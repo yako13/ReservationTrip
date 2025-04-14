@@ -189,7 +189,7 @@
             padding-top: 0.5rem;
         }
 
-        #textLength{
+        #textLength {
             text-align: end;
         }
     </style>
@@ -208,8 +208,8 @@
             </div>
             <form id="reviewForm" th:action="@{/member/review/new}" th:method="post" enctype="multipart/form-data">
                 <input type="hidden" name="reservationId" th:value="${reservationId}">
-                <textarea id="content" name="content"
-                    placeholder="후기를 작성해주세요. 후기 내용은 최소 10자 이상 500자 이하여야 합니다." maxlength="500"></textarea>
+                <textarea id="content" name="content" placeholder="후기를 작성해주세요. 후기 내용은 최소 10자 이상 500자 이하여야 합니다."
+                    maxlength="500"></textarea>
                 <p id="textLength">(0/500)</p>
                 <input type="hidden" name="rating" id="score">
                 <div class="scoreArea">
@@ -390,14 +390,16 @@
 
             if (imageboxCount.length > 5) {
                 Swal.fire({ text: "후기 사진은 최대 5장까지 가능합니다." });
+                return;
             }
 
             if (content.value.length < 10 || content.value.length > 500) {
                 Swal.fire({ text: "후기 내용은 최소 10자 이상 500자 이하여야 합니다." });
+                return;
             }
-            else {
-                document.getElementById("reviewForm").submit();
-            }
+
+            document.getElementById("reviewForm").submit();
+
         })
 
         //글자수 세기
@@ -407,12 +409,12 @@
 
         function getContentLength() {
             textLength.innerText = "(" + content.value.length + "/500)"
-            if(content.value.length>500){
+            if (content.value.length > 500) {
                 Swal.fire({ text: "후기 내용은 500자를 초과할 수 없습니다." });
             }
         }
 
-        
+
 
 
 
