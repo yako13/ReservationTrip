@@ -24,7 +24,6 @@ body {
 .main__container {
   margin-top: 4rem;
   margin: 40px auto;
-  margin-bottom: 80px;
   width: 1350px;
 }
 
@@ -213,6 +212,13 @@ li {
 
 }
 
+.HanCartHr2 {
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid black;
+
+}
+
 .PackP1 {
   font-weight: 500;
   font-size: 20px;
@@ -332,7 +338,7 @@ li {
   box-sizing: border-box;
   padding: 5px 8px;
   border: 1px solid #757575;
-  width: 120px;
+  width: 180px;
   height: 33.68px;
   border-radius: 3px;
   cursor: pointer;
@@ -346,7 +352,7 @@ li {
 .HanSerachDropdown-toggle.HanImg {
   box-sizing: border-box;
   padding: 5px 8px;
-  width: 120px;
+  width: 180px;
   height: 33.68px;
   border-radius: 3px;
   cursor: pointer;

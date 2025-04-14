@@ -10,6 +10,7 @@ import Goods.Reservation_Trip.repository.aPackage.AirportRepository;
 import Goods.Reservation_Trip.repository.aPackage.PackageScheduleDetailsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +22,7 @@ public class PackageScheduleDetailsService {
 
     private final AirportRepository airportRepository;
 
+    @Transactional
     public void save(PackageSchedule packageSchedule, PackageScheduleDetailsRequestDto requestDto){
 
         Airline airlineOut = airlineRepository.findById(requestDto.getAirlineOutId())
@@ -28,13 +30,13 @@ public class PackageScheduleDetailsService {
         Airline airlineReturn = airlineRepository.findById(requestDto.getAirlineReturnId())
                 .orElseThrow(() -> new IllegalArgumentException("귀국 항공사 없음"));
         Airport departurePointOut = airportRepository.findById(requestDto.getDeparturePointOutId())
-                .orElseThrow(() -> new IllegalArgumentException("출국 출발지 공항 없음"));
+                .orElseThrow(() -> new IllegalArgumentException("출국 출발지공항 없음"));
         Airport arrivalPointOut = airportRepository.findById(requestDto.getArrivalPointOutId())
-                .orElseThrow(() -> new IllegalArgumentException("출국 도착지 공항 없음"));
+                .orElseThrow(() -> new IllegalArgumentException("출국 도착 공항 없음"));
         Airport departurePointReturn = airportRepository.findById(requestDto.getDeparturePointReturnId())
-                .orElseThrow(() -> new IllegalArgumentException("귀국 출발지 공항 없음"));
+                .orElseThrow(() -> new IllegalArgumentException("귀국 출발 공항 없음"));
         Airport arrivalPointReturn = airportRepository.findById(requestDto.getArrivalPointReturnId())
-                .orElseThrow(() -> new IllegalArgumentException("귀국 도착지 공항 없음"));
+                .orElseThrow(() -> new IllegalArgumentException("귀국 도착 공항 없음"));
 
         PackageScheduleDetails packageScheduleDetails = PackageScheduleDetails.builder()
                 .packageSchedule(packageSchedule)

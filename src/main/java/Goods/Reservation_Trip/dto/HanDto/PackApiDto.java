@@ -33,7 +33,7 @@ public class PackApiDto {
     //예약 가능 여부
     private boolean resvYes;
 
-    //예약 인원
+    //이미 예약한 인원
     private int resvPeople;
 
     //예약 가능 인원

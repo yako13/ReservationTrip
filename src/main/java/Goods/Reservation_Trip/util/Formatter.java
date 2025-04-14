@@ -136,7 +136,7 @@ public class Formatter {
 //-----HanPart 끝------
 
     //--Han Part2 시작--
-//25.01.01(화) 방식으로 포메팅 하는것
+    //25.01.01(화) 방식으로 포메팅 하는것
     public static String formatDateAndDay(LocalDate localDate) {
         if (localDate == null) {
 
@@ -201,6 +201,12 @@ public class Formatter {
         return decimalFormat.format(bigDecimal) + "원";
     }
 
+    //BigDecimal을 원단위와 원을 붙여주는 함수 그리고 원이 없음
+    public static String BigDecimalFormat2(BigDecimal bigDecimal) {
+        DecimalFormat decimalFormat = new DecimalFormat("###,###");
+        return decimalFormat.format(bigDecimal) ;
+    }
+
     //몇박 몇일 계산 해주는 함수
     public static String TripDuration(LocalDate startDate, LocalDate endDate) {
 
@@ -214,8 +220,24 @@ public class Formatter {
         return tripDuration;
     }
 
+    //일수를 몇박 몇일로 바꿔 주는 함수
+    public static String TripDate(int date) {
 
-//--Han Part2 끝--
+        // 몇 박
+        long nights = date - 1;
+
+        //몇박 몇일로 출력
+        String tripDuration = nights + "박 " + date + "일";
+
+        return tripDuration;
+    }
+
+
+
+
+
+
+    //--Han Part2 끝--
 
 
 }

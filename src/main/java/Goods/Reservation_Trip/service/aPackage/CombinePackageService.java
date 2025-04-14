@@ -5,7 +5,6 @@ import Goods.Reservation_Trip.dto.aPackage.res.AdminPackageListResponseDto;
 import Goods.Reservation_Trip.entity.Package;
 import Goods.Reservation_Trip.entity.PackageSchedule;
 import Goods.Reservation_Trip.repository.aPackage.PackageScheduleDetailsCustomRepository;
-import Goods.Reservation_Trip.repository.aPackage.PackageScheduleDetailsRepository;
 import Goods.Reservation_Trip.util.Formatter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,16 +17,21 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CombinePackageService {
 
-    private final PackageScheduleDetailsRepository packageScheduleDetailsRepository;
-
     private final PackageScheduleDetailsCustomRepository packageScheduleDetailsCustomRepository;
 
     private final ImageManager imageManager;
 
     // 관리자 패키지 리스트 조회
-    public Page<AdminPackageListResponseDto> getAdminPackageAndScheduleList(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-        return packageScheduleDetailsRepository.findEarliestDepartureDateOutAvailableSchedulesPerPackage(pageable).map(packageScheduleDetails -> {
+    public Page<AdminPackageListResponseDto> getAdminPackageAndScheduleList(int page, int size, Long mainCategoryId, Long subCategoryId, Long smallCategoryId, String sort) {
+        Pageable pageable;
+        if ("price_asc".equals(sort)) {
+            pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "price"));
+        } else if ("price_desc".equals(sort)) {
+            pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "price"));
+        } else {
+            pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        }
+        return packageScheduleDetailsCustomRepository.findByCategoryAndSubCategories(mainCategoryId, subCategoryId, smallCategoryId, sort, pageable).map(packageScheduleDetails -> {
             String packageMainImagePath = null;
             Package aPackage = packageScheduleDetails.getPackageSchedule().getAPackage();
             PackageSchedule packageSchedule = packageScheduleDetails.getPackageSchedule();
@@ -45,12 +49,14 @@ public class CombinePackageService {
                     .period(aPackage.getPeriod())
                     .departureDateOut(packageSchedule.getDepartureDateOut())
                     .arrivalDateReturn(packageSchedule.getArrivalDateReturn())
+                    .packageStatus(aPackage.getPackageStatus().getName())
                     .createdAt(Formatter.getLocalDate(aPackage.getCreatedAt()))
                     .modifiedAt(Formatter.getLocalDate(aPackage.getModifiedAt()))
                     .build();
         });
     }
 
+    // 관리자 패키지 리스트 검색 이름 기준
     public Page<AdminPackageListResponseDto> getAdminPackageSearchList(int page, int size, String name) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         return packageScheduleDetailsCustomRepository.findAvailableEarliestByPackageNameContaining(name, pageable).map(packageScheduleDetails -> {

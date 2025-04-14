@@ -1,12 +1,14 @@
 package Goods.Reservation_Trip.repository.aPackage;
 
 import Goods.Reservation_Trip.entity.PackageSchedule;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public interface PackageScheduleRepository extends JpaRepository<PackageSchedule, Long> {
 
@@ -25,4 +27,6 @@ public interface PackageScheduleRepository extends JpaRepository<PackageSchedule
             "AND p.packageStatus = 'AVAILABLE'")
     int updateExpiredSchedulesNextDay(@Param("cutoff") LocalDate cutoff);
 
+    @EntityGraph(attributePaths = "packageScheduleDetails")
+    List<PackageSchedule> findByaPackage_Id(Long id);
 }

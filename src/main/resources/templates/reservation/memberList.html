@@ -82,8 +82,8 @@
         </div>
         <button id="scrollToTopBtn"></button>
     </div>
-   
-   
+
+
     <footer th:replace="/fragments/memberFooter::memberFooter"></footer>
     <script th:src="@{/js/scrollTop.js}"></script>
     <script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
@@ -127,6 +127,12 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script th:inline="none">
+
+        function normalizeDate(date) {
+            const normalized = new Date(date);
+            normalized.setHours(0, 0, 0, 0); // 시분초 0으로 초기화
+            return normalized;
+        }
         const fullyBooked = [];
         const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
 
@@ -139,7 +145,7 @@
         }
 
         // 오늘 날짜 가져오기
-        const today = new Date();
+        const today = normalizeDate(new Date());
         const todayFormatted = formatDate(today);
 
         const datePicker = new tui.DatePicker('#tui-datepicker', {
@@ -174,54 +180,60 @@
         let prevEndDate = today;
 
         datePicker.on('change', (e) => {
-            const selectedDate = datePicker.getDate();
-            const startDate = selectedDate;  // 시작일
-            const endDate = new Date(replaceDate(dateInput2.value)); // 종료일
+            requestAnimationFrame(() => {
+                const selectedDate = normalizeDate(datePicker.getDate());
+                const endDate = normalizeDate(datePicker2.getDate());
+                const startDate = selectedDate;
 
-            const timeDiff = endDate - startDate;
-            const dayDiff = timeDiff / (1000 * 60 * 60 * 24); // 밀리초 → 일
 
-            if (startDate <= endDate) {
-                if (dayDiff > 365) {
-                    Swal.fire({ text: "조회 기간은 1년을 초과할 수 없습니다." });
+                const timeDiff = endDate - startDate;
+                const dayDiff = timeDiff / (1000 * 60 * 60 * 24);
+
+                if (startDate <= endDate) {
+                    if (dayDiff > 365) {
+                        Swal.fire({ text: "조회 기간은 1년을 초과할 수 없습니다." });
+                        datePicker.setDate(prevStartDate);
+                        dateInput.value = formatDate(prevStartDate);
+                    } else {
+                        dateInput.value = formatDate(selectedDate);
+                        prevStartDate = selectedDate;
+                    }
+                } else {
+                    Swal.fire({ text: "조회 시작일은 종료일보다 이전이어야 합니다." });
                     datePicker.setDate(prevStartDate);
                     dateInput.value = formatDate(prevStartDate);
-                } else {
-                    dateInput.value = formatDate(selectedDate);
-                    prevStartDate = selectedDate;
                 }
-            } else {
-                Swal.fire({ text: "조회 시작일은 종료일보다 이전이어야 합니다." });
-                datePicker.setDate(prevStartDate);
-                dateInput.value = formatDate(prevStartDate);
-            }
+            });
         });
 
         // 입력 필드 초기값을 오늘 날짜로 설정
         dateInput.value = todayFormatted;
+        dateInput2.value = todayFormatted;
 
         datePicker2.on('change', (e) => {
-            const selectedDate = datePicker2.getDate(); // 종료일
-            const startDate = new Date(replaceDate(dateInput.value));
-            const endDate = selectedDate;
+            requestAnimationFrame(() => {
+                const selectedDate = datePicker2.getDate();
+                const startDate = datePicker.getDate();
+                const endDate = selectedDate;
 
-            const timeDiff = endDate - startDate;
-            const dayDiff = timeDiff / (1000 * 60 * 60 * 24);
+                const timeDiff = endDate - startDate;
+                const dayDiff = timeDiff / (1000 * 60 * 60 * 24);
 
-            if (startDate <= endDate) {
-                if (dayDiff > 365) {
-                    Swal.fire({ text: "조회 기간은 1년을 초과할 수 없습니다." });
+                if (startDate <= endDate) {
+                    if (dayDiff > 365) {
+                        Swal.fire({ text: "조회 기간은 1년을 초과할 수 없습니다." });
+                        datePicker2.setDate(prevEndDate);
+                        dateInput2.value = formatDate(prevEndDate);
+                    } else {
+                        dateInput2.value = formatDate(selectedDate);
+                        prevEndDate = selectedDate;
+                    }
+                } else {
+                    Swal.fire({ text: "조회 종료일은 시작일보다 이후여야 합니다." });
                     datePicker2.setDate(prevEndDate);
                     dateInput2.value = formatDate(prevEndDate);
-                } else {
-                    dateInput2.value = formatDate(selectedDate);
-                    prevEndDate = selectedDate;
                 }
-            } else {
-                Swal.fire({ text: "조회 종료일은 시작일보다 이후여야 합니다." });
-                datePicker2.setDate(prevEndDate);
-                dateInput2.value = formatDate(prevEndDate);
-            }
+            });
         });
 
 

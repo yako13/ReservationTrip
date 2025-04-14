@@ -75,7 +75,8 @@
             </div>
 
             <div class="HanResStatDiv">
-                <p class="HanResStat">예약완료</p>
+                <p class="HanResStat"
+                   th:text="${resDetailPageDto.reservation.reservationState.getName}">예약완료</p>
             </div>
 
             <div class="HanResNumDiv">
@@ -420,6 +421,7 @@
             </form>
             <button class="HanCancel" th:if="${resDetailPageDto.cancelButton}" form="HanResvCancel" type="submit">예약 취소</button>
             <button class="HanCancelReq" th:if="${resDetailPageDto.cancelButtonReq}">예약 취소 요청중</button>
+            <button class="HanCancelReq" th:if="${resDetailPageDto.cancelOkButton}">예약 취소</button>
             <button class="HanReview" th:if="${resDetailPageDto.reviewButton}" type="button"
                     th:onclick="|location.href='@/member/review/new/{reservationId}(reservationId=${resDetailPageDto.reservation.id})}'|">리뷰 쓰기</button>
         </div>
@@ -429,7 +431,7 @@
     <!-- 푸터 시작 -->
 
     <footer th:replace="/fragments/memberFooter::memberFooter"></footer>
-
+s
     <!-- 푸터 끝 -->
 
 

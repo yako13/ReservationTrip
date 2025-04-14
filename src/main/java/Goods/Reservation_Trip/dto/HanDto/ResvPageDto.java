@@ -18,6 +18,9 @@ public class ResvPageDto { //예약 페이지를 보여주기위한 dto
     //성인 유아 아동 인원수 및 출발일 패키지 회원pk
     private PackResvDto packResvDto;
 
+    //여행일정 pk
+    private Long packageSchedulePk;
+
     //여행 출발일 변환된것
     private String tripStartString;
     //여행 도착일 변환된것
@@ -80,6 +83,9 @@ public class ResvPageDto { //예약 페이지를 보여주기위한 dto
 
     //로그인 여부
     private boolean loginNo;
+
+    //예약이 만석인지 여부
+    private boolean resvFull;
 
 
 

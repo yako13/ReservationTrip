@@ -64,6 +64,18 @@ public class PackPageDto {
 
     //로그인 여부
     private boolean loginYes;
+    //만석 여부
+    private boolean resvFull;
+
+
+    //현재 예약 되어있는 인원
+    private int resvMember;
+
+    //최소 예약 인원
+    private int minMember;
+
+    //현재 가능 예약 인원
+    private int resvOkMember;
 
 
 

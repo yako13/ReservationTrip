@@ -12,6 +12,8 @@ public interface PackageCategoryRepository extends JpaRepository<PackageCategory
     // 대분류 조회
     List<PackageCategory> findByParentIsNull();
 
+    List<PackageCategory> findByDepth(int depth);
+
     // 카테고리 이름 찾기
     Optional<PackageCategory> findByName(String name);
 

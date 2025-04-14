@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StarCloud Workshop</title>
+  <link rel="stylesheet" href="css/mainPage.css">
+
+</head>
+
+<body>
+
+  <header th:fragment="memberHeaderPack">
+
+    <!-- 헤더 시작 -->
+    <div class="HanHeaderMain">
+
+      <div class="HanHeaderLogo">
+        <a th:href="@{/}">
+          <img th:src="@{/images/logoFull300.png}" height="80px">
+        </a>
+      </div>
+
+      <div class="HanHeaderMid">
+
+
+        <div class="HanSerachForm">
+
+            <input type="text" id="cardName" th:value="${param.keyword}" name="keyword" onchange="this.form.submit()" placeholder="검색어를 입력해주세요">
+            <button type="button" form="filter-form"  onclick="submitWithKeyword()"></button>
+            <img th:src="@{/images/nabal4.png}" width="20px">
+
+        </div>
+
+
+
+
+
+      </div>
+
+      <!-- 로그아웃시 나타나는 헤더 부분 시작 -->
+
+      <div class="HanHeaderButton" th:if="${session.memberId==null}">
+      <a th:href="@{/login}">로그인</a>
+      <a th:href="@{/terms/agree }">회원가입</a>
+    </div>
+
+      <!-- 로그아웃시 나타나는 헤더 부분 끝 -->
+
+      <!-- 로그인시 나타나는 헤더부분 시작-->
+
+      <div class="HanHeaderButton"  th:if="${session.memberId!=null}">
+        <div class="Handropdown">
+          <div class="HanHeaderButtonDiv">
+            <a class="dropbtn HanHeaderButtonA" onclick="toggleDropdown(event, 'mypageDropdown')">
+              <img th:src="@{/images/user1.svg}" alt="" width="30px" height="auto" class="HanHeaderHover"></a>
+            <p>마이페이지</p>
+          </div>
+          <div class="HanDrodBoxName" id="mypageDropdown">
+            <div class="HanDrodBoxNameBox">
+
+              <img th:src="@{/images/user1.svg}" alt="">
+
+
+              <div class="HanDrodBoxNameDiv" th:if="${headerDto.loginYes}">
+                <div>
+                  <p class="HanHeaderUserName">[[${headerDto.name}]]님</p>
+                </div>
+              </div>
+            </div>
+            <div class="HandropdownBoxLogout">
+              <a href="/logout" id="logoutLink">
+                <img th:src="@{/images/logout.svg}" width="20px" height="auto">로그아웃</a>
+            </div>
+            <div class="HandropdownBox" id="">
+              <a th:href="@{/member/edit}">회원정보 수정</a>
+              <a th:href="@{/member/reservation/list}">예약 내역</a>
+              <a th:href="@{/member/dib}">찜 목록</a>
+              <a th:href="@{/member/review/list}">리뷰 목록</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="HanHeaderButtonDiv">
+          <a th:href="@{/member/reservation/list}" class="HanHeaderButtonA"><img th:src="@{/images/ticket.png}" width="33px" height="auto"
+              class="HanHeaderHover"></a>
+          <p>예약내역</p>
+        </div>
+
+        <div class="HanHeaderButtonDiv" style="margin-left:-7px">
+          <a th:href="@{/member/dib}" class="HanHeaderButtonA"><img th:src="@{/images/heart.png}" width="32px" height="auto"
+              class="HanHeaderHover"></a>
+          <p>찜</p>
+
+        </div>
+
+      </div>
+
+      <!-- 로그인시 나타나는 헤더부분 끝-->
+
+    </div>
+
+    <hr class="HanHeaderHr" style="border-color: #d7e0e4;" />
+
+    <!-- 네비 시작 -->
+    <div class="HanNaviMain">
+
+      <div class="HanNaviBarADiv">
+        <form th:action="@{/packages}" th:method="get" id="allPack">
+
+          <button type="submit" form="allPack">전체상품</button>
+
+        </form>
+      </div>
+      <!--      나라별 카테고리-->
+      <div class="HanNaviBarADiv" th:each="mainList : ${headerDto.mainList}">
+        <form th:action="@{/packages}" th:method="get" th:id="${mainList.name}">
+          <input type="hidden" name="subCategoryId" th:value="${mainList.id}">
+          <input type="hidden" name="subCategoryName" th:value="${mainList.name}">
+          <button type="submit"  th:form="${mainList.name}" th:text="${mainList.name}">해외여행</button>
+        </form>
+      </div>
+
+
+    </div>
+    <!-- 네비 끝 -->
+
+
+    <hr class="HanNavHr" />
+    <!-- 헤더 끝 -->
+
+
+    <!-- 네비 끝 -->
+
+    <!-- 헤더 끝 -->
+
+  </header>
+
+</body>
+
+
+</html>
