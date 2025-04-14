@@ -17,6 +17,9 @@ public class ResvSubmitDto {
     //패키지 pk
     private Long packagePk;
 
+    //여행일정 pk
+    private Long packageSchedulePk;
+
     //여행 출발일
     private LocalDate tripStart;
 

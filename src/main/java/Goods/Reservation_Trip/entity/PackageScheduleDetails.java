@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Table(name = "package_schedule_details")
 @NoArgsConstructor
@@ -24,7 +26,7 @@ public class PackageScheduleDetails extends BaseTime {
     private Long id;
 
     @JoinColumn(name = "package_schedule_id")
-    @ManyToOne
+    @OneToOne
     private PackageSchedule packageSchedule;
 
     @JoinColumn(name = "airline_out_id")
@@ -80,5 +82,6 @@ public class PackageScheduleDetails extends BaseTime {
     @Column(name = "arrival_time_return", nullable = false)
     @Comment("귀국 도착 시간")
     private LocalTime arrivalTimeReturn;
+
 
 }

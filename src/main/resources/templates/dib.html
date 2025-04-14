@@ -20,10 +20,15 @@
 
     /* 마감 뱃지 스타일 */
     .deadline-badge {
+        display: flex;
+        align-items: center;
+        justify-self: center;
+        width: 33px;
+        height: 22px;
         background-color: #ff5e57;
         color: white;
-        font-size: 10px;
-        padding: 2px 6px;
+        font-size: 12px;
+
         margin-left: 8px;
         border-radius: 4px;
     }
@@ -31,6 +36,7 @@
 
     .HanCartProductTitle {
         display: flex;
+        align-items: flex-end;
         gap: 10px;
         width: 100%;
     }
@@ -42,7 +48,13 @@
 
     }
 
-   
+    .HanCartProductTitleTop {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+
+    }
 </style>
 
 <body>
@@ -87,16 +99,25 @@
 
                         <div class="HanCartInfo">
                             <div class="HanCartImgDiv">
-                                <a> <img th:src="@{/images/pick1.jpg}" alt=""></a>
+                                <a th:href="@{'/package/' + ${DibPageDtoList.dib.packageEntity.id}}"> <img th:src="@{'/productImages/'+ ${DibPageDtoList.dib.packageEntity.mainImage.getImageFullName}}" alt=""></a>
                             </div>
 
                             <div class="HanCartProductName">
+
                                 <div class="HanCartProductTitle">
-                                    <span th:text="${DibPageDtoList.dib.packageEntity.packageName}">[출발확정]후쿠오카 3박
-                                        4일</span>
+                                    <div class="HanCartProductTitleTop">
+
+                                        <span class="HanProductSumCnt" style="margin-bottom: 5px;">상품명</span>
+
+                                        <span th:text="${DibPageDtoList.dib.packageEntity.packageName}">[출발확정]후쿠오카
+                                            3박
+                                            4일</span>
+
+                                    </div>
 
                                     <!-- 마감 뱃지 표시 -->
                                     <span th:if="${DibPageDtoList.deadline}" class="deadline-badge">마감</span>
+                                    <!-- <span class="deadline-badge">마감</span> -->
                                 </div>
                             </div>
                         </div>

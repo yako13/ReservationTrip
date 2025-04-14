@@ -27,9 +27,6 @@ public class PackResvDto {
     //패키지 pk
     private Long packagePk;
 
-    //회원 pk
-    private Long memberPk;
-
 
 
 }

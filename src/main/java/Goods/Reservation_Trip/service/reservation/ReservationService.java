@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -247,7 +248,7 @@ public class ReservationService {
         }
 
         if (infantSum != 0) {
-            reservationMembers.append(", 유아 " + infantSum + "명");
+            reservationMembers.append(", 유아 " + infantSum + "인");
         }
 
         return reservationMembers.toString();
@@ -270,6 +271,16 @@ public class ReservationService {
         int endDay = Integer.parseInt(searchDto.getEndDate().substring(8, 10));
 
         LocalDate endDate = LocalDate.of(endYear, endMonth, endDay);
+
+        // 유효성 검사
+        if (startDate.isAfter(endDate)) {
+            throw new IllegalArgumentException("조회 시작일은 종료일보다 이전이어야 합니다.");
+        }
+
+        long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);
+        if (daysBetween > 365) {
+            throw new IllegalArgumentException("조회 기간은 1년을 초과할 수 없습니다.");
+        }
 
         //DB에 localDateTime 형식으로 저장되어있으므로 찾을 때도 localDateTime으로 바꿔줘야함
         LocalDateTime startDateTime = startDate.atStartOfDay();
@@ -393,13 +404,13 @@ public class ReservationService {
         PackageScheduleDetails packageDetails = packageScheduleCheck.getPackageScheduleDetails();
 
         //패키지 옵션
-//        Optional<PackageOption> optionalPackageOption = packageOptionRepository.findByAPackageId(reservation.getAPackage().getId());
-//
-//        if(optionalPackageOption.isEmpty()) throw new RuntimeException("패키지 옵션 없음");
-//
-//        PackageOption packageOption = optionalPackageOption.get();
-//
-//        List<String> optionList = Formatter.getPackageOptions(packageOption);
+        Optional<PackageOption> optionalPackageOption = packageOptionRepository.findByPackageId(reservation.getAPackage().getId());
+
+        if(optionalPackageOption.isEmpty()) throw new RuntimeException("패키지 옵션 없음");
+
+        PackageOption packageOption = optionalPackageOption.get();
+
+        List<String> optionList = Formatter.getPackageOption(packageOption);
 
         return ReservationDetailsResponseDto.builder()
                 .reservationPK(reservation.getId()) //예약 PK
@@ -434,7 +445,7 @@ public class ReservationService {
                 .e_destination(packageDetails.getArrivalPointReturn().getName()) //여행 종료일 도착지
                 .s_airlineName(packageDetails.getAirlineOut().getName()) //출국 항공사명
                 .e_airlineName(packageDetails.getAirlineReturn().getName()) //귀국 항공사명
-//                .option(optionList)
+                .option(optionList) //옵션
                 .build();
     }
 

@@ -8,6 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Table(name = "package_option")
 @Getter
 @NoArgsConstructor
@@ -20,8 +23,8 @@ public class PackageOption extends BaseTime {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @OneToOne
     @JoinColumn(name = "package_id")
-    @ManyToOne
     private Package aPackage;
 
     @Column(nullable = false, columnDefinition = "BOOLEAN")
@@ -39,4 +42,5 @@ public class PackageOption extends BaseTime {
     @Column(name = "no_shopping",nullable = false, columnDefinition = "BOOLEAN")
     @Comment("쇼핑 여부")
     private boolean noShopping;
+
 }

@@ -121,14 +121,18 @@ public class MemberService {
         //비밀번호 = 바뀐 비밀번호
         String password = editDto.getPassword();
 
-        //비밀번호 입력을 안했을 시
-        if (editDto.getPassword().isEmpty()) {
-            password = member.getPassword();
+        //소셜 회원이 아니며 비밀번호 입력을 안했을 시
+
+        if (editDto.getPassword()==null || editDto.getPassword().equals("")) {
+            if(member.getProvider()==null){
+                password = member.getPassword();
+            }
         }
 
         String name = editDto.getName();
         String birth = editDto.getBirth();
         String phoneNumber = editDto.getPhoneNumber();
+        boolean gender = editDto.isGender();
 
 
         Optional<Member> aMember = memberRepository.findByNameAndPhoneNumber(name, phoneNumber);
@@ -136,7 +140,12 @@ public class MemberService {
         if (aMember.isPresent() && !aMember.get().getEmail().equals(member.getEmail())) return false;
 
         //회원정보 수정
-        member.editMember(passwordEncoder.encode(password), name, birth, phoneNumber);
+        if(member.getProvider()==null) {
+            member.editMember(passwordEncoder.encode(password), name, birth, phoneNumber,gender);
+        }
+        else {
+            member.editMember(null,name,birth,phoneNumber,gender);
+        }
 
         //수정한 내용 저장
         memberRepository.save(member);

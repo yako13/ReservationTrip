@@ -1,8 +1,10 @@
 package Goods.Reservation_Trip.controller;
 
+import Goods.Reservation_Trip.dto.HanDto.HeaderDto;
 import Goods.Reservation_Trip.dto.member.req.JoinDto;
 import Goods.Reservation_Trip.dto.member.req.EditDto;
 import Goods.Reservation_Trip.dto.member.res.MemberResponseDto;
+import Goods.Reservation_Trip.service.HanService.HanHeaderService;
 import Goods.Reservation_Trip.service.member.MailService;
 import Goods.Reservation_Trip.service.member.MemberService;
 import jakarta.mail.MessagingException;
@@ -28,18 +30,26 @@ public class MemberController {
 
     private final MailService mailService;
 
+    private final HanHeaderService hanHeaderService;
+
     @GetMapping("/login")
     private String loginPage() {
         return "member/login";
     }
 
     @GetMapping("/terms/agree")
-    private String agreePage() {
+    private String agreePage(HttpServletRequest request,Model model) {
+        HeaderDto headerDto = hanHeaderService.HeaderCategoryAndMember(request);
+
+        model.addAttribute("headerDto",headerDto);
         return "member/agree";
     }
 
     @GetMapping("/join")
-    private String joinPage() {
+    private String joinPage(HttpServletRequest request,Model model) {
+        HeaderDto headerDto = hanHeaderService.HeaderCategoryAndMember(request);
+
+        model.addAttribute("headerDto",headerDto);
         return "member/join";
     }
 
@@ -69,7 +79,7 @@ public class MemberController {
     }
 
     @PostMapping("/join")
-    public String join(@Valid JoinDto joinDto, Model model, Errors errors,RedirectAttributes attributes) throws AuthenticationException {
+    public String join(@Valid JoinDto joinDto, Model model, Errors errors,RedirectAttributes attributes,HttpServletRequest request) throws AuthenticationException {
         model.addAttribute("email", joinDto.getEmail());
         model.addAttribute("authCode",joinDto.getAuthCode());
         model.addAttribute("password", joinDto.getPassword());
@@ -78,8 +88,13 @@ public class MemberController {
         model.addAttribute("gender", joinDto.isGender());
         model.addAttribute("birth", joinDto.getBirth());
 
+        HeaderDto headerDto = hanHeaderService.HeaderCategoryAndMember(request);
+
+        model.addAttribute("headerDto",headerDto);
+
         if (!mailService.validationAuthCode(joinDto.getEmail(), joinDto.getAuthCode())) {
             model.addAttribute("alert", "인증번호가 일치하지 않습니다.");
+
             return "member/join";
         }
 
@@ -103,7 +118,10 @@ public class MemberController {
 
     //아이디 찾기 페이지
     @GetMapping("/find/id")
-    public String findIdPage() {
+    public String findIdPage(HttpServletRequest request,Model model) {
+        HeaderDto headerDto = hanHeaderService.HeaderCategoryAndMember(request);
+
+        model.addAttribute("headerDto",headerDto);
         return "member/findId";
     }
 
@@ -117,7 +135,10 @@ public class MemberController {
 
     //비밀번호 찾기 페이지
     @GetMapping("/find/password")
-    public String findPasswordPage() {
+    public String findPasswordPage(HttpServletRequest request,Model model) {
+        HeaderDto headerDto = hanHeaderService.HeaderCategoryAndMember(request);
+
+        model.addAttribute("headerDto",headerDto);
         return "member/findPassword";
     }
 
@@ -155,6 +176,9 @@ public class MemberController {
     //회원 수정페이지
     @GetMapping("/member/edit")
     public String memberEditPage(Model model, HttpServletRequest request) {
+        HeaderDto headerDto = hanHeaderService.HeaderCategoryAndMember(request);
+
+        model.addAttribute("headerDto",headerDto);
         MemberResponseDto memberResponseDto = memberService.getMember(request);
 
         model.addAttribute("email", memberResponseDto.getEmail());
@@ -179,7 +203,9 @@ public class MemberController {
         model.addAttribute("phoneNumber", editDto.getPhoneNumber());
         model.addAttribute("gender", editDto.isGender());
         model.addAttribute("birth", editDto.getBirth());
-        model.addAttribute("authCode",editDto.getAuthCode());
+        HeaderDto headerDto = hanHeaderService.HeaderCategoryAndMember(request);
+
+        model.addAttribute("headerDto",headerDto);
 
         //인증번호 일치하지 않을 때
         if (!mailService.validationAuthCode(memberResponseDto.getEmail(), editDto.getAuthCode())) {
@@ -189,6 +215,7 @@ public class MemberController {
 
         //이름과 휴대전화번호가 같은 회원이 있는 경우 수정 불가
         if(!memberService.editMember(memberResponseDto.getEmail(), editDto)) {
+            model.addAttribute("authCode",editDto.getAuthCode());
             model.addAttribute("checkName",1); //이미 이메일은 인증한 걸 확인해줌
             model.addAttribute("alert","동일한 이름과 휴대전화번호를 가진 회원이 있습니다. ");
             return "member/edit";
@@ -201,6 +228,9 @@ public class MemberController {
     //회원 탈퇴 시 이메일 인증 페이지
     @GetMapping("/permit/withdrawal")
     public String permitPage(Model model,HttpServletRequest request){
+        HeaderDto headerDto = hanHeaderService.HeaderCategoryAndMember(request);
+
+        model.addAttribute("headerDto",headerDto);
         MemberResponseDto member = memberService.getMember(request);
 
         model.addAttribute("email",member.getEmail());
@@ -226,8 +256,4 @@ public class MemberController {
         return "1000";
     }
 
-//    @GetMapping("/member/reservation/search")
-//    public String memberReservationSearchPage(){
-//
-//    }
 }
