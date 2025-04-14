@@ -248,7 +248,7 @@ public class ReservationService {
         }
 
         if (infantSum != 0) {
-            reservationMembers.append(", 유아 " + infantSum + "명");
+            reservationMembers.append(", 유아 " + infantSum + "인");
         }
 
         return reservationMembers.toString();

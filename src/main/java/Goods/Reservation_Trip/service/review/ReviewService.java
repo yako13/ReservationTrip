@@ -40,8 +40,6 @@ public class ReviewService {
 
     private final FileStorageService fileStorageService;
 
-//    private final PackageRepository packageRepository;
-
     /**
      * 리뷰 페이지
      */
@@ -323,6 +321,7 @@ public class ReviewService {
     /**
      * 리뷰삭제
      */
+    @Transactional
     public String deleteReview(Long id, Long memberId) {
         Optional<Review> optionalReview = reviewRepository.findById(id);
         if (optionalReview.isEmpty()) return "500";
@@ -334,18 +333,20 @@ public class ReviewService {
 
         Package aPackage = review.getAPackage();
 
-        //평균 평점 수정
         double averageRating = deleteAverageRating(aPackage, review.getRating());
-
-        //리뷰와 패키지 간의 연결을 유지시키므로 orphan 상태가 아님
         aPackage.setAverageRating(averageRating);
 
-        //관계 끊어줌
         aPackage.getReviewList().remove(review);
+        Reservation reservation = review.getReservation();
+
+        reservation.setReview(null);
+
+        reservationRepository.save(reservation);
+
         review.setAPackage(null);
 
-        //orphanRemoval 이 있으면 생략가능
-        //reviewRepository.delete(review);
+        reviewRepository.delete(review);
+
 
         return "1000";
     }
