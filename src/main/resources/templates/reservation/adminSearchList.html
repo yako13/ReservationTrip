@@ -107,7 +107,10 @@
                 </div>
             </div>
 
-            <h1 th:if="${total ==0}">주문내역이 없습니다.</h1>
+            <div th:if="${total ==0}" class="imageArea">
+                <img th:src="@{/images/info.svg}" id="infoImage">
+                <p>예약내역이 없습니다.</p>
+            </div>
 
             <table class="rwd-table" th:if="${total >0}">
                 <tbody>
@@ -187,6 +190,8 @@
         </nav>
     </main>
     <!-- 메인 끝 -->
+    <button id="scrollToTopBtn"></button>
+    <script th:src="@{/js/scrollTop.js}"></script>
     <script>
         const reservationStateElements = document.querySelectorAll(".reservationState");
 

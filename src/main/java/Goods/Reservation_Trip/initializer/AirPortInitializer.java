@@ -3,14 +3,19 @@ package Goods.Reservation_Trip.initializer;
 import Goods.Reservation_Trip.entity.Airport;
 import Goods.Reservation_Trip.repository.aPackage.AirportRepository;
 import Goods.Reservation_Trip.repository.aPackage.PackageCategoryRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor
 @Order(2)
+@Transactional
 public class AirPortInitializer implements CommandLineRunner {
 
     private final AirportRepository airportRepository;
@@ -33,23 +38,20 @@ public class AirPortInitializer implements CommandLineRunner {
         if (!airportRepository.existsByCode("PUS")) {
             airportRepository.save(new Airport(null, "PUS", "부산국제공항", null));
         }
-
-        // 해외 국제 공항
-        // 카테고리에 해당이름이 있으면 연결
+     // 해외 국제 공항
+        // 카테고리에 해당 이름이 있으면 연결
         packageCategoryRepository.findByName("도쿄").ifPresent(tokyo -> {
-
             if (!airportRepository.existsByCode("NRT")) {
-                airportRepository.save(new Airport(null, "NRT", "나리타국제공항", tokyo));
+                airportRepository.save(new Airport(null, "NRT", "나리타국제공항", List.of(tokyo)));
             }
             if (!airportRepository.existsByCode("HND")) {
-                airportRepository.save(new Airport(null, "HND", "하네다국제공항", tokyo));
+                airportRepository.save(new Airport(null, "HND", "하네다국제공항", List.of(tokyo)));
             }
         });
 
         packageCategoryRepository.findByName("오사카").ifPresent(osaka -> {
-
             if (!airportRepository.existsByCode("KIX")) {
-                airportRepository.save(new Airport(null, "KIX", "간사이국제공항", osaka));
+                airportRepository.save(new Airport(null, "KIX", "간사이국제공항", List.of(osaka)));
             }
         });
     }

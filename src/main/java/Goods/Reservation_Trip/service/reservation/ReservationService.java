@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -270,6 +271,16 @@ public class ReservationService {
         int endDay = Integer.parseInt(searchDto.getEndDate().substring(8, 10));
 
         LocalDate endDate = LocalDate.of(endYear, endMonth, endDay);
+
+        // 유효성 검사
+        if (startDate.isAfter(endDate)) {
+            throw new IllegalArgumentException("조회 시작일은 종료일보다 이전이어야 합니다.");
+        }
+
+        long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);
+        if (daysBetween > 365) {
+            throw new IllegalArgumentException("조회 기간은 1년을 초과할 수 없습니다.");
+        }
 
         //DB에 localDateTime 형식으로 저장되어있으므로 찾을 때도 localDateTime으로 바꿔줘야함
         LocalDateTime startDateTime = startDate.atStartOfDay();

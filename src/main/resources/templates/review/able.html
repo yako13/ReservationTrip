@@ -13,7 +13,10 @@
         }
 
         .imageArea {
-            p{width: 100%;}
+            p {
+                width: 100%;
+            }
+
             padding: 10rem 0;
             text-align: center;
             border-bottom: solid 1px #c2c2c2;
@@ -390,12 +393,14 @@
 
 
     </div>
-    <img th:src="@{/images/topBtn.png}" id="topBtn">
+    <button id="scrollToTopBtn"></button>
+    
     </div>
 
 
     <!-- 메인 끝 -->
     <footer th:replace="/fragments/memberFooter::memberFooter"></footer>
+    <script th:src="@{/js/scrollTop.js}"></script>
 </body>
 
 </html>

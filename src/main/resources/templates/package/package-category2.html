@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>상품 검색 리스트</title>
+
+  <link rel="stylesheet" th:href="@{/css/mainPage.css}" />
+  <link rel="stylesheet" th:href="@{/css/package/package-category2.css}">
+
+  <link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+</head>
+
+
+<style>
+  .tui-calendar th,
+  .tui-calendar td {
+    color: #434343;
+  }
+
+  /* 요일 헤더 중 일요일 (첫 번째 열) 빨간색 */
+  .tui-calendar th:nth-child(1) {
+    color: #e26d69 !important;
+
+  }
+
+  /* 날짜 셀 중 일요일 (첫 번째 열) 빨간색 */
+  .tui-calendar td:nth-child(1) {
+    color: #e26d69 !important;
+  }
+
+  /* 일요일 + 비활성화 (disabled-date 또는 tui-is-blocked) */
+  .tui-calendar td.disabled-date.tui-calendar-sun,
+  .tui-calendar td.tui-is-blocked.tui-calendar-sun {
+    color: #e8b1ae !important;
+  }
+
+  .tui-datepicker .tui-is-selectable.tui-is-selected,
+  .tui-datepicker.tui-rangepicker .tui-is-selectable.tui-is-selected {
+    background-color: #5eccff;
+  }
+
+  td.tui-calendar-date.disabled-date {
+    color: #ccc !important;
+    background-color: #f0f0f0 !important;
+    pointer-events: none;
+    cursor: default;
+  }
+
+  .PackDateInputDiv {
+    position: relative;
+  }
+
+  #start-calendar {
+    position: absolute;
+    top: 40px;
+    left: 5px;
+    transform: translateX(-50%);
+    z-index: 1000;
+  }
+
+  #end-calendar {
+    position: absolute;
+    top: 40px;
+    left: 250px;
+    transform: translateX(-50%);
+    z-index: 1000;
+  }
+
+  .a5 a:hover {
+    transform: translateY(-4px);
+  }
+
+  .a5 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .a5 p {
+    margin: 0;
+  }
+
+  .a5 a {
+    transition: all 0.4s ease;
+    display: block;
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .PackDateInputDiv img {
+    position: absolute;
+  }
+
+  .PackImg1 {
+    left: 185px;
+  }
+
+  .PackImg2 {
+    left: 426px;
+  }
+</style>
+
+<body>
+  <!-- 알람용 input -->
+  <input type="hidden" id="flashMessage" th:value="${data}">
+
+  <header th:replace="/fragments/memberHeader::memberHeader"></header>
+
+
+  <main class="main__container">
+
+    <div class="PackTitle">
+      <h1 class="PackHr"><img th:src="@{/images/map2.svg}" width="38px" style="margin-right: 5px;">도쿄</h1>
+
+      <div class="PackTitleSerach">
+
+        <div class="HanSerachDropdown">
+          <div class="HanSerachDropdown-toggle HanImg">
+            <img th:src="@{/images/map.svg}" width="30px" height="30px" style="margin-bottom: 3px;">
+            <span>출발지</span>
+          </div>
+          <div class="HanSerachDropdown-menu">
+            <div class="HanTop">전체</div>
+            <div>인천/김포</div>
+            <div>부산</div>
+            <div>대구</div>
+            <div>청주</div>
+            <div>광주</div>
+            <div>제주</div>
+            <div class="HanBottom">양양</div>
+          </div>
+        </div>
+
+
+
+        <div class="PackDateInputDiv" id="calendar-wrapper">
+
+          <span>출발일 : </span><input type="text" id="start-date" class="PackDateInput" readonly />
+          <img th:src="@{/images/cal4.svg}" width="18px" class="PackImg1">
+          <span> ~ </span>
+          <img th:src="@{/images/cal4.svg}" width="18px" class="PackImg2">
+          <span>도착일: </span><input type="text" id="end-date" class="PackDateInput" readonly />
+
+          <div id="start-calendar" class="calendar-box"></div>
+          <div id="end-calendar" class="calendar-box"></div>
+
+        </div>
+
+
+
+      </div>
+
+
+
+    </div>
+
+    </div>
+
+    <hr class="HanCartHr" />
+
+
+    <div class="a1">
+
+      <div class="a2">
+
+        <div class="a3">
+
+          <div class="a4">
+
+            <p class="hanSideTitle">상품옵션</p>
+
+            <div class="sideBarIcon">
+
+              <div class="icon-check-group">
+                <input type="checkbox" id="air" class="icon-check-input" />
+                <label for="air" class="icon-check-label">
+                  <div class="icon-box airplan">
+
+                  </div>
+                  <span>항공비 포함</span>
+                </label>
+              </div>
+
+              <div class="icon-check-group">
+                <input type="checkbox" id="air1" class="icon-check-input" />
+                <label for="air1" class="icon-check-label">
+                  <div class="icon-box hotel">
+
+                  </div>
+                  <span>호텔비 포함</span>
+                </label>
+              </div>
+
+              <div class="icon-check-group">
+                <input type="checkbox" id="air2" class="icon-check-input" />
+                <label for="air2" class="icon-check-label">
+                  <div class="icon-box guide">
+
+                  </div>
+                  <span>가이드 동반</span>
+                </label>
+              </div>
+
+              <div class="icon-check-group">
+                <input type="checkbox" id="air3" class="icon-check-input" />
+                <label for="air3" class="icon-check-label">
+                  <div class="icon-box cart">
+
+                  </div>
+                  <span>쇼핑 가능</span>
+                </label>
+              </div>
+
+            </div>
+
+            <p class="hanSideTitle">여행기간</p>
+
+            <div class="sideBarIcon2">
+
+
+              <div class="icon-check-group ">
+                <input type="radio" id="day1" class="icon-check-input " name="day" />
+                <label for="day1" class="icon-check-label PackIconBox2">
+                  <div class="icon-box cal">
+                  </div>
+                  <span>2일</span>
+                </label>
+              </div>
+              <div class="icon-check-group ">
+                <input type="radio" id="day2" class="icon-check-input " name="day" />
+                <label for="day2" class="icon-check-label PackIconBox2">
+                  <div class="icon-box cal">
+
+                  </div>
+                  <span>3일</span>
+                </label>
+              </div>
+
+              <div class="icon-check-group ">
+                <input type="radio" id="day3" class="icon-check-input " name="day" />
+                <label for="day3" class="icon-check-label PackIconBox2">
+                  <div class="icon-box cal">
+
+                  </div>
+                  <span>4일</span>
+                </label>
+              </div>
+
+              <div class="icon-check-group ">
+                <input type="radio" id="day4" class="icon-check-input" name="day" />
+                <label for="day4" class="icon-check-label PackIconBox2">
+                  <div class="icon-box cal">
+
+                  </div>
+                  <span>5일</span>
+                </label>
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="a7">
+
+
+
+            <div class="a6">
+              <div class="PackProduct">
+                <img th:src="@{/images/package.svg}" width="16px" style="margin-bottom: 2px;">
+                <p>상품 개수 : 34개</p>
+              </div>
+              <div class="a5">
+                <a>예약순</a>
+                <p class="PackBar">|</p>
+                <a>평점순</a>
+                <p class="PackBar">|</p>
+                <a>높은 가격순</a>
+                <p class="PackBar">|</p>
+                <a>낮은 가격순</a>
+              </div>
+            </div>
+
+            <!-- 상품 목록 -->
+            <ul>
+
+              <!-- 상품 단일 시작 -->
+              <li class="li__margin">
+
+                <div class="a8">
+
+                  <div class="image__container">
+                    <img th:src="@{/images/pick4.jpg}" class="main__image" />
+                  </div>
+
+                  <div class="a9">
+                    <div class="b1">
+                      <p class="PackP1">
+                        [출발확정] 도쿄/가마쿠라/에노시마 3일 #도쿄완전정복
+                        #근교도시 #꽉채운일정 #근교도시 #꽉채운일정
+                      </p>
+                      <p class="PackP2">
+                        합리적인 가격의 도쿄를 중심으로하는 상품으로, 대표적인
+                        필수관광지를 포함해 동선을 고려해서 알찬 구성으로
+                        만들어진 일정을 자랑합니다.
+                      </p>
+
+
+                      <div class="PackDateAndReview">
+                        <div class="PackDate">
+                          <img th:src="@{/images/cal4.svg}">
+                          <span>여행기간 : </span>
+                          <span>2박 3일</span>
+                        </div>
+
+                        <div class="HanTitleReview">
+
+                          <i class="fa-solid fa-star HanStarOn"></i>
+
+                          <span>4.5</span>
+
+                        </div>
+
+                        <div class="HanTitleReview">
+                          <img th:src="@{/images/reviewIcon.svg}" width="22px">
+                          <span>50</span>
+
+                        </div>
+
+                      </div>
+
+                      <div class="icons">
+
+                        <div class="icon-item">
+                          <img th:src="@{/images/guide.svg}">가이드 동반
+                        </div>
+
+                        <div class="icon-item">
+                          <img th:src="@{/images/hotel.svg}">호텔비 포함
+                        </div>
+
+                        <div class="icon-item">
+                          <img th:src="@{/images/airplan10.svg}">항공비 포함
+                        </div>
+
+                        <div class="icon-item">
+                          <img th:src="@{/images/cart3.svg}">쇼핑 가능
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                    <div class="b2">
+
+                      <div class="PackPriceDiv">
+                        <span class="PackPrice">1,049,900</span>
+                        <span class="PackPriceWon"> 원</span>
+                      </div>
+
+                      <div class="HanCkSubmitA">
+
+                        <a href="">상세 보기</a>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+                </div>
+
+              </li>
+              <!-- 상품 단일 끝 -->
+
+
+
+            </ul>
+
+          </div>
+
+        </div>
+
+      </div>
+
+  </main>
+
+  <!-- 푸터 시작 -->
+  <footer th:replace="/fragments/memberFooter::memberFooter"></footer>
+  <!-- 푸터 끝 -->
+
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!-- 제이쿼리 -->
+  <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+
+  <!-- ========================= scroll-top ========================= -->
+  <button id="scrollToTopBtn">
+
+  </button>
+
+  <!-- 탑 스크롤 스크립트 -->
+  <script th:src="@{/js/scrollTop.js}"></script>
+
+
+  <!-- 달력 스크립트 -->
+  <!-- 달력 라이브러리 -->
+  <script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
+  <link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css">
+
+  <script>
+    window.addEventListener('load', function () {
+      // 한글 로케일을 미리 등록 (필요 시 커스텀도 가능)
+      tui.DatePicker.localeTexts.ko = {
+        titles: {
+          DD: ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'],
+          D: ['일', '월', '화', '수', '목', '금', '토'],
+          MMMM: ['1월', '2월', '3월', '4월', '5월', '6월',
+            '7월', '8월', '9월', '10월', '11월', '12월'],
+          MMM: ['1월', '2월', '3월', '4월', '5월', '6월',
+            '7월', '8월', '9월', '10월', '11월', '12월']
+        },
+        titleFormat: 'MMMM yyyy',
+        todayFormat: '오늘: DD, MMMM d일',
+        time: '시간',
+        date: '날짜'
+      };
+
+      // ✅ rangePicker 생성
+      const rangePicker = tui.DatePicker.createRangePicker({
+        startpicker: {
+          input: '#start-date',
+          date: new Date(),
+          container: '#start-calendar',
+          language: 'ko',
+          format: 'yyyy-MM-dd'
+        },
+        endpicker: {
+          input: '#end-date',
+          date: new Date(),
+          container: '#end-calendar',
+          language: 'ko',
+          format: 'yyyy-MM-dd'
+        }
+      });
+
+      // ✅ 강제로 언어 재적용 (최신 버그 대응용)
+      rangePicker.changeLanguage('ko');
+    });
+  </script>
+
+
+
+  <!-- 캐러셀 검색창 드롭박스 커스텀 시작 -->
+
+  <script>
+
+    // 모든 드롭다운 처리
+    document.querySelectorAll('.HanSerachDropdown').forEach(dropdown => {
+
+      const toggle = dropdown.querySelector('.HanSerachDropdown-toggle');
+      const menuItems = dropdown.querySelectorAll('.HanSerachDropdown-menu div');
+
+      toggle.addEventListener('click', (e) => {
+
+        e.stopPropagation();
+        // 다른 드롭다운은 닫기
+        document.querySelectorAll('.HanSerachDropdown').forEach(d => {
+          if (d !== dropdown) d.classList.remove('open');
+        });
+        dropdown.classList.toggle('open');
+      });
+
+      menuItems.forEach(item => {
+        item.addEventListener('click', () => {
+          toggle.querySelector('span').textContent = item.textContent;
+          toggle.classList.add('selected'); // 선택되면 글자색 바꾸기
+          dropdown.classList.remove('open');
+        });
+      });
+    });
+
+
+
+    // 외부 클릭 시 모두 닫기
+    document.addEventListener('click', () => {
+      document.querySelectorAll('.HanSerachDropdown').forEach(d => d.classList.remove('open'));
+    });
+
+  </script>
+
+  <!-- 캐러셀 검색창 드롭박스 커스텀 끝 -->
+
+</body>
+
+</html>

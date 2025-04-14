@@ -1,11 +1,11 @@
 package Goods.Reservation_Trip.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Comment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Table(name = "airport")
 @NoArgsConstructor
@@ -13,6 +13,7 @@ import org.hibernate.annotations.Comment;
 @Getter
 @Entity
 @Builder
+@Setter
 public class Airport {
 
     @Id
@@ -28,9 +29,13 @@ public class Airport {
     @Comment("공항 이름")
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
-    private PackageCategory category;
+    @ManyToMany
+    @JoinTable(
+            name = "category_airport",
+            joinColumns = @JoinColumn(name = "airport_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private List<PackageCategory> categoryList;
 
 
 }

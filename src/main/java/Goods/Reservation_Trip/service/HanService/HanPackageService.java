@@ -1,6 +1,8 @@
 package Goods.Reservation_Trip.service.HanService;
 
+import Goods.Reservation_Trip.dto.HanDto.PackApiDto;
 import Goods.Reservation_Trip.dto.HanDto.PackPageDto;
+import Goods.Reservation_Trip.dto.member.res.MemberResponseDto;
 import Goods.Reservation_Trip.entity.Package;
 import Goods.Reservation_Trip.entity.PackageImage;
 import Goods.Reservation_Trip.entity.PackageSchedule;
@@ -9,7 +11,6 @@ import Goods.Reservation_Trip.repository.HanPart.HanReservationDetailsRepository
 import Goods.Reservation_Trip.repository.HanPart.HanReservationRepository;
 import Goods.Reservation_Trip.repository.MemberRepository;
 import Goods.Reservation_Trip.repository.aPackage.PackageRepository;
-import Goods.Reservation_Trip.service.member.MemberService;
 import Goods.Reservation_Trip.util.Formatter;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -31,13 +32,25 @@ public class HanPackageService {
 
     private final MemberRepository memberRepository;
     private final PackageRepository packageRepository;
-    private final MemberService memberService;
     private final HanReservationRepository hanReservationRepository;
     private final HanReservationDetailsRepository hanReservationDetailsRepository;
     private final HanPackageScheduleRepository hanPackageScheduleRepository;
+    private final HanMemberService hanMemberService;
 
     //상품 상세페이지로 가는 서비스
     public PackPageDto productDetailGo(HttpServletRequest request, Long id) {
+
+        //세션에서 맴버 정보 추출
+        MemberResponseDto memberEntity = hanMemberService.getMember(request);
+
+        boolean loginYes = true;
+
+        if (memberEntity == null) {
+            log.info("회원정보가 없거나 로그인을 안했습니다");
+            loginYes =false;
+        }
+
+
 
         Package PackageEntity = packageRepository.findById(id).orElse(null);
 
@@ -185,71 +198,110 @@ public class HanPackageService {
                 //상세 설명 이미지 유무체크
                 .infoImgYes(infoImgYes)
 
+                //로그인 유무 T = 로그인 F = 비로그인
+                .loginYes(loginYes)
+
                 .build();
 
 
         return packPageDto;
     }
 
-//    public PackPageDto PackageDateCheck(LocalDate selectedDate, Long id) {
-//
-//        //패키지 pk와 PackageStatus가 AVAILABLE 인것만 가져옴
-//        List<PackageSchedule> packageScheduleList =
-//                hanPackageScheduleRepository.findAvailableSchedules(id, AVAILABLE);
-//
-//        if (packageScheduleList == null) {
-//            log.error("여행일정이 없거나 꽉찼습니다");
-//            return null;
-//
-//        }
-//
-//        PackageSchedule packageScheduleCheck = new PackageSchedule();
-//
-//        boolean find = false;
-//
-//        //여행일정중 여행 출국 날짜와 선택한 날짜가 같은걸 찾기
-//        for (PackageSchedule packageSchedule : packageScheduleList) {
-//
-//            if (selectedDate.isEqual(packageSchedule.getDepartureDateOut())) {
-//
-//                packageScheduleCheck = packageSchedule;
-//
-//                find = true;
-//            }
-//
-//        }
-//
-//        //못찾았고 여행일정이 없거나 pk가 없을경우
-//        if(!find ||  packageScheduleCheck.getId() ==null) {
-//
-//            log.error("여행일정이 없거나 비어있습니다");
-//            return null;
-//
-//        }
-//
-//        //여행 출국 날짜 (여행 출발일) , 여행 출발 비행기 이륙 날짜
-//        LocalDate tripStartUp = packageScheduleCheck.getDepartureDateOut();
-//        //여행 출발 비행기 이륙 시간
-//        LocalTime tripStartUpTime = packageScheduleCheck.getPackageScheduleDetails().getDepartureTimeOut();
-//
-//        // 여행 출발 비행기 착륙 날짜
-//        LocalDate tripStartDown = packageScheduleCheck.getArrivalDateOut();
-//        //여행 출발 비행기 착륙 시간
-//        LocalTime tripStartDownTime = packageScheduleCheck.getPackageScheduleDetails().getArrivalTimeOut();
-//
-//        //여행 도착 비행기 이륙 날짜
-//        LocalDate tripEndUp = packageScheduleCheck.getDepartureDateReturn();
-//        LocalTime tripEndUpTime = packageScheduleCheck.getPackageScheduleDetails().getDepartureTimeReturn();
-//
-//        //여행 귀국 도착 날짜 (여행 도착일) , 여행 도착 비행기 착륙 날짜
-//        LocalDate tripEndDown = packageScheduleCheck.getArrivalDateReturn();
-//        LocalTime tripEndDownTime = packageScheduleCheck.getPackageScheduleDetails().getArrivalTimeReturn();
-//
-//
-//
-//
-//
-//    }
+    public PackApiDto PackageDateCheck(LocalDate selectedDate, Long id) {
+
+        //패키지 pk와 PackageStatus가 AVAILABLE 인것만 가져옴
+        List<PackageSchedule> packageScheduleList =
+                hanPackageScheduleRepository.findAvailableSchedules(id, AVAILABLE);
+
+        if (packageScheduleList == null) {
+            log.error("여행일정이 없거나 꽉찼습니다");
+            return null;
+
+        }
+
+        PackageSchedule packageScheduleCheck = new PackageSchedule();
+
+        boolean find = false;
+
+        //여행일정중 여행 출국 날짜와 선택한 날짜가 같은걸 찾기
+        for (PackageSchedule packageSchedule : packageScheduleList) {
+
+            if (selectedDate.isEqual(packageSchedule.getDepartureDateOut())) {
+
+                packageScheduleCheck = packageSchedule;
+
+                find = true;
+            }
+
+        }
+
+        //못찾았고 여행일정이 없거나 pk가 없을경우
+        if (!find || packageScheduleCheck.getId() == null) {
+
+            log.error("여행일정이 없거나 비어있습니다");
+
+            PackApiDto packApiDto = PackApiDto.builder()
+                    .resvYes(false)
+                    .build();
+
+            return packApiDto;
+
+        }
+
+        //여행 출국 날짜 (여행 출발일) , 여행 출발 비행기 이륙 날짜
+        LocalDate tripStartUp = packageScheduleCheck.getDepartureDateOut();
+        //여행 출발 비행기 이륙 시간
+        LocalTime tripStartUpTime = packageScheduleCheck.getPackageScheduleDetails().getDepartureTimeOut();
+
+        // 여행 출발 비행기 착륙 날짜
+        LocalDate tripStartDown = packageScheduleCheck.getArrivalDateOut();
+        //여행 출발 비행기 착륙 시간
+        LocalTime tripStartDownTime = packageScheduleCheck.getPackageScheduleDetails().getArrivalTimeOut();
+
+        //여행 도착 비행기 이륙 날짜
+        LocalDate tripEndUp = packageScheduleCheck.getDepartureDateReturn();
+        LocalTime tripEndUpTime = packageScheduleCheck.getPackageScheduleDetails().getDepartureTimeReturn();
+
+        //여행 귀국 도착 날짜 (여행 도착일) , 여행 도착 비행기 착륙 날짜
+        LocalDate tripEndDown = packageScheduleCheck.getArrivalDateReturn();
+        LocalTime tripEndDownTime = packageScheduleCheck.getPackageScheduleDetails().getArrivalTimeReturn();
+
+
+        PackApiDto packApiDto = PackApiDto.builder()
+                //여행 출국 비행기
+                .startAirplane(packageScheduleCheck.getPackageScheduleDetails().getAirlineOut().getName())
+                //여행 귀국 비행기
+                .endAirplane(packageScheduleCheck.getPackageScheduleDetails().getAirlineReturn().getName())
+                //여행 기간 변환
+                .tripDate(Formatter.TripDuration(tripStartUp, tripEndDown))
+
+                //여행 출발 비행기 이륙 날짜 및 시간
+                .tripStartUp(Formatter.formatDayAndTime(tripStartUp, tripStartUpTime))
+
+                //여행 출발 비행기 착륙 날짜 및 시간
+                .tripStartDown(Formatter.formatDayAndTime(tripStartDown, tripStartDownTime))
+
+                //여행 도착 비행기 이륙 날짜 및 시간
+                .tripEndUp(Formatter.formatDayAndTime(tripEndUp, tripEndUpTime))
+
+                //여행 도착 비행기 착륙 날짜 및 시간
+                .tripEndDown(Formatter.formatDayAndTime(tripEndDown, tripEndDownTime))
+
+
+                //예약 가능 여부
+                .resvYes(true)
+                //예약 인원
+//                .resvPeople()
+                //예약 가능 인원
+//                .resvOkPeople()
+                //최소 예약 인원
+                .resvMinPeople(packageScheduleCheck.getMinimumRequired())
+
+                .build();
+
+
+        return packApiDto;
+    }
 
 
 }

@@ -78,6 +78,9 @@ public class ResvPageDto { //예약 페이지를 보여주기위한 dto
     //총 가격
     private String totalPriceString;
 
+    //로그인 여부
+    private boolean loginNo;
+
 
 
 
