@@ -97,6 +97,10 @@
         .HanCheckBox input.HanRed+span {
             color: #fc4545;
         }
+
+        .defaultFont {
+            font-family: system-ui, -apple-system, "Segoe UI", "Malgun Gothic", sans-serif;
+        }
     </style>
 
 </head>
@@ -151,13 +155,13 @@
                                 style="font-weight: bold;">
                                 제주항공</p>
                             <p>
-                                [[${resvPageDto.packageSchedule.packageScheduleDetails.departurePointOut.name}]] →
+                                [[${resvPageDto.packageSchedule.packageScheduleDetails.departurePointOut.name}]] <span class="defaultFont"> → </span>
                                 [[${resvPageDto.packageSchedule.packageScheduleDetails.arrivalPointOut.name}]]
                             </p>
                             <!--귀국 비행기-->
                             <p th:text="${resvPageDto.packageSchedule.packageScheduleDetails.airlineReturn.name}"
                                 style="font-weight: bold; margin-top: 8px;">에어부산</p>
-                            <p>[[${resvPageDto.packageSchedule.packageScheduleDetails.departurePointReturn.name}]] →
+                            <p>[[${resvPageDto.packageSchedule.packageScheduleDetails.departurePointReturn.name}]]<span class="defaultFont"> → </span>
                                 [[${resvPageDto.packageSchedule.packageScheduleDetails.arrivalPointReturn.name}]]</p>
                         </div>
 
@@ -199,8 +203,9 @@
                 <div class="HanInfoGroup2">
 
                     <div class="HanFlex1" th:if="${resvPageDto.gender}">
-                        <p class="HanLight">이름 : </p>
-                        <p class="HanBold">[[${resvPageDto.memberResponseDto.name}]] </p>
+                        <p class="HanLight">이름 / 성별 : </p>
+                        <p class="HanBold">[[${resvPageDto.memberResponseDto.name}]] /
+                            [[${resvPageDto.gender}]]</p>
                     </div>
 
                     <div class="HanFlex1" th:unless="${resvPageDto.gender}">
@@ -211,7 +216,7 @@
                     <div class="HanFlex1" th:if="${resvPageDto.birth}">
                         <p class="HanLight">생년월일 : </p>
                         <p class="HanBold" th:text="${resvPageDto.birth}">1991.01.01</p>
-           
+
                     </div>
 
                     <div class="HanFlex1" th:if="${resvPageDto.phoneNum}">
@@ -809,6 +814,17 @@
                             phoneInput.classList.remove('HanRed');
                         }
 
+                        if (gender !== 'null') {
+                            if (gender === '남' && maleRadio) maleRadio.checked = true;
+                            else if (gender === '여' && femaleRadio) femaleRadio.checked = true;
+
+                            const genderWrapper = maleRadio?.closest('.HanGenderRadio');
+                            genderWrapper?.classList.remove('HanRedGender');
+
+                            const genderP = genderWrapper?.closest('.HanNameDiv')?.querySelector('.HanRedPGender');
+                            if (genderP) genderP.style.display = 'none';
+                        }
+
 
                     } else {
                         this.classList.add('HanRed');
@@ -818,6 +834,8 @@
                         if (birthInput) birthInput.value = '';
                         if (phoneInput) phoneInput.value = '';
                         if (passportInput) passportInput.value = '';
+                        if (maleRadio) maleRadio.checked = false;
+                        if (femaleRadio) femaleRadio.checked = false;
                     }
                 });
             }

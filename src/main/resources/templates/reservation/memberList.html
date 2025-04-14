@@ -15,6 +15,11 @@
 </head>
 
 <body>
+
+<!-- 알람용 input -->
+<input type="hidden" id="flashMessage3" th:value="${data}">
+
+
     <header th:replace="/fragments/memberHeader::memberHeader"></header>
     <div class="container">
         <div class="titleArea">
@@ -106,6 +111,11 @@
             });
         }
     </script>
+
+
+
+    <script th:src="@{/js/alert.js}"></script>
+
 
     <!-- 달력 스크립트 -->
     <!-- 달력 라이브러리 -->
