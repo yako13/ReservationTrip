@@ -16,8 +16,8 @@
 
 <body>
 
-<!-- 알람용 input -->
-<input type="hidden" id="flashMessage3" th:value="${data}">
+    <!-- 알람용 input -->
+    <input type="hidden" id="flashMessage3" th:value="${data}">
 
 
     <header th:replace="/fragments/memberHeader::memberHeader"></header>
@@ -174,33 +174,51 @@
 
         datePicker.on('change', (e) => {
             const selectedDate = datePicker.getDate();
-            if (parseInt(replaceDate(formatDate(selectedDate))) <= parseInt(replaceDate(dateInput2.value))) {
-                dateInput.value = formatDate(selectedDate);
-                prevStartDate = selectedDate; // 유효한 경우 업데이트
+            const startDate = selectedDate;  // 시작일
+            const endDate = new Date(replaceDate(dateInput2.value)); // 종료일
+
+            const timeDiff = endDate - startDate;
+            const dayDiff = timeDiff / (1000 * 60 * 60 * 24); // 밀리초 → 일
+
+            if (startDate <= endDate) {
+                if (dayDiff > 365) {
+                    Swal.fire({ text: "조회 기간은 1년을 초과할 수 없습니다." });
+                    datePicker.setDate(prevStartDate);
+                    dateInput.value = formatDate(prevStartDate);
+                } else {
+                    dateInput.value = formatDate(selectedDate);
+                    prevStartDate = selectedDate;
+                }
             } else {
-                Swal.fire({  text: "조회 종료일보다 조회 시작일이 더 큽니다." });
-                datePicker.setDate(prevStartDate); // 원래 날짜로 복원
+                Swal.fire({ text: "조회 시작일은 종료일보다 이전이어야 합니다." });
+                datePicker.setDate(prevStartDate);
                 dateInput.value = formatDate(prevStartDate);
             }
         });
 
         // 입력 필드 초기값을 오늘 날짜로 설정
         dateInput.value = todayFormatted;
-        // 입력 필드 초기값을 오늘 날짜로 설정
-
-        dateInput2.value = todayFormatted;
-
-
-
 
         datePicker2.on('change', (e) => {
-            const selectedDate = datePicker2.getDate();
-            if (parseInt(replaceDate(dateInput.value)) <= parseInt(replaceDate(formatDate(selectedDate)))) {
-                dateInput2.value = formatDate(selectedDate);
-                prevEndDate = selectedDate; // 유효한 경우 업데이트
+            const selectedDate = datePicker2.getDate(); // 종료일
+            const startDate = new Date(replaceDate(dateInput.value));
+            const endDate = selectedDate;
+
+            const timeDiff = endDate - startDate;
+            const dayDiff = timeDiff / (1000 * 60 * 60 * 24);
+
+            if (startDate <= endDate) {
+                if (dayDiff > 365) {
+                    Swal.fire({ text: "조회 기간은 1년을 초과할 수 없습니다." });
+                    datePicker2.setDate(prevEndDate);
+                    dateInput2.value = formatDate(prevEndDate);
+                } else {
+                    dateInput2.value = formatDate(selectedDate);
+                    prevEndDate = selectedDate;
+                }
             } else {
-                Swal.fire({  text: "조회 종료일보다 조회 시작일이 더 큽니다." });
-                datePicker2.setDate(prevEndDate); // 원래 날짜로 복원
+                Swal.fire({ text: "조회 종료일은 시작일보다 이후여야 합니다." });
+                datePicker2.setDate(prevEndDate);
                 dateInput2.value = formatDate(prevEndDate);
             }
         });
@@ -217,16 +235,23 @@
         function submitBtn(e) {
             e.preventDefault();
 
-            if (parseInt(replaceDate(dateInput.value)) <= parseInt(replaceDate(dateInput2.value))) {
-                searchForm.submit();
-            }
-            else {
-                Swal.fire({  text: "조회 종료일보다 조회 시작일이 더 큽니다." });
+            const start = new Date(replaceDate(dateInput.value));
+            const end = new Date(replaceDate(dateInput2.value));
+
+            if (start <= end) {
+                const dayDiff = (end - start) / (1000 * 60 * 60 * 24);
+                if (dayDiff > 365) {
+                    Swal.fire({ text: "조회 기간은 1년을 초과할 수 없습니다." });
+                } else {
+                    searchForm.submit();
+                }
+            } else {
+                Swal.fire({ text: "조회 종료일보다 조회 시작일이 더 큽니다." });
             }
         }
 
         function replaceDate(date) {
-            return date.replaceAll('.', '');
+            return date.replace(/\./g, '-');
         }
         const reservationStateElements = document.querySelectorAll(".reservationState");
         //예약에 따라 색깔 다르게 적용

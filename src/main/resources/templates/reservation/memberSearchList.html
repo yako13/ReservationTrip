@@ -137,19 +137,28 @@
 
         datePicker.on('change', () => {
             const selectedDate = datePicker.getDate();
-            const selectedDateStr = formatWithWeekday(selectedDate);
-            const endDateStr = dateInput2.value;
+            const startDate = selectedDate;  // 시작일
+            const endDate = new Date(replaceDate(dateInput2.value)); // 종료일
 
-            if (parseInt(replaceDate(selectedDateStr)) <= parseInt(replaceDate(endDateStr))) {
-                dateInput.value = selectedDateStr;
-                prevStartDate = selectedDate;
+            const timeDiff = endDate - startDate;
+            const dayDiff = timeDiff / (1000 * 60 * 60 * 24); // 밀리초 → 일
+
+            if (startDate <= endDate) {
+                if (dayDiff > 365) {
+                    Swal.fire({ text: "조회 기간은 1년을 초과할 수 없습니다." });
+                    datePicker.setDate(prevStartDate);
+                    dateInput.value = formatDate(prevStartDate);
+                } else {
+                    dateInput.value = formatDate(selectedDate);
+                    prevStartDate = selectedDate;
+                }
             } else {
-                Swal.fire({  text: "조회 종료일보다 조회 시작일이 더 큽니다." });
+                Swal.fire({ text: "조회 시작일은 종료일보다 이전이어야 합니다." });
                 datePicker.setDate(prevStartDate);
-                dateInput.value = formatWithWeekday(prevStartDate);
+                dateInput.value = formatDate(prevStartDate);
             }
         });
-        
+
         const datePicker2 = new tui.DatePicker('#tui-datepicker2', {
             input: {
                 element: dateInput2,
@@ -162,17 +171,26 @@
         });
         let prevEndDate = datePicker2.getDate();
         datePicker2.on('change', () => {
-            const selectedDate = datePicker2.getDate();
-            const selectedDateStr = formatWithWeekday(selectedDate);
-            const startDateStr = dateInput.value;
+            const selectedDate = datePicker2.getDate(); // 종료일
+            const startDate = new Date(replaceDate(dateInput.value));
+            const endDate = selectedDate;
 
-            if (parseInt(replaceDate(startDateStr)) <= parseInt(replaceDate(selectedDateStr))) {
-                dateInput2.value = selectedDateStr;
-                prevEndDate = selectedDate;
+            const timeDiff = endDate - startDate;
+            const dayDiff = timeDiff / (1000 * 60 * 60 * 24);
+
+            if (startDate <= endDate) {
+                if (dayDiff > 365) {
+                    Swal.fire({ text: "조회 기간은 1년을 초과할 수 없습니다." });
+                    datePicker2.setDate(prevEndDate);
+                    dateInput2.value = formatDate(prevEndDate);
+                } else {
+                    dateInput2.value = formatDate(selectedDate);
+                    prevEndDate = selectedDate;
+                }
             } else {
-                Swal.fire({  text: "조회 종료일보다 조회 시작일이 더 큽니다." });
+                Swal.fire({ text: "조회 종료일은 시작일보다 이후여야 합니다." });
                 datePicker2.setDate(prevEndDate);
-                dateInput2.value = formatWithWeekday(prevEndDate);
+                dateInput2.value = formatDate(prevEndDate);
             }
         });
 
@@ -181,15 +199,23 @@
 
         searchBtn.addEventListener("click", function (e) {
             e.preventDefault();
-            if (parseInt(replaceDate(dateInput.value)) <= parseInt(replaceDate(dateInput2.value))) {
-                searchForm.submit();
+            const start = new Date(replaceDate(dateInput.value));
+            const end = new Date(replaceDate(dateInput2.value));
+
+            if (start <= end) {
+                const dayDiff = (end - start) / (1000 * 60 * 60 * 24);
+                if (dayDiff > 365) {
+                    Swal.fire({ text: "조회 기간은 1년을 초과할 수 없습니다." });
+                } else {
+                    searchForm.submit();
+                }
             } else {
-                Swal.fire({  text: "조회 종료일보다 조회 시작일이 더 큽니다." });
+                Swal.fire({ text: "조회 종료일보다 조회 시작일이 더 큽니다." });
             }
         });
 
         function replaceDate(date) {
-            return date.replaceAll('.', '');
+            return date.replace(/\./g, '-');
         }
 
         const reservationStateElements = document.querySelectorAll(".reservationState");
