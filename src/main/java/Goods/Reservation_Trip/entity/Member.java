@@ -88,11 +88,12 @@ public class Member extends BaseTime {
         this.password = password;
     }
 
-    public void editMember(String password,String name,String birth,String phoneNumber){
+    public void editMember(String password,String name,String birth,String phoneNumber,boolean gender){
         this.password = password;
         this.name = name;
         this.birth = birth;
         this.phoneNumber = phoneNumber;
+        this.gender = gender;
     }
 
     public void changeMember(String name,String birth,String phoneNumber,boolean gender){

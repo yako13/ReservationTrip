@@ -179,7 +179,6 @@ public class MemberController {
         model.addAttribute("phoneNumber", editDto.getPhoneNumber());
         model.addAttribute("gender", editDto.isGender());
         model.addAttribute("birth", editDto.getBirth());
-        model.addAttribute("authCode",editDto.getAuthCode());
 
         //인증번호 일치하지 않을 때
         if (!mailService.validationAuthCode(memberResponseDto.getEmail(), editDto.getAuthCode())) {
@@ -189,6 +188,7 @@ public class MemberController {
 
         //이름과 휴대전화번호가 같은 회원이 있는 경우 수정 불가
         if(!memberService.editMember(memberResponseDto.getEmail(), editDto)) {
+            model.addAttribute("authCode",editDto.getAuthCode());
             model.addAttribute("checkName",1); //이미 이메일은 인증한 걸 확인해줌
             model.addAttribute("alert","동일한 이름과 휴대전화번호를 가진 회원이 있습니다. ");
             return "member/edit";
