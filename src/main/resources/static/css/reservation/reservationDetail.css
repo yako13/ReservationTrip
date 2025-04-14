@@ -1,0 +1,486 @@
+body {
+  /* font-family: 'Noto Sans KR', sans-serif; */
+  margin: 0;
+  /* background-color: #f1f0f1; */
+
+}
+
+.HanResCard {
+  box-sizing: border-box;
+  width: 800px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+.section-title2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 31px;
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+.section-title2 img {
+  padding-right: 5px;
+
+
+}
+
+
+.section-title img {
+  padding-right: 5px;
+
+
+}
+
+.tripTitle {
+  padding-left: 10px;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+
+}
+
+.tripTitleDiv {
+  margin-top: 2px;
+  margin-bottom: 16px;
+  background-color: #f5f5f5;
+  padding: 15px 20px;
+  border-radius: 8px;
+}
+
+.tripTitlePay {
+  font-size: 16px;
+  margin: 2px 0;
+  text-align: right;
+  padding-right: 10px;
+}
+
+
+.HanResNumDiv {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #777;
+  font-size: 14px;
+}
+
+.HanResNumDiv p{
+  margin: 4px;
+}
+
+
+
+.HanTopDate {
+  width: 100%;
+  height: 10px;
+  border-top-right-radius: 8px;
+  border-top-left-radius: 8px;
+  background-color: #2cafec;
+
+}
+
+.HanInfoGroup {
+  border-bottom: none;
+  border: 1px solid #ccc;
+  border-bottom: 1px dotted #ccc;
+  border-radius: 8px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  /* background-color: #f3f2fa; */
+  background-color: white;
+  /* padding: 16px; */
+  display: flex;
+  padding: 16px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.HanInfoGroup2 {
+  /* border: 1px solid #ccc; */
+  /* background-color: white; */
+  background-color: #f5f5f5;
+  display: flex;
+  padding: 16px;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.HanInfoGroup2 p {
+  margin: 4px 0;
+
+}
+
+
+.HanDateDiv {
+  text-align: center;
+
+
+}
+
+.HanDateDiv p {
+
+  margin: 0;
+}
+
+.HanFlex1 {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+
+}
+
+.HanFlex2 {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+
+}
+
+
+
+.info-label {
+  font-size: 15px;
+  color: #555;
+}
+
+.info-value {
+  padding-left: 6px;
+  font-weight: bold;
+  font-size: 19px;
+}
+
+.airline-info {
+  background-color: white;
+  padding: 12px;
+
+  border: 1px solid #ccc;
+  border-top: 0;
+  border-radius: 8px;
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.airline-info p {
+  text-align: right;
+  margin: 4px 0;
+  font-size: 14px;
+}
+
+.highlight {
+  background-color: #2cafec;
+  color: white;
+  padding: 5px 8px;
+  border-radius: 6px;
+  font-size: 13px;
+  height: 20px;
+  line-height: 20px;
+}
+
+.btn-link {
+  color: #6a42f1;
+  text-decoration: underline;
+  cursor: pointer;
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+.HanTripHr {
+  top: 15px;
+  display: flex;
+  position: relative;
+  margin: 0;
+  display: flex;
+  border: none;
+  width: 100%;
+  background-color: white;
+  height: 20px;
+  z-index: 5;
+
+}
+
+.HanHr1 {
+  border: 0;
+  width: 95%;
+  margin: 5px auto;
+  border-top: 1px dotted #ccc;
+
+}
+
+.HanHr1 {
+  border: 0;
+  width: 100%;
+  margin: 5px auto;
+  border-top: 1px dotted #ccc;
+
+}
+
+
+.HanTrip {
+
+  box-sizing: border-box;
+  padding: 10px 10px;
+  width: 100%;
+  margin-bottom: 20px;
+
+}
+
+.HanTrip p {
+  font-size: 13px;
+  margin: 4px;
+
+}
+
+.HanTrip input {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  margin-bottom: 4px;
+}
+
+.HanTrip p.HanTitleP {
+
+  font-size: 17px;
+  font-weight: 600;
+  margin: 8px 0;
+  margin-bottom: 10px;
+
+}
+
+
+.optional-note {
+  font-size: 13px;
+  color: #999;
+  margin-top: 4px;
+}
+
+.input-block {
+  margin-top: 12px;
+}
+
+.HanResDiv {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin: 0 auto;
+  background-color: #f1f0f1;
+  box-sizing: border-box;
+
+}
+
+.HanLight {
+  font-size: 15px;
+  color: #555;
+
+}
+
+.HanBold {
+  font-weight: bold;
+
+}
+
+
+.HanBold2 {
+  font-size: 18px;
+  font-weight: bold;
+
+}
+
+.HanMargin0 {
+  margin: 0;
+
+}
+
+.HanNameDiv {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+}
+
+.HanKakaoPay P {
+  margin: 0;
+  text-align: center;
+  font-size: 14px;
+}
+
+.HanPayDiv {
+  /* border: 1px solid #ccc; */
+  border-radius: 8px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  box-sizing: border-box;
+  background-color: #f5f5f5;
+
+}
+
+/* 성별 라디오 버튼 시작 */
+.HanGenderRadio {
+  display: flex;
+  margin-bottom: 4px;
+  font-size: 12px;
+}
+
+.HanGenderRadio input[type="radio"] {
+  display: none;
+}
+
+.HanGenderRadio label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 36px;
+  padding: 10px;
+  font-size: 15px;
+  cursor: pointer;
+  border: 1px solid #ddd;
+  border-left: none;
+  color: #777;
+  background-color: #fff;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.HanGenderRadio label:first-of-type {
+  border-left: 1px solid #ddd;
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+}
+
+.HanGenderRadio label:last-of-type {
+  border-left: 1px solid #ddd;
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+}
+
+.HanGenderRadio input[type="radio"]:checked+label {
+  border: 1px solid #2cafec;
+  color: #2cafec;
+  z-index: 1;
+}
+
+.HanInputRight {
+  margin-left: -1px;
+}
+
+/* 성별 라디오 버튼 끝 */
+
+
+
+
+/* 위로 스크롤해주는 버튼 */
+
+#scrollToTopBtn {
+  display: none;
+  /* 기본적으로 숨김 */
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 100;
+  border: none;
+  width: 90px;
+  height: 90px;
+  background: url(/images/upArrow1.svg) no-repeat center center;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+#scrollToTopBtn:hover {
+  transform: translateY(-3px);
+
+}
+
+
+/* 결제하기 버튼 */
+.HanPayButtonDiv {
+  width: 800px;
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+  margin-bottom: 40px;
+}
+
+
+.HanPayButtonDiv button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background-color: #d1d1d1;
+  color: #252525;
+  font-size: 22px;
+  font-weight: bolder;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  width: 100%;
+  height: 70px;
+  border: none;
+}
+
+.HanPayButtonDiv button:hover {
+  background-color: #ff7979;
+  color: #ffffff;
+  transform: scale(0.98);
+}
+
+.HanPayButtonDiv .HanReview {
+  background-color: #43bff8;
+  color: #ffffff;
+}
+
+/* .HanCardNewButton .HanSubmit {
+  background-color: #fff6a6;
+  color: #363636;
+} */
+
+.HanPayButtonDiv .HanCancel:hover {
+  background-color: #ff7979;
+  color: #ffffff;
+  transform: scale(0.98);
+}
+
+.HanPayButtonDiv .HanReview:hover {
+  background-color: #3e8cf1;
+  color: #ebebeb;
+  transform: scale(0.98);
+}
+
+.HanPayButtonDiv .HanCancelReq {
+  background-color: #d1d1d1;
+  color: #252525;
+  pointer-events: none;   /* 클릭 막기 */
+  cursor: default;
+}
+
+
+
