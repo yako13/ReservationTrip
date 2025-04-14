@@ -10,13 +10,11 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import io.netty.util.internal.StringUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -78,6 +76,7 @@ public class PackageScheduleDetailsCustomRepositoryImpl implements PackageSchedu
     public Page<PackageScheduleDetails> findByCategoryAndSubCategories(Long mainCategoryId,
                                                                        Long subCategoryId,
                                                                        Long smallCategoryId,
+                                                                       String sort,
                                                                        Pageable pageable) {
         BooleanBuilder whereBuilder = new BooleanBuilder();
         whereBuilder.and(schedule.packageStatus.eq(PackageStatus.AVAILABLE));

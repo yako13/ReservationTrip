@@ -11,5 +11,5 @@ public interface PackageScheduleDetailsCustomRepository {
     Page<PackageScheduleDetails> findAvailableEarliestByPackageNameContaining(String name, Pageable pageable);
 
     // 패키지의 여행지 카태고리로 결과 조회
-    Page<PackageScheduleDetails> findByCategoryAndSubCategories(Long mainCategoryId, Long subCategoryId, Long smallCategoryId, Pageable pageable);
+    Page<PackageScheduleDetails> findByCategoryAndSubCategories(Long mainCategoryId, Long subCategoryId, Long smallCategoryId, String sort, Pageable pageable);
 }

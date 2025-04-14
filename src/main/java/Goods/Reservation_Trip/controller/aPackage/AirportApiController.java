@@ -21,7 +21,7 @@ public class AirportApiController {
     public List<AirportDto> getAirportsByCategory(@PathVariable Long categoryId) {
         return airportRepository.findByCategoryId(categoryId)
                 .stream()
-                .map(air -> new AirportDto(air.getId(), air.getName()))
+                .map(air -> new AirportDto(air.getId(), air.getName(), air.getCode()))
                 .toList();
     }
 }

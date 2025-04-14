@@ -316,28 +316,37 @@
                 <th>도착지</th>
                 <th>출국일자</th>
                 <th>귀국일자</th>
+                <th>예약상태</th>
                 <th>생성일자</th>
                 <th>수정일자</th>
                 <th>수정</th>
                 <th>삭제</th>
               </tr>
             </thead>
+            <!-- 테이블은 동적오로 js로 생성함 -->
             <tbody id="packageList">
-              <tr th:each="package : ${packageList}">
-                <td th:text="${package.id}"></td>
+              <tr th:each="aPackage : ${packageList}">
+                <td th:text="${aPackage.id}"></td>
                 <td>
-                  <img th:src="${package.mainImagePath}" height="100px" />
+                  <img th:src="${aPackage.mainImagePath}" height="100px" />
                 </td>
-                <td th:text="${package.name}"></td>
-                <td th:text="${package.fuelSurchargeIncluded}"></td>
-                <td th:text="${package.departurePointOut}"></td>
-                <td th:text="${package.arrivalPointOut}"></td>
-                <td th:text="${package.departureDateOut}"></td>
-                <td th:text="${package.arrivalDateReturn}"></td>
-                <td th:text="${package.createdAt}"></td>
-                <td th:text="${package.modifiedAt}"></td>
+                <td th:text="${aPackage.name}"></td>
+                <td th:text="${aPackage.fuelSurchargeIncluded}"></td>
+                <td th:text="${aPackage.departurePointOut}"></td>
+                <td th:text="${aPackage.arrivalPointOut}"></td>
+                <td th:text="${aPackage.departureDateOut}"></td>
+                <td th:text="${aPackage.arrivalDateReturn}"></td>
+                <td th:text="${aPackage.packageStatus}"></td>
+                <td th:text="${aPackage}"></td>
+                <td th:text="${aPackage.createdAt}"></td>
+                <td th:text="${aPackage.modifiedAt}"></td>
                 <td>
-                  <button type="button" class="btn btn-edit">수정하기</button>
+                  <button
+                    type="button"
+                    class="btn btn-edit"
+                    th:onclick="|location.href='/admin/package/edit/' + ${aPackage.id}|">
+                    수정하기
+                  </button>
                 </td>
                 <td>
                   <button type="button" class="btn btn-delete">삭제하기</button>
@@ -524,17 +533,52 @@
       <td>${package.arrivalPointOut}</td>
       <td>${package.departureDateOut}</td>
       <td>${package.arrivalDateReturn}</td>
+      <td>${package.packageStatus}</td>
       <td>${package.createdAt}</td>
       <td>${package.modifiedAt}</td>
-      <td><button type="button" class="btn btn-edit">수정하기</button></td>
+      <td><button type="button" class="btn btn-edit" data-id="${package.id}">수정하기</button></td>
       <td><button type="button" class="btn btn-delete">삭제하기</button></td>
     `;
       container.appendChild(tr);
     });
   }
 
+  // 이벤트 위임으로 수정 버튼 클릭 처리
+  document.addEventListener("click", function (e) {
+    if (e.target.classList.contains("btn-edit")) {
+      const id = e.target.dataset.id;
+      if (id) {
+        location.href = "/admin/package/edit/" + id;
+      }
+    }
+  });
+
   document.addEventListener("DOMContentLoaded", async () => {
     await loadCategories();
     await fetchFilteredList(); // 초기 데이터도 표시
+  });
+
+  // sort 관련 설정
+  const sizeSelect = document.getElementById("sizeSelect");
+  const sortSelect = document.getElementById("sortSelect");
+  const categorySelect = document.getElementById("categorySelect");
+
+  const currentSize = `[[${size}]]`;
+  const currentSort = `[[${sortSelect}]]`;
+  const currentCategory = `[[${categorySelect}]]`;
+
+  sizeSelect.addEventListener("change", function () {
+    const selectedSize = this.value;
+    window.location.href = `/admin/package/list?page=0&size=${selectedSize}&sort=${currentSort}`;
+  });
+
+  sortSelect.addEventListener("change", function () {
+    const selectedSort = this.value;
+    window.location.href = `/admin/package/list?page=0&size=${currentSize}&sort=${selectedSort}`;
+  });
+  categorySelect.addEventListener("change", function () {
+    const selectedCategory = this.value;
+    window.location.href = `/admin/package/list/?page=0&size=${currentSize}&sort=${currentSort}`;
+    // window.location.href = `/amdin/package/list/category?category=${selectedCategory}&page=0&size=${currentSize}&sort=${currentSort}`;
   });
 </script>

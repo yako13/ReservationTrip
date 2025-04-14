@@ -22,9 +22,16 @@ public class CombinePackageService {
     private final ImageManager imageManager;
 
     // 관리자 패키지 리스트 조회
-    public Page<AdminPackageListResponseDto> getAdminPackageAndScheduleList(int page, int size, Long mainCategoryId, Long subCategoryId, Long smallCategoryId) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-        return packageScheduleDetailsCustomRepository.findByCategoryAndSubCategories(mainCategoryId, subCategoryId, smallCategoryId, pageable).map(packageScheduleDetails -> {
+    public Page<AdminPackageListResponseDto> getAdminPackageAndScheduleList(int page, int size, Long mainCategoryId, Long subCategoryId, Long smallCategoryId, String sort) {
+        Pageable pageable;
+        if ("price_asc".equals(sort)) {
+            pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "price"));
+        } else if ("price_desc".equals(sort)) {
+            pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "price"));
+        } else {
+            pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        }
+        return packageScheduleDetailsCustomRepository.findByCategoryAndSubCategories(mainCategoryId, subCategoryId, smallCategoryId, sort, pageable).map(packageScheduleDetails -> {
             String packageMainImagePath = null;
             Package aPackage = packageScheduleDetails.getPackageSchedule().getAPackage();
             PackageSchedule packageSchedule = packageScheduleDetails.getPackageSchedule();
@@ -42,6 +49,7 @@ public class CombinePackageService {
                     .period(aPackage.getPeriod())
                     .departureDateOut(packageSchedule.getDepartureDateOut())
                     .arrivalDateReturn(packageSchedule.getArrivalDateReturn())
+                    .packageStatus(aPackage.getPackageStatus().getName())
                     .createdAt(Formatter.getLocalDate(aPackage.getCreatedAt()))
                     .modifiedAt(Formatter.getLocalDate(aPackage.getModifiedAt()))
                     .build();

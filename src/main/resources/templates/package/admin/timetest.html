@@ -11,12 +11,6 @@
 
     <!--  -->
     <!-- Roboto 폰트 및 Material Icons 추가 -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
-      rel="stylesheet" />
-    <link
-      href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet" />
 
     <!-- timepicker-ui 스타일시트 추가 -->
     <link
@@ -26,9 +20,19 @@
     <!-- timepicker-ui 스크립트 추가 -->
     <script src="https://cdn.jsdelivr.net/npm/timepicker-ui@2.6.1/dist/timepicker-ui.umd.js"></script>
     <style>
-      .date__input {
+      body {
+        padding: 200px;
       }
-      .numInputWrapper {
+      .flatpickr-time .numInput.flatpickr-hour,
+      .flatpickr-time .numInput.flatpickr-minute {
+        width: 40px !important;
+        padding: 2px 4px !important;
+        font-size: 1.1rem !important;
+        text-align: center !important;
+        box-sizing: border-box !important;
+      }
+      .flatpickr-calendar {
+        width: 100px !important;
       }
     </style>
   </head>
@@ -37,7 +41,8 @@
       type="text"
       id="departureTimeReturn"
       class="date__input"
-      value="12:10 " />
+      value="12:10 "
+      style="font-size: 1.3rem; width: 90px; text-align: center" />
 
     <!--  -->
 

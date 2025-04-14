@@ -1,12 +1,12 @@
 package Goods.Reservation_Trip.dto.aPackage.req;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class AirlineDto {
 
     private Long id;

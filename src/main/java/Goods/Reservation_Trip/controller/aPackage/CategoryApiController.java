@@ -32,9 +32,10 @@ public class CategoryApiController {
     public Page<AdminPackageListResponseDto> getFilteredPackageListJson(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "default") String sort,
             @RequestParam(required = false) Long mainCategoryId,
             @RequestParam(required = false) Long subCategoryId,
             @RequestParam(required = false) Long smallCategoryId) {
-        return combinePackageService.getAdminPackageAndScheduleList(page, size, mainCategoryId, subCategoryId, smallCategoryId);
+        return combinePackageService.getAdminPackageAndScheduleList(page, size, mainCategoryId, subCategoryId, smallCategoryId, sort);
     }
 }

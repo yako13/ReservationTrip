@@ -4,14 +4,12 @@ import lombok.*;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class AirportDto {
+public class CategoryDto {
 
     private Long id;
 
     private String name;
-
-    private String code;
 }
