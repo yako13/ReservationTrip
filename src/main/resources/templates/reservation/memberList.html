@@ -80,11 +80,12 @@
             <img th:src="@{/images/info.svg}" id="infoImage">
             <p>예약내역이 없습니다.</p>
         </div>
-
+        <button id="scrollToTopBtn"></button>
     </div>
-    <button id="scrollToTopBtn"></button>
-    <script th:src="@{/js/scrollTop.js}"></script>
+   
+   
     <footer th:replace="/fragments/memberFooter::memberFooter"></footer>
+    <script th:src="@{/js/scrollTop.js}"></script>
     <script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
     <link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css">
     <script>

@@ -406,3 +406,21 @@ main {
     transform: translateY(-3px);
   
   }
+
+  #clear-notifications{
+    margin-left: 5px;
+    border-radius: 4px;
+    font-size: 16px;
+    border: none;
+    color: white;
+    background-color: #43bff8;
+    transition: all 0.3s ease;
+    &:hover {
+        background-color: #3e8cf1;
+        transform: scale(0.98);
+    }
+}
+
+#bell{
+    cursor: pointer;
+}
