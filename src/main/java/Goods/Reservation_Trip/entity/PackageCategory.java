@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Comment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Table(name = "package_category")
@@ -37,6 +38,14 @@ public class PackageCategory {
 
     @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
     private List<PackageCategory> children;
+
+    @ManyToOne
+    @JoinColumn(name = "package_id")
+    private Package aPackage;
+
+    @ManyToMany(mappedBy = "categoryList",cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Airport> airportList=new ArrayList<>();
 
     public PackageCategory(Long id, String name, PackageCategory parent, int depth) {
         this.id = id;

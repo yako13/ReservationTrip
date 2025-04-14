@@ -1,9 +1,11 @@
 package Goods.Reservation_Trip.controller;
 
+import Goods.Reservation_Trip.dto.HanDto.HeaderDto;
 import Goods.Reservation_Trip.dto.member.res.MemberResponseDto;
 import Goods.Reservation_Trip.dto.reservation.res.ReservationDetailsResponseDto;
 import Goods.Reservation_Trip.dto.review.req.ReviewDto;
 import Goods.Reservation_Trip.dto.review.res.ReviewResponseDto;
+import Goods.Reservation_Trip.service.HanService.HanHeaderService;
 import Goods.Reservation_Trip.service.member.MemberService;
 import Goods.Reservation_Trip.service.review.ReviewService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,11 +24,17 @@ public class ReviewController {
 
     private final MemberService memberService;
 
+    private final HanHeaderService hanHeaderService;
+
     /**
      * 리뷰 등록 페이지
      */
     @GetMapping("/member/review/new/{reservationId}")
-    public String memberReviewPage(Model model, @PathVariable Long reservationId) {
+    public String memberReviewPage(Model model, @PathVariable Long reservationId,HttpServletRequest request) {
+
+        HeaderDto headerDto = hanHeaderService.HeaderCategoryAndMember(request);
+
+        model.addAttribute("headerDto",headerDto);
 
         ReviewResponseDto reviewResponseDto = reviewService.getReviewCreatingPage(reservationId);
 
@@ -53,7 +61,12 @@ public class ReviewController {
      * 리뷰 수정 페이지
      */
     @GetMapping("/member/review/edit/{reviewId}")
-    public String reviewEditPage(Model model, @PathVariable Long reviewId) {
+    public String reviewEditPage(Model model, @PathVariable Long reviewId,HttpServletRequest request) {
+
+        HeaderDto headerDto = hanHeaderService.HeaderCategoryAndMember(request);
+
+        model.addAttribute("headerDto",headerDto);
+
         ReviewResponseDto reviewResponseDto = reviewService.getReviewEditPage(reviewId);
         model.addAttribute("packageMainImage", reviewResponseDto.getPackageMainImage());
         model.addAttribute("packageName", reviewResponseDto.getPackageName());
@@ -84,6 +97,9 @@ public class ReviewController {
      */
     @GetMapping("/member/review/list/able")
     public String memberReviewAbleListPage(Model model, HttpServletRequest request) {
+        HeaderDto headerDto = hanHeaderService.HeaderCategoryAndMember(request);
+
+        model.addAttribute("headerDto",headerDto);
         MemberResponseDto memberResponseDto = memberService.getMember(request);
 
         List<ReservationDetailsResponseDto> responseDtoList = reviewService.getReviewAblePage(memberResponseDto.getId());
@@ -95,6 +111,9 @@ public class ReviewController {
 
     @GetMapping("/member/review/list")
     public String memberReviewListPage(Model model, HttpServletRequest request) {
+        HeaderDto headerDto = hanHeaderService.HeaderCategoryAndMember(request);
+
+        model.addAttribute("headerDto",headerDto);
         MemberResponseDto memberResponseDto = memberService.getMember(request);
         List<ReviewResponseDto> reviewResponseDtoList = reviewService.getReviewList(memberResponseDto.getId());
 

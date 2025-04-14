@@ -1,7 +1,9 @@
 package Goods.Reservation_Trip.controller.HanController;
 
 import Goods.Reservation_Trip.dto.HanDto.DibPageDto;
+import Goods.Reservation_Trip.dto.HanDto.HeaderDto;
 import Goods.Reservation_Trip.service.HanService.HanDibService;
+import Goods.Reservation_Trip.service.HanService.HanHeaderService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,11 +22,16 @@ public class HanDibController {
 
     private final HanDibService hanDibService;
 
-
+    private final HanHeaderService hanHeaderService;
 
     //찜 목록 페이지로 이동
-    @GetMapping("/dib")
+    @GetMapping("/member/dib")
     public String CartGo(HttpServletRequest request, Model model, RedirectAttributes rttr) {
+
+        //헤더 카테고리랑 로그인 상태 및 유저이름 보내주는 서비스
+        HeaderDto headerDto = hanHeaderService.HeaderCategoryAndMember(request);
+
+        model.addAttribute("headerDto",headerDto);
 
         //서비스로 찜 리스트를 가져온다
         List<DibPageDto> DibPageDtoList = hanDibService.dibListGo(request);

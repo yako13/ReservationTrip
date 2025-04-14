@@ -81,6 +81,9 @@ public class ResDetailPageDto {
     //예약 취소 요청중 버튼 보이기 (출발일 전까지)
     private boolean cancelButtonReq;
 
+    //예약 취소 상태 버튼 보이기
+    private boolean cancelOkButton;
+
 
 
 

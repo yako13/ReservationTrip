@@ -21,5 +21,11 @@ public class HanSubmitCompleteDto {
     //결제 금액
     private String totalPay;
 
+    //로그인 여부
+    private boolean loginNo;
+
+    //예약이 만석인지 여부
+    private boolean resvFull;
+
 
 }

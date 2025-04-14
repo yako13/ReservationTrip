@@ -9,8 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
-import java.time.LocalDateTime;
-
 @Table(name = "package_option")
 @Getter
 @NoArgsConstructor

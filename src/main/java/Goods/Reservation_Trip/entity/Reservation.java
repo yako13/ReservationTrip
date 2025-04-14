@@ -99,8 +99,8 @@ public class Reservation extends BaseTime {
     @OneToMany(mappedBy = "reservation",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReservationDetails> reservationDetailsList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "reservation",cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Review> reviewList = new ArrayList<>();
+    @OneToOne(mappedBy = "reservation",cascade = CascadeType.ALL, orphanRemoval = true)
+    private Review review;
 
 }
 

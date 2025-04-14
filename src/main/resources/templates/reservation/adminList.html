@@ -13,18 +13,6 @@
     </link>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
-    <style>
-        @font-face {
-        font-family: 'SUIT-Regular';
-        src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Regular.woff2') format('woff2');
-        font-weight: normal;
-        font-style: normal;
-    }
-    
-    *{
-        font-family: 'SUIT-Regular'; 
-    }
-    </style>
 </head>
 
 <body>
@@ -109,7 +97,10 @@
                 </div>
             </div>
 
-            <!-- <h1 th:if="${total ==0}">주문내역이 없습니다.</h1> -->
+            <div th:if="${total ==0}" class="imageArea">
+                <img th:src="@{/images/info.svg}" id="infoImage">
+                <p>예약내역이 없습니다.</p>
+            </div>
 
             <table class="rwd-table" th:if="${total >0}">
                 <tbody>
@@ -186,6 +177,12 @@
             </ul>
         </nav>
     </main>
+    <button id="scrollToTopBtn">
+
+    </button>
+
+    <!-- 탑 스크롤 스크립트 -->
+    <script th:src="@{/js/scrollTop.js}"></script>
     <!-- 메인 끝 -->
     <script>
         const reservationStateElements = document.querySelectorAll(".reservationState");

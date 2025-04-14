@@ -9,19 +9,19 @@
 }
 
 .pagination .page-link {
-    color: #ff84f4;
+    color: #0084ff;
     border-radius: 8px;
     padding: 8px 12px;
     transition: all 0.2s ease-in-out;
 }
 
 .pagination .page-link:hover {
-    background-color: #ffddfc;
+    background-color: #65b4ff;
     color: white;
 }
 
 .pagination .active .page-link {
-    background-color: #fec3fa;
+    background-color: #0084ff;
     color: white;
     border: none;
 }

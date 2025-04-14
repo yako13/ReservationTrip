@@ -4,11 +4,13 @@ import Goods.Reservation_Trip.dto.HanDto.*;
 import Goods.Reservation_Trip.dto.member.res.MemberResponseDto;
 import Goods.Reservation_Trip.entity.Package;
 import Goods.Reservation_Trip.entity.*;
+import Goods.Reservation_Trip.enums.PackageStatus;
 import Goods.Reservation_Trip.enums.ReservationState;
 import Goods.Reservation_Trip.repository.HanPart.HanReservationDetailsRepository;
 import Goods.Reservation_Trip.repository.HanPart.HanReservationRepository;
 import Goods.Reservation_Trip.repository.MemberRepository;
 import Goods.Reservation_Trip.repository.aPackage.PackageRepository;
+import Goods.Reservation_Trip.repository.aPackage.PackageScheduleRepository;
 import Goods.Reservation_Trip.service.member.MemberService;
 import Goods.Reservation_Trip.util.Formatter;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import static Goods.Reservation_Trip.enums.ReservationState.CANCEL;
 import static Goods.Reservation_Trip.enums.ReservationState.REQUEST;
 
 @Slf4j
@@ -35,9 +38,11 @@ public class HanReservationService {
     private final MemberRepository memberRepository;
 
     private final PackageRepository packageRepository;
+    private final PackageScheduleRepository packageScheduleRepository;
 
 
     private final MemberService memberService;
+    private final HanMemberService hanMemberService;
     private final HanReservationRepository hanReservationRepository;
     private final HanReservationDetailsRepository hanReservationDetailsRepository;
 
@@ -45,9 +50,18 @@ public class HanReservationService {
     public ResvPageDto ReservationPage(HttpServletRequest request, PackResvDto form) {
 
         //세션에서 맴버 정보 추출
-        MemberResponseDto memberEntity = memberService.getMember(request);
+        MemberResponseDto memberEntity = hanMemberService.getMember(request);
 
-        //임시 pk로 로그인
+        if (memberEntity == null) {
+            log.error("회원정보가 없거나 로그인을 안했습니다");
+
+            ResvPageDto resvPageDto = ResvPageDto.builder()
+                    .loginNo(true)
+                    .build();
+
+            return resvPageDto;
+        }
+
 
         String gender = "여";
 
@@ -98,6 +112,26 @@ public class HanReservationService {
             return null;
         }
 
+        //이미 예약한 맴버 수
+        int resvedMember = PackageScheduleCheck.getReservedMemberCount();
+
+        //패키지 내의 최대 예약 가능한 인원
+        int maxMember = PackageScheduleCheck.getMaximumMember();
+
+        //예약한 맴버수 + 예약 신청한 맴버 수
+        int resvMember = resvedMember + form.getAdultCnt() + form.getChildCnt() + form.getBabyCnt();
+
+        //예약한 맴버수가 패키지 내의 최대 예약 가능한 인원수보다 클경우
+        if (resvMember > maxMember) {
+
+            log.info("여행 최대인원수보다 예약인원수가 많습니다");
+
+            ResvPageDto resvPageDto = ResvPageDto.builder()
+                    .resvFull(true)
+                    .build();
+            return resvPageDto;
+
+        }
 
         //유류할증료 포함 추출
         BigDecimal fuelSurchargeIncluded = packageEntity.getFuelSurchargeIncluded();
@@ -126,6 +160,8 @@ public class HanReservationService {
         ResvPageDto resvPageDto = ResvPageDto.builder()
                 //성인 유아 아동 인원수 및 출발일 패키지 회원pk
                 .packResvDto(form)
+                //여행일정 pk
+                .packageSchedulePk(packageSchedulePk)
                 //여행 출발일 변환된것
                 .tripStartString(Formatter.formatDateAndDay(tripStartDate))
                 //여행 도착일 변환된것
@@ -137,7 +173,7 @@ public class HanReservationService {
                 //회원 정보 Dto(memberResponseDto)
                 .memberResponseDto(memberEntity)
                 //회원 생년월일 변환
-                .birth(Formatter.formatBirthDate(memberEntity.getBirth()) )
+                .birth(Formatter.formatBirthDate(memberEntity.getBirth()))
                 //회원 성별
                 .gender(gender)
                 //패키지 엔티티
@@ -166,6 +202,12 @@ public class HanReservationService {
                 //총 가격
                 .totalPriceString(Formatter.changeBigDecimalFormat(totalPrice))
 
+
+                //로그인 여부 F = 로그인 중 T = 비로그인
+                .loginNo(false)
+                //만석 여부
+                .resvFull(false)
+
                 .build();
 
         return resvPageDto;
@@ -175,7 +217,18 @@ public class HanReservationService {
     public HanSubmitCompleteDto ReservationSubmit(HttpServletRequest request, ResvSubmitDto form) {
 
         //세션에서 맴버 정보 추출
-        MemberResponseDto memberDto = memberService.getMember(request);
+        MemberResponseDto memberDto = hanMemberService.getMember(request);
+
+        if (memberDto == null) {
+
+            log.error("로그인 상태가 아닙니다");
+
+            HanSubmitCompleteDto hanSubmitCompleteDto = HanSubmitCompleteDto.builder()
+                    .loginNo(true)
+                    .build();
+
+            return hanSubmitCompleteDto;
+        }
 
         //추출한 맴버 키로 맴버 엔티티 가져옴
         Member memberEntity = memberRepository.findById(memberDto.getId()).orElse(null);
@@ -199,6 +252,67 @@ public class HanReservationService {
         if (form.getBaby() != null) {
             babyCnt = form.getBaby().size();
             log.info("유아 수" + babyCnt);
+        }
+
+        if (form.getPackageSchedulePk() == null) {
+            log.error("여행일정 pk값이 null입니다");
+            return null;
+
+        }
+        //폼에서 여행일정 pk추출
+        Long packageSchedulePk = form.getPackageSchedulePk();
+
+        PackageSchedule packageSchedule = packageScheduleRepository.findById(packageSchedulePk).orElse(null);
+
+        if (packageSchedule == null) {
+            log.error("여행일정이 없습니다");
+            return null;
+        }
+
+        //폼의 패키지 pk와 여행일정 안에 들어있는 패키지 pk가 같은지 검사 그리고 폼의 여행 출발일과 여행출국날짜 가 같은지 검사 (둘중 하나라도 틀릴경우 실패)
+        if (form.getPackagePk() != packageSchedule.getAPackage().getId() || !form.getTripStart().isEqual(packageSchedule.getDepartureDateOut())) {
+
+            log.error("여행일정 pk의 패키지 pk와 form의 패키지 pk가 다릅니다 또는 폼의 여행 출발일과 여행출국날짜 가 틀립니다");
+            return null;
+
+        }
+
+        //예약인원수 = 성인 아동 유아 합
+        int resvCnt = adultCnt + childCnt + babyCnt;
+
+        //이미 예약한 사람수
+        int resvedCnt = packageSchedule.getReservedMemberCount();
+
+        // 이미 예약한 사람수 + 예약인원수
+        int resvSumCnt = resvedCnt + resvCnt;
+
+        //예약 인원수의 총합이 여행 최대인원수보다 많을 경우 실패
+        if (resvSumCnt > packageSchedule.getMaximumMember()) {
+
+            log.info("여행 최대인원수보다 예약인원수가 많습니다");
+
+            HanSubmitCompleteDto hanSubmitCompleteDto = HanSubmitCompleteDto.builder()
+                    .resvFull(true)
+                    .build();
+
+            return hanSubmitCompleteDto;
+
+            //예약 인원수의 총합이 패키지 내의 최대 예약 가능한 인원수와 같을경우 여행일정 예약가능상태를 예약매진으로 변경
+        } else if (resvSumCnt == packageSchedule.getMaximumMember()) {
+
+            packageSchedule.setPackageStatus(PackageStatus.FULL);
+
+            packageSchedule.setReservedMemberCount(resvSumCnt);
+
+            packageScheduleRepository.save(packageSchedule);
+
+            //예약 인원수의 총합이 최대 예약 가능한 인원수 보다 적을 경우 인원수만 넣어 준다
+        } else {
+
+            packageSchedule.setReservedMemberCount(resvSumCnt);
+
+            packageScheduleRepository.save(packageSchedule);
+
         }
 
 
@@ -276,11 +390,6 @@ public class HanReservationService {
         if (form.getChild() != null) allTravelers.addAll(form.getChild());
         if (form.getBaby() != null) allTravelers.addAll(form.getBaby());
 
-        //예약자 정보를 담을곳
-        TravelerDto travelerDto = new TravelerDto();
-
-        //예약자 정보를 회원정보로 업데이트 하기위해 체크
-        boolean memberResCheck = false;
 
         // 3. 반복문으로 간단히 저장
         for (TravelerDto traveler : allTravelers) {
@@ -292,9 +401,6 @@ public class HanReservationService {
 
                 resCheck = true;
 
-                memberResCheck = true;
-
-                travelerDto = traveler;
             }
 
             //세션의 회원 정보와 form의 여행자 정보가 이름 생년월일 성별이 같다면 그사람을 예약자로 저장
@@ -328,33 +434,6 @@ public class HanReservationService {
         }
 
 
-        //예약자일경우 회원 정보 업데이트
-        if (memberResCheck && travelerDto != null && travelerDto.getName() != null&&
-                travelerDto.getBirth()!=null && travelerDto.getPhone() !=null) {
-
-            String name = travelerDto.getName();
-            String birth = travelerDto.getBirth();
-            String phone = travelerDto.getPhone();
-
-             boolean nameCheck = isValidKoreanName(name);
-            boolean birthCheck = isValidBirthDate(birth);
-            boolean phoneCheck = isValidPhoneNumber(phone);
-
-            if(nameCheck && birthCheck && phoneCheck){
-
-                memberEntity.changeMember
-                        (name, birth, phone, travelerDto.getGender());
-
-            }else {
-
-                log.info("예약자 정보가 잘못 입력되어있습니다 (정규식 통과 실패)");
-            }
-
-
-
-        }
-
-
         //예약 완료 페이지로 보내줄 정보 담기
         HanSubmitCompleteDto hanSubmitCompleteDto = HanSubmitCompleteDto.builder()
                 //예약 번호
@@ -365,6 +444,8 @@ public class HanReservationService {
                 .startDate(Formatter.formatDateAndDay(reservationEntity.getStartDate()))
                 //총 결제 금액
                 .totalPay(Formatter.changeBigDecimalFormat(reservationEntity.getTotalPay()))
+                .loginNo(false)
+                .resvFull(false)
 
                 .build();
 
@@ -535,29 +616,51 @@ public class HanReservationService {
         //리뷰 쓰기 버튼
         boolean reviewButton = false;
 
-        //여행 출발일(startDate)이 오늘 날짜보다 미래인 경우 예약 취소 활성화
-        if (startDate.isAfter(LocalDate.now())) {
-            cancelButton = true;
-
-        }
+        //예약 취소 버튼
+        boolean cancelOkButtonReq = false;
 
         //: 여행 출발일이 미래이고, 예약 상태가 **취소 요청 상태(REQUEST)**일 때  활성화
         if (startDate.isAfter(LocalDate.now()) && reservation.getReservationState() == REQUEST) {
             cancelButtonReq = true;
+        }
+
+        //예약 취소 상태일시
+        if (reservation.getReservationState() == CANCEL) {
+            cancelOkButtonReq = true;
+        }
+
+        //여행 출발일(startDate)이 오늘 날짜보다 미래인 경우
+        // 그리고 취소 요청 상태가 아닐경우
+        // 그리고 예약 취소 상태가 아닐경우 예약 취소 활성화
+        if (startDate.isAfter(LocalDate.now()) && !cancelButtonReq && !cancelOkButtonReq) {
+            cancelButton = true;
+        }
+
+
+        //예약에서 리뷰가 있는지 검사
+        Review review = reservation.getReview();
+
+        boolean reviewYes = true;
+
+        //리뷰가 있을때
+        if (review != null) {
+
+            reviewYes = false;
 
         }
 
         //여행 도착일 보다 현재 날짜가 미래이거나 같을때 리뷰 버튼 활성화
-//        if (tripEndDate.isAfter(LocalDate.now()) || tripEndDate.isEqual(LocalDate.now())) {
-//            reviewButton = true;
-//
-//        }
-
-        //여행 도착일 보다 현재 날짜가 미래이거나 같을때 리뷰 버튼 활성화
-        if (!tripEndDate.isAfter(LocalDate.now())) {
+        if (tripEndDate.isBefore(LocalDate.now()) && reviewYes) {
             log.info("여행 종료일 :" + tripEndDate);
             reviewButton = true;
+
         }
+
+        //여행 도착일 보다 현재 날짜가 미래이거나 같을때 리뷰 버튼 활성화
+//        if (!tripEndDate.isAfter(LocalDate.now())) {
+//            log.info("여행 종료일 :" + tripEndDate);
+//            reviewButton = true;
+//        }
 
 
         ResDetailPageDto resDetailPageDto = ResDetailPageDto.builder()
@@ -598,12 +701,15 @@ public class HanReservationService {
                 .babySumPriceString(Formatter.changeBigDecimalFormat(reservation.getBabySumPrice()))
                 //총 결제 금액
                 .totalPriceString(Formatter.changeBigDecimalFormat(reservation.getTotalPay()))
+
                 //예약 취소 버튼 활성화 값
                 .cancelButton(cancelButton)
                 //예약 취소중 활성화 값
                 .cancelButtonReq(cancelButtonReq)
                 //리뷰 버튼 활성화 값
                 .reviewButton(reviewButton)
+                //예약 취소 상태
+                .cancelOkButton(cancelOkButtonReq)
                 .build();
 
         return resDetailPageDto;
@@ -615,17 +721,17 @@ public class HanReservationService {
     private final Pattern PHONE_PATTERN = Pattern.compile("^(010|011|016|017|018|019)[0-9]{7,8}$");
 
     // 이름 검사
-    public  boolean isValidKoreanName(String name) {
+    public boolean isValidKoreanName(String name) {
         return name != null && !name.trim().isEmpty() && KOREAN_NAME_PATTERN.matcher(name.trim()).matches();
     }
 
     // 생년월일 검사
-    public  boolean isValidBirthDate(String birth) {
+    public boolean isValidBirthDate(String birth) {
         return birth != null && BIRTH_PATTERN.matcher(birth.trim()).matches();
     }
 
     // 휴대폰 번호 검사
-    public  boolean isValidPhoneNumber(String phone) {
+    public boolean isValidPhoneNumber(String phone) {
         return phone != null && phone.trim().isEmpty() || PHONE_PATTERN.matcher(phone.trim()).matches();
     }
 
