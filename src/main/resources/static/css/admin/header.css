@@ -28,7 +28,7 @@ a {
 
 /* 배지를 클릭하면 목록 표시 */
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 header {
