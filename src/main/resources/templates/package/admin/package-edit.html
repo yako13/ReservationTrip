@@ -890,7 +890,7 @@
             <br />
             <div id="scheduleCheckModal" class="modal" style="display: none">
               <div class="modal-contentScheduleCheck">
-                <span class="close" onclick="closeScheduleModal()"
+                <span class="close" onclick="closeScheduleCheckModal()"
                   >&times;</span
                 >
                 <div class="packageEdit-container">
@@ -1138,7 +1138,7 @@
     document.body.style.overflow = "hidden";
     document.body.classList.add(className);
   }
-  function closeScheduleModal() {
+  function closeScheduleCheckModal() {
     document.getElementById("scheduleCheckModal").style.display = "none";
     document.body.classList.remove("overflow-hidden");
     document.body.style.removeProperty("overflow");
