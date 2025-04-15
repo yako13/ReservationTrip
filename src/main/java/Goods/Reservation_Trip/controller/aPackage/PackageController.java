@@ -90,7 +90,8 @@ public class PackageController {
         model.addAttribute("package", aPackage);
         model.addAttribute("schedule", aPackage.getSchedules());
         model.addAttribute("option", aPackage.getOptions());
-        model.addAttribute("imageUrl", packageImageUrlDto);
+        model.addAttribute("subImage", packageImageUrlDto.getSubImageUrl());
+        model.addAttribute("descImage", packageImageUrlDto.getDescImageUrl());
         model.addAttribute("mainCategory", mainCategories);
         model.addAttribute("subCategory", subCategories);
         model.addAttribute("smallCategory", smallCategories);

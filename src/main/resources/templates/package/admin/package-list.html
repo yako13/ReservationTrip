@@ -37,6 +37,11 @@
       text-align: left;
     }
 
+    .hover-tr:hover td {
+      background-color: #f0e8e1;
+      transition: background-color 0.3s ease;
+    }
+
     thead {
       font-weight: bold;
       color: #fff;
@@ -183,6 +188,9 @@
     .packageList {
       font-size: 18px;
     }
+    .image__set {
+      height: 70px;
+    }
   </style>
   <body>
     <header th:replace="fragments/adminHeader::masterHeader"></header>
@@ -273,7 +281,7 @@
               <tr>
                 <th>순번</th>
                 <th>이미지</th>
-                <th>상품명</th>
+                <th style="min-width: 190px">상품명</th>
                 <th>가격</th>
                 <th>출발지</th>
                 <th>도착지</th>
@@ -291,7 +299,7 @@
               <tr th:each="aPackage : ${packageList}">
                 <td th:text="${aPackage.id}"></td>
                 <td>
-                  <img th:src="${aPackage.mainImagePath}" height="100px" />
+                  <img th:src="${aPackage.mainImagePath}" class="image__set" />
                 </td>
                 <td th:text="${aPackage.name}"></td>
                 <td th:text="${aPackage.fuelSurchargeIncluded}"></td>
@@ -489,9 +497,10 @@
 
     packages.forEach((package) => {
       const tr = document.createElement("tr");
+      tr.classList.add("hover-tr");
       tr.innerHTML = `
       <td>${package.id}</td>
-      <td><img src="${package.mainImagePath}" height="100px"/></td>
+      <td><img src="${package.mainImagePath}" class="image__set"/></td>
       <td>${package.name}</td>
       <td>${package.fuelSurchargeIncluded}</td>
       <td>${package.departurePointOut}</td>
