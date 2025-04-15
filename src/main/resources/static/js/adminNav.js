@@ -76,6 +76,9 @@ document.addEventListener("DOMContentLoaded", function () {
         return item;
     });
 
+    updateNotificationBadge();
+    updateNotificationList();
+
     // WebSocket 연결
     const socket = new SockJS('/ws');
     const stompClient = Stomp.over(socket);
@@ -126,12 +129,12 @@ document.addEventListener("DOMContentLoaded", function () {
     function updateNotificationList() {
         const notificationList = document.getElementById("notification-items");
         notificationList.innerHTML = "";
-    
+
         if (notifications.length === 0) {
             notificationList.style.display = "none";
             return;
         }
-    
+
         notificationList.style.display = "block";
 
         notifications.forEach((item) => {
@@ -176,10 +179,6 @@ document.addEventListener("DOMContentLoaded", function () {
         updateNotificationBadge();
         updateNotificationList();
     });
-
-    // UI 초기화 함수들 호출
-    updateNotificationBadge();
-    updateNotificationList();
 });
 
 

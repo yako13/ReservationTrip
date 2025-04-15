@@ -76,7 +76,7 @@ public class HanPackageController {
     }
 
     //패키지 상세 페이지
-    @GetMapping("/package/{id}")
+    @GetMapping("/package/details/{id}")
     public String packageDetailsGo(Model model, HttpServletRequest request, @PathVariable("id") Long id, RedirectAttributes rttr) {
 
         //헤더 카테고리랑 로그인 상태 및 유저이름 보내주는 서비스

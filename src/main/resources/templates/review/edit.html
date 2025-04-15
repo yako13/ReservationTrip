@@ -57,6 +57,7 @@
             display: flex;
             border: 1px solid #ccc;
             padding: 1.5rem;
+            cursor: pointer;
 
             h4 {
                 line-height: 3.5rem;
@@ -203,7 +204,7 @@
                 <h3>✏️후기 수정</h3>
             </div>
 
-            <div class="packageArea">
+            <div class="packageArea" th:onclick="window.location.href='/package/details/'+[[${packagePK}]]">
                 <img th:src="@{${packageMainImage}}" alt="" id="packageImg">
                 <h4 th:text="${packageName}"></h4>
             </div>

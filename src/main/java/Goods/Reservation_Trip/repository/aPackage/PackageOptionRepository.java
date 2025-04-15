@@ -9,4 +9,6 @@ import java.util.Optional;
 
 public interface PackageOptionRepository extends JpaRepository<PackageOption, Long> {
     Optional<PackageOption> findByaPackage(Package aPackage);
+
+    Optional<PackageOption> findByaPackageId(Long id);
 }

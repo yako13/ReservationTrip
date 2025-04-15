@@ -404,7 +404,7 @@ public class ReservationService {
         PackageScheduleDetails packageDetails = packageScheduleCheck.getPackageScheduleDetails();
 
         //패키지 옵션
-        Optional<PackageOption> optionalPackageOption = packageOptionRepository.findByPackageId(reservation.getAPackage().getId());
+        Optional<PackageOption> optionalPackageOption = packageOptionRepository.findByaPackageId(reservation.getAPackage().getId());
 
         if(optionalPackageOption.isEmpty()) throw new RuntimeException("패키지 옵션 없음");
 

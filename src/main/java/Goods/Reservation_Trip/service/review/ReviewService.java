@@ -54,6 +54,7 @@ public class ReviewService {
         if (reservation.getReview() != null) return null;
 
         return ReviewResponseDto.builder()
+                .packagePK(reservation.getAPackage().getId())
                 .packageMainImage(imageManager.createImageUrl(reservation.getAPackage().getMainImage().getImageFullName()))
                 .packageName(reservation.getAPackage().getPackageName())
                 .build();
@@ -175,6 +176,7 @@ public class ReviewService {
 
         return ReviewResponseDto.builder()
                 .packageMainImage(imageManager.createImageUrl(review.getAPackage().getMainImage().getImageFullName()))
+                .packagePK(review.getAPackage().getId())
                 .packageName(review.getAPackage().getPackageName())
                 .content(review.getContent())
                 .rating(review.getRating())
@@ -303,6 +305,7 @@ public class ReviewService {
             }
 
             ReviewResponseDto reviewResponseDto = ReviewResponseDto.builder()
+                    .packagePK(review.getAPackage().getId())
                     .reviewId(review.getId())
                     .packageMainImage(imageManager.createImageUrl(review.getAPackage().getMainImage().getImageFullName()))
                     .packageName(review.getAPackage().getPackageName())
