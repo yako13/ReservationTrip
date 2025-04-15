@@ -10,6 +10,7 @@ import Goods.Reservation_Trip.repository.HanPart.HanPackageCategoryRepository;
 import Goods.Reservation_Trip.repository.HanPart.HanPackageRepository;
 import Goods.Reservation_Trip.repository.HanPart.HanPackageScheduleRepository;
 import Goods.Reservation_Trip.repository.aPackage.AirportRepository;
+import Goods.Reservation_Trip.repository.aPackage.PackageCategoryRepository;
 import Goods.Reservation_Trip.repository.aPackage.PackageRepository;
 import Goods.Reservation_Trip.util.Formatter;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,6 +23,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static Goods.Reservation_Trip.enums.PackageImageType.DESC;
 import static Goods.Reservation_Trip.enums.PackageStatus.AVAILABLE;
@@ -37,9 +39,11 @@ public class HanPackageService {
     private final HanPackageRepository hanPackageRepository;
     private final HanPackageScheduleRepository hanPackageScheduleRepository;
     private final HanMemberService hanMemberService;
-    private final HanAirportRepository hanAirportRepository;
+
     private final AirportRepository airportRepository;
     private final HanPackageCategoryRepository hanPackageCategoryRepository;
+
+    private final PackageCategoryRepository packageCategoryRepository;
 
 
     //상품 상세페이지로 가는 서비스
@@ -463,19 +467,30 @@ public class HanPackageService {
     //한국 공항 카테고리 가져오는 서비스 (CategoryList 가 null이거나 없는것)
     public List<Airport> airportCategory() {
 
-        List<Airport> airportList = airportRepository.findByCategoryListIsEmpty();
+        Optional<PackageCategory> optionalPackageCategory = packageCategoryRepository.findByName("한국");
 
-        if (airportList == null) {
-
+        if (optionalPackageCategory.isEmpty()) {
             log.error("공항 정보가 하나도 없습니다");
             return null;
         }
-        if (airportList.isEmpty()) {
 
-            log.error("공항 정보가 하나도 없습니다");
-            return null;
+        PackageCategory packageCategory = optionalPackageCategory.get();
+        List<Airport> airportList = airportRepository.findByCategoryId(packageCategory.getId());
 
-        }
+
+//        List<Airport> airportList = airportRepository.findByCategoryListIsEmpty();
+
+//        if (airportList == null) {
+//
+//            log.error("공항 정보가 하나도 없습니다");
+//            return null;
+//        }
+//        if (airportList.isEmpty()) {
+//
+//            log.error("공항 정보가 하나도 없습니다");
+//            return null;
+//
+//        }
 
         return airportList;
     }
@@ -486,7 +501,7 @@ public class HanPackageService {
 
         if (dto.getAirportId() != null) {
 
-            Airport airport = hanAirportRepository.findById(dto.getAirportId()).orElse(null);
+            Airport airport = airportRepository.findById(dto.getAirportId()).orElse(null);
 
             if (airport != null) {
                 return airport.getName();
@@ -544,7 +559,7 @@ public class HanPackageService {
         //패키지 엔티티를 dto로 변환
         for (Package packageEntity : top4BestPackage) {
 
-            packPageListDtoList.add(PackPageListDto.fromEntity2(packageEntity,index));
+            packPageListDtoList.add(PackPageListDto.fromEntity2(packageEntity, index));
             index++;
         }
 
@@ -561,7 +576,7 @@ public class HanPackageService {
         //패키지 엔티티를 dto로 변환
         for (Package packageEntity : top4NewPackage) {
 
-            packPageListDtoList.add(PackPageListDto.fromEntity2(packageEntity,index));
+            packPageListDtoList.add(PackPageListDto.fromEntity2(packageEntity, index));
             index++;
         }
 
