@@ -106,6 +106,7 @@ public class PackageService {
                 .fuelSurchargeIncluded(aPackage.getFuelSurchargeIncluded())
                 .description(aPackage.getDescription())
                 .period(aPackage.getPeriod())
+                .packageStatus(aPackage.getPackageStatus())
                 .mainImage(aPackage.getMainImage())
                 .subImage(aPackage.getPackageImageList().stream()
                         .filter(packageImage -> packageImage.getPackageImageType() == PackageImageType.SUB).toList())
@@ -155,7 +156,7 @@ public class PackageService {
         aPackage.setMainCategory(mainCategory);
         aPackage.setSubCategory(subCategory);
         aPackage.setSmallCategory(smallCategory);
-        aPackage.setPackageStatus(PackageStatus.AVAILABLE);
+        aPackage.setPackageStatus(requestDto.getPackageStatus());
 
         if (requestDto.getMainImage() != null && !requestDto.getMainImage().isEmpty()){
             PackageImage mainImage = packageImageService.create(requestDto, aPackage);
