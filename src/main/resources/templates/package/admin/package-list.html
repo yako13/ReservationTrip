@@ -37,6 +37,11 @@
       text-align: left;
     }
 
+    .hover-tr:hover td {
+      background-color: #f0e8e1;
+      transition: background-color 0.3s ease;
+    }
+
     thead {
       font-weight: bold;
       color: #fff;
@@ -128,7 +133,6 @@
       z-index: 50;
     }
 
-
     #closeIcon {
       margin: 0;
       text-align: end;
@@ -141,6 +145,7 @@
       cursor: pointer;
       font-size: 16px;
       padding: 10px;
+      min-width: 80px;
     }
     .btn-new {
       background-color: #4ed5a2;
@@ -181,7 +186,16 @@
       align-self: center;
     }
     .packageList {
-      font-size: 18px;
+      font-size: 17px;
+    }
+    .image__set {
+      height: 70px;
+      width: 70px;
+      object-fit: cover;
+      cursor: pointer;
+    }
+    .detailsLink {
+      cursor: pointer;
     }
   </style>
   <body>
@@ -232,25 +246,31 @@
                 </select>
               </form>
             </div>
-            <select name="sizeSelect" id="sizeSelect" onchange="">
+            <select name="size" id="size" onchange="">
               <option value="10" th:selected="${size==10}">10개</option>
               <option value="20" th:selected="${size==20}">20개</option>
               <option value="30" th:selected="${size==30}">30개</option>
             </select>
 
-            <select name="sortSelect" id="sortSelect" onchange="">
-              <option value="default" th:selected="${sortSelect == 'default'}">
-                최신순
+            <select name="sort" id="sort" onchange="">
+              <option value="default" th:selected="${sort == 'default'}">
+                출발 빠른순
+              </option>
+              <option value="price_asc" th:selected="${sort == 'price_asc'}">
+                가격 낮은순
+              </option>
+              <option value="price_desc" th:selected="${sort == 'price_desc'}">
+                가격 높은순
               </option>
               <option
-                value="price_asc"
-                th:selected="${sortSelect == 'price_asc'}">
-                가격낮은순
+                value="createdAt_desc"
+                th:selected="${sort == 'createdAt_desc'}">
+                최근 등록순
               </option>
               <option
-                value="price_desc"
-                th:selected="${sortSelect == 'price_desc'}">
-                가격높은순
+                value="createdAt_asc"
+                th:selected="${sort == 'createdAt_asc'}">
+                나중 등록순
               </option>
             </select>
             <span th:if="${page.totalElements != 0}" class="text__right">
@@ -273,7 +293,7 @@
               <tr>
                 <th>순번</th>
                 <th>이미지</th>
-                <th>상품명</th>
+                <th style="min-width: 190px">상품명</th>
                 <th>가격</th>
                 <th>출발지</th>
                 <th>도착지</th>
@@ -291,7 +311,7 @@
               <tr th:each="aPackage : ${packageList}">
                 <td th:text="${aPackage.id}"></td>
                 <td>
-                  <img th:src="${aPackage.mainImagePath}" height="100px" />
+                  <img th:src="${aPackage.mainImagePath}" />
                 </td>
                 <td th:text="${aPackage.name}"></td>
                 <td th:text="${aPackage.fuelSurchargeIncluded}"></td>
@@ -300,7 +320,6 @@
                 <td th:text="${aPackage.departureDateOut}"></td>
                 <td th:text="${aPackage.arrivalDateReturn}"></td>
                 <td th:text="${aPackage.packageStatus}"></td>
-                <td th:text="${aPackage}"></td>
                 <td th:text="${aPackage.createdAt}"></td>
                 <td th:text="${aPackage.modifiedAt}"></td>
                 <td>
@@ -392,6 +411,17 @@
 </html>
 <script th:src="@{/js/adminNav.js}"></script>
 <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    loadCategories();
+
+    document
+      .getElementById("sort")
+      .addEventListener("change", fetchFilteredList);
+    document
+      .getElementById("size")
+      .addEventListener("change", fetchFilteredList);
+  });
+
   async function loadCategories() {
     const response = await fetch("/api/categories");
     const data = await response.json();
@@ -406,31 +436,36 @@
       mainCategorySelect.appendChild(option);
     });
 
-    mainCategorySelect.addEventListener("change", () => {
-      const selected = data.find((c) => c.id == mainCategorySelect.value);
+    const newMain = mainCategorySelect.cloneNode(true);
+    mainCategorySelect.replaceWith(newMain);
+
+    newMain.addEventListener("change", () => {
+      const selected = data.find((c) => c.id == newMain.value);
       loadSubCategories(selected?.children || []);
-      fetchFilteredList(); // 필터링된 리스트 호출
+      fetchFilteredList();
     });
   }
 
   function loadSubCategories(subCategories) {
     const subCategorySelect = document.getElementById("subCategory");
-    resetSelect(subCategorySelect, "중분류");
+    const newSub = subCategorySelect.cloneNode(true);
+    subCategorySelect.replaceWith(newSub);
+    resetSelect(newSub, "중분류");
 
     const smallCategorySelect = document.getElementById("smallCategory");
-    resetSelect(smallCategorySelect, "소분류");
+    const newSmall = smallCategorySelect.cloneNode(true);
+    smallCategorySelect.replaceWith(newSmall);
+    resetSelect(newSmall, "소분류");
 
     subCategories.forEach((subCategory) => {
       const option = document.createElement("option");
       option.value = subCategory.id;
       option.textContent = subCategory.name;
-      subCategorySelect.appendChild(option);
+      newSub.appendChild(option);
     });
 
-    subCategorySelect.addEventListener("change", () => {
-      const selected = subCategories.find(
-        (c) => c.id == subCategorySelect.value
-      );
+    newSub.addEventListener("change", () => {
+      const selected = subCategories.find((c) => c.id == newSub.value);
       loadSmallCategories(selected?.children || []);
       fetchFilteredList();
     });
@@ -438,16 +473,18 @@
 
   function loadSmallCategories(smallCategories) {
     const smallCategorySelect = document.getElementById("smallCategory");
-    resetSelect(smallCategorySelect, "소분류");
+    const newSmall = smallCategorySelect.cloneNode(true);
+    smallCategorySelect.replaceWith(newSmall);
+    resetSelect(newSmall, "소분류");
 
     smallCategories.forEach((smallCategory) => {
       const option = document.createElement("option");
       option.value = smallCategory.id;
       option.textContent = smallCategory.name;
-      smallCategorySelect.appendChild(option);
+      newSmall.appendChild(option);
     });
 
-    smallCategorySelect.addEventListener("change", fetchFilteredList);
+    newSmall.addEventListener("change", fetchFilteredList);
   }
 
   function resetSelect(selectElement, placeholderText) {
@@ -461,11 +498,16 @@
   }
 
   async function fetchFilteredList() {
-    const mainId = document.getElementById("mainCategory").value;
-    const subId = document.getElementById("subCategory").value;
-    const smallId = document.getElementById("smallCategory").value;
+    const mainId = document.getElementById("mainCategory")?.value;
+    const subId = document.getElementById("subCategory")?.value;
+    const smallId = document.getElementById("smallCategory")?.value;
+    const sort = document.getElementById("sort")?.value || "default";
+    const size = document.getElementById("size")?.value || "20";
 
     const params = new URLSearchParams();
+    params.append("page", 0); // 첫 페이지부터 시작
+    params.append("size", size);
+    params.append("sort", sort);
     if (mainId) params.append("mainCategoryId", mainId);
     if (subId) params.append("subCategoryId", subId);
     if (smallId) params.append("smallCategoryId", smallId);
@@ -489,10 +531,12 @@
 
     packages.forEach((package) => {
       const tr = document.createElement("tr");
+      tr.classList.add("hover-tr");
+      tr.dataset.id = package.id;
       tr.innerHTML = `
       <td>${package.id}</td>
-      <td><img src="${package.mainImagePath}" height="100px"/></td>
-      <td>${package.name}</td>
+      <td><img src="${package.mainImagePath}" class="image__set"/></td>
+      <td class="detailsLink">${package.name}</td>
       <td>${package.fuelSurchargeIncluded}</td>
       <td>${package.departurePointOut}</td>
       <td>${package.arrivalPointOut}</td>
@@ -518,6 +562,21 @@
     }
   });
 
+  document
+    .getElementById("packageList")
+    .addEventListener("click", function (e) {
+      const isImageClicked = e.target.classList.contains("image__set");
+      const isTextClicked = e.target.classList.contains("detailsLink");
+
+      if (isImageClicked || isTextClicked) {
+        const parentRow = e.target.closest(".hover-tr");
+        const id = parentRow?.dataset.id;
+        if (id) {
+          location.href = "/package/details/" + id;
+        }
+      }
+    });
+
   document.addEventListener("DOMContentLoaded", async () => {
     await loadCategories();
     await fetchFilteredList(); // 초기 데이터도 표시
@@ -526,10 +585,10 @@
   // sort 관련 설정
   const sizeSelect = document.getElementById("sizeSelect");
   const sortSelect = document.getElementById("sortSelect");
-  const categorySelect = document.getElementById("categorySelect");
+  // const categorySelect = document.getElementById("categorySelect");
 
   const currentSize = `[[${size}]]`;
-  const currentSort = `[[${sortSelect}]]`;
+  const currentSort = `[[${sort}]]`;
   const currentCategory = `[[${categorySelect}]]`;
 
   sizeSelect.addEventListener("change", function () {
@@ -541,9 +600,9 @@
     const selectedSort = this.value;
     window.location.href = `/admin/package/list?page=0&size=${currentSize}&sort=${selectedSort}`;
   });
-  categorySelect.addEventListener("change", function () {
-    const selectedCategory = this.value;
-    window.location.href = `/admin/package/list/?page=0&size=${currentSize}&sort=${currentSort}`;
-    // window.location.href = `/amdin/package/list/category?category=${selectedCategory}&page=0&size=${currentSize}&sort=${currentSort}`;
-  });
+  // categorySelect.addEventListener("change", function () {
+  //   const selectedCategory = this.value;
+  //   window.location.href = `/admin/package/list/?page=0&size=${currentSize}&sort=${currentSort}`;
+  //   window.location.href = `/amdin/package/list/category?category=${selectedCategory}&page=0&size=${currentSize}&sort=${currentSort}`;
+  // });
 </script>
