@@ -47,7 +47,7 @@ public class AirportController {
     @PostMapping("/admin/package/airport/delete")
     @ResponseBody
     public int deleteAirport(PackageAirportDto airportDto) {
-//        return packageCategoryAndAirportService.deleteAirport(airportDto);
-        return 100;
+        return packageCategoryAndAirportService.deleteAirport(airportDto);
+
     }
 }

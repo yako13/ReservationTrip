@@ -41,6 +41,17 @@ public interface AirportRepository extends JpaRepository<Airport, Long> {
             @Param("code") String code
     );
 
+    @Query("""
+    SELECT a 
+    FROM Airport a 
+    JOIN a.categoryList c 
+    WHERE c.id = :categoryId AND a.name = :name
+""")
+    Optional<Airport> findByCategoryIdAndName(
+            @Param("categoryId") Long categoryId,
+            @Param("name") String name
+    );
+
     List<Airport> findByCategoryListIsEmpty();
 
     Optional<Airport> findByNameAndCode(String name,String code);

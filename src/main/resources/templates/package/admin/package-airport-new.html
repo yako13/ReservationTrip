@@ -729,15 +729,15 @@
                 data: params,
                 success: function (res) {
                     if (res == 1000) {
-                        Swal.fire({ text: "등록이 완료되었습니다." , confirmButtonColor: "#43bff8"}).then(() => {
+                        Swal.fire({ text: "등록이 완료되었습니다.", confirmButtonColor: "#43bff8" }).then(() => {
                             location.reload();
                         });
                     }
                     else if (res == 300) {
-                        Swal.fire({ text: "동일한 공항을 등록하실려는 경우, 정확한 이름과 코드를 입력하셔야합니다." , confirmButtonColor: "#43bff8"});
+                        Swal.fire({ text: "동일한 공항을 등록하실려는 경우, 정확한 이름과 코드를 입력하셔야합니다.", confirmButtonColor: "#43bff8" });
                     }
                     else if (res == 400) {
-                        Swal.fire({ text: "동일한 카테고리에 등록 할 수 없습니다." , confirmButtonColor: "#43bff8"});
+                        Swal.fire({ text: "동일한 카테고리에 등록 할 수 없습니다.", confirmButtonColor: "#43bff8" });
                     }
                     else {
                         Swal.fire({ text: "일치하는 지역이 없습니다.", confirmButtonColor: "#43bff8" }); // res == 500
@@ -753,20 +753,29 @@
         $("#deleteBtn").click(deleteCategory);
 
         function deleteCategory() {
+            const selectedAirport = document.getElementById("airport");
 
-            if (document.getElementById("airportName").value == "" && document.getElementById("airportCode").value == "") {
-                Swal.fire({ text: "공항명을 입력하거나 공항코드를 입력해주세요." , confirmButtonColor: "#43bff8" });
+            if (selectedAirport.value == "공항") {
+                Swal.fire({ text: "공항을 삭제하시기 위해선 공항을 선택해주세요.", confirmButtonColor: "#43bff8" });
                 return;
             }
-            if (document.getElementById("parentsName").value == "") {
-                Swal.fire({ text: "지역명은 필수입니다." , confirmButtonColor: "#43bff8"});
+
+            let smallVal = '';
+
+            const selectedSmall = document.getElementById("smallCategory");
+            const smallStyle = window.getComputedStyle(selectedSmall);
+            if (smallStyle.display !== "none") {
+                smallVal = selectedSmall.options[selectedSmall.selectedIndex].text;
+            }
+
+            if (selectedSmall.options[selectedSmall.selectedIndex].text == "소분류") {
+                Swal.fire({ text: "공항을 삭제하기 위해선 반드시 소분류를 선택하셔야 합니다.", confirmButtonColor: "#43bff8" });
                 return;
             }
 
             var params = {
-                airportName: $("#airportName").val(),
-                airportCode: $("#airportCode").val(),
-                parentsName: $("#parentsName").val()
+                airportName: $("#airport").val(),
+                small: $("#smallCategory").val()
             }
 
             $.ajax({
@@ -775,27 +784,18 @@
                 data: params,
                 success: function (res) {
                     if (res == 1000) {
-                        Swal.fire({ text: "삭제가 완료되었습니다." , confirmButtonColor: "#43bff8"}).then(() => {
+                        Swal.fire({ text: "삭제가 완료되었습니다.", confirmButtonColor: "#43bff8" }).then(() => {
                             location.reload();
                         });
-                    }
-                    else if (res == 100) {
-                        Swal.fire({ text: "공항명과 공항코드가 일치하지 않습니다." , confirmButtonColor: "#43bff8"});
-                    }
-                    else if (res == 300) {
-                        Swal.fire({ text: "일치하는 이름의 공항이 없습니다." , confirmButtonColor: "#43bff8"});
                     }
                     else if (res == 500) {
                         Swal.fire({ text: "이미 해당 공항의 패키지가 존재 할 경우 삭제가 불가합니다.", confirmButtonColor: "#43bff8" });
                     }
-                    else if (res == 700) {
-                        Swal.fire({ text: "일치하는 코드의 공항이 없습니다.", confirmButtonColor: "#43bff8"});
-                    }
                     else if (res == 900) {
-                        Swal.fire({ text: "일치하는 지역이 없습니다." , confirmButtonColor: "#43bff8"});
+                        Swal.fire({ text: "일치하는 지역이 없습니다.", confirmButtonColor: "#43bff8" });
                     }
                     else if (res == 1100) {
-                        Swal.fire({ text: "해당 지역에 속한 공항이 아닙니다." , confirmButtonColor: "#43bff8"});
+                        Swal.fire({ text: "해당 지역에 속한 공항이 아닙니다.", confirmButtonColor: "#43bff8" });
                     }
                     else {
                         Swal.fire({ icon: 'error', text: "오류 발생" });

@@ -16,4 +16,5 @@ public class PackageAirportDto {
     private String airportCode;
 
     private String small;
+
 }

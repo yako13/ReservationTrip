@@ -107,10 +107,10 @@ public class PackageCategoryAndAirportService {
     public int registerCategory(PackageCategoryDto packageCategoryDto) {
 
         //동일한 이름의 카테고리 추가 불가
-        if(packageCategoryRepository.existsByName(packageCategoryDto.getCategoryName())) return 100;
+        if (packageCategoryRepository.existsByName(packageCategoryDto.getCategoryName())) return 100;
 
 
-        if(packageCategoryDto.getMain().equals("대분류")){
+        if (packageCategoryDto.getMain().equals("대분류")) {
             PackageCategory packageCategory = PackageCategory.builder()
                     .depth(1)
                     .name(packageCategoryDto.getCategoryName())
@@ -120,12 +120,12 @@ public class PackageCategoryAndAirportService {
             return 1000;
         }
 
-        if(packageCategoryDto.getSub().equals("중분류")){
+        if (packageCategoryDto.getSub().equals("중분류")) {
 
-            Optional<PackageCategory> mainPackageCategory = packageCategoryRepository.findByNameAndDepth(packageCategoryDto.getMain(),1);
-            
+            Optional<PackageCategory> mainPackageCategory = packageCategoryRepository.findByNameAndDepth(packageCategoryDto.getMain(), 1);
+
             //존재하지않는 상위카테고리
-            if(mainPackageCategory.isEmpty()) return 300;
+            if (mainPackageCategory.isEmpty()) return 300;
 
             PackageCategory packageCategory = PackageCategory.builder()
                     .depth(2)
@@ -137,13 +137,13 @@ public class PackageCategoryAndAirportService {
             return 1000;
         }
 
-        if(packageCategoryDto.getSub().equals("소분류")){
-            Optional<PackageCategory> mainPackageCategory = packageCategoryRepository.findByNameAndDepth(packageCategoryDto.getMain(),1);
-            Optional<PackageCategory> subPackageCategory = packageCategoryRepository.findByNameAndDepth(packageCategoryDto.getSub(),2);
+        if (packageCategoryDto.getSmall().equals("소분류")) {
+            Optional<PackageCategory> mainPackageCategory = packageCategoryRepository.findByNameAndDepth(packageCategoryDto.getMain(), 1);
+            Optional<PackageCategory> subPackageCategory = packageCategoryRepository.findByNameAndDepth(packageCategoryDto.getSub(), 2);
 
             //존재하지않는 상위카테고리
-            if(mainPackageCategory.isEmpty()) return 300;
-            if(subPackageCategory.isEmpty()) return 300;
+            if (mainPackageCategory.isEmpty()) return 300;
+            if (subPackageCategory.isEmpty()) return 300;
 
             PackageCategory packageCategory = PackageCategory.builder()
                     .depth(3)
@@ -165,52 +165,51 @@ public class PackageCategoryAndAirportService {
     public int deleteCategory(PackageCategoryDto packageCategoryDto) {
 
         //옵션이 '대분류'가 선택되었다면
-        if(packageCategoryDto.getMain().equals("대분류")) return 200;
+        if (packageCategoryDto.getMain().equals("대분류")) return 200;
 
-        if(packageCategoryDto.getSub().equals("중분류")){
+        if (packageCategoryDto.getSub().equals("중분류")) {
 
-           Optional<PackageCategory> mainCategory = packageCategoryRepository.findByName(packageCategoryDto.getMain());
+            Optional<PackageCategory> mainCategory = packageCategoryRepository.findByName(packageCategoryDto.getMain());
 
-           if(mainCategory.isEmpty()) return 300;
+            if (mainCategory.isEmpty()) return 300;
 
-           PackageCategory main = mainCategory.get();
+            PackageCategory main = mainCategory.get();
 
             //우선 패키지랑 연결되어있는지 확인
-            if(packageCategoryRepository.countByAnyCategory(main.getId()) > 0) return 900;
+            if (packageCategoryRepository.countByAnyCategory(main.getId()) > 0) return 900;
 
             //자식 카테고리가 있는지 확인
-            if(!main.getChildren().isEmpty()) return 700;
+            if (!main.getChildren().isEmpty()) return 700;
 
             packageCategoryRepository.delete(main);
             return 1000;
         }
 
-        if(packageCategoryDto.getSmall().equals("소분류")){
+        if (packageCategoryDto.getSmall().equals("소분류")) {
 
             Optional<PackageCategory> subCategory = packageCategoryRepository.findByName(packageCategoryDto.getSub());
 
-            if(subCategory.isEmpty()) return 300;
+            if (subCategory.isEmpty()) return 300;
 
             PackageCategory sub = subCategory.get();
 
             //우선 패키지랑 연결되어있는지 확인
-            if(packageCategoryRepository.countByAnyCategory(sub.getId()) > 0) return 900;
+            if (packageCategoryRepository.countByAnyCategory(sub.getId()) > 0) return 900;
 
             //자식 카테고리가 있는지 확인
-            if(!sub.getChildren().isEmpty()) return 700;
+            if (!sub.getChildren().isEmpty()) return 700;
 
             packageCategoryRepository.delete(sub);
             return 1000;
-        }
-        else {
+        } else {
             Optional<PackageCategory> smallCategory = packageCategoryRepository.findByName(packageCategoryDto.getSmall());
 
-            if(smallCategory.isEmpty()) return 300;
+            if (smallCategory.isEmpty()) return 300;
 
             PackageCategory small = smallCategory.get();
 
             //우선 패키지랑 연결되어있는지 확인
-            if(packageCategoryRepository.countByAnyCategory(small.getId()) > 0) return 900;
+            if (packageCategoryRepository.countByAnyCategory(small.getId()) > 0) return 900;
 
             packageCategoryRepository.delete(small);
             return 1000;
@@ -260,6 +259,14 @@ public class PackageCategoryAndAirportService {
             return 1000;
         }
 
+        Airport airport = new Airport();
+
+        airport.setCategoryList(List.of(packageCategory));
+        airport.setName(airportDto.getAirportName());
+        airport.setCode(airportDto.getAirportCode());
+
+        airportRepository.save(airport);
+
         return 1000;
     }
 
@@ -268,68 +275,21 @@ public class PackageCategoryAndAirportService {
      */
     public int deleteAirport(PackageAirportDto airportDto) {
 
-        Airport airport = new Airport();
-
-        //공항명과 공항코드를 둘다 작성하였는데 일치하지 않을 때
-        // 예)김해국제공항 코드가 PUS 인데 공항명은 김해국제공항으로 적어놓고 공항코드는 PSS로 했을 경우
-        if (airportDto.getAirportName() != "" && airportDto.getAirportCode() != "") {
-            Optional<Airport> optionalAirport = airportRepository.findByNameAndCode(airportDto.getAirportName(), airportDto.getAirportCode());
-
-            if (optionalAirport.isEmpty()) return 100;
-
-            airport = optionalAirport.get();
-
-            //공항과 연결된 패키지 스케쥴이 있을 경우
-            if (airportRepository.isAirportUsedRaw(airport.getId()) == 1) return 500;
-
-        }
-
-        //공항명으로 찾을경우 (공항코드가 null인경우)
-        if (airportDto.getAirportCode() == "" && airportDto.getAirportName() != "") {
-            Optional<Airport> optionalAirport = airportRepository.findByName(airportDto.getAirportName());
-            if (optionalAirport.isEmpty()) return 300;
-
-            airport = optionalAirport.get();
-
-            //공항과 연결된 패키지 스케쥴이 있을 경우
-            if (airportRepository.isAirportUsedRaw(airport.getId()) == 1) return 500;
-
-        }
-
-        //공항코드로 찾을경우 (공항명이 null인경우)
-        if (airportDto.getAirportName() == "" && airportDto.getAirportCode() != "") {
-            Optional<Airport> optionalAirport = airportRepository.findByCode(airportDto.getAirportCode());
-            if (optionalAirport.isEmpty()) return 700;
-
-            airport = optionalAirport.get();
-
-            //공항과 연결된 패키지 스케쥴이 있을 경우
-            if (airportRepository.isAirportUsedRaw(airport.getId()) == 1) return 500;
-
-        }
-        if (!airportDto.getParentsName().equals("한국")) {
-        //해당지역이 없는 경우
-        Optional<PackageCategory> optionalPackageCategory = packageCategoryRepository.findByName(airportDto.getParentsName());
+        Optional<PackageCategory> optionalPackageCategory = packageCategoryRepository.findByNameAndDepth(airportDto.getSmall(), 3);
 
         if (optionalPackageCategory.isEmpty()) return 900;
 
         PackageCategory packageCategory = optionalPackageCategory.get();
 
-        //해당 지역에 연결되어있지 않은 경우
+        //해당 지역에 연결되어있는지 확인
+        Optional<Airport> optionalAirport = airportRepository.findByCategoryIdAndName(packageCategory.getId(), airportDto.getAirportName());
+        if (optionalAirport.isEmpty()) return 1100;
 
-            if (!airportRepository.existsByCategoryIdAndNameOrCategoryIdAndCode
-                    (packageCategory.getId(), airportDto.getAirportName(), packageCategory.getId(), airportDto.getAirportCode()))
-                return 1100;
-
-            airport.getCategoryList().remove(packageCategory);
-            airportRepository.save(airport);
-
-            return 1000;
-        }
-
-        //한국에 연결되어있지 않은 경우
-        if (!airport.getCategoryList().isEmpty())
-            return 1100;
+        Airport airport = optionalAirport.get();
+        
+        //패키지랑 연결되어있는지 확인
+        if(airportRepository.isAirportUsedRaw(airport.getId()) > 0) return 500;
+        
         airportRepository.delete(airport);
         return 1000;
 
