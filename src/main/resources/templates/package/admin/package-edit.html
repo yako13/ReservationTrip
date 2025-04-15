@@ -134,10 +134,12 @@
       gap: 4rem;
     }
     .thumbnail {
-      max-width: 50px;
-      max-height: 50px;
+      max-width: 100px;
+      max-height: 100px;
       display: block;
       margin-bottom: 10px;
+      object-fit: cover;
+      border: 1px solid #e8e7e7;
     }
     .image-container {
       display: flex;
@@ -231,13 +233,6 @@
       display: inline-block;
     }
 
-    .thumbnail {
-      width: 150px;
-      height: auto;
-      border-radius: 4px;
-      margin-bottom: 16px;
-    }
-
     .btn-delete {
       position: absolute;
       top: 0;
@@ -316,6 +311,7 @@
       border-radius: 5px;
       cursor: pointer;
       transition: background-color 0.3s;
+      margin-bottom: 8px;
     }
 
     .custom-file-btn:hover {
@@ -336,9 +332,6 @@
     }
     .input-date {
       width: 120px;
-    }
-    img {
-      height: 50px;
     }
     .flatpickr-time .numInput.flatpickr-hour,
     .flatpickr-time .numInput.flatpickr-minute {
@@ -367,6 +360,9 @@
     }
     .container-title {
       float: left;
+    }
+    .preview-container {
+      min-height: 66px;
     }
   </style>
   <body>
@@ -466,6 +462,12 @@
                     th:value="${package.fuelSurchargeIncluded}" />
                 </div>
 
+                <input
+                  type="hidden"
+                  id="deletedImages"
+                  name="deletedImages"
+                  value="" />
+
                 <!-- 모달창 -->
                 <div id="imageModal" class="modal" style="display: none">
                   <div class="modal-content">
@@ -486,9 +488,12 @@
                     <label for="mainImage" class="custom-file-btn"
                       >파일 선택</label
                     >
-                    <div id="mainImagePreview" class="image-preview-container">
-                      <img
-                        th:src="@{/productImages/{uuid}{fileExtension} (uuid=${package.mainImage.uuid}, fileExtension=${package.mainImage.fileExtension})}" />
+                    <div id="mainImagePreview" class="preview-container">
+                      <div class="mainImageContainer" id="existingMainImage">
+                        <img
+                          th:src="@{/productImages/{uuid}{fileExtension} (uuid=${package.mainImage.uuid}, fileExtension=${package.mainImage.fileExtension})}"
+                          class="thumbnail" />
+                      </div>
                     </div>
 
                     <!-- 서브 이미지 -->
@@ -504,11 +509,23 @@
                     <label for="subImage" class="custom-file-btn"
                       >파일 선택</label
                     >
-                    <div
-                      id="subImagePreview"
-                      th:each="subImageUrl : ${imageUrl}"
-                      class="image-preview-container">
-                      <img th:src="@{${subImageUrl}}" />
+                    <div class="subImageContainer" id="existingSubImage">
+                      <div class="preview-container" id="subImagePreview">
+                        <div
+                          id="subImageContainer-[[${iterStat.index}]]"
+                          th:each="sub, iterStat : ${subImage}"
+                          class="image-container">
+                          <img th:src="@{${sub}}" class="thumbnail" />
+                          <button
+                            class="btn-delete"
+                            type="button"
+                            th:attr="onclick=|deleteExistingImage(this, [[${iterStat.index}]], 'subImage')|">
+                            <i
+                              class="fa-solid fa-square-xmark"
+                              style="color: #ff0000"></i>
+                          </button>
+                        </div>
+                      </div>
                     </div>
 
                     <!-- 설명 이미지 -->
@@ -524,11 +541,21 @@
                     <label for="descImage" class="custom-file-btn"
                       >파일 선택</label
                     >
-                    <div
-                      id="descImagePreview"
-                      th:each="descImageUrl : ${imageUrl} "
-                      class="image-preview-container">
-                      <img th:src="@{${descImageUrl}}" />
+                    <div id="descImagePreview" class="preview-container">
+                      <div
+                        id="descImagePreview-[[${iterStat.index}]]"
+                        th:each="desc, iterStat : ${descImage} "
+                        class="image-container">
+                        <img th:src="@{${desc}}" class="thumbnail" />
+                        <button
+                          type="button"
+                          class="btn-delete"
+                          th:attr="onclick=|deleteExistingImage(this, [[${iterStat.index}]], 'descImage')|">
+                          <i
+                            class="fa-solid fa-square-xmark"
+                            style="color: #ff0000"></i>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1232,14 +1259,83 @@
     }
   });
 
-  // 고유 ID 인덱스
-  let newImageIndex = { subImage: 0, descImage: 0 };
+  // 기존 이미지 삭제 함수 (메인, 서브, 설명 이미지)
+  function deleteExistingImage(button, index, type) {
+    // id 기반 삭제 시도
+    let imageContainer = document.getElementById(`${type}Container-${index}`);
 
-  // 다중 이미지 미리보기 (서브/설명 공용)
+    if (!imageContainer) {
+      imageContainer = button.closest("div");
+    }
+
+    if (imageContainer) {
+      imageContainer.remove(); // 화면에서 즉시 삭제
+    }
+    // 삭제된 이미지 목록 업데이트
+    const deletedImagesInput = document.getElementById("deletedImages");
+    let deletedImages = deletedImagesInput.value
+      ? deletedImagesInput.value.split(",")
+      : [];
+
+    if (!deletedImages.includes(`${type}${index}`)) {
+      deletedImages.push(`${type}${index}`);
+    }
+
+    deletedImagesInput.value = deletedImages.join(",");
+  }
+
+  // 기존 메인 이미지 삭제
+  function deleteMainImage() {
+    const mainPreviewContainer = document.getElementById("mainImagePreview");
+    if (mainPreviewContainer) {
+      mainPreviewContainer.innerHTML = ""; // 미리보기 삭제
+    }
+
+    const mainInput = document.getElementById("mainImage");
+    if (mainInput) {
+      mainInput.value = ""; // 파일 선택 초기화
+    }
+
+    const deletedImagesInput = document.getElementById("deletedImages");
+    let deletedImages = deletedImagesInput.value
+      ? deletedImagesInput.value.split(",")
+      : [];
+
+    if (!deletedImages.includes("mainImage")) {
+      deletedImages.push("mainImage");
+    }
+
+    deletedImagesInput.value = deletedImages.join(",");
+  }
+
+  // 새로 추가한 이미지 삭제 (서브, 설명 이미지)
+  function deleteNewImage(index, type) {
+    console.log(`새 이미지 삭제 실행: type=${type}, index=${index}`);
+
+    const imageContainer = document.getElementById(`new${type}-${index}`);
+    if (imageContainer) {
+      imageContainer.remove(); // 화면에서 즉시 삭제
+    }
+
+    const fileInput = document.getElementById(type);
+    if (fileInput) {
+      fileInput.value = ""; // 파일 선택 초기화
+    }
+  }
+
+  // 서브, 설명 이미지 미리보기 기능 (동적 추가)
+  const newImageIndex = {};
+
   function previewMultipleImages(event, previewId, maxImages, type) {
-    let previewContainer = document.getElementById(previewId);
-    let files = event.target.files;
+    const previewContainer = document.getElementById(previewId);
+    const files = event.target.files;
+
     if (!previewContainer || !files) return;
+
+    // newImageIndex[type]가 없으면 초기화
+    if (!newImageIndex[type]) {
+      newImageIndex[type] = 0;
+    }
 
     for (let i = 0; i < files.length; i++) {
       if (previewContainer.childElementCount >= maxImages) {
@@ -1247,20 +1343,21 @@
         break;
       }
 
-      let file = files[i];
-      let reader = new FileReader();
-      let currentIndex = newImageIndex[type]++;
+      const file = files[i];
+      const reader = new FileReader();
+      const currentIndex = newImageIndex[type]++;
 
       reader.onload = function (e) {
-        let imageContainer = document.createElement("div");
+        const imageContainer = document.createElement("div");
         imageContainer.classList.add("image-container");
+        imageContainer.classList.add(`${type}-image-container`); // text
         imageContainer.id = `new${type}-${currentIndex}`;
 
-        let img = document.createElement("img");
+        const img = document.createElement("img");
         img.src = e.target.result;
         img.classList.add("thumbnail");
 
-        let deleteButton = document.createElement("button");
+        const deleteButton = document.createElement("button");
         deleteButton.type = "button";
         deleteButton.innerHTML =
           '<i class="fa-solid fa-square-xmark" style="color: #ff0000;"></i>';
@@ -1278,49 +1375,71 @@
     }
   }
 
-  // 단일 이미지 미리보기 (썸네일용)
+  // 메인 이미지 미리보기 기능
   function previewSingleImage(event, previewId, inputId) {
-    let file = event.target.files[0];
-    let previewContainer = document.getElementById(previewId);
+    const file = event.target.files[0];
+    const previewContainer = document.getElementById(previewId);
     previewContainer.innerHTML = "";
 
     if (file) {
-      let reader = new FileReader();
+      const reader = new FileReader();
       reader.onload = function (e) {
-        let imageContainer = document.createElement("div");
+        const imageContainer = document.createElement("div");
         imageContainer.classList.add("image-container");
+        imageContainer.id = `new${inputId}`;
 
-        let img = document.createElement("img");
-        img.src = e.target.result;
-        img.classList.add("thumbnail");
+        const imgElement = document.createElement("img");
+        imgElement.src = e.target.result;
+        imgElement.classList.add("thumbnail");
 
-        let deleteButton = document.createElement("button");
+        const deleteButton = document.createElement("button");
+        deleteButton.type = "button";
         deleteButton.innerHTML =
           '<i class="fa-solid fa-square-xmark" style="color: #ff0000;"></i>';
         deleteButton.className = "btn-delete";
         deleteButton.onclick = function () {
-          imageContainer.remove();
-          document.getElementById(inputId).value = "";
+          deleteMainImage();
         };
 
-        imageContainer.appendChild(img);
+        imageContainer.appendChild(imgElement);
         imageContainer.appendChild(deleteButton);
         previewContainer.appendChild(imageContainer);
       };
       reader.readAsDataURL(file);
     }
   }
+  document.addEventListener("DOMContentLoaded", function () {
+    const descImageInput = document.getElementById("descImage");
+    const dataTransfer = new DataTransfer(); //
 
-  // 이미지 삭제
-  function deleteNewImage(index, type) {
-    let imageContainer = document.getElementById(`new${type}-${index}`);
-    if (imageContainer) {
-      imageContainer.remove();
-    }
+    descImageInput.addEventListener("change", function () {
+      let fileArr = descImageInput.files;
 
-    let fileInput = document.getElementById(type);
-    fileInput.value = ""; // 초기화 유도
-  }
+      if (fileArr && fileArr.length > 0) {
+        for (let i = 0; i < fileArr.length; i++) {
+          dataTransfer.items.add(fileArr[i]);
+        }
+
+        descImageInput.files = dataTransfer.files;
+      }
+    });
+  });
+  document.addEventListener("DOMContentLoaded", function () {
+    const subImageInput = document.getElementById("subImage");
+    const dataTransfer = new DataTransfer(); //
+
+    subImageInput.addEventListener("change", function () {
+      let fileArr = subImageInput.files;
+
+      if (fileArr && fileArr.length > 0) {
+        for (let i = 0; i < fileArr.length; i++) {
+          dataTransfer.items.add(fileArr[i]);
+        }
+
+        subImageInput.files = dataTransfer.files;
+      }
+    });
+  });
 
   // 카테고리 데이터를 가져와서 트리 구조로 처리하는 함수
   document
