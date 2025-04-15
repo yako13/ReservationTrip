@@ -1,5 +1,6 @@
 package Goods.Reservation_Trip.dto.aPackage.req;
 
+import Goods.Reservation_Trip.enums.PackageStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -91,6 +92,11 @@ public class PackageRequestDto {
      * 소분류 ID
      */
     private Long smallCategoryId;
+
+    /**
+     * 예약 상태
+     */
+    private PackageStatus packageStatus;
 
     /**
      * 1개의 패키지의 일정 리스트
