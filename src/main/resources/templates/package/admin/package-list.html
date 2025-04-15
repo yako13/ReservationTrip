@@ -135,7 +135,7 @@
       font-size: 1.2rem;
       height: 1.5rem;
     }
-    .btn {
+    .btn1 {
       border: 0;
       border-radius: 7px;
       cursor: pointer;
@@ -180,6 +180,9 @@
     .text__right {
       align-self: center;
     }
+    .packageList {
+      font-size: 18px;
+    }
   </style>
   <body>
     <header th:replace="fragments/adminHeader::masterHeader"></header>
@@ -193,7 +196,7 @@
           <div class="btnAndSearch">
             <button
               type="button"
-              class="btn btn-new"
+              class="btn1 btn-new"
               onclick="location.href='/admin/package/new'">
               등록
             </button>
@@ -266,7 +269,7 @@
             <h3>등록하신 상품이 없습니다.</h3>
           </div>
           <table th:if="${page.totalElements != 0}">
-            <thead>
+            <thead class="packageList">
               <tr>
                 <th>순번</th>
                 <th>이미지</th>
@@ -284,7 +287,7 @@
               </tr>
             </thead>
             <!-- 테이블은 동적오로 js로 생성함 -->
-            <tbody id="packageList">
+            <tbody id="packageList" class="packageList">
               <tr th:each="aPackage : ${packageList}">
                 <td th:text="${aPackage.id}"></td>
                 <td>
@@ -303,13 +306,15 @@
                 <td>
                   <button
                     type="button"
-                    class="btn btn-edit"
+                    class="btn1 btn-edit"
                     th:onclick="|location.href='/admin/package/edit/' + ${aPackage.id}|">
                     수정하기
                   </button>
                 </td>
                 <td>
-                  <button type="button" class="btn btn-delete">삭제하기</button>
+                  <button type="button" class="btn1 btn-delete">
+                    삭제하기
+                  </button>
                 </td>
               </tr>
             </tbody>
@@ -496,8 +501,8 @@
       <td>${package.packageStatus}</td>
       <td>${package.createdAt}</td>
       <td>${package.modifiedAt}</td>
-      <td><button type="button" class="btn btn-edit" data-id="${package.id}">수정하기</button></td>
-      <td><button type="button" class="btn btn-delete">삭제하기</button></td>
+      <td><button type="button" class="btn1 btn-edit" data-id="${package.id}">수정하기</button></td>
+      <td><button type="button" class="btn1 btn-delete">삭제하기</button></td>
     `;
       container.appendChild(tr);
     });

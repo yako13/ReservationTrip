@@ -163,49 +163,6 @@
       z-index: 50;
     }
 
-    #notification-container {
-      display: flex;
-      width: 100%;
-      justify-content: start;
-    }
-
-    #notification-badge {
-      color: white;
-      font-size: 14px;
-      font-weight: bold;
-      display: none;
-      cursor: pointer;
-    }
-
-    #notification-list {
-      color: black;
-      position: absolute;
-      top: 30px;
-      width: 400px;
-      background: white;
-      border: 1px solid #ccc;
-      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
-      border-radius: 5px;
-      padding: 10px;
-      display: none;
-    }
-
-    #notification-list ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    #notification-list li {
-      padding: 8px;
-      border-bottom: 1px solid #eee;
-      font-size: 14px;
-    }
-
-    #notification-list li:last-child {
-      border-bottom: none;
-    }
-
     #closeIcon {
       margin: 0;
       text-align: end;
@@ -1213,6 +1170,15 @@
     document.body.style.removeProperty("--scrollbar-width");
   }
 
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      const modal = document.getElementById("scheduleModal");
+      if (modal && modal.style.display === "block") {
+        closeScheduleModal();
+      }
+    }
+  });
+
   function openScheduleCheckModal(className = "overflow-hidden") {
     document.getElementById("scheduleCheckModal").style.display = "block";
     document.body.style.setProperty(
@@ -1228,6 +1194,15 @@
     document.body.style.removeProperty("overflow");
     document.body.style.removeProperty("--scrollbar-width");
   }
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      const modal = document.getElementById("scheduleCheckModal");
+      if (modal && modal.style.display === "block") {
+        closeScheduleCheckModal();
+      }
+    }
+  });
 
   // 이미지 팝업창 열기
   function openImageModal(className = "overflow-hidden") {
@@ -1247,6 +1222,15 @@
     document.body.style.removeProperty("overflow");
     document.body.style.removeProperty("--scrollbar-width");
   }
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      const modal = document.getElementById("imageModal");
+      if (modal && modal.style.display === "block") {
+        closeImageModal();
+      }
+    }
+  });
 
   // 고유 ID 인덱스
   let newImageIndex = { subImage: 0, descImage: 0 };
