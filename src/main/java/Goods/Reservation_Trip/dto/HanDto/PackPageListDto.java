@@ -1,16 +1,13 @@
 package Goods.Reservation_Trip.dto.HanDto;
 
-import Goods.Reservation_Trip.entity.*;
 import Goods.Reservation_Trip.entity.Package;
+import Goods.Reservation_Trip.entity.PackageCategory;
+import Goods.Reservation_Trip.entity.PackageImage;
+import Goods.Reservation_Trip.entity.PackageOption;
 import Goods.Reservation_Trip.enums.PackageStatus;
 import Goods.Reservation_Trip.util.Formatter;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.*;
-import org.hibernate.annotations.Comment;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 @Setter
@@ -62,6 +59,9 @@ public class PackPageListDto {
     //리뷰 수
     private int reviewCnt;
 
+    //메인페이지 인덱스용
+    private int index;
+
 
 
     public static PackPageListDto fromEntity(Package packageEntity) {
@@ -96,6 +96,42 @@ public class PackPageListDto {
                 .packageCategory(packageEntity.getPackageCategory())
                 //리뷰수
                 .reviewCnt(packageEntity.getReviewList().size())
+
+                .build();
+    }
+    public static PackPageListDto fromEntity2(Package packageEntity,int index) {
+        return PackPageListDto.builder()
+                //상품 pk
+                .id(packageEntity.getId())
+                //상품명
+                .packageName(packageEntity.getPackageName())
+                //평균 별점
+                .averageRating(packageEntity.getAverageRating())
+                //유류할증료 (성인 1인 기준상품 가격)
+                .fuelSurchargeIncluded(Formatter.BigDecimalFormat2(packageEntity.getFuelSurchargeIncluded()))
+                //패키지 옵션
+                .packageOption(packageEntity.getPackageOption())
+                //패키지 상태
+                .packageStatus(packageEntity.getPackageStatus())
+                //메인이미지
+                .mainImage(packageEntity.getMainImage())
+                //설명글
+                .description(packageEntity.getDescription())
+                //여행일수
+                .period(packageEntity.getPeriod())
+                //몇박 몇일
+                .tripDate(Formatter.TripDate(packageEntity.getPeriod()))
+
+                //카테고리 부분
+                .mainCategory(packageEntity.getMainCategory())
+                .subCategory(packageEntity.getSubCategory())
+                .smallCategory(packageEntity.getSmallCategory())
+
+                //패키지 카테고리 리스트
+                .packageCategory(packageEntity.getPackageCategory())
+                //리뷰수
+                .reviewCnt(packageEntity.getReviewList().size())
+                .index(index)
 
                 .build();
     }

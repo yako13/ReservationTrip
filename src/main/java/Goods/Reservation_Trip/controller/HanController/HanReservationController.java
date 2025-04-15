@@ -87,7 +87,7 @@ public class HanReservationController {
             rttr.addFlashAttribute("data", "로그인이 필요한 기능입니다");
 
             //원래 패키지 상세 페이지로 돌려보냄
-            return "redirect:/package/" + form.getPackagePk();
+            return "redirect:/package/details/" + form.getPackagePk();
         }
 
         //예약인원이 꽉찼을경우
@@ -96,7 +96,7 @@ public class HanReservationController {
             log.info("여행일정에 예약인원이 가득 찼습니다");
             rttr.addFlashAttribute("data", "죄송합니다. 해당 날짜의 예약 인원이 모두 마감되었습니다. 다른 날짜를 선택해 주세요.");
 
-            return "redirect:/package/" + form.getPackagePk();
+            return "redirect:/package/details/" + form.getPackagePk();
         }
 
 
@@ -150,7 +150,7 @@ public class HanReservationController {
             log.info("로그인 안함");
             rttr.addFlashAttribute("data", "로그인을 하셔야 예약이 가능합니다");
 
-            return "redirect:/package/" + form.getPackagePk() ;
+            return "redirect:/package/details/" + form.getPackagePk() ;
         }
 
         //예약이 꽉 찼을경우
@@ -159,7 +159,7 @@ public class HanReservationController {
             log.info("예약이 꽉찼습니다");
             rttr.addFlashAttribute("data", "죄송합니다. 해당 날짜의 예약 인원이 모두 마감되었습니다. 다른 날짜를 선택해 주세요.");
 
-            return "redirect:/package/" + form.getPackagePk()  ;
+            return "redirect:/package/details/" + form.getPackagePk()  ;
         }
 
         model.addAttribute("hanSubmitCompleteDto", hanSubmitCompleteDto);
