@@ -287,7 +287,7 @@
       width: 230px;
       text-align: center;
     }
-    .btn {
+    .btn1 {
       border: 0;
       border-radius: 7px;
       cursor: pointer;
@@ -554,7 +554,7 @@
                 <h3>이미지 첨부하기</h3>
                 <button
                   type="button"
-                  class="btn btn-file"
+                  class="btn1 btn-file"
                   onclick="openImageModal()">
                   파일 첨부 및 미리보기
                 </button>
@@ -568,7 +568,7 @@
               <div>여행 일정 정보</div>
               <button
                 type="button"
-                class="btn btn-schedule"
+                class="btn1 btn-schedule"
                 onclick="openScheduleModal()">
                 일정 등록 하기
               </button>
@@ -796,13 +796,13 @@
                     <!-- /귀국일정 -->
                     <button
                       type="button"
-                      class="btn btn-green"
+                      class="btn1 btn-green"
                       onclick="generateFlights()">
                       항공편 자동 추가
                     </button>
                     <button
                       type="button"
-                      class="btn btn-red"
+                      class="btn1 btn-red"
                       onclick="deleteFlight()">
                       항공편 전체 삭제
                     </button>
@@ -840,7 +840,7 @@
                 <label for="hotelName">호텔명</label>
                 <input type="text" id="hotelName" name="aPackage.hotelName" />
               </div>
-              <button type="button" class="btn btn-hotel">일정 추가</button>
+              <button type="button" class="btn1 btn-hotel">일정 추가</button>
             </div>
             <!-- 상품 옵션 -->
             <div>옵션</div>
@@ -884,12 +884,12 @@
               <label for="no-shopping" class="input__label">쇼핑 없음</label>
             </div>
             <div class="btn-container">
-              <button type="submit btn-green" class="btn btn-green">
+              <button type="submit btn-green" class="btn1 btn-green">
                 등록하기
               </button>
               <button
                 type="button"
-                class="btn btn-red"
+                class="btn1 btn-red"
                 onclick="location.href='/admin/package/list'">
                 돌아가기
               </button>
@@ -1352,7 +1352,7 @@
             <td><input type="date" name="packageSchedule[${rowCount}].departureDateReturn" value="${formattedDateEnd}" class="input-date"></td>
             <td><input type="time" name="packageSchedule[${rowCount}].details.departureTimeOut" value="${departureTimeOut}" class="input-date"></td>
             <td><input type="time" name="packageSchedule[${rowCount}].details.departureTimeReturn" value="${departureTimeReturn}" class="input-date"></td>
-            <td><button type="button" class="btn btn-red" onclick="removeRow(this)">삭제</button></td>
+            <td><button type="button" class="btn1 btn-red" onclick="removeRow(this)">삭제</button></td>
             <td><input type="hidden" name="packageSchedule[${rowCount}].details.airlineOutId" id="airlineOut" value="${airlineOut}" class="input-date">
             <td><input type="hidden" name="packageSchedule[${rowCount}].details.airlineReturnId" value="${airlineReturn}" class="input-date">
             <td><input type="hidden" name="packageSchedule[${rowCount}].details.flightNumberOut" value="${flightNumberOut}" class="input-date"></td>

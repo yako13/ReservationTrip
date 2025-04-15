@@ -128,48 +128,7 @@
       z-index: 50;
     }
 
-    #notification-container {
-      display: flex;
-      width: 100%;
-      justify-content: start;
-    }
 
-    #notification-badge {
-      color: white;
-      font-size: 14px;
-      font-weight: bold;
-      display: none;
-      cursor: pointer;
-    }
-
-    #notification-list {
-      color: black;
-      position: absolute;
-      top: 30px;
-      width: 400px;
-      background: white;
-      border: 1px solid #ccc;
-      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
-      border-radius: 5px;
-      padding: 10px;
-      display: none;
-    }
-
-    #notification-list ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    #notification-list li {
-      padding: 8px;
-      border-bottom: 1px solid #eee;
-      font-size: 14px;
-    }
-
-    #notification-list li:last-child {
-      border-bottom: none;
-    }
 
     #closeIcon {
       margin: 0;
@@ -177,7 +136,7 @@
       font-size: 1.2rem;
       height: 1.5rem;
     }
-    .btn {
+    .btn1 {
       border: 0;
       border-radius: 7px;
       cursor: pointer;
@@ -235,7 +194,7 @@
           <div class="btnAndSearch">
             <button
               type="button"
-              class="btn btn-new"
+              class="btn1 btn-new"
               onclick="location.href='/admin/package/new'">
               등록
             </button>
@@ -345,13 +304,13 @@
                 <td>
                   <button
                     type="button"
-                    class="btn btn-edit"
+                    class="btn1 btn-edit"
                     th:onclick="|location.href='/admin/package/edit/' + ${aPackage.id}|">
                     수정하기
                   </button>
                 </td>
                 <td>
-                  <button type="button" class="btn btn-delete">삭제하기</button>
+                  <button type="button" class="btn1 btn-delete">삭제하기</button>
                 </td>
               </tr>
             </tbody>
@@ -538,8 +497,8 @@
       <td>${package.packageStatus}</td>
       <td>${package.createdAt}</td>
       <td>${package.modifiedAt}</td>
-      <td><button type="button" class="btn btn-edit" data-id="${package.id}">수정하기</button></td>
-      <td><button type="button" class="btn btn-delete">삭제하기</button></td>
+      <td><button type="button" class="btn1 btn-edit" data-id="${package.id}">수정하기</button></td>
+      <td><button type="button" class="btn1 btn-delete">삭제하기</button></td>
     `;
       container.appendChild(tr);
     });
