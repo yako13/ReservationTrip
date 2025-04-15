@@ -353,6 +353,10 @@
             font-size: 0.9rem;
         }
 
+        i{
+            margin-right: 5px;
+        }
+
 
     </style>
 </head>
@@ -379,11 +383,11 @@
                         <ul class="tree">
                             <li th:each="category : ${categoryList}">
                                 <span class="folder majorText" onclick="toggle(this)"><i
-                                        class="fa-solid fa-caret-down"></i> [[${category.major}]]</span>
+                                        class="fa-solid fa-caret-down"></i>[[${category.major}]]</span>
                                 <ul>
                                     <li th:each="medium,stat : ${category.medium}">
                                         <span class="folder mediumText" onclick="toggle(this)"><i
-                                                class="fa-solid fa-caret-down"></i> [[${medium}]]</span>
+                                                class="fa-solid fa-caret-down"></i>[[${medium}]]</span>
                                         <ul>
                                             <li th:each="sub : ${category.sub[__${stat.index}__]}" class="subText">
                                                 [[${sub.sub}]]</li>
@@ -435,6 +439,12 @@
             </div>
         </div>
     </main>
+    <button id="scrollToTopBtn">
+
+    </button>
+
+    <!-- 탑 스크롤 스크립트 -->
+    <script th:src="@{/js/scrollTop.js}"></script>
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
@@ -472,7 +482,6 @@
             parentsName.value = event.target.innerText;
         })
 
-        const name_check = /^[가-힣]{1,10}$/;
 
         //카테고리 등록
         $("#submitBtn").click(function () {
@@ -482,10 +491,6 @@
                 Swal.fire({ text: "등록 하실 카테고리명을 입력해주세요." });
             }
 
-            if (!name_check.test(document.getElementById("categoryName").value)) {
-
-                Swal.fire({ html: "카테고리명은 10자이내 한글로 정확하게 입력해주세요." });
-            }
             else {
                 if (!$("#major").is(":checked")) {
                     if (document.getElementById("parentsName").value == "") {
@@ -539,9 +544,9 @@
 
         function deleteCategory() {
 
-            if (!name_check.test(document.getElementById("categoryName").value)) {
+            if (document.getElementById("categoryName").value == "") {
 
-                Swal.fire({ html: "삭제하실 카테고리명을 입력해주세요.<br> 카테고리명은 한글 10자이내입니다." });
+                Swal.fire({ html: "삭제하실 카테고리명을 입력해주세요." });
             }
             else {
 

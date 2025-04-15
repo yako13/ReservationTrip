@@ -2,11 +2,9 @@ package Goods.Reservation_Trip.dto.HanDto;
 
 import Goods.Reservation_Trip.entity.Package;
 import Goods.Reservation_Trip.entity.PackageImage;
-import Goods.Reservation_Trip.entity.PackageSchedule;
 import Goods.Reservation_Trip.entity.PackageScheduleDetails;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Setter
@@ -63,6 +61,21 @@ public class PackPageDto {
 
     //캐러셀 이미지 화살표 여부
     private boolean carouselImgOne;
+
+    //로그인 여부
+    private boolean loginYes;
+    //만석 여부
+    private boolean resvFull;
+
+
+    //현재 예약 되어있는 인원
+    private int resvMember;
+
+    //최소 예약 인원
+    private int minMember;
+
+    //현재 가능 예약 인원
+    private int resvOkMember;
 
 
 

@@ -1,7 +1,12 @@
-package Goods.Reservation_Trip.repository.aPackage;
+package Goods.Reservation_Trip.repository.aPackage.impl;
 
-import Goods.Reservation_Trip.entity.*;
+import Goods.Reservation_Trip.entity.PackageScheduleDetails;
+import Goods.Reservation_Trip.entity.QPackage;
+import Goods.Reservation_Trip.entity.QPackageSchedule;
+import Goods.Reservation_Trip.entity.QPackageScheduleDetails;
 import Goods.Reservation_Trip.enums.PackageStatus;
+import Goods.Reservation_Trip.repository.aPackage.PackageScheduleDetailsCustomRepository;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -21,7 +26,7 @@ public class PackageScheduleDetailsCustomRepositoryImpl implements PackageSchedu
     private final JPAQueryFactory queryFactory;
     QPackageScheduleDetails details = QPackageScheduleDetails.packageScheduleDetails;
     QPackageSchedule schedule = QPackageSchedule.packageSchedule;
-    QPackage aPackage = QPackage.package$;
+    QPackage aPackage = new QPackage("aPackage");
 
 
     @Override
@@ -63,6 +68,54 @@ public class PackageScheduleDetailsCustomRepositoryImpl implements PackageSchedu
                 )
                 .fetchOne();
         // page 객체로 변환
+        return new PageImpl<>(results, pageable, total == null ? 0 : total);
+    }
+
+
+    @Override
+    public Page<PackageScheduleDetails> findByCategoryAndSubCategories(Long mainCategoryId,
+                                                                       Long subCategoryId,
+                                                                       Long smallCategoryId,
+                                                                       String sort,
+                                                                       Pageable pageable) {
+        BooleanBuilder whereBuilder = new BooleanBuilder();
+        whereBuilder.and(schedule.packageStatus.eq(PackageStatus.AVAILABLE));
+
+        if (mainCategoryId != null) {
+            whereBuilder.and(aPackage.mainCategory.id.eq(mainCategoryId));
+        }
+        if (subCategoryId != null) {
+            whereBuilder.and(aPackage.subCategory.id.eq(subCategoryId));
+        }
+        if (smallCategoryId != null) {
+            whereBuilder.and(aPackage.smallCategory.id.eq(smallCategoryId));
+        }
+
+        JPQLQuery<LocalDate> minDateSubQuery = JPAExpressions
+                .select(schedule.departureDateOut.min())
+                .from(details)
+                .join(details.packageSchedule, schedule)
+                .join(schedule.aPackage, aPackage)
+                .where(whereBuilder);
+
+        List<PackageScheduleDetails> results = queryFactory
+                .select(details)
+                .from(details)
+                .join(details.packageSchedule, schedule)
+                .join(schedule.aPackage, aPackage)
+                .where(whereBuilder.and(schedule.departureDateOut.eq(minDateSubQuery)))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(schedule.departureDateOut.asc())
+                .fetch();
+
+        Long total = queryFactory
+                .select(schedule.count())
+                .from(schedule)
+                .join(schedule.aPackage, aPackage)
+                .where(whereBuilder.and(schedule.departureDateOut.eq(minDateSubQuery)))
+                .fetchOne();
+
         return new PageImpl<>(results, pageable, total == null ? 0 : total);
     }
 }

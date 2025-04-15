@@ -301,7 +301,7 @@ public class PackageCategoryAndAirportService {
             if (airportRepository.isAirportUsedRaw(airport.getId()) == 1) return 500;
 
         }
-
+        if (!airportDto.getParentsName().equals("한국")) {
         //해당지역이 없는 경우
         Optional<PackageCategory> optionalPackageCategory = packageCategoryRepository.findByName(airportDto.getParentsName());
 
@@ -310,13 +310,21 @@ public class PackageCategoryAndAirportService {
         PackageCategory packageCategory = optionalPackageCategory.get();
 
         //해당 지역에 연결되어있지 않은 경우
-        if (!airportRepository.existsByCategoryIdAndNameOrCategoryIdAndCode
-                (packageCategory.getId(), airportDto.getAirportName(), packageCategory.getId(), airportDto.getAirportCode()))
+
+            if (!airportRepository.existsByCategoryIdAndNameOrCategoryIdAndCode
+                    (packageCategory.getId(), airportDto.getAirportName(), packageCategory.getId(), airportDto.getAirportCode()))
+                return 1100;
+
+            airport.getCategoryList().remove(packageCategory);
+            airportRepository.save(airport);
+
+            return 1000;
+        }
+
+        //한국에 연결되어있지 않은 경우
+        if (!airport.getCategoryList().isEmpty())
             return 1100;
-
-        airport.getCategoryList().remove(packageCategory);
-        airportRepository.save(airport);
-
+        airportRepository.delete(airport);
         return 1000;
 
     }

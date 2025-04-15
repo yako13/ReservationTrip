@@ -23,6 +23,14 @@
 <a th:href="@{/member/review/list/able}">회원등록가능리뷰</a>
 <a th:href="@{/admin/package/category/new}">카테고리생성</a>
 
+<!--바뀐 부분-->
+<br>
+<br>
+<br>
+<a th:href="@{/package/category3}">패키지 목록(package-category2.html) 테스트중인거</a>
+
+
+
 
 <form th:action="@{/reservation}" th:method="get" id="HanResvForm">
     <p>성인 인원수</p>
@@ -48,6 +56,10 @@
 <h2>테스트용 자동 로그인</h2>
 <button type="button" onclick="autoLogin()">user1 자동 로그인</button>
 
+<br>
+<br>
+<button onclick="generateDummy()">30개 패키지 더미 생성</button>
+
 <script>
     function autoLogin() {
       const form = document.createElement('form');
@@ -62,5 +74,21 @@
       form.submit();
     }
 </script>
+
+
+
+<script>
+    function generateDummy() {
+      fetch('generate?count=30', {
+        method: 'POST'
+      })
+      .then(res => res.text())
+      .then(msg => alert(msg))
+      .catch(err => alert('에러 발생: ' + err));
+    }
+</script>
+
+
+
 </body>
 </html>

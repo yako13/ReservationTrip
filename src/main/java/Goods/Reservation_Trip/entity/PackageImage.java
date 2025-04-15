@@ -3,16 +3,14 @@ package Goods.Reservation_Trip.entity;
 import Goods.Reservation_Trip.base.BaseTime;
 import Goods.Reservation_Trip.enums.PackageImageType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Comment;
 
 import java.util.UUID;
 
 @Table(name = "package_image")
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity

@@ -40,8 +40,10 @@
             color: white;
             background-color: #2cafec;
             margin: 10px 0;
+        }
 
-
+        .defaultFont {
+            font-family: system-ui, -apple-system, "Segoe UI", "Malgun Gothic", sans-serif;
         }
     </style>
 
@@ -73,7 +75,8 @@
             </div>
 
             <div class="HanResStatDiv">
-                <p class="HanResStat">예약완료</p>
+                <p class="HanResStat"
+                   th:text="${resDetailPageDto.reservation.reservationState.getName}">예약완료</p>
             </div>
 
             <div class="HanResNumDiv">
@@ -89,7 +92,13 @@
 
                 <div class="tripTitle">
 
-                    <img th:src="@{/images/pick1.jpg}" width="50px" height="50px" class="HanPrdImg">
+                    <a th:href="@{'/package/' + ${resDetailPageDto.reservation.aPackage.id}}">
+
+                        <img th:src="@{'/productImages/'+ ${resDetailPageDto.reservation.aPackage.mainImage.getImageFullName}}"
+                            width="50px" height="50px" class="HanPrdImg">
+
+                    </a>
+
                     <span th:text="${resDetailPageDto.reservation.aPackage.packageName}">[출발확정] 오사카 3박 4일 </span>
 
                 </div>
@@ -126,10 +135,11 @@
 
                         <!--출국 비행기-->
                         <p th:text="${resDetailPageDto.packageSchedule.packageScheduleDetails.airlineOut.name}"
-                        style="font-weight: bold;" >제주항공</p>
+                            style="font-weight: bold;">제주항공</p>
                         <!--<p>서울(ICN) → 후쿠오카(FUK)</p>-->
                         <p>
-                            [[${resDetailPageDto.packageSchedule.packageScheduleDetails.departurePointOut.name}]] →
+                            [[${resDetailPageDto.packageSchedule.packageScheduleDetails.departurePointOut.name}]]<span
+                                class="defaultFont"> → </span>
                             [[${resDetailPageDto.packageSchedule.packageScheduleDetails.arrivalPointOut.name}]]
                         </p>
 
@@ -138,7 +148,8 @@
                         <p th:text="${resDetailPageDto.packageSchedule.packageScheduleDetails.airlineReturn.name}"
                             style="font-weight: bold; margin-top: 8px;">에어부산</p>
                         <!--<p>서울(ICN) → 후쿠오카(FUK)</p>-->
-                        <p>[[${resDetailPageDto.packageSchedule.packageScheduleDetails.departurePointReturn.name}]] →
+                        <p>[[${resDetailPageDto.packageSchedule.packageScheduleDetails.departurePointReturn.name}]]
+                            <span class="defaultFont"> → </span>
                             [[${resDetailPageDto.packageSchedule.packageScheduleDetails.arrivalPointReturn.name}]]
                         </p>
 
@@ -405,9 +416,14 @@
 
 
         <div class="HanPayButtonDiv ">
-            <button class="HanCancel" th:if="${resDetailPageDto.cancelButton}">예약 취소</button>
+            <form id="HanResvCancel" th:method="post" th:action="@{/member/{code}/cancel(code=${resDetailPageDto.reservation.code})}">
+
+            </form>
+            <button class="HanCancel" th:if="${resDetailPageDto.cancelButton}" form="HanResvCancel" type="submit">예약 취소</button>
             <button class="HanCancelReq" th:if="${resDetailPageDto.cancelButtonReq}">예약 취소 요청중</button>
-            <button class="HanReview" th:if="${resDetailPageDto.reviewButton}">리뷰 쓰기</button>
+            <button class="HanCancelReq" th:if="${resDetailPageDto.cancelOkButton}">예약 취소</button>
+            <button class="HanReview" th:if="${resDetailPageDto.reviewButton}" type="button"
+                    th:onclick="|location.href='@/member/review/new/{reservationId}(reservationId=${resDetailPageDto.reservation.id})}'|">리뷰 쓰기</button>
         </div>
 
     </div>
@@ -415,7 +431,7 @@
     <!-- 푸터 시작 -->
 
     <footer th:replace="/fragments/memberFooter::memberFooter"></footer>
-
+s
     <!-- 푸터 끝 -->
 
 

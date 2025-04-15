@@ -273,4 +273,14 @@ select {
     transform: scaleX(-1);
 }
 
+#infoImage {
+    width: 8rem;
+}
+
+.imageArea {
+    padding: 5rem 0;
+    text-align: center;
+    border-bottom: solid 1px #c2c2c2;
+}
+
 /* 메인끝 */

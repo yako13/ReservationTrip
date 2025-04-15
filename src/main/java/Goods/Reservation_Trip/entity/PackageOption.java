@@ -1,15 +1,13 @@
 package Goods.Reservation_Trip.entity;
 
 import Goods.Reservation_Trip.base.BaseTime;
+import Goods.Reservation_Trip.dto.aPackage.req.PackageOptionRequestDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Table(name = "package_option")
 @Getter
@@ -23,8 +21,8 @@ public class PackageOption extends BaseTime {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
     @JoinColumn(name = "package_id")
+    @OneToOne
     private Package aPackage;
 
     @Column(nullable = false, columnDefinition = "BOOLEAN")
@@ -43,4 +41,10 @@ public class PackageOption extends BaseTime {
     @Comment("쇼핑 여부")
     private boolean noShopping;
 
+    public void update(PackageOptionRequestDto requestDto) {
+        this.guide = requestDto.isGuide();
+        this.hotelFee = requestDto.isHotelFee();
+        this.airfare = requestDto.isAirFare();
+        this.noShopping = requestDto.isShopping();
+    }
 }

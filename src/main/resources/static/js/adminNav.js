@@ -59,8 +59,8 @@ function delay() {
     document.querySelector(".SlideNavOpenDiv").classList.add("SlideShow");
 }
 
-
 const notificationList = document.getElementById("notification-list");
+
 document.addEventListener("DOMContentLoaded", function () {
     // 알림 개수 및 목록을 LocalStorage에서 불러오기
     let notifications = JSON.parse(localStorage.getItem("notifications")) || [];
@@ -76,7 +76,6 @@ document.addEventListener("DOMContentLoaded", function () {
         return item;
     });
 
-    // UI 업데이트
     updateNotificationBadge();
     updateNotificationList();
 
@@ -85,7 +84,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const stompClient = Stomp.over(socket);
 
     stompClient.connect({}, function (frame) {
-
         stompClient.subscribe('/topic/admin', function (notification) {
             const message = JSON.parse(notification.body);
             showNotification(message.message);
@@ -132,6 +130,13 @@ document.addEventListener("DOMContentLoaded", function () {
         const notificationList = document.getElementById("notification-items");
         notificationList.innerHTML = "";
 
+        if (notifications.length === 0) {
+            notificationList.style.display = "none";
+            return;
+        }
+
+        notificationList.style.display = "block";
+
         notifications.forEach((item) => {
             const listItem = document.createElement("li");
             const date = document.createElement("span");
@@ -161,7 +166,22 @@ document.addEventListener("DOMContentLoaded", function () {
             notificationList.style.display = "none";
         }
     });
+
+    // 초기화 버튼 클릭 시 알림 목록과 개수 초기화
+    document.getElementById("clear-notifications").addEventListener("click", function () {
+        // 알림 목록 초기화
+        localStorage.removeItem("notifications");
+        localStorage.setItem("notificationCount", 0);
+
+        // UI 업데이트
+        notifications = [];
+        notificationCount = 0;
+        updateNotificationBadge();
+        updateNotificationList();
+    });
 });
+
+
 
 let closeIcon = document.getElementById("closeIcon");
 closeIcon.addEventListener("click", function () {

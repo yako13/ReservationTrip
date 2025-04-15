@@ -1,6 +1,7 @@
 package Goods.Reservation_Trip.controller.HanController;
 
 import Goods.Reservation_Trip.dto.HanDto.*;
+import Goods.Reservation_Trip.service.HanService.HanHeaderService;
 import Goods.Reservation_Trip.service.HanService.HanReservationService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +21,18 @@ public class HanReservationController {
 
     private final HanReservationService hanReservationService;
 
+    private final HanHeaderService hanHeaderService;
+
     //예약 페이지로 가기
     @GetMapping("/reservation")
     public String reservationGo(HttpServletRequest request, Model model, PackResvDto form,
                                 RedirectAttributes rttr) {
+
+        //헤더 카테고리랑 로그인 상태 및 유저이름 보내주는 서비스
+        HeaderDto headerDto = hanHeaderService.HeaderCategoryAndMember(request);
+
+        model.addAttribute("headerDto",headerDto);
+
 
         if (form == null || form.getPackagePk() == null) {
 
@@ -55,9 +64,11 @@ public class HanReservationController {
             return "redirect:/";
         }
 
+
         log.info("여행출발일 : " + form.getTripStart());
 
         ResvPageDto resvPageDto = hanReservationService.ReservationPage(request, form);
+
 
         if (resvPageDto == null) {
 
@@ -66,8 +77,28 @@ public class HanReservationController {
             rttr.addFlashAttribute("data", "에러가 발생했습니다");
 
             return "redirect:/";
-
         }
+
+        //로그인 안했을시
+        if(resvPageDto.isLoginNo()){
+
+            log.info("로그인 안함");
+
+            rttr.addFlashAttribute("data", "로그인이 필요한 기능입니다");
+
+            //원래 패키지 상세 페이지로 돌려보냄
+            return "redirect:/package/" + form.getPackagePk();
+        }
+
+        //예약인원이 꽉찼을경우
+        if(resvPageDto.isResvFull()){
+
+            log.info("여행일정에 예약인원이 가득 찼습니다");
+            rttr.addFlashAttribute("data", "죄송합니다. 해당 날짜의 예약 인원이 모두 마감되었습니다. 다른 날짜를 선택해 주세요.");
+
+            return "redirect:/package/" + form.getPackagePk();
+        }
+
 
         model.addAttribute("resvPageDto", resvPageDto);
 
@@ -79,6 +110,11 @@ public class HanReservationController {
     @PostMapping("/reservation/submit")
     public String reservationSubmit(HttpServletRequest request, Model model, @ModelAttribute ResvSubmitDto form,
                                     RedirectAttributes rttr) {
+
+        //헤더 카테고리랑 로그인 상태 및 유저이름 보내주는 서비스
+        HeaderDto headerDto = hanHeaderService.HeaderCategoryAndMember(request);
+
+        model.addAttribute("headerDto",headerDto);
 
         if (form == null || form.getPackagePk() == null) {
 
@@ -108,6 +144,24 @@ public class HanReservationController {
             return "redirect:/";
         }
 
+        //로그인 안했을경우
+        if (hanSubmitCompleteDto.isLoginNo()) {
+
+            log.info("로그인 안함");
+            rttr.addFlashAttribute("data", "로그인을 하셔야 예약이 가능합니다");
+
+            return "redirect:/package/" + form.getPackagePk() ;
+        }
+
+        //예약이 꽉 찼을경우
+        if (hanSubmitCompleteDto.isResvFull()) {
+
+            log.info("예약이 꽉찼습니다");
+            rttr.addFlashAttribute("data", "죄송합니다. 해당 날짜의 예약 인원이 모두 마감되었습니다. 다른 날짜를 선택해 주세요.");
+
+            return "redirect:/package/" + form.getPackagePk()  ;
+        }
+
         model.addAttribute("hanSubmitCompleteDto", hanSubmitCompleteDto);
 
         return "reservation/reservationComplete";
@@ -120,6 +174,11 @@ public class HanReservationController {
     @GetMapping("/member/reservation/details/{id}")
     public String reservationDetailGo(HttpServletRequest request, Model model, @PathVariable("id") Long id,
                                       RedirectAttributes rttr) {
+
+        //헤더 카테고리랑 로그인 상태 및 유저이름 보내주는 서비스
+        HeaderDto headerDto = hanHeaderService.HeaderCategoryAndMember(request);
+
+        model.addAttribute("headerDto",headerDto);
 
         //pk가 null일경우
         if (id == null) {

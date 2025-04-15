@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>관리자 상품 등록</title>
     <link th:href="@{/css/admin/header.css}" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   </head>
   <style>
     @font-face {
@@ -353,7 +357,23 @@
       margin: 0;
     }
     .input-date {
-      width: 120px;
+      width: 150px;
+    }
+    .flatpickr-time .numInput.flatpickr-hour,
+    .flatpickr-time .numInput.flatpickr-minute {
+      width: 40px !important;
+      padding: 2px 4px !important;
+      font-size: 1.1rem !important;
+      /* text-align: center !important; */
+      box-sizing: border-box !important;
+    }
+    .flatpickr-calendar {
+      width: 100px !important;
+    }
+    .date__input {
+      font-size: 1.3rem;
+      width: 90px;
+      text-align: center;
     }
   </style>
   <body>
@@ -605,10 +625,9 @@
                               class="category__container">
                               <option value="#">-- 공항 선택 --</option>
                               <option value="1">김포국제공항</option>
-                              <option value="INCHEON">인천국제공항</option>
-                              <option value="DAEGU">대구국제공항</option>
-                              <option value="BUSAN">부산국제공항</option>
-                              <option value="사천">사천국제</option>
+                              <option value="2">인천국제공항</option>
+                              <option value="3">대구국제공항</option>
+                              <option value="4">부산국제공항</option>
                             </select>
                           </div>
 
@@ -660,15 +679,19 @@
                           <div class="input__flex">
                             <label for="departureTimeOut">출발시간</label>
                             <input
-                              type="time"
+                              type="text"
                               id="departureTimeOut"
+                              class="date__input"
+                              value="12:00"
                               name="packageSchedule.departureTimeOut" />
                           </div>
                           <div class="input__flex">
                             <label for="arrivalTimeOut">도착시간</label>
                             <input
-                              type="time"
+                              type="text"
                               id="arrivalTimeOut"
+                              class="date__input"
+                              value="12:00"
                               name="packageSchedule.arrivalTimeOut" />
                           </div>
 
@@ -702,10 +725,9 @@
                               id="arrivalPointReturn">
                               <option value="#">-- 공항 선택 --</option>
                               <option value="1">김포국제공항</option>
-                              <option value="INCHEON">인천국제공항</option>
-                              <option value="DAEGU">대구국제공항</option>
-                              <option value="BUSAN">부산국제공항</option>
-                              <option value="사천">사천국제</option>
+                              <option value="2">인천국제공항</option>
+                              <option value="3">대구국제공항</option>
+                              <option value="4">부산국제공항</option>
                             </select>
                           </div>
                           <div>
@@ -753,15 +775,19 @@
                           <div>
                             <label for="departureTimeReturn">출발시간</label>
                             <input
-                              type="time"
+                              type="text"
+                              class="date__input"
                               id="departureTimeReturn"
+                              value="12:00"
                               name="packageSchedule.departureTimeReturn" />
                           </div>
                           <div>
                             <label for="arrivalTimeReturn">도착시간</label>
                             <input
-                              type="time"
+                              type="text"
                               id="arrivalTimeReturn"
+                              class="date__input"
+                              value="12:00"
                               name="packageSchedule.arrivalTimeReturn" />
                           </div>
                         </div>
@@ -780,7 +806,6 @@
                       onclick="deleteFlight()">
                       항공편 전체 삭제
                     </button>
-                    <!-- 팝업창에서 입력과 등록 처리를 하고 확인 하는 방법? -->
                   </div>
                 </div>
                 <!-- 추가로 생성되는 항공편 -->
@@ -1323,8 +1348,8 @@
         const formattedDateEnd = formatDate(sd2);
         const row = document.createElement("tr");
         row.innerHTML = `
-            <td><input type="text" readonly name="packageSchedule[${rowCount}].departureDateOut" value="${formattedDate}" class="input-date"></td>
-            <td><input type="text" readonly name="packageSchedule[${rowCount}].departureDateReturn" value="${formattedDateEnd}" class="input-date"></td>
+            <td><input type="date" name="packageSchedule[${rowCount}].departureDateOut" value="${formattedDate}" class="input-date"></td>
+            <td><input type="date" name="packageSchedule[${rowCount}].departureDateReturn" value="${formattedDateEnd}" class="input-date"></td>
             <td><input type="time" name="packageSchedule[${rowCount}].details.departureTimeOut" value="${departureTimeOut}" class="input-date"></td>
             <td><input type="time" name="packageSchedule[${rowCount}].details.departureTimeReturn" value="${departureTimeReturn}" class="input-date"></td>
             <td><button type="button" class="btn btn-red" onclick="removeRow(this)">삭제</button></td>
@@ -1494,6 +1519,18 @@
         formatDateWithWeekday(date);
     });
   </script>
+  <!-- 시간 라이브러리 -->
+  <script>
+    flatpickr(".date__input", {
+      dateFormat: "Y-m-d",
+      enableTime: true,
+      noCalendar: true,
+      dateFormat: "H:i",
+      time_24hr: true,
+      allowInput: true,
+    });
+  </script>
+  <!-- /시간 라이브러리 -->
 
   <!-- 달력 스크립트 끝 -->
 </html>

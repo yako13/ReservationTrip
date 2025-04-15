@@ -450,6 +450,12 @@
             </div>
         </div>
     </main>
+    <button id="scrollToTopBtn">
+
+    </button>
+
+    <!-- 탑 스크롤 스크립트 -->
+    <script th:src="@{/js/scrollTop.js}"></script>
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
@@ -494,8 +500,6 @@
             this.value = this.value.toUpperCase();
         });
 
-        const name_check = /^[가-힣]{1,20}$/;
-
 
         //카테고리 등록
         $("#submitBtn").click(function () {
@@ -505,11 +509,6 @@
                 return;
             }
 
-            if (!name_check.test(document.getElementById("airportName").value)) {
-
-                Swal.fire({ html: "공항명을 20자 이내 한글로 정확하게 입력해주세요." });
-                return;
-            }
 
             if (document.getElementById("airportCode").value == "") {
                 Swal.fire({ text: "공항코드를 입력해주세요." });
@@ -556,10 +555,6 @@
                     }
                     else if (res == 400) {
                         Swal.fire({ text: "동일한 카테고리에 등록 할 수 없습니다." });
-                    }
-
-                    else if (res == 700) {
-                        Swal.fire({ text: "동일한 이름의 공항코드가 있습니다." });
                     }
                     else {
                         Swal.fire({ text: "일치하는 지역이 없습니다." }); // res == 500

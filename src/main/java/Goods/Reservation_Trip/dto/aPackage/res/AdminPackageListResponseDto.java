@@ -36,5 +36,5 @@ public class AdminPackageListResponseDto {
 
     private String modifiedAt;
 
-    private String airlineOut;
+    private String packageStatus;
 }

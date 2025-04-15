@@ -152,6 +152,7 @@
         .HanCkListProductNameP {
             font-size: 15px;
             margin: 0;
+            color: black;
         }
 
 
@@ -365,6 +366,12 @@
 
         .reviewContent {
             font-size: 1.2rem;
+            overflow-wrap: break-word;
+            width: 100%;
+        }
+
+        .contentArea {
+            width: 100%;
         }
     </style>
 </head>
@@ -394,8 +401,9 @@
                             <div class="HanCkListInfo">
 
                                 <div class="HanCkListImgDiv">
-
-                                    <img th:src="@{${reviewList.packageMainImage}}" alt="">
+                                    <a th:href="@{'/package/details/'+${reviewList.packagePK}}">
+                                        <img th:src="@{${reviewList.packageMainImage}}" alt="">
+                                    </a>
 
                                 </div>
 
@@ -404,7 +412,10 @@
                                     <div class="HanCkListProductNameDiv">
 
                                         <b>
-                                            <p class="HanCkListProductNameP" th:text="${reviewList.packageName}"></p>
+                                            <a th:href="@{'/package/details/'+${reviewList.packagePK}}">
+                                                <p class="HanCkListProductNameP" th:text="${reviewList.packageName}">
+                                                </p>
+                                            </a>
                                         </b>
 
                                     </div>
@@ -431,7 +442,7 @@
                                 <span>[[${reviewList.createdAt}]]</span>
                                 <span th:if="${reviewList.modified}">(수정됨)</span>
                             </div>
-                            <div>
+                            <div class="contentArea">
                                 <p th:text="${reviewList.content}" class="reviewContent">
                                 </p>
                             </div>
@@ -459,7 +470,8 @@
     </div>
     <img th:src="@{/images/topBtn.png}" id="topBtn">
     </div>
-
+    <button id="scrollToTopBtn"></button>
+    <script th:src="@{/js/scrollTop.js}"></script>
     <footer th:replace="/fragments/memberFooter::memberFooter"></footer>
     <!-- 메인 끝 -->
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
