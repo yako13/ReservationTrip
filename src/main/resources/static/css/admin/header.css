@@ -54,6 +54,7 @@ header {
     top: 0;
     left: 0;
     width: 100%;
+    z-index: 3;
 }
 
 
@@ -83,11 +84,6 @@ header {
     display: inline-block;
     font-size: 22px;
 }
-
-p {
-    margin: 0;
-}
-
 
 .headerTitleADiv {
     width: 450px;
