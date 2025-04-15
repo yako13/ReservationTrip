@@ -128,11 +128,11 @@
   }
 
   .PackImg1 {
-    left: 185px;
+    left: 245px;
   }
 
   .PackImg2 {
-    left: 426px;
+    left: 435px;
   }
 
   /* 페이지 네이션 css 시작 */
@@ -224,6 +224,9 @@
 
     <!-- 숨겨진 input에 복사 (검색어)-->
     <input type="hidden" id="hiddenKeyword" name="keyword" th:value="${param.keyword}">
+    <input type="hidden" id="categoryIdHidden" name="categoryId" th:value="${param.categoryId}">
+    <input type="hidden" id="categoryDepthHidden" name="categoryDepth" th:value="${param.categoryDepth}">
+    <input type="hidden" id="categoryNameHidden" name="categoryName" th:value="${category}">
 
     <main class="main__container">
 
@@ -259,7 +262,7 @@
 
           <div class="PackDateInputDiv" id="calendar-wrapper">
 
-            <span>출발일 : </span><input type="text" id="start-date" class="PackDateInput" name="startDate"
+            <span>여행 시작일 : </span><input type="text" id="start-date" class="PackDateInput" name="startDate"
               th:value="${param.startDate}" onchange="this.form.submit()" readonly placeholder="출발일" />
 
             <img th:src="@{/images/cal4.svg}" width="18px" class="PackImg1">
@@ -268,8 +271,8 @@
 
             <img th:src="@{/images/cal4.svg}" width="18px" class="PackImg2">
 
-            <span>도착일 : </span><input type="text" id="end-date" class="PackDateInput" readonly name="endDate"
-              th:value="${param.endDate}" onchange="this.form.submit()" placeholder="도착일" />
+            <input type="text" id="end-date" class="PackDateInput" readonly name="endDate"
+              th:value="${param.endDate}" onchange="this.form.submit()"  />
 
             <div id="start-calendar" class="calendar-box"></div>
             <div id="end-calendar" class="calendar-box"></div>
@@ -416,31 +419,6 @@
 
             <div class="a7">
 
-
-              <!-- <div>
-                <label>
-                  <input type="radio" name="sortType" value="reservation"
-                    th:checked="${packCategoryDto.sortType == 'reservation'}" onchange="this.form.submit()">
-                  예약 많은 순
-                </label>
-                <label>
-                  <input type="radio" name="sortType" value="rating"
-                    th:checked="${packCategoryDto.sortType == 'rating'}" onchange="this.form.submit()">
-                  평점 높은 순
-                </label>
-                <label>
-                  <input type="radio" name="sortType" value="highPrice"
-                    th:checked="${packCategoryDto.sortType == 'highPrice'}" onchange="this.form.submit()">
-                  높은 가격순
-                </label>
-                <label>
-                  <input type="radio" name="sortType" value="lowPrice"
-                    th:checked="${packCategoryDto.sortType == 'lowPrice'}" onchange="this.form.submit()">
-                  낮은 가격순
-                </label>
-              </div> -->
-
-
               <div class="a6">
                 <div class="PackProduct">
                   <img th:src="@{/images/package.svg}" width="16px" style="margin-bottom: 2px;">
@@ -451,7 +429,7 @@
                   <label>
                     <input type="radio" name="sortType" value="reservation"
                       th:checked="${packCategoryDto.sortType == 'reservation'}" onchange="this.form.submit()">
-                    <span>예약 많은 순</span>
+                    <span>예약순</span>
                   </label>
 
                   <p class="PackBar">|</p>
@@ -490,7 +468,7 @@
                   <div class="a8">
 
                     <div class="image__container">
-                      <a th:href="@{/package/{id}(id=${packPageListDto.id})}">
+                      <a th:href="@{/package/details/{id}(id=${packPageListDto.id})}">
                         <img th:src="@{'/productImages/'+ ${packPageListDto.mainImage.getImageFullName}}"
                           class="main__image" />
                       </a>
@@ -566,7 +544,7 @@
 
                         <div class="HanCkSubmitA">
 
-                          <a th:href="@{/package/{id}(id=${packPageListDto.id})}">상세 보기</a>
+                          <a th:href="@{/package/details/{id}(id=${packPageListDto.id})}">상세 보기</a>
 
                         </div>
 
@@ -588,7 +566,7 @@
           </div>
 
         </div>
-
+      </div>
     </main>
 
     <nav class="HanPageWrapper" th:unless="${packPageListDto.totalElements == 0}">
@@ -596,32 +574,32 @@
 
         <!-- 첫 페이지 버튼 -->
         <li th:classappend="${packPageListDto.first} ? 'disabled'">
-          <a th:href="@{/package/category3(page=0, size=${packPageListDto.size})}">&laquo;</a>
+          <a th:href="@{/packages(page=0, size=${packPageListDto.size})}">&laquo;</a>
         </li>
 
         <!-- 이전 버튼 -->
         <li th:classappend="${packPageListDto.hasPrevious()} ? '' : 'disabled'">
           <a
-            th:href="@{/package/category3(page=${packPageListDto.number - 1}, size=${packPageListDto.size})}">&lsaquo;</a>
+            th:href="@{/packages(page=${packPageListDto.number - 1}, size=${packPageListDto.size})}">&lsaquo;</a>
         </li>
 
         <!-- 페이지 번호 버튼 (최대 10개) -->
         <li th:each="i : ${#numbers.sequence(startPage, endPage)}"
           th:classappend="${i == packPageListDto.number} ? 'active'">
-          <a th:href="@{/package/category3(page=${i}, size=${packPageListDto.size})}" th:text="${i + 1}"></a>
+          <a th:href="@{/packages(page=${i}, size=${packPageListDto.size})}" th:text="${i + 1}"></a>
         </li>
 
 
         <!-- 다음 버튼 -->
         <li th:classappend="${packPageListDto.hasNext()} ? '' : 'disabled'">
           <a
-            th:href="@{/package/category3(page=${packPageListDto.number + 1}, size=${packPageListDto.size})}">&rsaquo;</a>
+            th:href="@{/packages(page=${packPageListDto.number + 1}, size=${packPageListDto.size})}">&rsaquo;</a>
         </li>
 
         <!-- 마지막 페이지 버튼 -->
         <li th:classappend="${packPageListDto.last} ? 'disabled'">
           <a
-            th:href="@{/package/category3(page=${packPageListDto.totalPages - 1}, size=${packPageListDto.size})}">&raquo;</a>
+            th:href="@{/packages(page=${packPageListDto.totalPages - 1}, size=${packPageListDto.size})}">&raquo;</a>
         </li>
 
       </ul>
@@ -703,8 +681,9 @@
       const startDateStr = document.getElementById('startDateHidden')?.value;
       const endDateStr = document.getElementById('endDateHidden')?.value;
 
-      const startDate = startDateStr ? new Date(startDateStr) : today;
-      const endDate = endDateStr ? new Date(endDateStr) : undefined;
+      const startDate = startDateStr ? new Date(startDateStr) : null;
+      const endDate = endDateStr ? new Date(endDateStr) : null;
+
 
 
       // 한글 로케일을 미리 등록 (필요 시 커스텀도 가능)

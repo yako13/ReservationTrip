@@ -26,7 +26,7 @@
 
                 <div class="HanSerachForm">
 
-                    <form action="/product/search/index" method="get" role="search" id="HanSerachForm">
+                    <form th:action="@{/packages}" method="get" role="search" id="HanSerachForm">
 
                         <input type="text" id="cardName" th:value="${param.keyword}" name="keyword"
                             onchange="this.form.submit()" placeholder="검색어를 입력해주세요">

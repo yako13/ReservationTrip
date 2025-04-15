@@ -22,13 +22,13 @@ public class PackCategoryDto {
     private Boolean noShopping;
 
 
-    // 출국 항공사의 PK
+    // 출국 공항의 PK
     private Long airportId;
 
-    //출발일
+    //출발일 시작
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate startDate;
-    //도착일
+    //출발일 끝
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate endDate;
 
