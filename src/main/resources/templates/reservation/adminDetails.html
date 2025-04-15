@@ -532,7 +532,7 @@
                         </tr>
 
                         <tr class="imageArea">
-                            <td><a><img th:src="${reservationList.mainImage}" style="width:100%;"></a></td>
+                            <td><a th:href="@{'/package/details/'+${reservationList.packagePK}}"><img th:src="${reservationList.mainImage}" style="width:100%;"></a></td>
                             <td>[[${reservationList.country}]]</td>
 
                             <td th:text="${reservationList.packageName}"></td>
