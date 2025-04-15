@@ -128,8 +128,6 @@
       z-index: 50;
     }
 
-
-
     #closeIcon {
       margin: 0;
       text-align: end;
@@ -180,6 +178,9 @@
     }
     .text__right {
       align-self: center;
+    }
+    .packageList {
+      font-size: 18px;
     }
   </style>
   <body>
@@ -267,7 +268,7 @@
             <h3>등록하신 상품이 없습니다.</h3>
           </div>
           <table th:if="${page.totalElements != 0}">
-            <thead>
+            <thead class="packageList">
               <tr>
                 <th>순번</th>
                 <th>이미지</th>
@@ -285,7 +286,7 @@
               </tr>
             </thead>
             <!-- 테이블은 동적오로 js로 생성함 -->
-            <tbody id="packageList">
+            <tbody id="packageList" class="packageList">
               <tr th:each="aPackage : ${packageList}">
                 <td th:text="${aPackage.id}"></td>
                 <td>
@@ -310,7 +311,9 @@
                   </button>
                 </td>
                 <td>
-                  <button type="button" class="btn1 btn-delete">삭제하기</button>
+                  <button type="button" class="btn1 btn-delete">
+                    삭제하기
+                  </button>
                 </td>
               </tr>
             </tbody>
