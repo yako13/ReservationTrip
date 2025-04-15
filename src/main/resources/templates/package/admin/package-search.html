@@ -190,6 +190,12 @@
     }
     .image__set {
       height: 70px;
+      width: 70px;
+      object-fit: cover;
+      cursor: pointer;
+    }
+    .detailsLink {
+      cursor: pointer;
     }
   </style>
   <body>
@@ -300,7 +306,7 @@
                 <th>삭제</th>
               </tr>
             </thead>
-            <tbody id="packageList">
+            <tbody id="packageList" class="packageList">
               <tr th:each="package : ${packageList}">
                 <td th:text="${package.id}"></td>
                 <td>
@@ -525,10 +531,11 @@
     packages.forEach((package) => {
       const tr = document.createElement("tr");
       tr.classList.add("hover-tr");
+      tr.dataset.id = package.id;
       tr.innerHTML = `
       <td>${package.id}</td>
       <td><img src="${package.mainImagePath}" class="image__set"/></td>
-      <td>${package.name}</td>
+      <td class="detailsLink">${package.name}</td>
       <td>${package.fuelSurchargeIncluded}</td>
       <td>${package.departurePointOut}</td>
       <td>${package.arrivalPointOut}</td>
@@ -553,6 +560,21 @@
       }
     }
   });
+
+  document
+    .getElementById("packageList")
+    .addEventListener("click", function (e) {
+      const isImageClicked = e.target.classList.contains("image__set");
+      const isTextClicked = e.target.classList.contains("detailsLink");
+
+      if (isImageClicked || isTextClicked) {
+        const parentRow = e.target.closest(".hover-tr");
+        const id = parentRow?.dataset.id;
+        if (id) {
+          location.href = "/package/details/" + id;
+        }
+      }
+    });
 
   document.addEventListener("DOMContentLoaded", async () => {
     await loadCategories();
