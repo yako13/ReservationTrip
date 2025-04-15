@@ -405,8 +405,11 @@
     }
     .qqq {
       position: relative;
-      top: 10px;
-      left: 485px;
+      top: -10px;
+      left: 395px;
+    }
+    .container-title {
+      float: left;
     }
   </style>
   <body>
@@ -421,31 +424,33 @@
             method="post"
             onsubmit="return doAction()"
             enctype="multipart/form-data">
-            <div class="qqq">
-              <select name="aPackage.packageStatus">
-                <option
-                  value="AVAILABLE"
-                  th:selected="${package.packageStatus.name == '예약가능'}">
-                  예약가능
-                </option>
-                <option
-                  value="CLOSED"
-                  th:selected="${package.packageStatus.name == '예약불가'}">
-                  예약불가
-                </option>
-                <option
-                  value="CANCEL"
-                  th:selected="${package.packageStatus.name == '여행취소'}">
-                  여행취소
-                </option>
-              </select>
+            <div>
+              <span class="qqq">
+                <select name="aPackage.packageStatus">
+                  <option
+                    value="AVAILABLE"
+                    th:selected="${package.packageStatus.name == '예약가능'}">
+                    예약가능
+                  </option>
+                  <option
+                    value="CLOSED"
+                    th:selected="${package.packageStatus.name == '예약불가'}">
+                    예약불가
+                  </option>
+                  <option
+                    value="CANCEL"
+                    th:selected="${package.packageStatus.name == '여행취소'}">
+                    여행취소
+                  </option>
+                </select>
+              </span>
+              <input
+                type="hidden"
+                id="hiddenPackageScheduleId"
+                name="packageScheduleId" />
+              <!-- 상품 기본 정보 -->
+              <span class="container-title">상품 기본 정보</span>
             </div>
-            <input
-              type="hidden"
-              id="hiddenPackageScheduleId"
-              name="packageScheduleId" />
-            <!-- 상품 기본 정보 -->
-            <div>상품 기본 정보</div>
             <div class="a6">
               <div class="a2">
                 <div class="input__flex">
