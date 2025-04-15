@@ -6,7 +6,9 @@ import Goods.Reservation_Trip.entity.QPackageSchedule;
 import Goods.Reservation_Trip.entity.QPackageScheduleDetails;
 import Goods.Reservation_Trip.enums.PackageStatus;
 import Goods.Reservation_Trip.repository.aPackage.PackageScheduleDetailsCustomRepository;
+import Goods.Reservation_Trip.util.QuerydslSortUtil;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -29,13 +31,16 @@ public class PackageScheduleDetailsCustomRepositoryImpl implements PackageSchedu
 
 
     @Override
-    public Page<PackageScheduleDetails> findAvailableEarliestByPackageNameContaining(String name, Pageable pageable) {
+    public Page<PackageScheduleDetails> findAvailableEarliestByPackageNameContaining(String name, Pageable pageable, String sort) {
 
         BooleanBuilder whereBuilder = new BooleanBuilder();
         whereBuilder.and(schedule.packageStatus.eq(PackageStatus.AVAILABLE));
         if (name != null && !name.isEmpty()) {
             whereBuilder.and(aPackage.packageName.containsIgnoreCase(name));
         }
+
+        // sort 적용하기
+        OrderSpecifier<?> orderSpecifier = QuerydslSortUtil.getOrderSpecifier(sort, aPackage, schedule);
 
         // 서브쿼리: 해당 이름을 포함하는 패키지 중 '가장 빠른 출발일' 을 가진 스케줄 날짜 조회
         JPQLQuery<Long> detailIdsWithMinDatePerPackage = JPAExpressions
@@ -52,7 +57,7 @@ public class PackageScheduleDetailsCustomRepositoryImpl implements PackageSchedu
                 .join(details.packageSchedule, schedule).fetchJoin()
                 .join(schedule.aPackage, aPackage).fetchJoin()
                 .where(details.id.in(detailIdsWithMinDatePerPackage))
-                .orderBy(schedule.departureDateOut.asc())
+                .orderBy(orderSpecifier)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -88,6 +93,9 @@ public class PackageScheduleDetailsCustomRepositoryImpl implements PackageSchedu
             whereBuilder.and(aPackage.smallCategory.id.eq(smallCategoryId));
         }
 
+        // sort 적용하기
+        OrderSpecifier<?> orderSpecifier = QuerydslSortUtil.getOrderSpecifier(sort, aPackage, schedule);
+
         JPQLQuery<Long> detailIdsWithMinDatePerPackage = JPAExpressions
                 .select(details.id.min())
                 .from(details)
@@ -102,7 +110,7 @@ public class PackageScheduleDetailsCustomRepositoryImpl implements PackageSchedu
                 .join(details.packageSchedule, schedule).fetchJoin()
                 .join(schedule.aPackage, aPackage).fetchJoin()
                 .where(details.id.in(detailIdsWithMinDatePerPackage))
-                .orderBy(schedule.departureDateOut.asc())
+                .orderBy(orderSpecifier)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
