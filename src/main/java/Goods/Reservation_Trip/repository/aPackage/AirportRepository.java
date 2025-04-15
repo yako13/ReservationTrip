@@ -10,6 +10,13 @@ import java.util.Optional;
 
 public interface AirportRepository extends JpaRepository<Airport, Long> {
 
+    @Query("""
+    SELECT DISTINCT a FROM Airport a
+    JOIN a.categoryList c
+    WHERE c.name IN :categoryNames
+""")
+    List<Airport> findAirportsByCategoryNames(@Param("categoryNames") List<String> categoryNames);
+
     // 공항 코드가 있는지 확인
     boolean existsByCode(String code);
 

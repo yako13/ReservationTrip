@@ -15,5 +15,5 @@ public class PackageAirportDto {
 
     private String airportCode;
 
-    private String parentsName;
+    private String small;
 }

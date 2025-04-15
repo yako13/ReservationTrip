@@ -25,19 +25,28 @@ public class AirPortInitializer implements CommandLineRunner {
     @Override
     public void run(String... Args) throws Exception {
 
-        // 국내 극제 공항
-        if (!airportRepository.existsByCode("GMP")) {
-            airportRepository.save(new Airport(null, "GMP", "김포국제공항", null));
-        }
-        if (!airportRepository.existsByCode("ICN")) {
-            airportRepository.save(new Airport(null, "ICN", "인천국제공항", null));
-        }
+        // 국내 국제 공항
+        packageCategoryRepository.findByName("김포").ifPresent(gimpo -> {
+            if (!airportRepository.existsByCode("GMP")) {
+                airportRepository.save(new Airport(null, "GMP", "김포국제공항", List.of(gimpo)));
+            }
+        });
+        packageCategoryRepository.findByName("인천").ifPresent(incheon -> {
+            if (!airportRepository.existsByCode("ICN")) {
+                airportRepository.save(new Airport(null, "ICN", "인천국제공항", List.of(incheon)));
+            }
+        });
+        packageCategoryRepository.findByName("대구").ifPresent(daegu->{
         if (!airportRepository.existsByCode("TAE")) {
-            airportRepository.save(new Airport(null, "TAE", "대구국제공항", null));
+            airportRepository.save(new Airport(null, "TAE", "대구국제공항", List.of(daegu)));
         }
+        });
+        packageCategoryRepository.findByName("부산").ifPresent(busan->{
         if (!airportRepository.existsByCode("PUS")) {
-            airportRepository.save(new Airport(null, "PUS", "부산국제공항", null));
+            airportRepository.save(new Airport(null, "PUS", "부산국제공항", List.of(busan)));
         }
+        });
+
         // 해외 국제 공항
         // 카테고리에 해당 이름이 있으면 연결
         packageCategoryRepository.findByName("도쿄").ifPresent(tokyo -> {

@@ -247,7 +247,7 @@
 
             &:hover {
                 background-color: #3e8cf1;
-                color: #555252;
+                color: white;
                 transform: scale(0.98);
 
             }
@@ -279,7 +279,7 @@
             position: relative;
             font-family: sans-serif;
             font-size: 14px;
-            
+
         }
 
         /* 세로 줄 */
@@ -347,6 +347,28 @@
             font-weight: 600;
         }
 
+        #subCategory,
+        #smallCategory {
+            display: none;
+            font-size: 1.2rem;
+            height: 2.5rem;
+            border: none;
+
+            &:focus {
+                outline: none;
+            }
+        }
+
+        #mainCategory,
+        #airport {
+            border: none;
+            height: 2.5rem;
+            font-size: 1.2rem;
+
+            &:focus {
+                outline: none;
+            }
+        }
     </style>
 </head>
 
@@ -436,8 +458,23 @@
                                 <tr>
                                     <th>지역명</th>
                                     <td>
-                                        <input type="text" maxlength="10" placeholder="등록하거나 삭제 할 지역을 좌측 목록에서 선택해주세요."
-                                            id="parentsName" name="parentsName" readonly>
+                                        <select id="mainCategory" name="mainCategoryId">
+                                            <option value="대분류" selected>대분류</option>
+                                        </select>
+                                        <select id="subCategory" name="subCategoryId">
+                                            <option value="중분류">중분류</option>
+                                        </select>
+                                        <select id="smallCategory" name="smallCategoryId">
+                                            <option value="소분류">소분류</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>공항</th>
+                                    <td>
+                                        <select id="airport">
+                                            <option value="공항">공항 선택</option>
+                                        </select>
                                     </td>
                                 </tr>
                             </tbody>
@@ -460,6 +497,129 @@
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            await loadCategories();
+
+        });
+        async function loadCategories() {
+            const response = await fetch("/api/categories");
+            const data = await response.json();
+
+            const mainCategorySelect = document.getElementById("mainCategory");
+            resetSelect(mainCategorySelect, "대분류", "대분류");
+
+            data.forEach((mainCategory) => {
+                const option = document.createElement("option");
+                option.value = mainCategory.name;
+                option.textContent = mainCategory.name;
+                mainCategorySelect.appendChild(option);
+            });
+
+            mainCategorySelect.addEventListener("change", () => {
+                const selected = data.find((c) => c.name == mainCategorySelect.value);
+
+                if (mainCategorySelect.value !== "대분류") {
+                    document.getElementById("subCategory").style.display = "inline-block";
+                    loadSubCategories(selected?.children || []);
+                } else {
+                    document.getElementById("subCategory").style.display = "none";
+                    document.getElementById("smallCategory").style.display = "none";
+                }
+
+
+            });
+        }
+
+        function loadSubCategories(subCategories) {
+            const subCategorySelect = document.getElementById("subCategory");
+            resetSelect(subCategorySelect, "중분류", "중분류");
+
+            const smallCategorySelect = document.getElementById("smallCategory");
+            resetSelect(smallCategorySelect, "소분류", "소분류");
+
+            subCategories.forEach((subCategory) => {
+                const option = document.createElement("option");
+                option.value = subCategory.name;
+                option.textContent = subCategory.name;
+                subCategorySelect.appendChild(option);
+            });
+
+            subCategorySelect.addEventListener("change", () => {
+                const selected = subCategories.find(
+                    (c) => c.name == subCategorySelect.value
+                );
+
+                if (subCategorySelect.value !== "중분류") {
+                    document.getElementById("smallCategory").style.display = "inline-block";
+                    loadSmallCategories(selected?.children || []);
+                } else {
+                    document.getElementById("smallCategory").style.display = "none";
+                }
+
+
+            });
+        }
+
+        function loadSmallCategories(smallCategories) {
+            const smallCategorySelect = document.getElementById("smallCategory");
+            resetSelect(smallCategorySelect, "소분류", "소분류");
+
+            smallCategories.forEach((smallCategory) => {
+                const option = document.createElement("option");
+                option.value = smallCategory.name;
+                option.textContent = smallCategory.name;
+                smallCategorySelect.appendChild(option);
+            });
+
+
+        }
+
+        function resetSelect(selectElement, placeholderText, placeholderValue = "") {
+            selectElement.innerHTML = "";
+            const option = document.createElement("option");
+            option.value = placeholderValue;
+            option.textContent = placeholderText;
+            option.disabled = false;
+            option.selected = true;
+            selectElement.appendChild(option);
+        }
+
+        // 마지막 카테고리를 설정하면 동적으로 공항 목록 불러옴
+        function airport() {
+            const categoryName = this.value;
+
+            fetch(`/api/airports/category/name/${categoryName}`)
+                .then((res) => res.json())
+                .then((airports) => {
+                    console.log("받은 공항 응답:", airports);
+                    const airportSelect = document.getElementById("airport");
+                    airportSelect.innerHTML = "";
+
+                    const defaultOption1 = document.createElement("option");
+                    defaultOption1.value = "공항";
+                    defaultOption1.textContent = "공항 선택";
+                    defaultOption1.disabled = true;
+                    defaultOption1.selected = true;
+                    airportSelect.appendChild(defaultOption1);
+
+                    airports.forEach((airport) => {
+                        const option = document.createElement("option");
+                        option.value = airport.name;
+                        option.textContent = airport.name;
+                        airportSelect.appendChild(option.cloneNode(true));
+                    });
+                })
+                .catch((error) => {
+                    console.error("공항 정보를 불러오는데 실패했습니다:", error);
+                });
+        }
+
+        document.getElementById("smallCategory").addEventListener("change", airport);
+        document.getElementById("mainCategory").addEventListener("change", airport);
+        document.getElementById("subCategory").addEventListener("change", airport);
+
         function toggle(element) {
             element.classList.toggle("open");
 
@@ -506,28 +666,53 @@
         $("#submitBtn").click(function () {
 
             if (document.getElementById("airportName").value == "") {
-                Swal.fire({ text: "등록 하실 공항명을 입력해주세요." });
+                Swal.fire({ text: "등록 하실 공항명을 입력해주세요.", confirmButtonColor: "#43bff8" });
                 return;
             }
-
 
             if (document.getElementById("airportCode").value == "") {
-                Swal.fire({ text: "공항코드를 입력해주세요." });
+                Swal.fire({ text: "공항코드를 입력해주세요.", confirmButtonColor: "#43bff8" });
                 return;
             }
-
             if (document.getElementById("airportCode").value.length != 3) {
-                Swal.fire({ text: "공항코드는 영문 3글자입니다." });
+                Swal.fire({ text: "공항코드는 영문 3글자입니다.", confirmButtonColor: "#43bff8" });
+                return;
+            }
+            const selectedMain = document.getElementById("mainCategory");
+
+            const mainVal = selectedMain.options[selectedMain.selectedIndex].text;
+
+            let subVal = '';
+            let smallVal = '';
+            const selectedSub = document.getElementById("subCategory");
+            const subStyle = window.getComputedStyle(selectedSub);
+            if (subStyle.display !== "none") {
+                subVal = selectedSub.options[selectedSub.selectedIndex].text;
+            }
+
+            const selectedSmall = document.getElementById("smallCategory");
+            const smallStyle = window.getComputedStyle(selectedSmall);
+            if (smallStyle.display !== "none") {
+                smallVal = selectedSmall.options[selectedSmall.selectedIndex].text;
+            }
+
+            if (selectedSmall.options[selectedSmall.selectedIndex].text == "소분류") {
+                Swal.fire({ text: "공항을 등록하기 위해선 반드시 소분류를 선택하셔야 합니다.", confirmButtonColor: "#43bff8" });
                 return;
             }
 
-            if (document.getElementById("parentsName").value == "") {
-                Swal.fire({ text: "지역명은 필수입니다." });
-                return;
-            }
-
-            ajax();
-
+            Swal.fire({
+                html: `등록하실 위치가 ${mainVal}${subVal ? ' > ' + subVal : ''}${smallVal ? ' > ' + smallVal : ''}(이)가 맞습니까?`,
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "확인",
+                cancelButtonText: "취소",
+                confirmButtonColor: "#43bff8"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    ajax();
+                }
+            });
 
         })
 
@@ -535,7 +720,7 @@
             var params = {
                 airportName: $("#airportName").val(),
                 airportCode: $("#airportCode").val(),
-                parentsName: $("#parentsName").val()
+                small: $("#smallCategory").val()
             }
 
             $.ajax({
@@ -544,21 +729,18 @@
                 data: params,
                 success: function (res) {
                     if (res == 1000) {
-                        Swal.fire({ text: "등록이 완료되었습니다." }).then(() => {
+                        Swal.fire({ text: "등록이 완료되었습니다." , confirmButtonColor: "#43bff8"}).then(() => {
                             location.reload();
                         });
                     }
-                    else if (res == 100) {
-                        Swal.fire({ text: "동일한 이름이나 코드로 등록할 수 없습니다." });
-                    }
                     else if (res == 300) {
-                        Swal.fire({ text: "동일한 공항을 등록하실려는 경우, 정확한 이름과 코드를 입력하셔야합니다." });
+                        Swal.fire({ text: "동일한 공항을 등록하실려는 경우, 정확한 이름과 코드를 입력하셔야합니다." , confirmButtonColor: "#43bff8"});
                     }
                     else if (res == 400) {
-                        Swal.fire({ text: "동일한 카테고리에 등록 할 수 없습니다." });
+                        Swal.fire({ text: "동일한 카테고리에 등록 할 수 없습니다." , confirmButtonColor: "#43bff8"});
                     }
                     else {
-                        Swal.fire({ text: "일치하는 지역이 없습니다." }); // res == 500
+                        Swal.fire({ text: "일치하는 지역이 없습니다.", confirmButtonColor: "#43bff8" }); // res == 500
                     }
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -573,11 +755,11 @@
         function deleteCategory() {
 
             if (document.getElementById("airportName").value == "" && document.getElementById("airportCode").value == "") {
-                Swal.fire({ text: "공항명을 입력하거나 공항코드를 입력해주세요." });
+                Swal.fire({ text: "공항명을 입력하거나 공항코드를 입력해주세요." , confirmButtonColor: "#43bff8" });
                 return;
             }
             if (document.getElementById("parentsName").value == "") {
-                Swal.fire({ text: "지역명은 필수입니다." });
+                Swal.fire({ text: "지역명은 필수입니다." , confirmButtonColor: "#43bff8"});
                 return;
             }
 
@@ -593,30 +775,30 @@
                 data: params,
                 success: function (res) {
                     if (res == 1000) {
-                        Swal.fire({ text: "삭제가 완료되었습니다." }).then(() => {
+                        Swal.fire({ text: "삭제가 완료되었습니다." , confirmButtonColor: "#43bff8"}).then(() => {
                             location.reload();
                         });
                     }
                     else if (res == 100) {
-                        Swal.fire({ text: "공항명과 공항코드가 일치하지 않습니다." });
+                        Swal.fire({ text: "공항명과 공항코드가 일치하지 않습니다." , confirmButtonColor: "#43bff8"});
                     }
                     else if (res == 300) {
-                        Swal.fire({ text: "일치하는 이름의 공항이 없습니다." });
+                        Swal.fire({ text: "일치하는 이름의 공항이 없습니다." , confirmButtonColor: "#43bff8"});
                     }
                     else if (res == 500) {
-                        Swal.fire({ text: "이미 해당 공항의 패키지가 존재 할 경우 삭제가 불가합니다." });
+                        Swal.fire({ text: "이미 해당 공항의 패키지가 존재 할 경우 삭제가 불가합니다.", confirmButtonColor: "#43bff8" });
                     }
                     else if (res == 700) {
-                        Swal.fire({ text: "일치하는 코드의 공항이 없습니다." });
+                        Swal.fire({ text: "일치하는 코드의 공항이 없습니다.", confirmButtonColor: "#43bff8"});
                     }
-                    else if(res==900){
-                        Swal.fire({ text: "일치하는 지역이 없습니다." }); 
+                    else if (res == 900) {
+                        Swal.fire({ text: "일치하는 지역이 없습니다." , confirmButtonColor: "#43bff8"});
                     }
-                    else if(res==1100){
-                        Swal.fire({ text: "해당 지역에 속한 공항이 아닙니다." }); 
+                    else if (res == 1100) {
+                        Swal.fire({ text: "해당 지역에 속한 공항이 아닙니다." , confirmButtonColor: "#43bff8"});
                     }
                     else {
-                        Swal.fire({icon: 'error',  text: "오류 발생" });
+                        Swal.fire({ icon: 'error', text: "오류 발생" });
                     }
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
