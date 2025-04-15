@@ -942,6 +942,24 @@
       document.body.style.removeProperty("--scrollbar-width");
     }
 
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") {
+        const modal = document.getElementById("imageModal");
+        if (modal && modal.style.display === "block") {
+          closeImageModal();
+        }
+      }
+    });
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") {
+        const modal = document.getElementById("scheduleModal");
+        if (modal && modal.style.display === "block") {
+          closeScheduleModal();
+        }
+      }
+    });
+
     // 고유 ID 인덱스
     let newImageIndex = { subImage: 0, descImage: 0 };
 
@@ -1348,9 +1366,13 @@
         const formattedDateEnd = formatDate(sd2);
         const row = document.createElement("tr");
         row.innerHTML = `
-            <td><input type="date" name="packageSchedule[${rowCount}].departureDateOut" value="${formattedDate}" class="input-date"></td>
-            <td><input type="date" name="packageSchedule[${rowCount}].departureDateReturn" value="${formattedDateEnd}" class="input-date"></td>
-            <td><input type="time" name="packageSchedule[${rowCount}].details.departureTimeOut" value="${departureTimeOut}" class="input-date"></td>
+            <td><input type="date" id="departureDateOut-${rowCount}" name="packageSchedule[${rowCount}].departureDateOut" value="${formattedDate}" class="input-date">
+              <div id="tui-datepicker-DateOut-${rowCount}"></div>
+              </td>
+            <td><input type="date" id="departureDateReturn-${rowCount}" name="packageSchedule[${rowCount}].departureDateReturn" value="${formattedDateEnd}" class="input-date">
+              <div id="tui-datepicker-DateReturn-${rowCount}"></div>
+              </td>
+            <td><input type="time" name="packageSchedule[${rowCount}].details.departureTimeOut" value="${departureTimeOut}" class="input-date date__input"></td>
             <td><input type="time" name="packageSchedule[${rowCount}].details.departureTimeReturn" value="${departureTimeReturn}" class="input-date"></td>
             <td><button type="button" class="btn btn-red" onclick="removeRow(this)">삭제</button></td>
             <td><input type="hidden" name="packageSchedule[${rowCount}].details.airlineOutId" id="airlineOut" value="${airlineOut}" class="input-date">

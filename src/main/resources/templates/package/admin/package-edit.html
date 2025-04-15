@@ -1213,6 +1213,15 @@
     document.body.style.removeProperty("--scrollbar-width");
   }
 
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      const modal = document.getElementById("scheduleModal");
+      if (modal && modal.style.display === "block") {
+        closeScheduleModal();
+      }
+    }
+  });
+
   function openScheduleCheckModal(className = "overflow-hidden") {
     document.getElementById("scheduleCheckModal").style.display = "block";
     document.body.style.setProperty(
@@ -1228,6 +1237,15 @@
     document.body.style.removeProperty("overflow");
     document.body.style.removeProperty("--scrollbar-width");
   }
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      const modal = document.getElementById("scheduleCheckModal");
+      if (modal && modal.style.display === "block") {
+        closeScheduleCheckModal();
+      }
+    }
+  });
 
   // 이미지 팝업창 열기
   function openImageModal(className = "overflow-hidden") {
@@ -1247,6 +1265,15 @@
     document.body.style.removeProperty("overflow");
     document.body.style.removeProperty("--scrollbar-width");
   }
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      const modal = document.getElementById("imageModal");
+      if (modal && modal.style.display === "block") {
+        closeImageModal();
+      }
+    }
+  });
 
   // 고유 ID 인덱스
   let newImageIndex = { subImage: 0, descImage: 0 };
