@@ -482,7 +482,6 @@
             parentsName.value = event.target.innerText;
         })
 
-        const name_check = /^[가-힣]{1,10}$/;
 
         //카테고리 등록
         $("#submitBtn").click(function () {
@@ -492,10 +491,6 @@
                 Swal.fire({ text: "등록 하실 카테고리명을 입력해주세요." });
             }
 
-            if (!name_check.test(document.getElementById("categoryName").value)) {
-
-                Swal.fire({ html: "카테고리명은 10자이내 한글로 정확하게 입력해주세요." });
-            }
             else {
                 if (!$("#major").is(":checked")) {
                     if (document.getElementById("parentsName").value == "") {
@@ -549,9 +544,9 @@
 
         function deleteCategory() {
 
-            if (!name_check.test(document.getElementById("categoryName").value)) {
+            if (document.getElementById("categoryName").value == "") {
 
-                Swal.fire({ html: "삭제하실 카테고리명을 입력해주세요.<br> 카테고리명은 한글 10자이내입니다." });
+                Swal.fire({ html: "삭제하실 카테고리명을 입력해주세요." });
             }
             else {
 
