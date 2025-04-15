@@ -256,7 +256,6 @@
 
             &:hover {
                 background-color: #3e8cf1;
-                color: #555252;
                 transform: scale(0.98);
 
             }
@@ -353,11 +352,31 @@
             font-size: 0.9rem;
         }
 
-        i{
+        i {
             margin-right: 5px;
         }
 
+        #subCategory,
+        #smallCategory {
+            display: none;
+            font-size: 1.2rem;
+            height: 2.5rem;
+            border: none;
 
+            &:focus {
+                outline: none;
+            }
+        }
+
+        #mainCategory {
+            border: none;
+            height: 2.5rem;
+            font-size: 1.2rem;
+
+            &:focus {
+                outline: none;
+            }
+        }
     </style>
 </head>
 
@@ -374,10 +393,10 @@
                     <div id="treeArea">
                         <div class="categoryBtnArea">
                             <span style="margin-right: 15rem;"><b>카테고리 목록</b></span>
-                            <button onclick="toggleAll(true)" class="categoryBtn"><i
-                                    class="fa-solid fa-bars"></i></button>
-                            <button onclick="toggleAll(false)" class="categoryBtn"><i
-                                    class="fa-solid fa-ellipsis-vertical"></i></button>
+                            <button onclick="toggleAll(true)" class="categoryBtn">
+                                <i class="fa-solid fa-bars"></i></button>
+                            <button onclick="toggleAll(false)" class="categoryBtn">
+                                <i class="fa-solid fa-ellipsis-vertical"></i></button>
                             <hr>
                         </div>
                         <ul class="tree">
@@ -406,28 +425,28 @@
                             <tbody>
                                 <tr>
                                     <th>카테고리명</th>
-                                    <td><input placeholder="10자이내 한글" name="categoryName" type="text"
-                                            id="categoryName" maxlength="10" ></td>
+                                    <td>
+                                        <input type="text" maxlength="20" placeholder="등록할 카테고리명을 입력하세요."
+                                            id="categoryName" name="categoryName">
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th>분류</th>
-                                    <td style="display: flex; padding-top: 25px;">
-                                        <input type="radio" name="depth" value="1" id="major" class="categoryCheck"
-                                            checked>
-                                        <label for="major">대분류</label>
-                                        <input type="radio" name="depth" value="2" id="medium" class="categoryCheck">
-                                        <label for="medium">중분류</label>
-                                        <input type="radio" name="depth" value="3" id="sub" class="categoryCheck">
-                                        <label for="sub">소분류</label>
-                                    </td>
-                                </tr>
-                                <tr id="parents">
-                                    <th>상위 카테고리명</th>
                                     <td>
-                                        <input type="text" maxlength="10" placeholder="상위 카테고리명을 좌측 목록에서 선택해주세요."
-                                            id="parentsName" name="parentsName" readonly>
+                                        <form id="filterForm">
+                                            <select id="mainCategory" name="mainCategoryId">
+                                                <option value="대분류" selected>대분류</option>
+                                            </select>
+                                            <select id="subCategory" name="subCategoryId">
+                                                <option value="중분류">중분류</option>
+                                            </select>
+                                            <select id="smallCategory" name="smallCategoryId">
+                                                <option value="소분류">소분류</option>
+                                            </select>
+                                        </form>
                                     </td>
                                 </tr>
+
                             </tbody>
                     </table>
                     <div class="btnArea">
@@ -448,6 +467,95 @@
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            await loadCategories();
+
+        });
+        async function loadCategories() {
+            const response = await fetch("/api/categories");
+            const data = await response.json();
+
+            const mainCategorySelect = document.getElementById("mainCategory");
+            resetSelect(mainCategorySelect, "대분류", "대분류");
+
+            data.forEach((mainCategory) => {
+                const option = document.createElement("option");
+                option.value = mainCategory.name;
+                option.textContent = mainCategory.name;
+                mainCategorySelect.appendChild(option);
+            });
+
+            mainCategorySelect.addEventListener("change", () => {
+                const selected = data.find((c) => c.name == mainCategorySelect.value);
+
+                if (mainCategorySelect.value !== "대분류") {
+                    document.getElementById("subCategory").style.display = "inline-block";
+                    loadSubCategories(selected?.children || []);
+                } else {
+                    document.getElementById("subCategory").style.display = "none";
+                    document.getElementById("smallCategory").style.display = "none";
+                }
+
+
+            });
+        }
+
+        function loadSubCategories(subCategories) {
+            const subCategorySelect = document.getElementById("subCategory");
+            resetSelect(subCategorySelect, "중분류", "중분류");
+
+            const smallCategorySelect = document.getElementById("smallCategory");
+            resetSelect(smallCategorySelect, "소분류", "소분류");
+
+            subCategories.forEach((subCategory) => {
+                const option = document.createElement("option");
+                option.value = subCategory.name;
+                option.textContent = subCategory.name;
+                subCategorySelect.appendChild(option);
+            });
+
+            subCategorySelect.addEventListener("change", () => {
+                const selected = subCategories.find(
+                    (c) => c.name == subCategorySelect.value
+                );
+
+                if (subCategorySelect.value !== "중분류") {
+                    document.getElementById("smallCategory").style.display = "inline-block";
+                    loadSmallCategories(selected?.children || []);
+                } else {
+                    document.getElementById("smallCategory").style.display = "none";
+                }
+
+
+            });
+        }
+
+        function loadSmallCategories(smallCategories) {
+            const smallCategorySelect = document.getElementById("smallCategory");
+            resetSelect(smallCategorySelect, "소분류", "소분류");
+
+            smallCategories.forEach((smallCategory) => {
+                const option = document.createElement("option");
+                option.value = smallCategory.name;
+                option.textContent = smallCategory.name;
+                smallCategorySelect.appendChild(option);
+            });
+
+            smallCategorySelect.addEventListener("change", fetchFilteredList);
+        }
+
+        function resetSelect(selectElement, placeholderText, placeholderValue = "") {
+            selectElement.innerHTML = "";
+            const option = document.createElement("option");
+            option.value = placeholderValue;
+            option.textContent = placeholderText;
+            option.disabled = false;
+            option.selected = true;
+            selectElement.appendChild(option);
+        }
+
         function toggle(element) {
             const nextUl = element.nextElementSibling;
 
@@ -466,51 +574,61 @@
             });
         }
 
-        let parents = document.getElementById("parents");
 
-        //대분류 선택이 아닐 시 상위분류이름 나타나게 함
-        $(".categoryCheck").click(function (event) {
-            if (!($("#major").is(":checked"))) {
-                parents.style.display = "table-row";
-            }
-            else {
-                parents.style.display = "none";
-            }
-        })
-
-        $("span").click(function (event) {
-            parentsName.value = event.target.innerText;
-        })
 
 
         //카테고리 등록
         $("#submitBtn").click(function () {
 
             if (document.getElementById("categoryName").value == "") {
+                Swal.fire({ text: "등록 하실 카테고리명을 입력해주세요.", confirmButtonColor: "#43bff8" });
+                return;
+            }
+            const selectedMain = document.getElementById("mainCategory");
 
-                Swal.fire({ text: "등록 하실 카테고리명을 입력해주세요." });
+            const mainVal = selectedMain.options[selectedMain.selectedIndex].text;
+
+            let subVal = '';
+            let smallVal = '';
+            const selectedSub = document.getElementById("subCategory");
+            const subStyle = window.getComputedStyle(selectedSub);
+            if (subStyle.display !== "none") {
+                subVal = selectedSub.options[selectedSub.selectedIndex].text;
             }
 
-            else {
-                if (!$("#major").is(":checked")) {
-                    if (document.getElementById("parentsName").value == "") {
-                        Swal.fire({ text: "상위 카테고리명은 필수입니다." });
-                    }
-                    else {
-                        ajax();
-                    }
-                }
-                else {
+            const selectedSmall = document.getElementById("smallCategory");
+            const smallStyle = window.getComputedStyle(selectedSmall);
+            if (smallStyle.display !== "none") {
+                smallVal = selectedSmall.options[selectedSmall.selectedIndex].text;
+            }
+
+            if (selectedSmall.options[selectedSmall.selectedIndex].text !== "소분류") {
+                Swal.fire({ text: "소분류로 등록하시기 위해선 옵션을 소분류로 선택하셔야 합니다.", confirmButtonColor: "#43bff8" });
+                selectedSmall.value = "소분류";
+                return;
+            }
+
+            Swal.fire({
+                html: `등록하실 위치가 ${mainVal}${subVal ? ' > ' + subVal : ''}${smallVal ? ' > ' + smallVal : ''}(이)가 맞습니까?`,
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "확인",
+                cancelButtonText: "취소",
+                confirmButtonColor: "#43bff8"
+            }).then((result) => {
+                if (result.isConfirmed) {
                     ajax();
                 }
-            }
+            });
+
         })
 
         function ajax() {
             var params = {
                 categoryName: $("#categoryName").val(),
-                depth: $("input[name='depth']:checked").val(),
-                parentsName: $("#parentsName").val()
+                main: $("#mainCategory").val(),
+                sub: $("#subCategory").val(),
+                small: $("#smallCategory").val()
             }
 
             $.ajax({
@@ -519,18 +637,15 @@
                 data: params,
                 success: function (res) {
                     if (res == 1000) {
-                        Swal.fire({ text: "등록이 완료되었습니다." }).then(() => {
+                        Swal.fire({ text: "등록이 완료되었습니다.", confirmButtonColor: "#43bff8" }).then(() => {
                             location.reload();
                         });
                     }
                     else if (res == 100) {
-                        Swal.fire({ text: "동일한 이름의 카테고리가 있습니다." });
-                    }
-                    else if (res == 700) {
-                        Swal.fire({ text: "상위 카테고리명에는 등록할 카테고리의 바로 윗 단계 분류만 입력 가능합니다." });
+                        Swal.fire({ text: "동일한 이름의 카테고리가 있습니다.", confirmButtonColor: "#43bff8" });
                     }
                     else {
-                        Swal.fire({ text: "일치하는 상위 카테고리가 없습니다." });
+                        Swal.fire({ text: "상위 카테고리가 존재하지 않습니다.", confirmButtonColor: "#43bff8" });
                     }
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -544,44 +659,82 @@
 
         function deleteCategory() {
 
-            if (document.getElementById("categoryName").value == "") {
+            const selectedMain = document.getElementById("mainCategory");
+            const selectedSub = document.getElementById("subCategory");
+            const selectedSmall = document.getElementById("smallCategory");
 
-                Swal.fire({ html: "삭제하실 카테고리명을 입력해주세요." });
+            const mainText = selectedMain.options[selectedMain.selectedIndex].text;
+            const subText = selectedSub.options[selectedSub.selectedIndex].text;
+            const smallText = selectedSmall.options[selectedSmall.selectedIndex].text;
+
+            if (mainText === "대분류") {
+                Swal.fire({ html: "삭제하실 카테고리를 선택해주세요.", confirmButtonColor: "#43bff8" });
+                return;
             }
-            else {
 
+            let displayText = "";
 
-                var params = {
-                    categoryName: $("#categoryName").val()
-                }
+            if (smallText !== "소분류") {
+                // 소분류가 선택됐으면 그것만
+                displayText = smallText;
+            } else if (subText !== "중분류") {
+                // 중분류만 선택됐으면 그것만
+                displayText = subText;
+            } else {
+                // 대분류만 있는 경우
+                displayText = mainText;
+            }
 
-                $.ajax({
-                    type: "POST",
-                    url: "/admin/package/category/delete",
-                    data: params,
-                    success: function (res) {
-                        if (res == 1000) {
-                            Swal.fire({ text: "삭제가 완료되었습니다." }).then(() => {
-                                location.reload();
-                            });
-                        }
-                        else if (res == 100) {
-                            Swal.fire({ text: "일치하는 이름의 카테고리가 없습니다." });
-                        }
-                        else if (res == 700) {
-                            Swal.fire({ text: "하위 카테고리가 존재하여 삭제 할 수 없습니다." });
-                        }
-                        else {
-                            Swal.fire({ text: "이미 해당 카테고리의 패키지가 존재 할 경우 삭제가 불가합니다." });
-                        }
-                    },
-                    error: function (XMLHttpRequest, textStatus, errorThrown) {
-                        Swal.fire({ icon: 'error', text: "통신불가." });
+            Swal.fire({
+                html: `삭제하실 카테고리가 ${displayText}(이)가 맞습니까?`,
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "확인",
+                cancelButtonText: "취소",
+                confirmButtonColor: "#43bff8"
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    var params = {
+                        main: $("#mainCategory").val(),
+                        sub: $("#subCategory").val(),
+                        small: $("#smallCategory").val()
                     }
-                })
 
-            }
+                    $.ajax({
+                        type: "POST",
+                        url: "/admin/package/category/delete",
+                        data: params,
+                        success: function (res) {
+                            if (res == 1000) {
+                                Swal.fire({ text: "삭제가 완료되었습니다." }).then(() => {
+                                    location.reload();
+                                });
+                            }
+                            else if (res == 200) {
+                                Swal.fire({ text: "삭제하실 카테고리를 선택해주세요." });
+                            }
+                            else if (res == 300) {
+                                Swal.fire({ text: "삭제 할 카테고리를 찾지 못했습니다." });
+                            }
+                            else if (res == 700) {
+                                Swal.fire({ text: "하위 카테고리가 존재하여 삭제 할 수 없습니다." });
+                            }
+                            else {
+                                Swal.fire({ text: "이미 해당 카테고리의 패키지가 존재 할 경우 삭제가 불가합니다." });
+                            }
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            Swal.fire({ icon: 'error', text: "통신불가." });
+                        }
+                    })
+
+                }
+            });
+
+
         }
+
 
 
 

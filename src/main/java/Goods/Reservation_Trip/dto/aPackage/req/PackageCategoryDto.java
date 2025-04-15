@@ -15,9 +15,12 @@ public class PackageCategoryDto {
     //카테고리명
     private String categoryName;
 
-    //분류
-    private int depth;
+    //대분류
+    private String main;
 
-    //상위분류이름
-    private String parentsName;
+    //중분류
+    private String sub;
+
+    //소분류
+    private String small;
 }
