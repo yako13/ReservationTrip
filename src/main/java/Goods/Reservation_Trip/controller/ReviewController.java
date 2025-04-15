@@ -43,6 +43,7 @@ public class ReviewController {
         model.addAttribute("packageMainImage", reviewResponseDto.getPackageMainImage());
         model.addAttribute("packageName", reviewResponseDto.getPackageName());
         model.addAttribute("reservationId", reservationId);
+        model.addAttribute("packagePK",reviewResponseDto.getPackagePK());
 
         return "review/new";
     }
@@ -74,6 +75,7 @@ public class ReviewController {
         model.addAttribute("reviewImages", reviewResponseDto.getReviewImageList());
         model.addAttribute("rating", reviewResponseDto.getRating());
         model.addAttribute("reviewId", reviewId);
+        model.addAttribute("packagePK",reviewResponseDto.getPackagePK());
 
         return "review/edit";
     }
