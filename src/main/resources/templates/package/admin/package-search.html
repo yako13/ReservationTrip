@@ -196,6 +196,10 @@
     }
     .detailsLink {
       cursor: pointer;
+      max-width: 200px;
+    }
+    a {
+      color: #111111;
     }
   </style>
   <body>
@@ -310,9 +314,9 @@
               <tr th:each="package : ${packageList}">
                 <td th:text="${package.id}"></td>
                 <td>
-                  <img th:src="${package.mainImagePath}" height="100px" />
+                  <img th:src="${package.mainImagePath}" class="image__set" />
                 </td>
-                <td th:text="${package.name}"></td>
+                <td th:text="${package.name}" class="detailsLink"></td>
                 <td th:text="${package.fuelSurchargeIncluded}"></td>
                 <td th:text="${package.departurePointOut}"></td>
                 <td th:text="${package.arrivalPointOut}"></td>
