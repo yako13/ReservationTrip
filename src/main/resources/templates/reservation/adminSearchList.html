@@ -12,16 +12,9 @@
     <link th:href="@{/css/admin/reservationList.css}" rel="stylesheet">
 </link>
 <style>
-    @font-face {
-    font-family: 'SUIT-Regular';
-    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Regular.woff2') format('woff2');
-    font-weight: normal;
-    font-style: normal;
-}
 
-*{
-    font-family: 'SUIT-Regular'; 
-}
+
+
 </style>
 </head>
 
@@ -132,7 +125,7 @@
                             [[${reservation.reservationCode}]]
                         </td>
                         <td th:text="${reservation.memberName}"></td>
-                        <td th:text="${reservation.packageName}"></td>
+                        <td style="text-align: start;" th:text="${reservation.packageName}"></td>
                         <td th:text="${reservation.totalPay}" class="totalPrice">
                             <b></b>
                         </td>
