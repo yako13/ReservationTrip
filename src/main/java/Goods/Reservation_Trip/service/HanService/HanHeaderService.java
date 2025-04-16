@@ -1,20 +1,13 @@
 package Goods.Reservation_Trip.service.HanService;
 
-import Goods.Reservation_Trip.dto.HanDto.DibPageDto;
 import Goods.Reservation_Trip.dto.HanDto.HeaderDto;
 import Goods.Reservation_Trip.dto.member.res.MemberResponseDto;
-import Goods.Reservation_Trip.entity.Package;
 import Goods.Reservation_Trip.entity.PackageCategory;
 import Goods.Reservation_Trip.repository.HanPart.HanPackageCategoryRepository;
-import Goods.Reservation_Trip.repository.ReservationRepository;
-import Goods.Reservation_Trip.repository.aPackage.PackageCategoryRepository;
-import Goods.Reservation_Trip.repository.aPackage.PackageRepository;
-import Goods.Reservation_Trip.service.member.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -30,7 +23,10 @@ public class HanHeaderService {
     //헤더에 카테고리랑 로그인 유무 맴버 정보 넣어주는곳
     public HeaderDto HeaderCategoryAndMember(HttpServletRequest request) {
 
-        List<PackageCategory> mainList = hanPackageCategoryRepository.findByDepth(1);
+//        List<PackageCategory> mainList = hanPackageCategoryRepository.findByDepth(1);
+
+        //한국이 아닌 카테고리 가져옴
+        List<PackageCategory> mainList = hanPackageCategoryRepository.findByDepthAndNameNot(1,"한국");
 
         //대분류가 없을경우
         if(mainList ==null && mainList.isEmpty() ){

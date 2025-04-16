@@ -6,6 +6,7 @@ import Goods.Reservation_Trip.entity.Package;
 import Goods.Reservation_Trip.entity.*;
 import Goods.Reservation_Trip.enums.PackageStatus;
 import Goods.Reservation_Trip.enums.ReservationState;
+import Goods.Reservation_Trip.repository.HanPart.HanPackageRepository;
 import Goods.Reservation_Trip.repository.HanPart.HanReservationDetailsRepository;
 import Goods.Reservation_Trip.repository.HanPart.HanReservationRepository;
 import Goods.Reservation_Trip.repository.MemberRepository;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import static Goods.Reservation_Trip.enums.PackageStatus.FULL;
 import static Goods.Reservation_Trip.enums.ReservationState.CANCEL;
 import static Goods.Reservation_Trip.enums.ReservationState.REQUEST;
 
@@ -38,6 +40,7 @@ public class HanReservationService {
     private final MemberRepository memberRepository;
 
     private final PackageRepository packageRepository;
+    private final HanPackageRepository hanPackageRepository;
     private final PackageScheduleRepository packageScheduleRepository;
 
 
@@ -193,6 +196,8 @@ public class HanReservationService {
 
                 //----formatter로 변환된 가격----
 
+                //성인 1인 가격
+                .adultPriceString(Formatter.changeBigDecimalFormat(fuelSurchargeIncluded))
                 //성인 합계 가격
                 .adultSumPriceString(Formatter.changeBigDecimalFormat(adultSumPrice))
                 //아동 합계 가격
@@ -300,7 +305,7 @@ public class HanReservationService {
             //예약 인원수의 총합이 패키지 내의 최대 예약 가능한 인원수와 같을경우 여행일정 예약가능상태를 예약매진으로 변경
         } else if (resvSumCnt == packageSchedule.getMaximumMember()) {
 
-            packageSchedule.setPackageStatus(PackageStatus.FULL);
+            packageSchedule.setPackageStatus(FULL);
 
             packageSchedule.setReservedMemberCount(resvSumCnt);
 
@@ -332,6 +337,11 @@ public class HanReservationService {
 
         //유아 총 가격
         BigDecimal babySumPrice = BabyPrice.multiply(BigDecimal.valueOf(babyCnt));
+
+        //결제 승인 시각에서 요일 추출
+        LocalDateTime localDateTime = form.getApprovedAt();
+
+        int dayIndex = (localDateTime.getDayOfWeek().getValue() + 6) % 7;
 
 
         // 1. 예약 먼저 저장
@@ -371,6 +381,9 @@ public class HanReservationService {
                 //유아 총 가격
                 .babySumPrice(babySumPrice)
 
+                //요일
+//                .weekDay(dayIndex)
+
 
                 .build();
 
@@ -381,8 +394,8 @@ public class HanReservationService {
             log.error("예약 엔티티 저장중 오류 발생");
 
             return null;
-
         }
+
 
         // 2. traveler들 하나로 합치기
         List<TravelerDto> allTravelers = new ArrayList<>();
@@ -448,6 +461,9 @@ public class HanReservationService {
                 .resvFull(false)
 
                 .build();
+
+        //패키지 상태 변경 서비스 (여행일정중 AVAILABLE이 하나도 없을시)
+       checkPackageStates(form.getPackagePk());
 
         return hanSubmitCompleteDto;
     }
@@ -735,5 +751,25 @@ public class HanReservationService {
         return phone != null && phone.trim().isEmpty() || PHONE_PATTERN.matcher(phone.trim()).matches();
     }
 
+    //예약완료시 그 패키지의 여행일정중  AVAILABLE이 하나도 없을시 패키지의 PackageStatus를 full로 바꾼다
+    public void checkPackageStates(Long id) {
+
+        //패키지의 여행일정중 AVAILABLE이 하나라도 있는지 체크하는 쿼리 (true = AVAILABLE이 하나도 없음)
+        boolean checkPackStates = hanPackageRepository.hasNoAvailableSchedule(id);
+
+        //checkPackStates가 true 일경우
+        if (checkPackStates) {
+            Package PackageEntity = hanPackageRepository.findById(id).orElse(null);
+
+            if (PackageEntity != null) {
+                PackageEntity.setPackageStatus(FULL);
+
+                hanPackageRepository.save(PackageEntity);
+            }
+
+        }
+
+
+    }
 
 }

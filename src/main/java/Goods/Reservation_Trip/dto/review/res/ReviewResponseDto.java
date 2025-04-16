@@ -20,6 +20,9 @@ public class ReviewResponseDto {
     //패키지 명
     private String packageName;
 
+    //패키지 아이디
+    private Long packagePK;
+
     //리뷰 내용
     private String content;
 

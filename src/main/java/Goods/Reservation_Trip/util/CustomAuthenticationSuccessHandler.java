@@ -27,8 +27,8 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         SavedRequest savedRequest = new HttpSessionRequestCache().getRequest(request, response);
-//        String redirectUrl = "/";
-        String redirectUrl = "/test10";
+        String redirectUrl = "/";
+
         String masterRedirectUrl = "/master/checkout/list";
 
         CustomOauth2UserDetails oAuth2User = (CustomOauth2UserDetails) authentication.getPrincipal();

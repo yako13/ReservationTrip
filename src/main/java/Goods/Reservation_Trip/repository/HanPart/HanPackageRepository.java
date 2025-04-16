@@ -33,20 +33,24 @@ public interface HanPackageRepository extends JpaRepository<Package, Long> {
             "JOIN p.packageOption o " +
             "JOIN p.packageScheduleList s " +
             "JOIN s.packageScheduleDetails sd " +
-            "JOIN sd.airlineOut ao " +
             "WHERE p.packageStatus = 'AVAILABLE' " +
             "AND (:airfare IS NULL OR o.airfare = :airfare) " +
             "AND (:hotelFee IS NULL OR o.hotelFee = :hotelFee) " +
             "AND (:guide IS NULL OR o.guide = :guide) " +
             "AND (:noShopping IS NULL OR o.noShopping = :noShopping) " +
-            "AND (:startDate IS NULL OR s.departureDateOut >= :startDate) " +
-            "AND (:endDate IS NULL OR s.arrivalDateReturn <= :endDate) " +
+
+            "AND ( " +
+            "     (:startDate IS NOT NULL AND :endDate IS NOT NULL AND s.departureDateOut BETWEEN :startDate AND :endDate AND s.packageStatus = 'AVAILABLE') OR " +
+            "     (:startDate IS NOT NULL AND :endDate IS NULL AND s.departureDateOut = :startDate AND s.packageStatus = 'AVAILABLE') OR " +
+            "     (:startDate IS NULL) " +
+            ") " +
+
             "AND (:categoryId IS NULL OR " +
             "     (:categoryDepth = 1 AND p.mainCategory.id = :categoryId) OR " +
             "     (:categoryDepth = 2 AND p.subCategory.id = :categoryId) OR " +
             "     (:categoryDepth = 3 AND p.smallCategory.id = :categoryId)) " +
             "AND (:period IS NULL OR p.period = :period) " +
-            "AND (:airportId IS NULL OR ao.id = :airportId) " +
+            "AND (:airportId IS NULL OR sd.departurePointOut.id = :airportId) " +
             "AND (:keyword IS NULL OR :keyword = '' OR " +
             "LOWER(p.packageName) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
             "LOWER(p.description) LIKE LOWER(CONCAT('%', :keyword, '%')))")
@@ -67,25 +71,26 @@ public interface HanPackageRepository extends JpaRepository<Package, Long> {
 
 
 
-
     @Query("SELECT p FROM Package p " +
             "JOIN p.packageOption o " +
             "JOIN p.packageScheduleList s " +
             "JOIN s.packageScheduleDetails sd " +
-            "JOIN sd.airlineOut ao " +
             "WHERE p.packageStatus = 'AVAILABLE' " +
             "AND (:airfare IS NULL OR o.airfare = :airfare) " +
             "AND (:hotelFee IS NULL OR o.hotelFee = :hotelFee) " +
             "AND (:guide IS NULL OR o.guide = :guide) " +
             "AND (:noShopping IS NULL OR o.noShopping = :noShopping) " +
-            "AND (:startDate IS NULL OR s.departureDateOut >= :startDate) " +
-            "AND (:endDate IS NULL OR s.arrivalDateReturn <= :endDate) " +
+            "AND ( " +
+            "     (:startDate IS NOT NULL AND :endDate IS NOT NULL AND s.departureDateOut BETWEEN :startDate AND :endDate AND s.packageStatus = 'AVAILABLE') OR " +
+            "     (:startDate IS NOT NULL AND :endDate IS NULL AND s.departureDateOut = :startDate AND s.packageStatus = 'AVAILABLE') OR " +
+            "     (:startDate IS NULL) " +
+            ") " +
             "AND (:categoryId IS NULL OR " +
             "     (:categoryDepth = 1 AND p.mainCategory.id = :categoryId) OR " +
             "     (:categoryDepth = 2 AND p.subCategory.id = :categoryId) OR " +
             "     (:categoryDepth = 3 AND p.smallCategory.id = :categoryId)) " +
             "AND (:period IS NULL OR p.period = :period) " +
-            "AND (:airportId IS NULL OR ao.id = :airportId) " +
+            "AND (:airportId IS NULL OR sd.departurePointOut.id = :airportId) " +
             "AND (:keyword IS NULL OR :keyword = '' OR " +
             "LOWER(p.packageName) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
             "LOWER(p.description) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
@@ -104,6 +109,35 @@ public interface HanPackageRepository extends JpaRepository<Package, Long> {
             @Param("keyword") String keyword,
             @Param("airportId") Long airportId,
             Pageable pageable);
+
+
+    //베스트 4
+    @Query(value = "SELECT p.* FROM package p " +
+            "JOIN package_schedule s ON p.package_id = s.package_id " +
+            "WHERE p.package_status = 'AVAILABLE' " +
+            "GROUP BY p.package_id " +
+            "ORDER BY SUM(s.reserved_member_count) DESC " +
+            "LIMIT 4", nativeQuery = true)
+    List<Package> findTop4ByReservationSumNative();
+
+    //신상품 4
+    @Query(value = "SELECT * FROM package " +
+            "WHERE package_status = 'AVAILABLE' " +
+            "ORDER BY package_id DESC " +
+            "LIMIT 4", nativeQuery = true)
+    List<Package> findTop4ByLatestIdNative();
+
+    //평점순 4
+    @Query(value = "SELECT * FROM package " +
+            "WHERE package_status = 'AVAILABLE' " +
+            "ORDER BY average_rating DESC " +
+            "LIMIT 4", nativeQuery = true)
+    List<Package> findTop4ByAverageRatingNative();
+
+    //패키지의 여행일정중 AVAILABLE이 하나라도 있는지 체크
+    @Query("SELECT COUNT(s) = 0 FROM PackageSchedule s WHERE s.aPackage.id = :packageId AND s.packageStatus = 'AVAILABLE'")
+    boolean hasNoAvailableSchedule(@Param("packageId") Long packageId);
+
 
 
 

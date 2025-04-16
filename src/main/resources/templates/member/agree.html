@@ -65,6 +65,7 @@
             transition: all 0.3s ease;
             font-size: 1.2rem;
             border-radius: 4px;
+            cursor: pointer;
 
             &:hover {
                 background-color: #3e8cf1;
@@ -83,6 +84,13 @@
 
         .titleArea{
             margin-bottom: 5rem;
+        }
+
+        #check01,
+        #check02,
+        #check03 {
+            cursor: pointer;
+
         }
     </style>
 </head>
@@ -243,7 +251,7 @@
             const isPrivacyChecked = check03.classList.contains("fa-solid");
 
             if (!isTermsChecked || !isPrivacyChecked) {
-                Swal.fire({ text: "필수 약관에 동의해야 회원가입을 진행할 수 있습니다." });
+                Swal.fire({ text: "필수 약관에 동의해야 회원가입을 진행할 수 있습니다.", confirmButtonColor: "#43BFF8" });
                 return; // 이동 차단
             }
 

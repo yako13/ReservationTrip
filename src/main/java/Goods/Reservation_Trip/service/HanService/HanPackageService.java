@@ -1,15 +1,16 @@
 package Goods.Reservation_Trip.service.HanService;
 
-import Goods.Reservation_Trip.dto.HanDto.PackApiDto;
-import Goods.Reservation_Trip.dto.HanDto.PackCategoryDto;
-import Goods.Reservation_Trip.dto.HanDto.PackPageDto;
-import Goods.Reservation_Trip.dto.HanDto.PackPageListDto;
+import Goods.Reservation_Trip.dto.HanDto.*;
 import Goods.Reservation_Trip.dto.member.res.MemberResponseDto;
-import Goods.Reservation_Trip.entity.*;
 import Goods.Reservation_Trip.entity.Package;
+import Goods.Reservation_Trip.entity.*;
 import Goods.Reservation_Trip.enums.PackageStatus;
-import Goods.Reservation_Trip.repository.HanPart.*;
-import Goods.Reservation_Trip.repository.MemberRepository;
+import Goods.Reservation_Trip.repository.HanPart.HanAirportRepository;
+import Goods.Reservation_Trip.repository.HanPart.HanPackageCategoryRepository;
+import Goods.Reservation_Trip.repository.HanPart.HanPackageRepository;
+import Goods.Reservation_Trip.repository.HanPart.HanPackageScheduleRepository;
+import Goods.Reservation_Trip.repository.aPackage.AirportRepository;
+import Goods.Reservation_Trip.repository.aPackage.PackageCategoryRepository;
 import Goods.Reservation_Trip.repository.aPackage.PackageRepository;
 import Goods.Reservation_Trip.util.Formatter;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,6 +23,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static Goods.Reservation_Trip.enums.PackageImageType.DESC;
 import static Goods.Reservation_Trip.enums.PackageStatus.AVAILABLE;
@@ -32,14 +34,16 @@ import static Goods.Reservation_Trip.enums.PackageStatus.AVAILABLE;
 @RequiredArgsConstructor
 public class HanPackageService {
 
-    private final MemberRepository memberRepository;
+
     private final PackageRepository packageRepository;
     private final HanPackageRepository hanPackageRepository;
-    private final HanReservationRepository hanReservationRepository;
-    private final HanReservationDetailsRepository hanReservationDetailsRepository;
     private final HanPackageScheduleRepository hanPackageScheduleRepository;
     private final HanMemberService hanMemberService;
+
+    private final AirportRepository airportRepository;
     private final HanAirportRepository hanAirportRepository;
+    private final HanPackageCategoryRepository hanPackageCategoryRepository;
+    private final PackageCategoryRepository packageCategoryRepository;
 
 
     //상품 상세페이지로 가는 서비스
@@ -406,11 +410,9 @@ public class HanPackageService {
                 break;
         }
 
-        if (dto.getStartDate() != null && dto.getEndDate() != null) {
-            // 날짜 필터 적용
-        } else {
-            // 날짜 조건 없이 전체 조회
-        }
+        String rawKeyword = dto.getKeyword();
+        String keyword = rawKeyword != null ? rawKeyword.replaceAll("\\s+", "") : null;
+
 
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<Package> entityPage;
@@ -420,14 +422,14 @@ public class HanPackageService {
         if ("reservation".equals(dto.getSortType())) {
             entityPage = hanPackageRepository.filterPackagesWithConditions(
                     dto.getAirfare(), dto.getHotelFee(), dto.getGuide(), dto.getNoShopping(),
-                    dto.getStartDate(), dto.getEndDate(), dto.getCategoryId(),dto.getCategoryDepth(),
-                    dto.getPeriod(), dto.getKeyword(),  dto.getAirportId(), pageable
+                    dto.getStartDate(), dto.getEndDate(), dto.getCategoryId(), dto.getCategoryDepth(),
+                    dto.getPeriod(), keyword, dto.getAirportId(), pageable
             );
         } else {
             entityPage = hanPackageRepository.filterByReservationCount(
                     dto.getAirfare(), dto.getHotelFee(), dto.getGuide(), dto.getNoShopping(),
-                    dto.getStartDate(), dto.getEndDate(),dto.getCategoryId(),dto.getCategoryDepth(),
-                    dto.getPeriod(), dto.getKeyword(),  dto.getAirportId(), pageable
+                    dto.getStartDate(), dto.getEndDate(), dto.getCategoryId(), dto.getCategoryDepth(),
+                    dto.getPeriod(), keyword, dto.getAirportId(), pageable
             );
 
         }
@@ -462,25 +464,48 @@ public class HanPackageService {
 
     }
 
-    //공항 카테고리 가져오는 서비스
-    public List<Airport> AirportCategory() {
+    //한국 공항 카테고리 가져오는 서비스 (CategoryList 가 null이거나 없는것)
+    public List<Airport> airportCategory() {
 
-        List<Airport> airportList = hanAirportRepository.findAll();
+//        Optional<PackageCategory> optionalPackageCategory = packageCategoryRepository.findByName("한국");
+//
+//        if (optionalPackageCategory.isEmpty()) {
+//            log.error("공항 정보가 하나도 없습니다");
+//            return null;
+//        }
+//
+//        PackageCategory packageCategory = optionalPackageCategory.get();
+//        List<Airport> airportList = airportRepository.findByCategoryId(packageCategory.getId());
 
-        if (airportList == null) {
 
+        List<Airport> airportList = hanAirportRepository.findAllAirportsWithTopCategoryNamedKorea();
+
+        if (airportList ==null &&  airportList.isEmpty()) {
             log.error("공항 정보가 하나도 없습니다");
             return null;
-
         }
 
-        if (airportList.isEmpty()) {
 
-            log.error("공항 정보가 하나도 없습니다");
-            return null;
+//        for (Airport airport :airportList){
+//
+//            log.info("공항 정보" + airport.getName());
+//
+//        }
 
-        }
 
+//        List<Airport> airportList = airportRepository.findByCategoryListIsEmpty();
+
+//        if (airportList == null) {
+//
+//            log.error("공항 정보가 하나도 없습니다");
+//            return null;
+//        }
+//        if (airportList.isEmpty()) {
+//
+//            log.error("공항 정보가 하나도 없습니다");
+//            return null;
+//
+//        }
 
         return airportList;
     }
@@ -491,7 +516,7 @@ public class HanPackageService {
 
         if (dto.getAirportId() != null) {
 
-            Airport airport = hanAirportRepository.findById(dto.getAirportId()).orElse(null);
+            Airport airport = airportRepository.findById(dto.getAirportId()).orElse(null);
 
             if (airport != null) {
                 return airport.getName();
@@ -500,6 +525,98 @@ public class HanPackageService {
 
         //없을경우
         return "전체";
+    }
+
+    //메인페이지에서 도착지 정보 가져오는 서비스 (모든 도시(small) 가져온다)
+    public List<CityDto> hanCityAll() {
+
+        //Depth가 3인거 (소분류 = 도시)모두 가져온다
+//        List<PackageCategory> packageCategoryList = hanPackageCategoryRepository.findByDepth(3);
+
+        //Depth가 3인거(소분류 = 도시) 이고 부모(Depth가 1)가 한국이 아닌것 모두 가져온다
+        List<PackageCategory> packageCategoryList = hanPackageCategoryRepository.findDepth3WhoseTopParentIsNotKorea();
+
+        if (packageCategoryList == null && packageCategoryList.isEmpty()) {
+            log.error("소분류가 하나도 없습니다");
+            return null;
+
+        }
+
+        List<CityDto> cityList = new ArrayList<>();
+
+        for (PackageCategory packageCategory : packageCategoryList) {
+
+            CityDto cityDto = CityDto.builder()
+                    .id(packageCategory.getId())
+                    .name(packageCategory.getName())
+                    .build();
+
+            cityList.add(cityDto);
+
+        }
+
+        return cityList;
+
+    }
+
+    //베스트 상품 4개 가져오는 서비스
+    public List<PackPageListDto> packBestTop4() {
+
+        List<Package> top4BestPackage = hanPackageRepository.findTop4ByLatestIdNative();
+
+        if (top4BestPackage == null && top4BestPackage.isEmpty()) {
+            log.error("가져온 패키지가 없습니다");
+
+            return null;
+
+        }
+
+        List<PackPageListDto> packPageListDtoList = new ArrayList<>();
+
+        int index = 1;
+        //패키지 엔티티를 dto로 변환
+        for (Package packageEntity : top4BestPackage) {
+
+            packPageListDtoList.add(PackPageListDto.fromEntity2(packageEntity, index));
+            index++;
+        }
+
+        return packPageListDtoList;
+    }
+
+    //신상품 4개 가져오는 서비스
+    public List<PackPageListDto> packNewTop4() {
+
+        List<Package> top4NewPackage = hanPackageRepository.findTop4ByLatestIdNative();
+
+        List<PackPageListDto> packPageListDtoList = new ArrayList<>();
+        int index = 1;
+        //패키지 엔티티를 dto로 변환
+        for (Package packageEntity : top4NewPackage) {
+
+            packPageListDtoList.add(PackPageListDto.fromEntity2(packageEntity, index));
+            index++;
+        }
+
+        return packPageListDtoList;
+    }
+
+    //리뷰 평점 높은거 4개 가져오는 서비스
+    public List<PackPageListDto> packReviewTop4() {
+
+        List<Package> top4ReviewPackage = hanPackageRepository.findTop4ByAverageRatingNative();
+
+        List<PackPageListDto> packPageListDtoList = new ArrayList<>();
+
+        int index = 1;
+        //패키지 엔티티를 dto로 변환 그리고 index도 넣어줌
+        for (Package packageEntity : top4ReviewPackage) {
+
+            packPageListDtoList.add(PackPageListDto.fromEntity2(packageEntity, index));
+            index++;
+        }
+
+        return packPageListDtoList;
     }
 
 

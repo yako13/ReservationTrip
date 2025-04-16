@@ -26,9 +26,7 @@ public class AirportController {
     @GetMapping("/admin/package/airport/new")
     public String adminPackageAirportNewPage(Model model) {
         List<PackageCategoryResponseDto> packageCategoryResponseDtoList = packageCategoryAndAirportService.getPackageCategoryResponseDtos();
-        PackageAirportResponseDto packageAirportResponseDto = packageCategoryAndAirportService.getKoreaAirportList();
 
-        model.addAttribute("koreaAirportList", packageAirportResponseDto);
         model.addAttribute("categoryList", packageCategoryResponseDtoList);
 
         return "package/admin/package-airport-new";
@@ -50,5 +48,6 @@ public class AirportController {
     @ResponseBody
     public int deleteAirport(PackageAirportDto airportDto) {
         return packageCategoryAndAirportService.deleteAirport(airportDto);
+
     }
 }

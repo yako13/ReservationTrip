@@ -288,7 +288,7 @@ public class HanDibService {
             //세션에 맴버 정보가 있을경우
             if (member != null) {
 
-                Package aPackage = packageRepository.findById(1L).orElse(null);
+                Package aPackage = packageRepository.findById(packagePk).orElse(null);
 
                 isLiked = hanDibRepository.existsByMemberAndPackageEntity(member, aPackage);
             }

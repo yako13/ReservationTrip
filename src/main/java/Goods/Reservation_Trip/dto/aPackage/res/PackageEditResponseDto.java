@@ -2,6 +2,7 @@ package Goods.Reservation_Trip.dto.aPackage.res;
 
 import Goods.Reservation_Trip.dto.aPackage.req.CategoryDto;
 import Goods.Reservation_Trip.entity.PackageImage;
+import Goods.Reservation_Trip.enums.PackageStatus;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -91,6 +92,11 @@ public class PackageEditResponseDto {
      * 소분류 ID
      */
     private CategoryDto smallCategoryId;
+
+    /**
+     * 예약 상태
+     */
+    private PackageStatus packageStatus;
 
     /**
      * 1개의 패키지의 일정 리스트

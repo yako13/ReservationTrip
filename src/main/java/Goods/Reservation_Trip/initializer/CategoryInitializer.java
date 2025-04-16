@@ -18,9 +18,10 @@ public class CategoryInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) {
         // 대분류 depth:1
+        PackageCategory korea = packageCategoryRepository.findByName("한국")
+                .orElseGet(() -> packageCategoryRepository.save(new PackageCategory(null, "한국", null, 1)));
         PackageCategory japan = packageCategoryRepository.findByName("일본")
                 .orElseGet(() -> packageCategoryRepository.save(new PackageCategory(null, "일본", null, 1)));
-
         PackageCategory china = packageCategoryRepository.findByName("중국")
                 .orElseGet(() -> packageCategoryRepository.save(new PackageCategory(null, "중국", null, 1)));
         PackageCategory usa = packageCategoryRepository.findByName("미국")
@@ -28,6 +29,14 @@ public class CategoryInitializer implements CommandLineRunner {
 
 
         // 중분류 depth:2
+        //한국
+        PackageCategory gyeonggi = packageCategoryRepository.findByName("경기")
+                .orElseGet(() -> packageCategoryRepository.save(new PackageCategory(null, "경기", korea, 2)));
+        PackageCategory yeongnam  = packageCategoryRepository.findByName("영남")
+                .orElseGet(() -> packageCategoryRepository.save(new PackageCategory(null, "영남", korea, 2)));
+        PackageCategory honam = packageCategoryRepository.findByName("호남")
+                .orElseGet(() -> packageCategoryRepository.save(new PackageCategory(null, "호남", korea, 2)));
+
         //일본
         PackageCategory kansai = packageCategoryRepository.findByName("간사이(관서)")
                 .orElseGet(() -> packageCategoryRepository.save(new PackageCategory(null, "간사이(관서)", japan, 2)));
@@ -73,6 +82,23 @@ public class CategoryInitializer implements CommandLineRunner {
 
 
         // 소분류 depth:3
+        if (!packageCategoryRepository.existsByName("김포")) {
+            PackageCategory gimpo = new PackageCategory(null, "김포", gyeonggi, 3);
+            packageCategoryRepository.save(gimpo);
+        }
+        if (!packageCategoryRepository.existsByName("인천")) {
+            PackageCategory incheon= new PackageCategory(null, "인천", gyeonggi, 3);
+            packageCategoryRepository.save(incheon);
+        }
+        if (!packageCategoryRepository.existsByName("부산")) {
+            PackageCategory busan = new PackageCategory(null, "부산", yeongnam, 3);
+            packageCategoryRepository.save(busan);
+        }
+        if (!packageCategoryRepository.existsByName("대구")) {
+            PackageCategory daegu = new PackageCategory(null, "대구", yeongnam, 3);
+            packageCategoryRepository.save(daegu);
+        }
+
         if (!packageCategoryRepository.existsByName("오사카")) {
             PackageCategory osaka = new PackageCategory(null, "오사카", kansai, 3);
             packageCategoryRepository.save(osaka);

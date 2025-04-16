@@ -6,7 +6,9 @@ import Goods.Reservation_Trip.entity.QPackageSchedule;
 import Goods.Reservation_Trip.entity.QPackageScheduleDetails;
 import Goods.Reservation_Trip.enums.PackageStatus;
 import Goods.Reservation_Trip.repository.aPackage.PackageScheduleDetailsCustomRepository;
+import Goods.Reservation_Trip.util.QuerydslSortUtil;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -16,7 +18,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -30,42 +31,43 @@ public class PackageScheduleDetailsCustomRepositoryImpl implements PackageSchedu
 
 
     @Override
-    public Page<PackageScheduleDetails> findAvailableEarliestByPackageNameContaining(String name, Pageable pageable) {
+    public Page<PackageScheduleDetails> findAvailableEarliestByPackageNameContaining(String name, Pageable pageable, String sort) {
+
+        BooleanBuilder whereBuilder = new BooleanBuilder();
+        whereBuilder.and(schedule.packageStatus.eq(PackageStatus.AVAILABLE));
+        if (name != null && !name.isEmpty()) {
+            whereBuilder.and(aPackage.packageName.containsIgnoreCase(name));
+        }
+
+        // sort 적용하기
+        OrderSpecifier<?> orderSpecifier = QuerydslSortUtil.getOrderSpecifier(sort, aPackage, schedule);
 
         // 서브쿼리: 해당 이름을 포함하는 패키지 중 '가장 빠른 출발일' 을 가진 스케줄 날짜 조회
-        JPQLQuery<LocalDate> minDateSubQuery = JPAExpressions
-                .select(schedule.departureDateOut.min())
-                .from(details)
-                .join(details.packageSchedule, schedule)
-                .where(
-                        aPackage.packageName.containsIgnoreCase(name),
-                        schedule.packageStatus.eq(PackageStatus.AVAILABLE)
-                );
-        // 메인 쿼리: 가장 빠른 출발일을 가진 스케줄의 상세 정보 packageScheduleDetails 목록 조회
-        List<PackageScheduleDetails> results = queryFactory
-                .selectFrom(details)
+        JPQLQuery<Long> detailIdsWithMinDatePerPackage = JPAExpressions
+                .select(details.id.min())
                 .from(details)
                 .join(details.packageSchedule, schedule)
                 .join(schedule.aPackage, aPackage)
-                .where(
-                        aPackage.packageName.containsIgnoreCase(name),
-                        schedule.packageStatus.eq(PackageStatus.AVAILABLE),
-                        schedule.departureDateOut.eq(minDateSubQuery)
-                )
+                .where(whereBuilder)
+                .groupBy(aPackage.id);
+
+        // 메인 쿼리: 가장 빠른 출발일을 가진 스케줄의 상세 정보 packageScheduleDetails 목록 조회
+        List<PackageScheduleDetails> results = queryFactory
+                .selectFrom(details)
+                .join(details.packageSchedule, schedule).fetchJoin()
+                .join(schedule.aPackage, aPackage).fetchJoin()
+                .where(details.id.in(detailIdsWithMinDatePerPackage))
+                .orderBy(orderSpecifier)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(schedule.departureDateOut.asc())
                 .fetch();
+
         // 전체 결과 개수 조회 (페이지네이션 처리위함)
         Long total = queryFactory
                 .select(schedule.count())
                 .from(schedule)
                 .join(schedule.aPackage, aPackage)
-                .where(
-                        aPackage.packageName.containsIgnoreCase(name),
-                        schedule.packageStatus.eq(PackageStatus.AVAILABLE),
-                        schedule.departureDateOut.eq(minDateSubQuery)
-                )
+                .where(details.id.in(detailIdsWithMinDatePerPackage))
                 .fetchOne();
         // page 객체로 변환
         return new PageImpl<>(results, pageable, total == null ? 0 : total);
@@ -91,29 +93,32 @@ public class PackageScheduleDetailsCustomRepositoryImpl implements PackageSchedu
             whereBuilder.and(aPackage.smallCategory.id.eq(smallCategoryId));
         }
 
-        JPQLQuery<LocalDate> minDateSubQuery = JPAExpressions
-                .select(schedule.departureDateOut.min())
+        // sort 적용하기
+        OrderSpecifier<?> orderSpecifier = QuerydslSortUtil.getOrderSpecifier(sort, aPackage, schedule);
+
+        JPQLQuery<Long> detailIdsWithMinDatePerPackage = JPAExpressions
+                .select(details.id.min())
                 .from(details)
                 .join(details.packageSchedule, schedule)
                 .join(schedule.aPackage, aPackage)
-                .where(whereBuilder);
+                .where(whereBuilder)
+                .groupBy(aPackage.id);
 
         List<PackageScheduleDetails> results = queryFactory
-                .select(details)
+                .selectFrom(details)
                 .from(details)
-                .join(details.packageSchedule, schedule)
-                .join(schedule.aPackage, aPackage)
-                .where(whereBuilder.and(schedule.departureDateOut.eq(minDateSubQuery)))
+                .join(details.packageSchedule, schedule).fetchJoin()
+                .join(schedule.aPackage, aPackage).fetchJoin()
+                .where(details.id.in(detailIdsWithMinDatePerPackage))
+                .orderBy(orderSpecifier)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(schedule.departureDateOut.asc())
                 .fetch();
 
         Long total = queryFactory
                 .select(schedule.count())
-                .from(schedule)
-                .join(schedule.aPackage, aPackage)
-                .where(whereBuilder.and(schedule.departureDateOut.eq(minDateSubQuery)))
+                .from(details)
+                .where(details.id.in(detailIdsWithMinDatePerPackage))
                 .fetchOne();
 
         return new PageImpl<>(results, pageable, total == null ? 0 : total);

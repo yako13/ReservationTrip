@@ -43,7 +43,7 @@ public class CategoryController {
     @PostMapping("/admin/package/category/delete")
     @ResponseBody
     public int adminDeleteCategory(PackageCategoryDto packageCategoryDto){
-        return packageCategoryAndAirportService.deleteCategory(packageCategoryDto.getCategoryName());
+        return packageCategoryAndAirportService.deleteCategory(packageCategoryDto);
     }
 
 }

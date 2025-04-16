@@ -78,21 +78,32 @@ public class Formatter {
 //--Han Part 시작--
 
 
-    //주문번호 숫자에 붙여주는 1~1000자리 숫자
-    public class IncrementalCounter {
-        private static int counter = 0; // 클래스 변수로 유지
+    //초가 같을시 숫자 증가시켜주는 함수
+    private static class IncrementalCounter {
+        private static int counter = 0;
+        private static LocalDateTime lastDateTime = null;
 
-        public static String getNextNumber() {
-            counter = (counter % 1000) + 1; // 1~1000까지 순환
+        public static String getNextNumber(LocalDateTime currentDateTime) {
+            if (lastDateTime != null && currentDateTime.equals(lastDateTime)) {
+                // 같은 시간이면 카운터 증가
+                counter = (counter % 1000) + 1;
+            }
+            // 다른 시간이면 counter 유지
+            else if (lastDateTime == null) {
+                // 첫 호출은 counter 초기화
+                counter = 1;
+            }
+
+            lastDateTime = currentDateTime; // 갱신은 무조건 수행
             return String.format("%04d", counter);
         }
     }
 
-    //주문 번호 만드는 함수
+    // 주문 번호 생성 함수
     public static String getReservationCode(LocalDateTime localDateTime) {
         if (localDateTime != null) {
             String dateTimePart = localDateTime.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
-            String counterPart = IncrementalCounter.getNextNumber(); // 3자리 숫자 추가
+            String counterPart = IncrementalCounter.getNextNumber(localDateTime);
             return dateTimePart + counterPart;
         }
         return null;

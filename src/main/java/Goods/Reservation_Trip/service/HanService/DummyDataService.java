@@ -1,7 +1,7 @@
 package Goods.Reservation_Trip.service.HanService;
 
-import Goods.Reservation_Trip.entity.*;
 import Goods.Reservation_Trip.entity.Package;
+import Goods.Reservation_Trip.entity.*;
 import Goods.Reservation_Trip.enums.PackageImageType;
 import Goods.Reservation_Trip.enums.PackageStatus;
 import Goods.Reservation_Trip.repository.aPackage.AirlineRepository;
@@ -17,8 +17,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.UUID;
-
-import static Goods.Reservation_Trip.enums.PackageImageType.MAIN;
 
 @Service
 @RequiredArgsConstructor

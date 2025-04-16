@@ -249,11 +249,11 @@
                         document.querySelector(".foundMail").innerText = res;
                     }
                     else {
-                        Swal.fire({ icon: 'error',text: "아이디를 찾을 수 없습니다." });
+                        Swal.fire({ icon: 'error',text: "아이디를 찾을 수 없습니다.", confirmButtonColor: "#43BFF8" });
                     }
                 },
                 error: function () {
-                    Swal.fire({ icon: 'error',text: "통신 실패." });
+                    Swal.fire({ icon: 'error',text: "통신 실패." , confirmButtonColor: "#43BFF8"});
                 }
             });
         });

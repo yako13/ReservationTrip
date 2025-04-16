@@ -23,14 +23,8 @@ public class CombinePackageService {
 
     // 관리자 패키지 리스트 조회
     public Page<AdminPackageListResponseDto> getAdminPackageAndScheduleList(int page, int size, Long mainCategoryId, Long subCategoryId, Long smallCategoryId, String sort) {
-        Pageable pageable;
-        if ("price_asc".equals(sort)) {
-            pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "price"));
-        } else if ("price_desc".equals(sort)) {
-            pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "price"));
-        } else {
-            pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-        }
+        Pageable pageable = PageRequest.of(page, size);
+
         return packageScheduleDetailsCustomRepository.findByCategoryAndSubCategories(mainCategoryId, subCategoryId, smallCategoryId, sort, pageable).map(packageScheduleDetails -> {
             String packageMainImagePath = null;
             Package aPackage = packageScheduleDetails.getPackageSchedule().getAPackage();
@@ -43,7 +37,7 @@ public class CombinePackageService {
                     .id(aPackage.getId())
                     .name(aPackage.getPackageName())
                     .mainImagePath(packageMainImagePath)
-                    .fuelSurchargeIncluded(aPackage.getFuelSurchargeIncluded())
+                    .fuelSurchargeIncluded(Formatter.BigDecimalFormat(aPackage.getFuelSurchargeIncluded()))
                     .departurePointOut(packageScheduleDetails.getDeparturePointOut().getName())
                     .arrivalPointOut(packageScheduleDetails.getArrivalPointOut().getName())
                     .period(aPackage.getPeriod())
@@ -57,9 +51,9 @@ public class CombinePackageService {
     }
 
     // 관리자 패키지 리스트 검색 이름 기준
-    public Page<AdminPackageListResponseDto> getAdminPackageSearchList(int page, int size, String name) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-        return packageScheduleDetailsCustomRepository.findAvailableEarliestByPackageNameContaining(name, pageable).map(packageScheduleDetails -> {
+    public Page<AdminPackageListResponseDto> getAdminPackageSearchList(int page, int size, String name, String sort) {
+        Pageable pageable = PageRequest.of(page, size);
+        return packageScheduleDetailsCustomRepository.findAvailableEarliestByPackageNameContaining(name, pageable, sort).map(packageScheduleDetails -> {
             String packageMainImagePath = null;
             Package aPackage = packageScheduleDetails.getPackageSchedule().getAPackage();
             PackageSchedule packageSchedule = packageScheduleDetails.getPackageSchedule();
@@ -70,7 +64,7 @@ public class CombinePackageService {
                     .id(aPackage.getId())
                     .name(aPackage.getPackageName())
                     .mainImagePath(packageMainImagePath)
-                    .fuelSurchargeIncluded(aPackage.getFuelSurchargeIncluded())
+                    .fuelSurchargeIncluded(Formatter.BigDecimalFormat(aPackage.getFuelSurchargeIncluded()))
                     .departurePointOut(packageScheduleDetails.getDeparturePointOut().getName())
                     .arrivalPointOut(packageScheduleDetails.getArrivalPointOut().getName())
                     .period(aPackage.getPeriod())

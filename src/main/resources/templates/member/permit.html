@@ -202,7 +202,7 @@
                 display.textContent = minutes + ":" + seconds;
 
                 if (--timer < 0) {
-                    Swal.fire({ text: "인증 시간이 만료되었습니다. 다시 인증하여 주십시오." });
+                    Swal.fire({ text: "인증 시간이 만료되었습니다. 다시 인증하여 주십시오." , confirmButtonColor: "#43BFF8" });
                     clearInterval(timerInterval); // 타이머 정지
                     document.getElementById("authBtn").disabled = false;
                 }
@@ -212,7 +212,7 @@
         //메일 전송
         $("#authBtn").click(function () {
 
-            Swal.fire({ text: "이메일을 전송중입니다.\n 잠시만 기다려주십시오." });
+            Swal.fire({ text: "이메일을 전송중입니다.\n 잠시만 기다려주십시오." , confirmButtonColor: "#43BFF8"});
 
             var params = {
                 email: $("#email").text()
@@ -224,10 +224,10 @@
                 data: params,
                 success: function (res) {
                     if (res == 500) {
-                        Swal.fire({ text: "해당 이메일이 존재하지 않습니다. 작성하신 이메일을 확인하여 주십시오." });
+                        Swal.fire({ text: "해당 이메일이 존재하지 않습니다. 작성하신 이메일을 확인하여 주십시오." , confirmButtonColor: "#43BFF8" });
                     }
                     else if (res == 1000) {
-                        Swal.fire({  html: "인증번호가 발송되었습니다.<br>이메일을 확인하여 주십시오."});
+                        Swal.fire({  html: "인증번호가 발송되었습니다.<br>이메일을 확인하여 주십시오." , confirmButtonColor: "#43BFF8"});
 
                         //타이머
                         var fiveMinutes = 60 * 5,
@@ -242,7 +242,7 @@
                     }
                 },
                 error: function () {
-                    Swal.fire({ icon: 'error', text: "통신 실패." });
+                    Swal.fire({ icon: 'error', text: "통신 실패.", confirmButtonColor: "#43BFF8" });
                 }
             });
         });
@@ -262,16 +262,16 @@
                 data: params,
                 success: function (res) {
                     if (res == 500) {
-                        Swal.fire({ text: "인증번호가 일치하지 않습니다." });
+                        Swal.fire({ text: "인증번호가 일치하지 않습니다." , confirmButtonColor: "#43BFF8"});
                     }
                     else if (res == 1000) {
                         clearInterval(timerInterval); // 타이머 정지
-                        Swal.fire({ text: "회원탈퇴가 완료되었습니다." }).then(() => { window.location.href = "/"; });
+                        Swal.fire({ text: "회원탈퇴가 완료되었습니다." , confirmButtonColor: "#43BFF8"}).then(() => { window.location.href = "/"; });
 
                     }
                 },
                 error: function () {
-                    Swal.fire({ icon: 'error', text: "통신 실패." });
+                    Swal.fire({ icon: 'error', text: "통신 실패." , confirmButtonColor: "#43BFF8"});
                 }
             });
         });

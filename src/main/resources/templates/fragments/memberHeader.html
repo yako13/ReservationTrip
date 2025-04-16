@@ -18,7 +18,7 @@
 
             <div class="HanHeaderLogo">
                 <a th:href="@{/}">
-                    <img th:src="@{/images/logoFull300.png}" height="80px">
+                    <img th:src="@{/images/logoFull265.png}">
                 </a>
             </div>
 
@@ -26,7 +26,7 @@
 
                 <div class="HanSerachForm">
 
-                    <form action="/product/search/index" method="get" role="search" id="HanSerachForm">
+                    <form th:action="@{/packages}" method="get" role="search" id="HanSerachForm">
 
                         <input type="text" id="cardName" th:value="${param.keyword}" name="keyword"
                             onchange="this.form.submit()" placeholder="검색어를 입력해주세요">

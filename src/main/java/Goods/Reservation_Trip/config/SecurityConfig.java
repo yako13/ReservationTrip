@@ -47,8 +47,7 @@ public class SecurityConfig {
         //oauth 로그인
         http.oauth2Login((auth) -> auth
                 .loginPage("/login")
-//                .defaultSuccessUrl("/")
-                        .defaultSuccessUrl("/test10")
+                .defaultSuccessUrl("/")
                 .failureUrl("/login")
                 .authorizationEndpoint(authorization -> authorization.baseUri("/oauth2/authorization"))
                 .successHandler(authenticationSuccessHandler)
