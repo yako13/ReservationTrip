@@ -798,11 +798,11 @@
                         Swal.fire({ text: "해당 지역에 속한 공항이 아닙니다.", confirmButtonColor: "#43bff8" });
                     }
                     else {
-                        Swal.fire({ icon: 'error', text: "오류 발생" });
+                        Swal.fire({ icon: 'error', text: "오류 발생" , confirmButtonColor: "#43BFF8"});
                     }
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    Swal.fire({ icon: 'error', text: "통신불가." });
+                    Swal.fire({ icon: 'error', text: "통신불가." , confirmButtonColor: "#43BFF8"});
                 }
             })
 

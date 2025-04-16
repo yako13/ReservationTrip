@@ -649,7 +649,7 @@
                     }
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    Swal.fire({ icon: 'error', text: "통신불가." });
+                    Swal.fire({ icon: 'error', text: "통신불가." , confirmButtonColor: "#43BFF8"});
                 }
             })
         }
@@ -707,25 +707,25 @@
                         data: params,
                         success: function (res) {
                             if (res == 1000) {
-                                Swal.fire({ text: "삭제가 완료되었습니다." }).then(() => {
+                                Swal.fire({ text: "삭제가 완료되었습니다." , confirmButtonColor: "#43BFF8"}).then(() => {
                                     location.reload();
                                 });
                             }
                             else if (res == 200) {
-                                Swal.fire({ text: "삭제하실 카테고리를 선택해주세요." });
+                                Swal.fire({ text: "삭제하실 카테고리를 선택해주세요." , confirmButtonColor: "#43BFF8"});
                             }
                             else if (res == 300) {
-                                Swal.fire({ text: "삭제 할 카테고리를 찾지 못했습니다." });
+                                Swal.fire({ text: "삭제 할 카테고리를 찾지 못했습니다." , confirmButtonColor: "#43BFF8" });
                             }
                             else if (res == 700) {
-                                Swal.fire({ text: "하위 카테고리가 존재하여 삭제 할 수 없습니다." });
+                                Swal.fire({ text: "하위 카테고리가 존재하여 삭제 할 수 없습니다." , confirmButtonColor: "#43BFF8"});
                             }
                             else {
-                                Swal.fire({ text: "이미 해당 카테고리의 패키지가 존재 할 경우 삭제가 불가합니다." });
+                                Swal.fire({ text: "이미 해당 카테고리의 패키지가 존재 할 경우 삭제가 불가합니다.", confirmButtonColor: "#43BFF8" });
                             }
                         },
                         error: function (XMLHttpRequest, textStatus, errorThrown) {
-                            Swal.fire({ icon: 'error', text: "통신불가." });
+                            Swal.fire({ icon: 'error', text: "통신불가." , confirmButtonColor: "#43BFF8"});
                         }
                     })
 

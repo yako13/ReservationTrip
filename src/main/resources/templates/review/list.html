@@ -505,7 +505,7 @@
                 showCancelButton: true,
                 confirmButtonText: "확인",
                 cancelButtonText: "취소",
-                confirmButtonColor: "#4CAF50"
+                confirmButtonColor: "#43BFF8"
             }).then((result) => {
                 if (result.isConfirmed) {
                     var params = event.target.id;
@@ -522,11 +522,11 @@
                                 }
                             }
                             else {
-                                Swal.fire({ text: "리뷰를 삭제 할 수 없습니다." });
+                                Swal.fire({ text: "리뷰를 삭제 할 수 없습니다.", confirmButtonColor: "#43BFF8" });
                             }
                         },
                         error: function (XMLHttpRequest, textStatus, errorThrown) {
-                            Swal.fire({ icon: 'error', text: "통신불가." });
+                            Swal.fire({ icon: 'error', text: "통신불가.", confirmButtonColor: "#43BFF8" });
                         }
                     })
                 }
