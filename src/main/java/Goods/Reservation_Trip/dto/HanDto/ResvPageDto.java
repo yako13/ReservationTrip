@@ -50,7 +50,7 @@ public class ResvPageDto { //예약 페이지를 보여주기위한 dto
     private PackageSchedule packageSchedule;
 
     //성인 가격 총합
-    //Package의 유류할증료 포함 가격이 성인 가격
+    //Package의 유류할증료 포함 가격이 성인 가격 합
     private BigDecimal adultSumPrice;
 
     //아동 가격 총합
@@ -65,6 +65,9 @@ public class ResvPageDto { //예약 페이지를 보여주기위한 dto
     private BigDecimal totalPrice;
 
     //---formatter로 변환된 값---
+
+    //Package의 유류할증료 포함 성인 가격
+    private String adultPriceString;
 
     //성인 가격 총합
     //Package의 유류할증료 포함 가격이 성인 가격

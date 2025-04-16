@@ -101,6 +101,15 @@
         .defaultFont {
             font-family: system-ui, -apple-system, "Segoe UI", "Malgun Gothic", sans-serif;
         }
+
+        .trip-title p {
+            display: flex;
+            justify-content: flex-end;
+            align-items: flex-end;
+            text-align: right;
+            margin: 0;
+            margin-right: 10px;
+        }
     </style>
 
 </head>
@@ -119,8 +128,14 @@
                 </div>
 
                 <div class="trip-title">
-                    <img th:src="@{'/productImages/'+ ${resvPageDto.packageEntity.mainImage.getImageFullName}}" width="50px" height="50px" class="HanPrdImg">
-                    <span th:text="${resvPageDto.packageEntity.packageName}">[출발확정] 오사카 3박 4일 </span>
+                    <div class="trip-titleDiv">
+
+                        <img th:src="@{'/productImages/'+ ${resvPageDto.packageEntity.mainImage.getImageFullName}}"
+                            width="50px" height="50px" class="HanPrdImg">
+                        <span style="font-size: 18px;" th:text="${resvPageDto.packageEntity.packageName}">[출발확정] 오사카 3박 4일</span>
+                    </div>
+                    <p><span  style=" margin-bottom: 1px;">성인 1인 :</span>
+                         <span style="font-size: 18px; margin-left: 8px;"> [[${resvPageDto.adultPriceString}]]</span></p>
 
                 </div>
 
@@ -155,13 +170,15 @@
                                 style="font-weight: bold;">
                                 제주항공</p>
                             <p>
-                                [[${resvPageDto.packageSchedule.packageScheduleDetails.departurePointOut.name}]] <span class="defaultFont"> → </span>
+                                [[${resvPageDto.packageSchedule.packageScheduleDetails.departurePointOut.name}]] <span
+                                    class="defaultFont"> → </span>
                                 [[${resvPageDto.packageSchedule.packageScheduleDetails.arrivalPointOut.name}]]
                             </p>
                             <!--귀국 비행기-->
                             <p th:text="${resvPageDto.packageSchedule.packageScheduleDetails.airlineReturn.name}"
                                 style="font-weight: bold; margin-top: 8px;">에어부산</p>
-                            <p>[[${resvPageDto.packageSchedule.packageScheduleDetails.departurePointReturn.name}]]<span class="defaultFont"> → </span>
+                            <p>[[${resvPageDto.packageSchedule.packageScheduleDetails.departurePointReturn.name}]]<span
+                                    class="defaultFont"> → </span>
                                 [[${resvPageDto.packageSchedule.packageScheduleDetails.arrivalPointReturn.name}]]</p>
                         </div>
 
@@ -290,7 +307,6 @@
                         <p class="HanRedPNameCheck">이름을 한글로 입력해주세요</p>
 
 
-
                         <p>생년월일</p>
                         <input type="text" class="HanBirthReq" placeholder="생년월일을 입력해주세요(19990101)" maxlength="8"
                             oninput="this.value = this.value.replace(/[^0-9]/g, '')" th:name="adult[__${i}__].birth" />
@@ -333,7 +349,6 @@
                                 <input type="text" class="HanNameReq" placeholder="이름을 입력해주세요" style="width: 500px;"
                                     maxlength="15" th:name="child[__${i}__].name" />
                             </div>
-
 
 
                             <div class="HanGenderRadio">
@@ -418,7 +433,6 @@
                         <p class="HanRedPNameCheck">이름을 한글로 입력해주세요</p>
 
 
-
                         <p>생년월일</p>
                         <input type="text" class="HanBirthReq" placeholder="생년월일을 입력해주세요(19990101)" maxlength="8"
                             oninput="this.value = this.value.replace(/[^0-9]/g, '')" th:name="baby[__${i}__].birth" />
@@ -493,7 +507,8 @@
                 <!-- 패키지 pk -->
                 <input type="hidden" th:value="${resvPageDto.packResvDto.packagePk}" id="packagePk" name="packagePk">
                 <!-- 여행일정 pk -->
-                <input type="hidden" th:value="${resvPageDto.packageSchedulePk}" id="packageSchedulePk" name="packageSchedulePk">
+                <input type="hidden" th:value="${resvPageDto.packageSchedulePk}" id="packageSchedulePk"
+                    name="packageSchedulePk">
                 <!-- 총 결제 금액 -->
                 <input type="hidden" th:value="${resvPageDto.totalPrice}" id="totalPrice">
 
@@ -770,7 +785,6 @@
         });
 
 
-
     </script>
 
     <!-- 이름부분 입력할때마다 정규식 검사하는 곳 -->
@@ -844,14 +858,10 @@
         });
 
 
-
     </script>
 
     <!-- 입력할때 에러메세지 제거해주는 함수 -->
     <script th:src="@{/js/reservationRemoveErr.js}"></script>
-
-
-
 
 
 </body>

@@ -71,9 +71,6 @@ public interface HanPackageRepository extends JpaRepository<Package, Long> {
 
 
 
-
-
-
     @Query("SELECT p FROM Package p " +
             "JOIN p.packageOption o " +
             "JOIN p.packageScheduleList s " +
@@ -137,7 +134,9 @@ public interface HanPackageRepository extends JpaRepository<Package, Long> {
             "LIMIT 4", nativeQuery = true)
     List<Package> findTop4ByAverageRatingNative();
 
-
+    //패키지의 여행일정중 AVAILABLE이 하나라도 있는지 체크
+    @Query("SELECT COUNT(s) = 0 FROM PackageSchedule s WHERE s.aPackage.id = :packageId AND s.packageStatus = 'AVAILABLE'")
+    boolean hasNoAvailableSchedule(@Param("packageId") Long packageId);
 
 
 

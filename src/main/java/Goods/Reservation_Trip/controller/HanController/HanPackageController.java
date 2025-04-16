@@ -31,11 +31,6 @@ public class HanPackageController {
     private final HanHeaderService hanHeaderService;
 
 
-
-
-
-
-
     //패키지 상세 페이지
     @GetMapping("/package/details/{id}")
     public String packageDetailsGo(Model model, HttpServletRequest request, @PathVariable("id") Long id, RedirectAttributes rttr) {
@@ -122,13 +117,12 @@ public class HanPackageController {
 
         model.addAttribute("totalCount", totalCount);
 
-
         //카테고리 이름을 담아준다
         if (packCategoryDto.getCategoryId() != null && packCategoryDto.getCategoryName() != null) {
 
             model.addAttribute("category", packCategoryDto.getCategoryName());
 
-        } else if(packCategoryDto.getKeyword() != null &&!packCategoryDto.getKeyword().trim().isEmpty() ) {
+        } else if (packCategoryDto.getKeyword() != null && !packCategoryDto.getKeyword().trim().isEmpty()) {
             //키워드가 너무 길시 짤라준다
             String keyword = packCategoryDto.getKeyword();
             if (keyword.length() > 10) {
@@ -137,12 +131,11 @@ public class HanPackageController {
 
             model.addAttribute("category", keyword);
 
-        }else {
+        } else {
 
 
             model.addAttribute("category", "전체상품");
         }
-
 
 
         //한국 공항 정보를 가져오는 서비스
@@ -163,8 +156,6 @@ public class HanPackageController {
         String selectAirport = hanPackageService.AirportCategoryName(packCategoryDto);
 
         model.addAttribute("selectAirport", selectAirport);
-
-
 
 
         model.addAttribute("packPageListDto", packPageListDto);

@@ -146,7 +146,14 @@
         .wideOverflow {
             left: -90px;
 
+        }
 
+        .textBox1 {
+            max-height: 64px;
+            overflow: hidden;
+            line-height: 1.4;
+            font-size: 25px;
+            /* 초기 폰트 크기 */
         }
     </style>
 
@@ -222,12 +229,7 @@
                         </div>
                     </div>
 
-
-
-
                 </div>
-
-
 
 
 
@@ -322,7 +324,7 @@
                     </div>
 
                     <div class="HanMainNewDivCardPDiv">
-                        <p class="HanMainNewDivCardPDivName" th:text="${BestTop4.packageName}">
+                        <p class="HanMainNewDivCardPDivName textBox1" th:text="${BestTop4.packageName}">
                             [출발확정] 오사카 유니버설스튜디오 재팬 1일
                         </p>
                         <p class="HanMainNewDivCardPDivName2">
@@ -364,8 +366,8 @@
                     </div>
 
                     <div class="HanMainNewDivCardPDiv2">
-                        <p class="HanMainNewDivCardPDivName" th:text="${ReviewTop4.packageName}">
-                            [출발확정] 오키나와 3박 4일
+                        <p class="HanMainNewDivCardPDivName textBox1" th:text="${ReviewTop4.packageName}">
+                            [출발확정] 오키나와오키나와
                         </p>
 
                         <div class="HanMainNewDivCardPDivName3" style="padding-right: 25px; padding-bottom: 20px;">
@@ -413,12 +415,12 @@
                         </div>
 
                         <div class="HanMainNewDivCardPDiv">
-                            <p class="HanMainNewDivCardPDivName" th:text="${NewTop4.packageName}">
+                            <p class="HanMainNewDivCardPDivName textBox1" th:text="${NewTop4.packageName}">
                                 프랑스 파리 미식 로드
                             </p>
 
                             <p class="HanMainNewDivCardPDivName2">
-                                <i class="fa-solid fa-star HanStarOn"></i>
+                                <i class="fa-solid fa-star HanStarOn "></i>
                                 <span th:text="${NewTop4.averageRating}">4.5</span>
                             </p>
 
@@ -480,11 +482,12 @@
         }
 
         // 다른 곳을 클릭하면 드롭다운 닫기
+        // 다른 곳을 클릭하면 .HanSerachDropdown 드롭다운 닫기
         document.addEventListener("click", function () {
             document
-                .querySelectorAll(".HandropdownBox, .HanDrodBoxName")
+                .querySelectorAll(".HanSerachDropdown")
                 .forEach((menu) => {
-                    menu.classList.remove("HanHeadershow");
+                    menu.classList.remove("open");
                 });
         });
 
@@ -607,45 +610,6 @@
 
     </script>
 
-    <!-- 캐러셀 검색창 드롭박스 커스텀 시작 -->
-
-    <!-- <script>
-
-        // 모든 드롭다운 처리
-        document.querySelectorAll('.HanSerachDropdown').forEach(dropdown => {
-
-            const toggle = dropdown.querySelector('.HanSerachDropdown-toggle');
-            const menuItems = dropdown.querySelectorAll('.HanSerachDropdown-menu div');
-
-            toggle.addEventListener('click', (e) => {
-
-                e.stopPropagation();
-                // 다른 드롭다운은 닫기
-                document.querySelectorAll('.HanSerachDropdown').forEach(d => {
-                    if (d !== dropdown) d.classList.remove('open');
-                });
-                dropdown.classList.toggle('open');
-            });
-
-            menuItems.forEach(item => {
-                item.addEventListener('click', () => {
-                    toggle.querySelector('span').textContent = item.textContent;
-                    toggle.classList.add('selected'); // 선택되면 글자색 바꾸기
-                    dropdown.classList.remove('open');
-                });
-            });
-        });
-
-
-
-        // 외부 클릭 시 모두 닫기
-        document.addEventListener('click', () => {
-            document.querySelectorAll('.HanSerachDropdown').forEach(d => d.classList.remove('open'));
-        });
-
-    </script> -->
-
-    <!-- 캐러셀 검색창 드롭박스 커스텀 끝 -->
 
 
     <script>
@@ -828,6 +792,27 @@
 
         });
 
+    </script>
+
+
+    <script>
+
+        window.addEventListener('DOMContentLoaded', () => {
+
+            const boxes = document.querySelectorAll('.textBox1');
+
+            boxes.forEach(box => {
+                let fontSize = 24; // 초기 폰트 크기
+                box.style.fontSize = fontSize + 'px';
+
+                // 넘칠 경우 줄이기
+                while (box.scrollHeight > box.clientHeight && fontSize > 10) {
+                    fontSize--;
+                    box.style.fontSize = fontSize + 'px';
+                }
+            });
+
+        });
     </script>
 
 

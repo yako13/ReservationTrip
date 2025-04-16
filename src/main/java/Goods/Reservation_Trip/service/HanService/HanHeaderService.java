@@ -23,7 +23,10 @@ public class HanHeaderService {
     //헤더에 카테고리랑 로그인 유무 맴버 정보 넣어주는곳
     public HeaderDto HeaderCategoryAndMember(HttpServletRequest request) {
 
-        List<PackageCategory> mainList = hanPackageCategoryRepository.findByDepth(1);
+//        List<PackageCategory> mainList = hanPackageCategoryRepository.findByDepth(1);
+
+        //한국이 아닌 카테고리 가져옴
+        List<PackageCategory> mainList = hanPackageCategoryRepository.findByDepthAndNameNot(1,"한국");
 
         //대분류가 없을경우
         if(mainList ==null && mainList.isEmpty() ){
