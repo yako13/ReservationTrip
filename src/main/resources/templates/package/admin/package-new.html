@@ -76,7 +76,7 @@
     border: 1px solid #5c5c5c;
     border-radius: 7px;
     padding: 20px;
-    height: 410px;
+    height: 500px;
   }
 
   .a7 {
@@ -761,6 +761,29 @@
     justify-content: center;
     align-items: center;
   }
+
+  #tag {
+    width: 320px;
+    margin-right: 20px;
+  }
+
+  #tagBtn {
+    width: 60px;
+    background-color: #2cafec;
+    color: white;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    border: none;
+    &:hover {
+      background-color: #3e8cf1;
+    }
+  }
+
+  .tag {
+    display: flex;
+    width: 414px;
+  }
 </style>
 
 <body>
@@ -789,7 +812,14 @@
             <div class="a2">
               <div class="input__flex">
                 <label>상품명</label>
-                <input type="text" name="aPackage.packageName" class="HanPackInput" />
+                <input type="text" name="aPackage.packageName" class="HanPackInput" id="name" />
+              </div>
+              <div class="input__flex">
+                <label>태그</label>
+                <div class="tag">
+                  <input type="text" id="tag" class="HanPackInput">
+                  <button type="button" id="tagBtn">추가</button>
+                </div>
               </div>
 
               <div class="input__flex">
@@ -1267,7 +1297,29 @@
 </body>
 <!-- 탑 스크롤 스크립트 -->
 <script th:src="@{/js/scrollTop.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  let tagBtn = document.getElementById("tagBtn");
+  let tag = document.getElementById("tag");
+  let name = document.getElementById("name");
 
+  tagBtn.addEventListener("click", function () {
+    if (tag.value.length !== 0) {
+      if (name.value.length + tag.value.length > 49) {
+        Swal.fire({ text: "패키지명은 50자 이하입니다.", confirmButtonColor: "#43bff8" });
+        return;
+      }
+      name.value = name.value + "#" + tag.value;
+      tag.value = null;
+    }
+
+    if (name.value.length > 50) {
+      Swal.fire({ text: "패키지명은 50자 이하입니다.", confirmButtonColor: "#43bff8" });
+      return;
+    }
+  })
+
+</script>
 <script th:src="@{/js/adminNav.js}"></script>
 <script>
   // 스크롤바 크기 계산
