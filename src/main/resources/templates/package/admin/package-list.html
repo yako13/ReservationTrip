@@ -196,6 +196,10 @@
     }
     .detailsLink {
       cursor: pointer;
+      max-width: 200px;
+    }
+    a {
+      color: #111111;
     }
   </style>
   <body>
@@ -311,9 +315,15 @@
               <tr th:each="aPackage : ${packageList}">
                 <td th:text="${aPackage.id}"></td>
                 <td>
-                  <img th:src="${aPackage.mainImagePath}" />
+                  <a th:href="@{/package/details/{id}(id=${aPackage.id})}">
+                    <img th:src="${aPackage.mainImagePath}" class="image__set"
+                  /></a>
                 </td>
-                <td th:text="${aPackage.name}"></td>
+                <td>
+                  <a
+                    th:href="@{/package/details/{id}(id=${aPackage.id})}"
+                    th:text="${aPackage.name}"></a>
+                </td>
                 <td th:text="${aPackage.fuelSurchargeIncluded}"></td>
                 <td th:text="${aPackage.departurePointOut}"></td>
                 <td th:text="${aPackage.arrivalPointOut}"></td>
@@ -583,8 +593,8 @@
   });
 
   // sort 관련 설정
-  const sizeSelect = document.getElementById("sizeSelect");
-  const sortSelect = document.getElementById("sortSelect");
+  const sizeSelect = document.getElementById("size");
+  const sortSelect = document.getElementById("sort");
   // const categorySelect = document.getElementById("categorySelect");
 
   const currentSize = `[[${size}]]`;
