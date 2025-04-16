@@ -46,4 +46,32 @@ public class CategoryController {
         return packageCategoryAndAirportService.deleteCategory(packageCategoryDto);
     }
 
+    /**
+     * 카테고리 수정 페이지
+     */
+    @GetMapping("/admin/package/category/edit")
+    public String adminPackageCategoryEditPage(Model model) {
+        List<PackageCategoryResponseDto> packageCategoryResponseDtoList = packageCategoryAndAirportService.getPackageCategoryResponseDtos();
+        model.addAttribute("categoryList", packageCategoryResponseDtoList);
+        return "package/admin/package-category-edit";
+    }
+
+    /**
+     * 카테고리 이름 수정
+     */
+    @PostMapping("/admin/package/category/edit/name")
+    @ResponseBody
+    public int adminPackageCategoryEditName(PackageCategoryDto packageCategoryDto) {
+        return packageCategoryAndAirportService.editCategory(packageCategoryDto);
+    }
+
+    /**
+     * 카테고리 이동
+     */
+    @PostMapping("/admin/package/category/edit/move")
+    @ResponseBody
+    public int adminPackageCategoryEditMove(PackageCategoryDto packageCategoryDto) {
+        return packageCategoryAndAirportService.editCategoryLocation(packageCategoryDto);
+    }
+
 }

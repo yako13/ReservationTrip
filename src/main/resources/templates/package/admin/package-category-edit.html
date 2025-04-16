@@ -244,7 +244,8 @@
             margin-top: 2rem;
         }
 
-        #submitBtn {
+        #submitBtn,
+        #editNameBtn {
             background-color: #43bff8;
             color: #ffffff;
             border: none;
@@ -259,6 +260,12 @@
                 transform: scale(0.98);
 
             }
+
+        }
+
+        #editNameBtn {
+            font-size: 1rem;
+            height: 2.5rem;
 
         }
 
@@ -357,7 +364,9 @@
         }
 
         #subCategory,
-        #smallCategory {
+        #smallCategory,
+        #subCategory2,
+        #smallCategory2 {
             display: none;
             font-size: 1.2rem;
             height: 2.5rem;
@@ -368,7 +377,8 @@
             }
         }
 
-        #mainCategory {
+        #mainCategory,
+        #mainCategory2 {
             border: none;
             height: 2.5rem;
             font-size: 1.2rem;
@@ -378,19 +388,9 @@
             }
         }
 
-        .editArea{
-            display:  flex;
-            justify-content: space-between;
-            a{
-                text-decoration: none;
-                line-height: 62px;
-                color: #3e82ff;
-                font-size: 1rem;
-                font-weight: 600;
-                &:hover{
-                    color: #2354b1;
-                }
-            }
+        #filterForm {
+            display: inline-block;
+            width: 350px;
         }
     </style>
 </head>
@@ -434,32 +434,41 @@
                     </div>
                 </div>
                 <div class="formArea">
-                    <div class="editArea">
-                    <h4><i class="fa-solid fa-list-ul"></i> 카테고리 추가 및 삭제</h4>
-                    <a th:href="@{/admin/package/category/edit}">✏️ 카테고리 수정</p>
-                    </div>
+                    <h4><i class="fa-solid fa-list-ul"></i> 카테고리 수정</h4>
                     <table class="rwd-table">
                         <form id="categoryForm">
                             <tbody>
                                 <tr>
                                     <th>카테고리명</th>
                                     <td>
-                                        <input type="text" maxlength="20" placeholder="등록할 카테고리명을 입력하세요."
+                                        <div id="filterForm">
+                                            <select id="mainCategory">
+                                                <option value="대분류" selected>대분류</option>
+                                            </select>
+                                            <select id="subCategory">
+                                                <option value="중분류">중분류</option>
+                                            </select>
+                                            <select id="smallCategory">
+                                                <option value="소분류">소분류</option>
+                                            </select>
+                                        </div>
+                                        <input type="text" maxlength="20" placeholder="수정할 카테고리명을 입력하세요."
                                             id="categoryName" name="categoryName">
+                                        <button type="button" id="editNameBtn">이름만 수정</button>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>분류</th>
+                                    <th>변경할 위치</th>
                                     <td>
-                                        <form id="filterForm">
-                                            <select id="mainCategory" name="mainCategoryId">
-                                                <option value="대분류" selected>대분류</option>
+                                        <form id="filterForm2">
+                                            <select id="mainCategory2">
+                                                <option value="대분류2" selected>대분류</option>
                                             </select>
-                                            <select id="subCategory" name="subCategoryId">
-                                                <option value="중분류">중분류</option>
+                                            <select id="subCategory2">
+                                                <option value="중분류2">중분류</option>
                                             </select>
-                                            <select id="smallCategory" name="smallCategoryId">
-                                                <option value="소분류">소분류</option>
+                                            <select id="smallCategory2">
+                                                <option value="소분류2">소분류</option>
                                             </select>
                                         </form>
                                     </td>
@@ -468,8 +477,7 @@
                             </tbody>
                     </table>
                     <div class="btnArea">
-                        <button type="button" id="submitBtn">등록</button>
-                        <button type="button" id="deleteBtn">삭제</button>
+                        <button type="button" id="submitBtn">수정</button>
                     </div>
                     </form>
                 </div>
@@ -496,13 +504,20 @@
             const data = await response.json();
 
             const mainCategorySelect = document.getElementById("mainCategory");
+            const mainCategorySelect2 = document.getElementById("mainCategory2");
             resetSelect(mainCategorySelect, "대분류", "대분류");
+            resetSelect(mainCategorySelect2, "대분류", "대분류");
 
             data.forEach((mainCategory) => {
-                const option = document.createElement("option");
-                option.value = mainCategory.name;
-                option.textContent = mainCategory.name;
-                mainCategorySelect.appendChild(option);
+                const option1 = document.createElement("option");
+                option1.value = mainCategory.name;
+                option1.textContent = mainCategory.name;
+                mainCategorySelect.appendChild(option1);
+
+                const option2 = document.createElement("option");
+                option2.value = mainCategory.name;
+                option2.textContent = mainCategory.name;
+                mainCategorySelect2.appendChild(option2);
             });
 
             mainCategorySelect.addEventListener("change", () => {
@@ -510,22 +525,38 @@
 
                 if (mainCategorySelect.value !== "대분류") {
                     document.getElementById("subCategory").style.display = "inline-block";
-                    loadSubCategories(selected?.children || []);
+                    loadSubCategories(selected?.children || [], false);
                 } else {
                     document.getElementById("subCategory").style.display = "none";
                     document.getElementById("smallCategory").style.display = "none";
                 }
 
+            });
+
+            mainCategorySelect2.addEventListener("change", () => {
+                const selected = data.find((c) => c.name == mainCategorySelect2.value);
+
+                if (mainCategorySelect2.value !== "대분류") {
+                    document.getElementById("subCategory2").style.display = "inline-block";
+                    loadSubCategories(selected?.children || [], true);
+                } else {
+                    document.getElementById("subCategory2").style.display = "none";
+                    document.getElementById("smallCategory2").style.display = "none";
+                }
 
             });
         }
 
-        function loadSubCategories(subCategories) {
-            const subCategorySelect = document.getElementById("subCategory");
+        function loadSubCategories(subCategories, isSecond = false) {
+            const subCategorySelect = document.getElementById(isSecond ? "subCategory2" : "subCategory");
+
             resetSelect(subCategorySelect, "중분류", "중분류");
 
-            const smallCategorySelect = document.getElementById("smallCategory");
-            resetSelect(smallCategorySelect, "소분류", "소분류");
+            if (!isSecond) {
+                // 소분류는 첫 번째 셀렉트박스에서만 초기화
+                const smallCategorySelect = document.getElementById("smallCategory");
+                resetSelect(smallCategorySelect, "소분류", "소분류");
+            }
 
             subCategories.forEach((subCategory) => {
                 const option = document.createElement("option");
@@ -540,18 +571,17 @@
                 );
 
                 if (subCategorySelect.value !== "중분류") {
-                    document.getElementById("smallCategory").style.display = "inline-block";
-                    loadSmallCategories(selected?.children || []);
-                } else {
-                    document.getElementById("smallCategory").style.display = "none";
+                    if (!isSecond) {
+                        // 및 로딩은 첫 번째 셀렉트박스에서만
+                        document.getElementById("smallCategory").style.display = "inline-block";
+                        loadSmallCategories(selected?.children || []);
+                    }
                 }
-
-
             });
         }
+        function loadSmallCategories(smallCategories, isSecond = false) {
+            const smallCategorySelect = document.getElementById(isSecond ? "smallCategory2" : "smallCategory");
 
-        function loadSmallCategories(smallCategories) {
-            const smallCategorySelect = document.getElementById("smallCategory");
             resetSelect(smallCategorySelect, "소분류", "소분류");
 
             smallCategories.forEach((smallCategory) => {
@@ -593,41 +623,42 @@
         }
 
 
+        $("#editNameBtn").click(function () {
+            const selectedMain = document.getElementById("mainCategory");
+            const mainText = selectedMain.options[selectedMain.selectedIndex].text;
+            let categoryName = document.getElementById("categoryName");
+
+            const selectedSub = document.getElementById("subCategory");
+            const selectedSmall = document.getElementById("smallCategory");
+            const subText = selectedSub.options[selectedSub.selectedIndex].text;
+            const smallText = selectedSmall.options[selectedSmall.selectedIndex].text;
+
+            let displayText = "";
+
+            if (smallText !== "소분류") {
+                // 소분류가 선택됐으면 그것만
+                displayText = smallText;
+            } else if (subText !== "중분류") {
+                // 중분류만 선택됐으면 그것만
+                displayText = subText;
+            } else {
+                // 대분류만 있는 경우
+                displayText = mainText;
+            }
 
 
-        //카테고리 등록
-        $("#submitBtn").click(function () {
-
-            if (document.getElementById("categoryName").value == "") {
-                Swal.fire({ text: "등록 하실 카테고리명을 입력해주세요.", confirmButtonColor: "#43bff8" });
+            if (mainText === "대분류") {
+                Swal.fire({ html: "수정하실 카테고리를 선택해주세요.", confirmButtonColor: "#43bff8" });
                 return;
             }
-            const selectedMain = document.getElementById("mainCategory");
 
-            const mainVal = selectedMain.options[selectedMain.selectedIndex].text;
-
-            let subVal = '';
-            let smallVal = '';
-            const selectedSub = document.getElementById("subCategory");
-            const subStyle = window.getComputedStyle(selectedSub);
-            if (subStyle.display !== "none") {
-                subVal = selectedSub.options[selectedSub.selectedIndex].text;
-            }
-
-            const selectedSmall = document.getElementById("smallCategory");
-            const smallStyle = window.getComputedStyle(selectedSmall);
-            if (smallStyle.display !== "none") {
-                smallVal = selectedSmall.options[selectedSmall.selectedIndex].text;
-            }
-
-            if (selectedSmall.options[selectedSmall.selectedIndex].text !== "소분류") {
-                Swal.fire({ text: "소분류로 등록하시기 위해선 옵션을 소분류로 선택하셔야 합니다.", confirmButtonColor: "#43bff8" });
-                selectedSmall.value = "소분류";
+            if (categoryName.value == "") {
+                Swal.fire({ html: "카테고리명을 입력해주세요.", confirmButtonColor: "#43bff8" });
                 return;
             }
 
             Swal.fire({
-                html: `등록하실 위치가 ${mainVal}${subVal ? ' > ' + subVal : ''}${smallVal ? ' > ' + smallVal : ''}(이)가 맞습니까?`,
+                html: `${displayText} (을)를 "<strong>${categoryName.value}</strong>"(으)로 수정하시겠습니까?`,
                 icon: "question",
                 showCancelButton: true,
                 confirmButtonText: "확인",
@@ -635,13 +666,15 @@
                 confirmButtonColor: "#43bff8"
             }).then((result) => {
                 if (result.isConfirmed) {
-                    ajax();
+                    changeName(() => {
+                        location.reload(); // 성공했을때만 새로고침
+                    });
                 }
             });
 
         })
 
-        function ajax() {
+        function changeName(callback) {
             var params = {
                 categoryName: $("#categoryName").val(),
                 main: $("#mainCategory").val(),
@@ -651,42 +684,63 @@
 
             $.ajax({
                 type: "POST",
-                url: "/admin/package/category/new",
+                url: "/admin/package/category/edit/name",
                 data: params,
                 success: function (res) {
                     if (res == 1000) {
-                        Swal.fire({ text: "등록이 완료되었습니다.", confirmButtonColor: "#43bff8" }).then(() => {
-                            location.reload();
+                        Swal.fire({ text: "이름 수정이 완료되었습니다.", confirmButtonColor: "#43bff8" }).then(() => {
+                            if (typeof callback === "function") {
+                                callback(); // 이름 수정 성공 후 실행
+                            }
                         });
                     }
                     else if (res == 100) {
-                        Swal.fire({ text: "동일한 이름의 카테고리가 있습니다.", confirmButtonColor: "#43bff8" });
+                        Swal.fire({ text: "해당 카테고리를 찾을 수 없습니다.", confirmButtonColor: "#43bff8" });
                     }
                     else {
-                        Swal.fire({ text: "상위 카테고리가 존재하지 않습니다.", confirmButtonColor: "#43bff8" });
+                        Swal.fire({ text: "동일한 이름의 카테고리가 있습니다.", confirmButtonColor: "#43bff8" });
                     }
+
                 },
-                error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    Swal.fire({ icon: 'error', text: "통신불가." , confirmButtonColor: "#43BFF8"});
+                error: function () {
+                    Swal.fire({ icon: 'error', text: "통신불가.", confirmButtonColor: "#43BFF8" });
                 }
             })
         }
 
-        //카테고리 삭제
-        $("#deleteBtn").click(deleteCategory);
-
-        function deleteCategory() {
+        //카테고리 수정
+        $("#submitBtn").click(function () {
 
             const selectedMain = document.getElementById("mainCategory");
+            const selectedMain2 = document.getElementById("mainCategory2");
             const selectedSub = document.getElementById("subCategory");
             const selectedSmall = document.getElementById("smallCategory");
+
+
+            const mainVal2 = selectedMain.options[selectedMain2.selectedIndex].text;
+
+            let subVal2 = '';
+            let smallVal2 = '';
+
+
+            const selectedSub2 = document.getElementById("subCategory2");
+            const subStyle2 = window.getComputedStyle(selectedSub2);
+            if (subStyle2.display !== "none") {
+                subVal2 = selectedSub2.options[selectedSub2.selectedIndex].text;
+            }
+
+            const selectedSmall2 = document.getElementById("smallCategory2");
+            const smallStyle2 = window.getComputedStyle(selectedSmall2);
+            if (smallStyle2.display !== "none") {
+                smallVal2 = selectedSmall2.options[selectedSmall2.selectedIndex].text;
+            }
 
             const mainText = selectedMain.options[selectedMain.selectedIndex].text;
             const subText = selectedSub.options[selectedSub.selectedIndex].text;
             const smallText = selectedSmall.options[selectedSmall.selectedIndex].text;
 
             if (mainText === "대분류") {
-                Swal.fire({ html: "삭제하실 카테고리를 선택해주세요.", confirmButtonColor: "#43bff8" });
+                Swal.fire({ html: "수정하실 카테고리를 선택해주세요.", confirmButtonColor: "#43bff8" });
                 return;
             }
 
@@ -703,56 +757,111 @@
                 displayText = mainText;
             }
 
-            Swal.fire({
-                html: `삭제하실 카테고리가 ${displayText}(이)가 맞습니까?`,
-                icon: "question",
-                showCancelButton: true,
-                confirmButtonText: "확인",
-                cancelButtonText: "취소",
-                confirmButtonColor: "#43bff8"
-            }).then((result) => {
-                if (result.isConfirmed) {
+            let categoryName = document.getElementById("categoryName");
 
-                    var params = {
-                        main: $("#mainCategory").val(),
-                        sub: $("#subCategory").val(),
-                        small: $("#smallCategory").val()
-                    }
+            if (categoryName.value.trim() === "") {
 
-                    $.ajax({
-                        type: "POST",
-                        url: "/admin/package/category/delete",
-                        data: params,
-                        success: function (res) {
-                            if (res == 1000) {
-                                Swal.fire({ text: "삭제가 완료되었습니다." , confirmButtonColor: "#43BFF8"}).then(() => {
-                                    location.reload();
-                                });
-                            }
-                            else if (res == 200) {
-                                Swal.fire({ text: "삭제하실 카테고리를 선택해주세요." , confirmButtonColor: "#43BFF8"});
-                            }
-                            else if (res == 300) {
-                                Swal.fire({ text: "삭제 할 카테고리를 찾지 못했습니다." , confirmButtonColor: "#43BFF8" });
-                            }
-                            else if (res == 700) {
-                                Swal.fire({ text: "하위 카테고리가 존재하여 삭제 할 수 없습니다." , confirmButtonColor: "#43BFF8"});
-                            }
-                            else {
-                                Swal.fire({ text: "이미 해당 카테고리의 패키지가 존재 할 경우 삭제가 불가합니다.", confirmButtonColor: "#43BFF8" });
-                            }
-                        },
-                        error: function (XMLHttpRequest, textStatus, errorThrown) {
-                            Swal.fire({ icon: 'error', text: "통신불가." , confirmButtonColor: "#43BFF8" });
-                        }
-                    })
-
+                if (mainText == "대분류") {
+                    Swal.fire({ text: "변경 할 기존 카테고리를 선택해주세요.", confirmButtonColor: "#43bff8" })
+                    return;
                 }
-            });
 
+                if (mainVal2 == mainText && subVal2 == subText) {
+                    Swal.fire({ text: "현재 위치와 동일한 곳으로 이동 할 수 없습니다.", confirmButtonColor: "#43bff8" })
+                    return;
+                }
 
+                Swal.fire({
+                    html: `${displayText} (을)를
+                <br> ${mainVal2}${subVal2 ? ' > ' + subVal2 : ''}${smallVal2 ? ' > ' + smallVal2 : ''}
+                의 하위 항목으로 이동하시겠습니까?`,
+                    icon: "question",
+                    showCancelButton: true,
+                    confirmButtonText: "확인",
+                    cancelButtonText: "취소",
+                    confirmButtonColor: "#43bff8"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        ajax();
+                    }
+                });
+            }
+            else {
+                if (mainText == "대분류") {
+                    Swal.fire({ text: "변경 할 기존 카테고리를 선택해주세요.", confirmButtonColor: "#43bff8" })
+                    return;
+                }
+
+                if (mainVal2 == mainText && subVal2 == subText) {
+                    Swal.fire({ text: "현재 위치와 동일한 곳으로 이동 할 수 없습니다.", confirmButtonColor: "#43bff8" })
+                    return;
+                }
+
+                Swal.fire({
+                    html: `${displayText} (이)가 
+                <br> ${mainVal2}${subVal2 ? ' > ' + subVal2 : ''}${smallVal2 ? ' > ' + smallVal2 : ''}
+                의 하위 항목으로 이동하고, 이름을 "<strong>${categoryName.value}</strong>"(으)로 수정하시겠습니까?`,
+                    icon: "question",
+                    showCancelButton: true,
+                    confirmButtonText: "확인",
+                    cancelButtonText: "취소",
+                    confirmButtonColor: "#43bff8"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        if (result.isConfirmed) {
+                            changeName(() => {
+                                ajax(); // 이름 수정 후 위치 이동
+                            });
+                        }
+                    }
+                });
+            }
+        })
+
+        function ajax() {
+            var params = {
+                categoryName: $("#categoryName").val(),
+                main: $("#mainCategory").val(),
+                sub: $("#subCategory").val(),
+                small: $("#smallCategory").val(),
+                mainEdit: $("#mainCategory2").val(),
+                subEdit: $("#subCategory2").val()
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/admin/package/category/edit/move",
+                data: params,
+                success: function (res) {
+                    if (res == 1000) {
+                        Swal.fire({ text: "등록이 완료되었습니다.", confirmButtonColor: "#43bff8" }).then(() => {
+                            location.reload();
+                        });
+                    }
+                    else if (res == 100) {
+                        Swal.fire({ text: "수정할 카테고리가 존재하지 않습니다.", confirmButtonColor: "#43bff8" });
+                    }
+                    else if (res == 400) {
+                        Swal.fire({ text: "하위 항목이 존재하여 옮길 수 없습니다.", confirmButtonColor: "#43bff8" });
+                    }
+                    else if (res == 500) {
+                        Swal.fire({ text: "연결된 패키지가 존재하여 옮길 수 없습니다.", confirmButtonColor: "#43bff8" });
+                    }
+                    else if (res == 600) {
+                        Swal.fire({ text: "동일한 곳으로 이동할 수 없습니다.", confirmButtonColor: "#43bff8" });
+                    }
+                    else if (res == 700) {
+                        Swal.fire({ text: "이동하고자 하는 카테고리가 없습니다.", confirmButtonColor: "#43bff8" });
+                    }
+                    else {
+                        Swal.fire({ text: "상위 카테고리가 존재하지 않습니다.", confirmButtonColor: "#43bff8" });
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    Swal.fire({ icon: 'error', text: "통신불가.", confirmButtonColor: "#43BFF8" });
+                }
+            })
         }
-
 
 
 

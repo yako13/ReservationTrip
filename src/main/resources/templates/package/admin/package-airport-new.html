@@ -392,16 +392,7 @@
                             <hr>
                         </div>
                         <ul class="tree">
-                            <!-- 한국 공항 -->
-                            <li th:each="koreaAirport : ${koreaAirportList}">
-                                <div class="node" onclick="toggle(this)">
-                                    <i class="fa-solid fa-caret-down"></i>
-                                    <span class="majorText" id="korea">[[${koreaAirport.sub}]]</span>
-                                </div>
-                                <ul class="hidden">
-                                    <li th:each="airport : ${koreaAirport.airport}">[[${airport}]]</li>
-                                </ul>
-                            </li>
+  
 
                             <!-- 해외 분류 -->
                             <li th:each="category : ${categoryList}">
