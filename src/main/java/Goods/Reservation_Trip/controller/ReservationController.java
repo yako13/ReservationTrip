@@ -5,6 +5,7 @@ import Goods.Reservation_Trip.dto.member.res.MemberResponseDto;
 import Goods.Reservation_Trip.dto.reservation.req.MemberReservationSearchDto;
 import Goods.Reservation_Trip.dto.reservation.res.ReservationDetailsResponseDto;
 import Goods.Reservation_Trip.dto.reservation.res.ReservationResponseDto;
+import Goods.Reservation_Trip.dto.reservation.res.SalesDto;
 import Goods.Reservation_Trip.service.HanService.HanHeaderService;
 import Goods.Reservation_Trip.service.HanService.HanMemberService;
 import Goods.Reservation_Trip.service.member.MemberService;
@@ -32,6 +33,39 @@ public class ReservationController {
     private final MemberService memberService;
 
     private final HanHeaderService hanHeaderService;
+
+    /**
+     * 관리자 차트
+     */
+
+    @GetMapping("/admin/chart")
+    public String chartPage(
+            @RequestParam(required = false) Integer month,
+            @RequestParam(required = false) Integer year,
+            Model model){
+
+        int currentMonth = (month != null) ? month : LocalDate.now().getMonthValue();
+
+
+        int currentYear = (month != null) ? year : LocalDate.now().getYear();
+
+        List<SalesDto> dayChart = reservationService.getCheckoutChartDay(currentMonth,currentYear);
+        List<SalesDto> monthChart = reservationService.getCheckoutChartMonth(currentYear);
+        List<SalesDto> yearChart = reservationService.getCheckoutChartYear();
+        List<SalesDto> dayOfWeekChart = reservationService.getCheckoutChartDayOfWeek(currentYear);
+        String totalSales = reservationService.totalSales();
+
+        model.addAttribute("monthSelect",currentMonth);
+        model.addAttribute("yearSelect",currentYear);
+
+        model.addAttribute("month",monthChart);
+        model.addAttribute("day",dayChart);
+        model.addAttribute("year",yearChart);
+        model.addAttribute("dayOfWeek",dayOfWeekChart);
+        model.addAttribute("totalSales",totalSales);
+
+        return "chart";
+    }
 
     /**
      * 관리자 주문 리스트

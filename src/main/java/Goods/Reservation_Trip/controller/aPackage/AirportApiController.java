@@ -49,6 +49,5 @@ public class AirportApiController {
 
         return result;
 
-
     }
 }
