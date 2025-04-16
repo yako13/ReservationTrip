@@ -200,13 +200,6 @@
 
 
 
-  .thumbnail {
-    max-width: 50px;
-    max-height: 50px;
-    display: block;
-    margin-bottom: 10px;
-  }
-
   .image-container {
     display: flex;
     position: relative;
@@ -296,9 +289,9 @@
 
   .modal-content {
     background-color: #fff;
-    margin: 5% auto;
+    margin: 40px auto;
     padding: 20px;
-    width: 35%;
+    width: 650px;
     max-height: 90vh;
     overflow-y: auto;
     border-radius: 10px;
@@ -325,10 +318,15 @@
   }
 
   .image-preview-container {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 10px;
     display: flex;
+    align-items: center;
     flex-wrap: wrap;
     gap: 10px;
-    margin-top: 10px;
+
   }
 
   .image-container {
@@ -336,12 +334,15 @@
     display: inline-block;
   }
 
+
   .thumbnail {
-    width: 150px;
-    height: auto;
-    border-radius: 4px;
-    margin-bottom: 16px;
+    width: 80px;
+    height: 80px;
+    display: block;
+
   }
+
+
 
   .btn-delete {
     position: absolute;
@@ -513,6 +514,36 @@
     }
   }
 
+  .HanRedButton4 {
+    border-radius: 4px;
+    width: 310px;
+    height: 52px;
+    font-size: 18px;
+    background-color: #b9b9b9;
+    color: #ffffff;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background-color: #ee5757;
+      transform: scale(0.98);
+    }
+  }
+
+  .HanSubmit4 {
+    border-radius: 4px;
+    width: 310px;
+    height: 52px;
+    font-size: 18px;
+    background-color: #2cafec;
+    color: #ffffff;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background-color: #3e8cf1;
+      transform: scale(0.98);
+    }
+  }
+
 
 
   .btn-red {
@@ -525,11 +556,14 @@
   }
 
   .custom-file-btn {
+    text-align: center;
+    box-sizing: border-box;
+    width: 640px;
     display: inline-block;
     padding: 10px 20px;
     background-color: #3498db;
     color: white;
-    border-radius: 5px;
+    border-radius: 3px;
     cursor: pointer;
     transition: background-color 0.3s;
   }
@@ -699,16 +733,33 @@
 
   .imgModalDiv1 {
     padding: 5px;
-    background-color: #eeeeee;
     border-radius: 5px;
     margin-bottom: 5px;
   }
 
-  .thRed{
+  .thRed {
     font-weight: normal;
-     color: #ee5757;
-     font-size: 18px;
+    color: #ee5757;
+    font-size: 18px;
 
+  }
+
+  .hanButtonDiv3 {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+
+  }
+
+  .imgModalDiv3 {
+    margin: 5px 0;
+    height: 100px;
+    background-color: #eeeeee;
+    border-radius: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 </style>
 
@@ -769,44 +820,76 @@
               <div id="imageModal" class="modal" style="display: none">
                 <div class="modal-content">
                   <span class="close" onclick="closeImageModal()">&times;</span>
-                  <h3 style="margin-bottom: 20px; margin-top: 10px; text-align: center; font-size: 25px;">이미지 첨부 및 미리보기</h3>
+                  <h3 style="margin-bottom: 20px; margin-top: 10px; text-align: center; font-size: 25px;">이미지 첨부 및 미리보기
+                  </h3>
 
                   <!-- 메인 이미지 -->
                   <div class="imgModalDiv1">
+
                     <label style="font-size: 18px;">메인 이미지</label>
 
-                    <input type="file" id="mainImage" name="aPackage.mainImage" accept="image/*"
-                      onchange="previewSingleImage(event, 'mainImagePreview', 'mainImage')"
-                      style="display: none" /><br />
+                    <div class="imgModalDiv3">
+
+                      <input type="file" id="mainImage" name="aPackage.mainImage" accept="image/*"
+                        onchange="previewSingleImage(event, 'mainImagePreview', 'mainImage')"
+                        style="display: none" /><br />
+
+                      <div id="mainImagePreview" class="image-preview-container "></div>
+
+                    </div>
                     <label for="mainImage" class="custom-file-btn" style="margin-top: 4px;">파일 선택</label>
-                    <div id="mainImagePreview" class="image-preview-container"></div>
                   </div>
 
                   <!-- 서브 이미지 -->
                   <div class="imgModalDiv1">
 
-                    <label  style="font-size: 18px;">서브 이미지</label>
-                    <input type="file" id="subImage" name="aPackage.subImage" accept="image/*" multiple
-                      onchange="previewMultipleImages(event, 'subImagePreview', 5, 'subImage')"
-                      style="display: none" /><br />
+                    <label style="font-size: 18px;">서브 이미지</label>
+
+                    <div class="imgModalDiv3">
+
+                      <input type="file" id="subImage" name="aPackage.subImage" accept="image/*" multiple
+                        onchange="previewMultipleImages(event, 'subImagePreview', 5, 'subImage')"
+                        style="display: none" /><br />
+
+                      <div id="subImagePreview" class="image-preview-container"></div>
+
+                    </div>
+
                     <label for="subImage" class="custom-file-btn" style="margin-top: 4px;">파일 선택</label>
-                    <div id="subImagePreview" class="image-preview-container"></div>
 
                   </div>
 
                   <!-- 설명 이미지 -->
                   <div class="imgModalDiv1">
 
-                    <label  style="font-size: 18px;">설명 이미지</label>
-                    <input type="file" id="descImage" name="aPackage.descImage" accept="image/*" multiple
-                      onchange="previewMultipleImages(event, 'descImagePreview', 5, 'descImage')"
-                      style="display: none" /><br />
+                    <label style="font-size: 18px;">설명 이미지</label>
+
+
+                    <div class="imgModalDiv3">
+                      <input type="file" id="descImage" name="aPackage.descImage" accept="image/*" multiple
+                        onchange="previewMultipleImages(event, 'descImagePreview', 5, 'descImage')"
+                        style="display: none" /><br />
+
+                      <div id="descImagePreview" class="image-preview-container"></div>
+
+                    </div>
                     <label for="descImage" class="custom-file-btn" style="margin-top: 4px;">파일 선택</label>
-                    <div id="descImagePreview" class="image-preview-container"></div>
 
                   </div>
 
+                  <div class="hanButtonDiv3">
+
+                    <button type="button" class="btn1 HanRedButton4" id="HanCancelButton4">취소</button>
+
+                    <button type="button" class="btn1 HanSubmit4" id="HanSubmitButton4">확인</button>
+
+                  </div>
+
+
                 </div>
+
+
+
               </div>
             </div>
             <div class="a3">
@@ -1095,12 +1178,12 @@
               <!-- 추가로 생성되는 항공편 -->
               <div class="flightTable" id="genFlight" style="display: none">
                 <table style="margin-left: 40px;">
-                  <thead >
-                    <th >출국일자</th>
-                    <th >귀국일자</th>
-                    <th  >출국 출발</th>
-                    <th  >귀국 출발</th>
-              
+                  <thead>
+                    <th>출국일자</th>
+                    <th>귀국일자</th>
+                    <th>출국 출발</th>
+                    <th>귀국 출발</th>
+
                     <!-- <th>출국 항공사</th> -->
                     <!-- <th>귀국 항공사</th> -->
                     <!-- <th>출국 항공사</th> -->
@@ -1109,8 +1192,8 @@
                     <!-- <th>귀국 도착</th> -->
                     <!-- <th>귀국 출발</th> -->
                     <!-- <th>귀국 도착</th> -->
-                    <th >삭제</th>
-    
+                    <th>삭제</th>
+
                   </thead>
                   <tbody id="flightTable"></tbody>
                 </table>
@@ -1822,33 +1905,63 @@
 <!-- 모달창 닫기 및 닫으면 데이터 지우기 -->
 <script>
 
-document.addEventListener("DOMContentLoaded", () => {
-  const cancelBtn = document.getElementById("HanCancelButton1");
-  const confirmBtn = document.getElementById("HanSubmitButton1");
-  const scheduleModal = document.getElementById("scheduleModal");
+  document.addEventListener("DOMContentLoaded", () => {
+    const cancelBtn = document.getElementById("HanCancelButton1");
+    const confirmBtn = document.getElementById("HanSubmitButton1");
+    const scheduleModal = document.getElementById("scheduleModal");
 
-  //  취소 버튼 클릭 시: 입력 초기화 + 모달 닫기
-  cancelBtn.addEventListener("click", () => {
-    // 모달 안의 input 요소 전부 초기화
-    const inputs = scheduleModal.querySelectorAll("input");
-    inputs.forEach(input => {
-      if (input.type !== "hidden") input.value = "";
+    //  취소 버튼 클릭 시: 입력 초기화 + 모달 닫기
+    cancelBtn.addEventListener("click", () => {
+      // 모달 안의 input 요소 전부 초기화
+      const inputs = scheduleModal.querySelectorAll("input");
+      inputs.forEach(input => {
+        if (input.type !== "hidden") input.value = "";
+      });
+
+      // select 초기화 (선택적으로 필요하면)
+      const selects = scheduleModal.querySelectorAll("select");
+      selects.forEach(select => {
+        select.selectedIndex = 0;
+      });
+
+      closeScheduleModal(); // 모달 닫기
     });
 
-    // select 초기화 (선택적으로 필요하면)
-    const selects = scheduleModal.querySelectorAll("select");
-    selects.forEach(select => {
-      select.selectedIndex = 0;
+    //  확인 버튼 클릭 시: 그냥 모달 닫기만
+    confirmBtn.addEventListener("click", () => {
+      closeScheduleModal();
     });
 
-    closeScheduleModal(); // 모달 닫기
-  });
+    //이미지 모달 취소버튼
+    document.getElementById("HanCancelButton4").addEventListener("click", () => {
 
-  //  확인 버튼 클릭 시: 그냥 모달 닫기만
-  confirmBtn.addEventListener("click", () => {
-    closeScheduleModal();
+      // 파일 input 초기화
+      document.getElementById("mainImage").value = "";
+      document.getElementById("subImage").value = "";
+      document.getElementById("descImage").value = "";
+
+      // 미리보기 영역 비우기
+      document.getElementById("mainImagePreview").innerHTML = "";
+      document.getElementById("subImagePreview").innerHTML = "";
+      document.getElementById("descImagePreview").innerHTML = "";
+
+      // 이미지 index 리셋 (선택사항)
+      newImageIndex.subImage = 0;
+      newImageIndex.descImage = 0;
+
+      // 모달 닫기
+      closeImageModal();
+    });
+
+    //이미지 모달 확인버튼
+    document.getElementById("HanSubmitButton4").addEventListener("click", () => {
+      closeImageModal();
+    });
+
+
+
+
   });
-});
 
 
 

@@ -41,8 +41,8 @@ public class HanPackageService {
     private final HanMemberService hanMemberService;
 
     private final AirportRepository airportRepository;
+    private final HanAirportRepository hanAirportRepository;
     private final HanPackageCategoryRepository hanPackageCategoryRepository;
-
     private final PackageCategoryRepository packageCategoryRepository;
 
 
@@ -467,15 +467,30 @@ public class HanPackageService {
     //한국 공항 카테고리 가져오는 서비스 (CategoryList 가 null이거나 없는것)
     public List<Airport> airportCategory() {
 
-        Optional<PackageCategory> optionalPackageCategory = packageCategoryRepository.findByName("한국");
+//        Optional<PackageCategory> optionalPackageCategory = packageCategoryRepository.findByName("한국");
+//
+//        if (optionalPackageCategory.isEmpty()) {
+//            log.error("공항 정보가 하나도 없습니다");
+//            return null;
+//        }
+//
+//        PackageCategory packageCategory = optionalPackageCategory.get();
+//        List<Airport> airportList = airportRepository.findByCategoryId(packageCategory.getId());
 
-        if (optionalPackageCategory.isEmpty()) {
+
+        List<Airport> airportList = hanAirportRepository.findAllAirportsWithTopCategoryNamedKorea();
+
+        if (airportList ==null &&  airportList.isEmpty()) {
             log.error("공항 정보가 하나도 없습니다");
             return null;
         }
 
-        PackageCategory packageCategory = optionalPackageCategory.get();
-        List<Airport> airportList = airportRepository.findByCategoryId(packageCategory.getId());
+
+//        for (Airport airport :airportList){
+//
+//            log.info("공항 정보" + airport.getName());
+//
+//        }
 
 
 //        List<Airport> airportList = airportRepository.findByCategoryListIsEmpty();
@@ -516,7 +531,10 @@ public class HanPackageService {
     public List<CityDto> hanCityAll() {
 
         //Depth가 3인거 (소분류 = 도시)모두 가져온다
-        List<PackageCategory> packageCategoryList = hanPackageCategoryRepository.findByDepth(3);
+//        List<PackageCategory> packageCategoryList = hanPackageCategoryRepository.findByDepth(3);
+
+        //Depth가 3인거(소분류 = 도시) 이고 부모(Depth가 1)가 한국이 아닌것 모두 가져온다
+        List<PackageCategory> packageCategoryList = hanPackageCategoryRepository.findDepth3WhoseTopParentIsNotKorea();
 
         if (packageCategoryList == null && packageCategoryList.isEmpty()) {
             log.error("소분류가 하나도 없습니다");
