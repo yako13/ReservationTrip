@@ -43,7 +43,7 @@
 
         .container {
             box-sizing: border-box;
-            width: 800px;
+            width: 850px;
             background: white;
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -58,14 +58,15 @@
             border: 1px solid #ccc;
             padding: 1rem;
             cursor: pointer;
-
-            h4 {
-                line-height: 3.5rem;
+            h3{
+                width: 100%;
+                margin: auto;
+                max-height: 4rem;
             }
         }
 
         #packageImg {
-            width: 10rem;
+            width: 11rem;
             margin-right: 1.1rem;
         }
 
@@ -201,11 +202,11 @@
     <main>
         <div class="container">
             <div>
-                <h3>✏️후기 작성</h3>
+                <h2>✏️후기 작성</h2>
             </div>
             <div class="packageArea" th:onclick="window.location.href='/package/details/'+[[${packagePK}]]">
                 <img th:src="@{${packageMainImage}}" alt="" id="packageImg">
-                <h4 th:text="${packageName}"></h4>
+                <h3 th:text="${packageName}"></h3>
             </div>
             <form id="reviewForm" th:action="@{/member/review/new}" th:method="post" enctype="multipart/form-data">
                 <input type="hidden" name="reservationId" th:value="${reservationId}">
