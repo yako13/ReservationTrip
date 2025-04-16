@@ -6,6 +6,7 @@ import Goods.Reservation_Trip.dto.reservation.req.MemberReservationSearchDto;
 import Goods.Reservation_Trip.dto.reservation.req.NotificationMessage;
 import Goods.Reservation_Trip.dto.reservation.res.ReservationDetailsResponseDto;
 import Goods.Reservation_Trip.dto.reservation.res.ReservationResponseDto;
+import Goods.Reservation_Trip.dto.reservation.res.SalesDto;
 import Goods.Reservation_Trip.entity.*;
 import Goods.Reservation_Trip.enums.ReservationState;
 import Goods.Reservation_Trip.repository.ReservationRepository;
@@ -20,13 +21,11 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Transactional
 @RequiredArgsConstructor
@@ -109,7 +108,7 @@ public class ReservationService {
         } else if ("price_desc".equals(sort)) {
             pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "totalPay"));
 
-            //주문 날짜별 sort
+        //주문 날짜별 sort
         } else if ("past".equals(sort)) {
             pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "createdAt"));
         } else {
@@ -160,12 +159,12 @@ public class ReservationService {
         }
 
         //검색 기준이 국가명일때
-        if("countryName".equals(search)){
+        if ("countryName".equals(search)) {
             ReservationState state = stateMap.get(reservationState);
 
             reservationPage = (state != null)
-                    ? reservationRepository.findByMainCategoryNameWithoutSpacesAndReservationState(trimKeyword,pageable,state)
-                    : reservationRepository.findByMainCategoryNameWithoutSpaces(trimKeyword,pageable);
+                    ? reservationRepository.findByMainCategoryNameWithoutSpacesAndReservationState(trimKeyword, pageable, state)
+                    : reservationRepository.findByMainCategoryNameWithoutSpaces(trimKeyword, pageable);
         }
 
 
@@ -406,7 +405,7 @@ public class ReservationService {
         //패키지 옵션
         Optional<PackageOption> optionalPackageOption = packageOptionRepository.findByaPackageId(reservation.getAPackage().getId());
 
-        if(optionalPackageOption.isEmpty()) throw new RuntimeException("패키지 옵션 없음");
+        if (optionalPackageOption.isEmpty()) throw new RuntimeException("패키지 옵션 없음");
 
         PackageOption packageOption = optionalPackageOption.get();
 
@@ -433,15 +432,15 @@ public class ReservationService {
                 .country(reservation.getAPackage().getMainCategory().getName()) //여행하는 나라
                 .fuelSurcharge(Formatter.BigDecimalFormat(reservation.getAPackage().getFuelSurcharge())) //유류할증료
                 .hotel(reservation.getAPackage().getHotelName())
-                .s_departureTime(packageScheduleCheck.getDepartureDateOut().toString() +" "+ packageDetails.getDepartureTimeOut()) // 여행 가는 날 출발 시간
+                .s_departureTime(packageScheduleCheck.getDepartureDateOut().toString() + " " + packageDetails.getDepartureTimeOut()) // 여행 가는 날 출발 시간
                 .s_origin(packageDetails.getDeparturePointOut().getName()) // 여행 가는 날 출발지
                 .s_departureFlight(packageDetails.getFlightNumberOut()) //여행 가는 날 출발 항공편
-                .s_arrivalTime(packageScheduleCheck.getArrivalDateOut().toString() + " "+ packageDetails.getArrivalTimeOut()) //여행 가는 날 도착 시간
+                .s_arrivalTime(packageScheduleCheck.getArrivalDateOut().toString() + " " + packageDetails.getArrivalTimeOut()) //여행 가는 날 도착 시간
                 .s_destination(packageDetails.getArrivalPointOut().getName()) //여행 가는 날 도착지
-                .e_departureTime(packageScheduleCheck.getDepartureDateReturn().toString() + " "+ packageDetails.getDepartureTimeReturn()) // 여행 종료일  출발 시간
+                .e_departureTime(packageScheduleCheck.getDepartureDateReturn().toString() + " " + packageDetails.getDepartureTimeReturn()) // 여행 종료일  출발 시간
                 .e_origin(packageDetails.getDeparturePointReturn().getName()) // 여행 종료일 출발지
                 .e_departureFlight(packageDetails.getFlightNumberReturn()) //여행 종료일 출발 항공편
-                .e_arrivalTime(packageScheduleCheck.getArrivalDateReturn().toString() +" "+ packageDetails.getArrivalTimeReturn()) //여행 종료일 도착 시간
+                .e_arrivalTime(packageScheduleCheck.getArrivalDateReturn().toString() + " " + packageDetails.getArrivalTimeReturn()) //여행 종료일 도착 시간
                 .e_destination(packageDetails.getArrivalPointReturn().getName()) //여행 종료일 도착지
                 .s_airlineName(packageDetails.getAirlineOut().getName()) //출국 항공사명
                 .e_airlineName(packageDetails.getAirlineReturn().getName()) //귀국 항공사명
@@ -477,10 +476,10 @@ public class ReservationService {
     }
 
 
-    public void sendCancelNotification(String reservationCode,Long memberId){
-        Optional<Reservation> optionalReservation = reservationRepository.findByMemberIdAndCode(memberId,reservationCode);
+    public void sendCancelNotification(String reservationCode, Long memberId) {
+        Optional<Reservation> optionalReservation = reservationRepository.findByMemberIdAndCode(memberId, reservationCode);
 
-        if(optionalReservation.isEmpty()) throw new RuntimeException("잘못된 접근");
+        if (optionalReservation.isEmpty()) throw new RuntimeException("잘못된 접근");
 
         Reservation reservation = optionalReservation.get();
 
@@ -488,7 +487,206 @@ public class ReservationService {
 
         reservationRepository.save(reservation);
 
-        NotificationMessage message = new NotificationMessage("예약번호 "+reservationCode+"의 예약취소 요청이 있습니다. ","cancel");
-        messagingTemplate.convertAndSend("/topic/admin",message);
+        NotificationMessage message = new NotificationMessage("예약번호 " + reservationCode + "의 예약취소 요청이 있습니다. ", "cancel");
+        messagingTemplate.convertAndSend("/topic/admin", message);
+    }
+
+    /**
+     * 연간 일별 매출
+     */
+    public List<SalesDto> getCheckoutChartDay(Integer month, Integer year) {
+
+        List<Reservation> reservationList = reservationRepository.findAll();
+
+        List<SalesDto> chart = new ArrayList<>();
+
+        // 매개변수로 주어진 월과 연도의 길이 구하기
+        LocalDate firstDayOfMonth = LocalDate.of(year, month, 1);
+        int lengthOfMonth = firstDayOfMonth.lengthOfMonth();
+
+        // 일 매출 초기화 (1일부터 31일까지)
+        for (int day = 1; day <= lengthOfMonth; day++) {
+
+            String dayKey = day + "일";
+            SalesDto salesDto = new SalesDto();
+            salesDto.setDate(dayKey);
+            // 모든 일 매출을 0으로 초기화
+            salesDto.setTotalSales(BigDecimal.ZERO);
+
+            chart.add(salesDto);
+        }
+
+        for (Reservation reservation : reservationList) {
+            if (reservation.getCreatedAt().getYear() == year && reservation.getCreatedAt().getMonthValue() == month) {
+                String day = reservation.getCreatedAt().getDayOfMonth() + "일";
+
+                for (SalesDto salesDto : chart) {
+                    if (salesDto.getDate().equals(day)) {
+                        salesDto.setTotalSales(salesDto.getTotalSales().add(reservation.getTotalPay()));
+                    }
+                }
+            }
+        }
+
+        return chart;
+    }
+
+    /**
+     * 월별 매출
+     */
+    public List<SalesDto> getCheckoutChartMonth(Integer year) {
+        List<Reservation> reservationList = reservationRepository.findAll();
+
+        List<SalesDto> chart = new ArrayList<>();
+
+
+        // 월 매출 초기화 (1월부터 12월까지)
+        for (int month = 1; month <= 12; month++) {
+            String monthKey = month + "월";
+            SalesDto salesDto = new SalesDto();
+            salesDto.setDate(monthKey);
+            // 모든 월 매출을 0으로 초기화
+            salesDto.setTotalSales(BigDecimal.ZERO);
+
+            chart.add(salesDto);
+        }
+
+        for (Reservation reservation : reservationList) {
+            if (reservation.getCreatedAt().getYear() == year) {
+                String month = reservation.getCreatedAt().getMonthValue() + "월";
+                for (SalesDto salesDto : chart) {
+                    if (salesDto.getDate().equals(month)) {
+                        salesDto.setTotalSales(salesDto.getTotalSales().add(reservation.getTotalPay()));
+                    }
+                }
+            }
+        }
+
+        return chart;
+    }
+
+    /**
+     * 연간 매출
+     */
+    public List<SalesDto> getCheckoutChartYear() {
+        List<Reservation> reservationList = reservationRepository.findAll();
+
+        List<SalesDto> chart = new ArrayList<>();
+
+        // 연 매출 초기화 (2024년부터 현재연도까지)
+        for (int i = 2024; i <= LocalDate.now().getYear(); i++) {
+            String yearKey = i + "년";
+            SalesDto salesDto = new SalesDto();
+            salesDto.setDate(yearKey);
+            // 모든 연 매출을 0으로 초기화
+            salesDto.setTotalSales(BigDecimal.ZERO);
+
+            chart.add(salesDto);
+        }
+
+        for (Reservation reservation : reservationList) {
+            String year = reservation.getCreatedAt().getYear() + "년";
+            for (SalesDto salesDto : chart) {
+                if (salesDto.getDate().equals(year)) {
+                    salesDto.setTotalSales(salesDto.getTotalSales().add(reservation.getTotalPay()));
+                }
+            }
+        }
+
+        return chart;
+
+    }
+
+    /**
+     * 연간 요일별 매출
+     */
+    public List<SalesDto> getCheckoutChartDayOfWeek(Integer year) {
+        List<Reservation> reservationList = reservationRepository.findAll();
+
+        List<SalesDto> chart = new ArrayList<>();
+
+        List<String> days = Arrays.asList("월", "화", "수", "목", "금", "토", "일");
+
+        //요일 매출 초기화
+        for (String day : days) {
+            chart.add(new SalesDto(day, BigDecimal.ZERO));
+        }
+
+
+        for (Reservation reservation : reservationList) {
+            if (reservation.getCreatedAt().getYear() == year) {
+                String dayOfWeek = "";
+
+                switch (reservation.getCreatedAt().getDayOfWeek().getValue()){
+                    case 1 -> dayOfWeek ="월";
+                    case 2 -> dayOfWeek ="화";
+                    case 3 -> dayOfWeek ="수";
+                    case 4 -> dayOfWeek ="목";
+                    case 5 -> dayOfWeek ="금";
+                    case 6 -> dayOfWeek ="토";
+                    case 7 -> dayOfWeek ="일";
+                }
+
+                for (SalesDto salesDto : chart) {
+                    if (salesDto.getDate().equals(dayOfWeek)) {
+                        salesDto.setTotalSales(salesDto.getTotalSales().add(reservation.getTotalPay()));
+                    }
+                }
+            }
+        }
+
+        return chart;
+
+    }
+
+    /**
+     * 총 매출
+     */
+    public String totalSales(){
+        List<Reservation> reservationList = reservationRepository.findAll();
+        BigDecimal totalSales = new BigDecimal(0);
+
+        for(Reservation reservation : reservationList){
+            totalSales =totalSales.add(reservation.getTotalPay());
+        }
+
+        return Formatter.BigDecimalFormat(totalSales);
+    }
+
+    /**
+     * 연간 평일,주말별 매출
+     */
+    public List<SalesDto> getCheckoutWeekend(Integer year) {
+        List<Reservation> reservationList = reservationRepository.findAll();
+
+        List<SalesDto> chart = new ArrayList<>();
+
+        List<String> days = Arrays.asList("평일","주말");
+
+        //요일 매출 초기화
+        for (String day : days) {
+            chart.add(new SalesDto(day, BigDecimal.ZERO));
+        }
+
+
+        for (Reservation reservation : reservationList) {
+            if (reservation.getCreatedAt().getYear() == year) {
+                String dayOfWeek = "";
+
+                switch (reservation.getCreatedAt().getDayOfWeek().getValue()){
+                    case 1, 2, 3, 4, 5 -> dayOfWeek ="평일";
+                    case 6, 7 -> dayOfWeek ="주말";
+                }
+
+                for (SalesDto salesDto : chart) {
+                    if (salesDto.getDate().equals(dayOfWeek)) {
+                        salesDto.setTotalSales(salesDto.getTotalSales().add(reservation.getTotalPay()));
+                    }
+                }
+            }
+        }
+
+        return chart;
+
     }
 }
