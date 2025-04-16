@@ -53,6 +53,7 @@ public class ReservationController {
         List<SalesDto> monthChart = reservationService.getCheckoutChartMonth(currentYear);
         List<SalesDto> yearChart = reservationService.getCheckoutChartYear();
         List<SalesDto> dayOfWeekChart = reservationService.getCheckoutChartDayOfWeek(currentYear);
+        List<SalesDto> weekendChart = reservationService.getCheckoutWeekend(currentYear);
         String totalSales = reservationService.totalSales();
 
         model.addAttribute("monthSelect",currentMonth);
@@ -62,6 +63,7 @@ public class ReservationController {
         model.addAttribute("day",dayChart);
         model.addAttribute("year",yearChart);
         model.addAttribute("dayOfWeek",dayOfWeekChart);
+        model.addAttribute("weekend",weekendChart);
         model.addAttribute("totalSales",totalSales);
 
         return "chart";

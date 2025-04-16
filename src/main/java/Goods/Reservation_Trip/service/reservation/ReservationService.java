@@ -491,6 +491,9 @@ public class ReservationService {
         messagingTemplate.convertAndSend("/topic/admin", message);
     }
 
+    /**
+     * 연간 일별 매출
+     */
     public List<SalesDto> getCheckoutChartDay(Integer month, Integer year) {
 
         List<Reservation> reservationList = reservationRepository.findAll();
@@ -528,6 +531,9 @@ public class ReservationService {
         return chart;
     }
 
+    /**
+     * 월별 매출
+     */
     public List<SalesDto> getCheckoutChartMonth(Integer year) {
         List<Reservation> reservationList = reservationRepository.findAll();
 
@@ -559,6 +565,9 @@ public class ReservationService {
         return chart;
     }
 
+    /**
+     * 연간 매출
+     */
     public List<SalesDto> getCheckoutChartYear() {
         List<Reservation> reservationList = reservationRepository.findAll();
 
@@ -588,6 +597,9 @@ public class ReservationService {
 
     }
 
+    /**
+     * 연간 요일별 매출
+     */
     public List<SalesDto> getCheckoutChartDayOfWeek(Integer year) {
         List<Reservation> reservationList = reservationRepository.findAll();
 
@@ -627,6 +639,9 @@ public class ReservationService {
 
     }
 
+    /**
+     * 총 매출
+     */
     public String totalSales(){
         List<Reservation> reservationList = reservationRepository.findAll();
         BigDecimal totalSales = new BigDecimal(0);
@@ -636,5 +651,42 @@ public class ReservationService {
         }
 
         return Formatter.BigDecimalFormat(totalSales);
+    }
+
+    /**
+     * 연간 평일,주말별 매출
+     */
+    public List<SalesDto> getCheckoutWeekend(Integer year) {
+        List<Reservation> reservationList = reservationRepository.findAll();
+
+        List<SalesDto> chart = new ArrayList<>();
+
+        List<String> days = Arrays.asList("평일","주말");
+
+        //요일 매출 초기화
+        for (String day : days) {
+            chart.add(new SalesDto(day, BigDecimal.ZERO));
+        }
+
+
+        for (Reservation reservation : reservationList) {
+            if (reservation.getCreatedAt().getYear() == year) {
+                String dayOfWeek = "";
+
+                switch (reservation.getCreatedAt().getDayOfWeek().getValue()){
+                    case 1, 2, 3, 4, 5 -> dayOfWeek ="평일";
+                    case 6, 7 -> dayOfWeek ="주말";
+                }
+
+                for (SalesDto salesDto : chart) {
+                    if (salesDto.getDate().equals(dayOfWeek)) {
+                        salesDto.setTotalSales(salesDto.getTotalSales().add(reservation.getTotalPay()));
+                    }
+                }
+            }
+        }
+
+        return chart;
+
     }
 }

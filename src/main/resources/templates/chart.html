@@ -161,7 +161,7 @@
       border-bottom: none;
     }
 
-    .yearTable{
+    .yearTable,.weekendTable{
       height: 10rem;
     }
   </style>
@@ -312,6 +312,25 @@
                 </tbody>
               </table>
             </div>
+            <div class="dayOfWeekAreaInner">
+              <div class="graph">
+                <canvas id="weekendChart"></canvas>
+              </div>
+              <table class="rwd-table weekendTable">
+                <thead>
+                  <tr>
+                    <th class="tH">날짜</th>
+                    <th>연간 평일 및 주말 매출</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:each="weekend : ${weekend}">
+                    <td th:text="${weekend.date}"></td>
+                    <td th:text="${weekend.totalSales}" class="dayPrice"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
@@ -331,6 +350,7 @@
     const monthList = [[${ month }]];
     const yearList = [[${ year }]];
     const dayOfWeekList = [[${ dayOfWeek }]];
+    const weekendList = [[${ weekend }]];
 
     // 날짜와 매출 데이터 추출
     // 일별 데이터
@@ -348,6 +368,9 @@
     //요일별 데이터
     const dayOfWeekLabels = dayOfWeekList.map(item => item.date);
     const dayOfWeekData = dayOfWeekList.map(item => item.totalSales);
+
+    const weekendLabels = weekendList.map(item => item.date);
+    const weekendData = weekendList.map(item => item.totalSales);
 
     const commonOptions = {
       responsive: true,
@@ -442,6 +465,29 @@
           label: '연간 요일별 매출',
           data: dayOfWeekData,
           backgroundColor: 'rgb(255, 102, 153)',
+          tension: 0.3,
+          fill: true
+        }]
+      },
+      options: {
+        commonOptions,
+        scales: {
+          x: {
+            offset: true // 요기! 양끝에 여백을 추가해줘
+          }
+        }
+      }
+    });
+
+    //평일 및 주말 차트
+    new Chart(document.getElementById('weekendChart'), {
+      type: 'bar',
+      data: {
+        labels: weekendLabels,
+        datasets: [{
+          label: '연간 평일 및 주말 매출',
+          data: weekendData,
+          backgroundColor: 'rgb(105, 22, 153)',
           tension: 0.3,
           fill: true
         }]
