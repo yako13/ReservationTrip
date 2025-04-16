@@ -14,7 +14,9 @@ import Goods.Reservation_Trip.entity.PackageSchedule;
 import Goods.Reservation_Trip.enums.PackageImageType;
 import Goods.Reservation_Trip.enums.PackageStatus;
 import Goods.Reservation_Trip.repository.aPackage.PackageCategoryRepository;
+import Goods.Reservation_Trip.repository.aPackage.PackageImageRepository;
 import Goods.Reservation_Trip.repository.aPackage.PackageRepository;
+import Goods.Reservation_Trip.util.FileStorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +39,10 @@ public class PackageService {
     private final PackageOptionService packageOptionService;
 
     private final PackageCategoryRepository packageCategoryRepository;
+
+    private final FileStorageService fileStorageService;
+
+    private final PackageImageRepository packageImageRepository;
 
     // 패키지 저장
     @Transactional
@@ -67,12 +74,13 @@ public class PackageService {
                 .packageScheduleList(new ArrayList<>())
                 .build();
 
+        // 패키지 기본 정보 저장
+        packageRepository.save(aPackage);
+
         if (requestDto.getMainImage() != null && !requestDto.getMainImage().isEmpty()) {
             PackageImage mainPackageImage = packageImageService.create(requestDto, aPackage);
             aPackage.setMainImage(mainPackageImage);
         }
-        // 패키지 기본 정보 저장
-        packageRepository.save(aPackage);
         // 선택 옵션 저장
         packageOptionService.save(aPackage, optionRequestDto);
         // 항공편 일정 정보 리스트 저장
@@ -134,6 +142,7 @@ public class PackageService {
     public Package update(PackageRequestDto requestDto,
                           PackageOptionRequestDto optionRequestDto,
                           List<PackageScheduleRequestDto> scheduleRequestDto,
+                          String deletedImages,
                           Long id) {
         Package aPackage = getPackage(id);
 
@@ -158,9 +167,54 @@ public class PackageService {
         aPackage.setSmallCategory(smallCategory);
         aPackage.setPackageStatus(requestDto.getPackageStatus());
 
-        if (requestDto.getMainImage() != null && !requestDto.getMainImage().isEmpty()){
-            PackageImage mainImage = packageImageService.create(requestDto, aPackage);
-            aPackage.setMainImage(mainImage);
+        List<PackageImage> subImageList = aPackage.getPackageImageList().stream()
+                .filter(image -> image.getPackageImageType() == PackageImageType.SUB)
+                .collect(Collectors.toList());
+        List<PackageImage> descImageList = aPackage.getPackageImageList().stream()
+                .filter(image -> image.getPackageImageType() == PackageImageType.DESC)
+                .collect(Collectors.toList());
+
+        if (deletedImages != null && !deletedImages.trim().isEmpty()) {
+            String[] deletedImageList = deletedImages.split(",");
+
+            for (String deletedImage : deletedImageList) {
+                if (deletedImage.isEmpty()) continue;
+
+                if (deletedImage.startsWith("subImage")) {
+                    try {
+                        int index = Integer.parseInt(deletedImage.replace("subImage", ""));
+                        if (index < subImageList.size()) {
+                            PackageImage imageToDelete = subImageList.get(index);
+                            fileStorageService.deleteFile(imageToDelete.getImageFullName());
+
+                            packageImageRepository.delete(imageToDelete);
+                            aPackage.getPackageImageList().remove(imageToDelete);
+                        }
+                    } catch (NumberFormatException e) {
+                        System.err.println("Invalid subImage index:" + deletedImage);
+                    }
+                }
+                if (deletedImage.startsWith("descImage")) {
+                    try {
+                        int index = Integer.parseInt(deletedImage.replace("descImage", ""));
+                        if (index < descImageList.size()) {
+                            PackageImage imageToDelete = descImageList.get(index);
+                            fileStorageService.deleteFile(imageToDelete.getImageFullName());
+
+                            packageImageRepository.delete(imageToDelete);
+                            aPackage.getPackageImageList().remove(imageToDelete);
+                        }
+                    } catch (NumberFormatException e) {
+                        System.err.println("Invalid descImage index:" + deletedImage);
+                    }
+                }
+            }
+        }
+        PackageImage updatedImage = packageImageService.create(requestDto, aPackage);
+
+        if (updatedImage != null) {
+            updatedImage = packageImageRepository.save(updatedImage);
+            aPackage.setMainImage(updatedImage);
         }
 
         packageRepository.save(aPackage);
