@@ -23,7 +23,7 @@ public class PackageImage extends BaseTime {
     private Long id;
 
     @JoinColumn(name = "package_id", nullable = false)
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private Package aPackage;
 
     @Column(name = "package_image_type", nullable = false, columnDefinition = "VARCHAR(50)")

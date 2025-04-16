@@ -102,9 +102,9 @@ public class PackageController {
 
     @PostMapping("/admin/package/edit/{id}")
     public String adminPackageUpdate(@ModelAttribute PageSaveRequestDto requestDto,
-                                     @PathVariable Long id) {
-        packageService.update(requestDto.getAPackage(), requestDto.getPackageOption(), requestDto.getPackageSchedule(), id);
-
+                                     @PathVariable Long id,
+                                     @RequestParam(value = "deletedImages", required = false) String deletedImages) {
+        packageService.update(requestDto.getAPackage(), requestDto.getPackageOption(), requestDto.getPackageSchedule(), deletedImages, id);
         return "redirect:/admin/package/list";
     }
 }
