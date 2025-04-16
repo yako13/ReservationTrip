@@ -148,14 +148,14 @@
             <ul class="pagination">
                 <!-- 첫 페이지 버튼 -->
                 <li class="page-item" th:classappend="${paging.first} ? 'disabled' : ''">
-                    <a class="page-link" th:href="@{/admin/reservation/search/index(keyword=${keywordQuery},page=0, size=${size},sort=${sortSelect},reservationState=${reservationState})}" aria-label="First">
+                    <a class="page-link" th:href="@{/admin/reservation/search/index(keyword=${keywordQuery},search=${searchSelect},page=0, size=${size},sort=${sortSelect},reservationState=${reservationState})}" aria-label="First">
                         <span>&laquo;</span>
                     </a>
                 </li>
 
                 <!-- 이전 버튼 -->
                 <li class="page-item" th:classappend="${paging.hasPrevious()} ? '' : 'disabled'">
-                    <a class="page-link" th:href="@{/admin/reservation/search/index(keyword=${keywordQuery},page=${currentPage-1}, size=${size},sort=${sortSelect},reservationState=${reservationState})}" 
+                    <a class="page-link" th:href="@{/admin/reservation/search/index(keyword=${keywordQuery},search=${searchSelect},page=${currentPage-1}, size=${size},sort=${sortSelect},reservationState=${reservationState})}" 
                         aria-label="Previous">
                         <span>&lt;</span>
                     </a>
@@ -166,13 +166,13 @@
                     th:each="pageNum : ${#numbers.sequence(currentPage - 2 > 0 ? currentPage - 2 : 0,
                                                      currentPage + 2 < paging.totalPages - 1 ? currentPage + 2 : paging.totalPages - 1)}"
                     th:classappend="${pageNum == currentPage} ? 'active' : ''">
-                    <a class="page-link" th:href="@{/admin/reservation/search/index(keyword=${keywordQuery},page=${pageNum}, size=${size},sort=${sortSelect},reservationState=${reservationState})}" 
+                    <a class="page-link" th:href="@{/admin/reservation/search/index(keyword=${keywordQuery},search=${searchSelect},page=${pageNum}, size=${size},sort=${sortSelect},reservationState=${reservationState})}" 
                         th:text="${pageNum + 1}"></a>
                 </li>
 
                 <!-- 다음 버튼 -->
                 <li class="page-item" th:classappend="${paging.hasNext()} ? '' : 'disabled'">
-                    <a class="page-link" th:href="@{/admin/reservation/search/index(keyword=${keywordQuery},page=${currentPage+1}, size=${size},sort=${sortSelect},reservationState=${reservationState})}"
+                    <a class="page-link" th:href="@{/admin/reservation/search/index(keyword=${keywordQuery},search=${searchSelect},page=${currentPage+1}, size=${size},sort=${sortSelect},reservationState=${reservationState})}"
                         aria-label="Next">
                         <span>&gt;</span>
                     </a>
@@ -181,7 +181,7 @@
                 <!-- 마지막 페이지 버튼 -->
                 <li class="page-item" th:classappend="${paging.last} ? 'disabled' : ''">
                     <a class="page-link"
-                        th:href="@{/admin/reservation/search/index(keyword=${keywordQuery},page=${paging.totalPages-1}, size=${size},sort=${sortSelect},reservationState=${reservationState})}"
+                        th:href="@{/admin/reservation/search/index(keyword=${keywordQuery},search=${searchSelect},page=${paging.totalPages-1}, size=${size},sort=${sortSelect},reservationState=${reservationState})}"
                         aria-label="Last">
                         <span>&raquo;</span>
                     </a>

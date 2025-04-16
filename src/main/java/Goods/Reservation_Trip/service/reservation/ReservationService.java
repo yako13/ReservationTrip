@@ -108,7 +108,7 @@ public class ReservationService {
         } else if ("price_desc".equals(sort)) {
             pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "totalPay"));
 
-            //주문 날짜별 sort
+        //주문 날짜별 sort
         } else if ("past".equals(sort)) {
             pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "createdAt"));
         } else {
