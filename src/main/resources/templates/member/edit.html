@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>냥만여행 회원정보수정</title>
+    <title>🐾냥만여행 회원정보수정</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/mainPage.css}">
     <style>
@@ -145,6 +145,7 @@
         #authCodeBtn {
             background-color: #43bff8;
             color: #ffffff;
+            cursor: pointer;
 
             &:hover {
                 background-color: #3e8cf1;
@@ -157,6 +158,7 @@
             margin-left: 5rem;
             background-color: #ececec;
             color: #333;
+            cursor: pointer;
 
             &:hover {
                 background-color: #e0e0e0;
@@ -231,7 +233,7 @@
             display: inline-block;
         }
 
-        .withdrawalArea{
+        .withdrawalArea {
             display: flex;
             justify-content: end;
             margin: 1rem 0;
@@ -239,6 +241,11 @@
 
         #withdrawalBtn {
             color: #9c9c9c;
+            cursor: pointer;
+        }
+
+        #eye {
+            cursor: pointer;
         }
     </style>
 </head>
@@ -246,7 +253,8 @@
 <body>
     <header th:replace="/fragments/memberHeader::memberHeader"></header>
     <main>
-        <input type="hidden" th:value="${alert}" id="flashMessage">
+        <input type="hidden" th:value="${alert}" id="flashMessage2">
+        <input type="hidden" th:value="${checkName}" id="checkName">
         <div class="container">
             <div class="titleArea">
                 <h1>회원정보수정</h1>
@@ -276,7 +284,7 @@
                         <tr class="authArea">
                             <th><span class="red">*</span>이메일 인증번호</th>
                             <td><input type="text" id="authCode" name="authCode" maxlength="6"
-                                    oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                    oninput="this.value = this.value.replace(/[^0-9]/g, '')" th:value="${authCode}">
                                 <button id="authCodeBtn" type="button">인증확인</button>
                             </td>
                         </tr>
@@ -345,11 +353,19 @@
 
             if (cancelBtn) {
                 cancelBtn.addEventListener("click", () => {
-                    var answer = confirm("회원 탈퇴를 하시면, 복구가 어려운 점을 참고하시기 바랍니다. 정말 탈퇴를 원하시나요?");
+                    Swal.fire({
+                        text: "회원 탈퇴를 하시면, 복구가 어려운 점을 참고하시기 바랍니다. 정말 탈퇴를 원하시나요?",
+                        icon: "question",
+                        showCancelButton: true,
+                        confirmButtonText: "확인",
+                        cancelButtonText: "취소",
+                        confirmButtonColor: "#43BFF8"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.assign("/permit/withdrawal");
+                        }
+                    });
 
-                    if (answer) {
-                        window.location.assign("/permit/withdrawal");
-                    }
                 });
             } else {
                 console.error("cancelBtn을 찾을 수 없습니다.");
@@ -367,7 +383,7 @@
 
             //생년월일 또는 휴대전화번호 체크
             if (birth.value == null || birth.value == "") {
-                alert("기존 정보를 입력하지 않으면 이후 이용에 제한이 있을 수 있습니다.");
+                Swal.fire({ html: "기존 정보를 입력하지 않으면, <br> 이후 이용에 제한이 있을 수 있습니다." , confirmButtonColor: "#43BFF8"});
             }
         };
 
@@ -386,7 +402,7 @@
                 display.textContent = minutes + ":" + seconds;
 
                 if (--timer < 0) {
-                    alert("인증 시간이 만료되었습니다. 다시 인증하여 주십시오.");
+                    Swal.fire({ text: "인증 시간이 만료되었습니다. 다시 인증하여 주십시오.", confirmButtonColor: "#43BFF8" });
                     clearInterval(timerInterval); // 타이머 정지
                     document.getElementById("authBtn").disabled = false;
                 }
@@ -398,7 +414,7 @@
 
             //인증확인버튼 활성화
             document.getElementById("authCodeBtn").disabled = false;
-            alert("이메일을 전송중입니다. 잠시만 기다려주십시오.");
+            Swal.fire({ html: "이메일을 전송중입니다. <br> 잠시만 기다려주십시오.", confirmButtonColor: "#43BFF8" });
             var params = { email: $("#email").text() }
 
             $.ajax({
@@ -411,15 +427,15 @@
                             display = document.querySelector('#timer');
                         startTimer(fiveMinutes, display);
                         document.getElementById("authBtn").disabled = true;
-                        alert("인증번호가 발송되었습니다. 이메일을 확인하여 주십시오.");
+                        Swal.fire({ html: "인증번호가 발송되었습니다.<br>이메일을 확인하여 주십시오.", confirmButtonColor: "#43BFF8"});
                     }
                     else {
-                        alert("인증번호가 전송되지 않았습니다. 작성한 이메일을 다시 확인하여 주십시오.");
+                        Swal.fire({ text: "인증번호가 전송되지 않았습니다. 작성한 이메일을 다시 확인하여 주십시오." , confirmButtonColor: "#43BFF8"});
                         document.getElementById("authCodeBtn").disabled = true;
                     }
                 },
                 error: function () {
-                    alert("통신 실패.");
+                    Swal.fire({icon: 'error', text: "통신 실패." , confirmButtonColor: "#43BFF8"});
                 }
             });
         });
@@ -440,16 +456,16 @@
                 success: function (res) {
                     if (res == 1000) {
                         clearInterval(timerInterval); // 인증 성공 시 타이머 정지
-                        alert("인증이 완료되었습니다.");
+                        Swal.fire({ text: "인증이 완료되었습니다.", confirmButtonColor: "#43BFF8" });
                         bol_auth = 1;
                         document.getElementById("authCodeBtn").disabled = true;
                     } else {
-                        alert("인증번호가 일치하지 않습니다.");
+                        Swal.fire({ text: "인증번호가 일치하지 않습니다.", confirmButtonColor: "#43BFF8" });
                         document.getElementById("authBtn").disabled = false;
                     }
                 },
                 error: function () {
-                    alert("통신 실패.");
+                    Swal.fire({icon: 'error', text: "통신 실패." , confirmButtonColor: "#43BFF8"});
                 }
             });
         });
@@ -542,9 +558,12 @@
             e.preventDefault();
             let ValueCheck = SignUpValueCheckAll();
             let valid = true;
+            if (document.getElementById("checkName").value == 1) {
+                bol_auth = 1;
+            }
 
             if (bol_auth == 0) {
-                alert("이메일 인증을 해주십시오.");
+                Swal.fire({ text: "이메일 인증을 해주십시오.", confirmButtonColor: "#43BFF8" });
             }
 
             //OAuth 제공자가 없을 때

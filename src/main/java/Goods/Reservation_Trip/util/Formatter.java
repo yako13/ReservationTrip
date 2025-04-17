@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.time.temporal.ChronoUnit;
@@ -15,6 +16,32 @@ import java.util.Locale;
 import java.util.Random;
 
 public class Formatter {
+
+    //패키지 옵션
+    public static List<String> getPackageOption(PackageOption packageOption) {
+        List<String> optionList = new ArrayList<>();
+        if (packageOption.isHotelFee()) {
+            optionList.add("호텔비 포함");
+        } else {
+            optionList.add("호텔비 미포함");
+        }
+        if (packageOption.isGuide()) {
+            optionList.add("가이드 있음");
+        } else {
+            optionList.add("가이드 없음");
+        }
+        if (packageOption.isAirfare()) {
+            optionList.add("항공료 포함");
+        } else {
+            optionList.add("항공료 미포함");
+        }
+        if (packageOption.isNoShopping()) {
+            optionList.add("쇼핑 없음");
+        } else {
+            optionList.add("쇼핑 필수");
+        }
+        return optionList;
+    }
 
 
     public static String changeBigDecimalFormat(BigDecimal bigDecimal) {
@@ -32,57 +59,51 @@ public class Formatter {
 
 
     public static String changePhoneNumber(String phoneNumber) {
-        if (!phoneNumber.isEmpty()) {
-            if (phoneNumber.length() == 11) {
-                return phoneNumber.substring(0, 3) + "-" + phoneNumber.substring(3, 7) + "-" + phoneNumber.substring(7, 11);
-            } else if (phoneNumber.length() == 10) {
-                return phoneNumber.substring(0, 3) + "-" + phoneNumber.substring(3, 6) + "-" + phoneNumber.substring(6, 10);
-            }
+        if (phoneNumber == null) {
+            return "";
+        }
+        if(phoneNumber.equals("")){
+            return "";
+        }
+        if (phoneNumber.length() == 11) {
+            return phoneNumber.substring(0, 3) + "-" + phoneNumber.substring(3, 7) + "-" + phoneNumber.substring(7, 11);
+        } else if (phoneNumber.length() == 10) {
+            return phoneNumber.substring(0, 3) + "-" + phoneNumber.substring(3, 6) + "-" + phoneNumber.substring(6, 10);
+        } else {
             throw new RuntimeException("잘못된 전화번호");
         }
-        return "";
-    }
-
-    public static String changeCardNumber(String cardNumber) {
-        return cardNumber.substring(0, 4) + "-" + cardNumber.substring(4, 8) + "-****-****";
     }
 
 
-    //--Han Part 시작--
+//--Han Part 시작--
 
 
-    //카드 번호 포멧 (뒷자리 8자리 * / 4자리마다 - 붙여주기)
-    public static String CardNumFormat(String CardNum) {
+    //초가 같을시 숫자 증가시켜주는 함수
+    private static class IncrementalCounter {
+        private static int counter = 0;
+        private static LocalDateTime lastDateTime = null;
 
-        if (CardNum == null || CardNum.length() != 16) {
-            return "Invalid Card Number";
-        }
+        public static String getNextNumber(LocalDateTime currentDateTime) {
+            if (lastDateTime != null && currentDateTime.equals(lastDateTime)) {
+                // 같은 시간이면 카운터 증가
+                counter = (counter % 1000) + 1;
+            }
+            // 다른 시간이면 counter 유지
+            else if (lastDateTime == null) {
+                // 첫 호출은 counter 초기화
+                counter = 1;
+            }
 
-        // 앞 8자리 유지, 뒷 8자리는 *로 마스킹
-        String masked = CardNum.substring(0, 8) + "********";
-
-        // 4자리마다 '-' 추가
-        String cardNumFormatString = masked.replaceAll("(.{4})", "$1-").substring(0, 19);
-
-        return cardNumFormatString;
-    }
-
-
-    //주문번호 숫자에 붙여주는 1~1000자리 숫자
-    public class IncrementalCounter {
-        private static int counter = 0; // 클래스 변수로 유지
-
-        public static String getNextNumber() {
-            counter = (counter % 1000) + 1; // 1~1000까지 순환
+            lastDateTime = currentDateTime; // 갱신은 무조건 수행
             return String.format("%04d", counter);
         }
     }
 
-    //주문 번호 만드는 함수
+    // 주문 번호 생성 함수
     public static String getReservationCode(LocalDateTime localDateTime) {
         if (localDateTime != null) {
             String dateTimePart = localDateTime.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
-            String counterPart = IncrementalCounter.getNextNumber(); // 3자리 숫자 추가
+            String counterPart = IncrementalCounter.getNextNumber(localDateTime);
             return dateTimePart + counterPart;
         }
         return null;
@@ -90,47 +111,18 @@ public class Formatter {
 
     //패키지명에서 태그 추출
     public static String getTag(String packageName) {
-        return packageName.substring(packageName.indexOf("#"));
+        if (packageName.contains("#")) {
+            return packageName.substring(packageName.indexOf("#"));
+        }
+        return null;
     }
 
     //패키지명에서 태그만 뺀 값
     public static String getPackageNameWithoutTag(String packageName) {
-        return packageName.substring(0, packageName.indexOf("#"));
-    }
-
-    //생년월일 분류
-    public static String getBirth(String birth){
-      return   birth.substring(0,4)+"."+birth.substring(4,6)+"."+birth.substring(6);
-    }
-
-    //패키지 옵션 분류
-    public static List<String> getPackageOptions(PackageOption packageOption){
-        List<String> optionList = new ArrayList<>();
-        if(packageOption.isNoShopping()){
-            optionList.add("쇼핑 필수 아님");
+        if (packageName.contains("#")) {
+            return packageName.substring(0, packageName.indexOf("#"));
         }
-        else {
-            optionList.add("쇼핑 필수");
-        }
-        if(packageOption.isGuide()){
-            optionList.add("가이드 동반");
-        }
-        else{
-            optionList.add("가이드 동반 안함");
-        }
-        if(packageOption.isAirfare()){
-            optionList.add("항공료 포함");
-        }
-        else {
-            optionList.add("항공료 포함 안함");
-        }
-        if(packageOption.isHotelFee()){
-            optionList.add("숙박비 포함");
-        }
-        else {
-            optionList.add("숙박비 포함 안함");
-        }
-        return optionList;
+        return packageName;
     }
 
     //운송장 번호 만드는 함수
@@ -147,8 +139,12 @@ public class Formatter {
         return String.format("%04d-%04d-%04d", part1, part2, part3);
     }
 
+    //생년월일 분류
+    public static String getBirth(String birth) {
+        return birth.substring(0, 4) + "." + birth.substring(4, 6) + "." + birth.substring(6);
+    }
 
-    //-----HanPart 끝------
+//-----HanPart 끝------
 
     //--Han Part2 시작--
     //25.01.01(화) 방식으로 포메팅 하는것
@@ -184,6 +180,19 @@ public class Formatter {
         return String.format("%s(%s) %s", formattedDate, dayOfWeek, time);
     }
 
+    // 25.05.01(목) 09:35 형식으로 포매팅
+    public static String formatDayAndTime(LocalDate date, LocalTime time) {
+        if (date == null || time == null) {
+            throw new IllegalArgumentException("date 또는 time이 null입니다");
+        }
+
+        String formattedDate = date.format(DateTimeFormatter.ofPattern("yy.MM.dd"));
+        String dayOfWeek = date.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN);
+        String formattedTime = time.format(DateTimeFormatter.ofPattern("HH:mm"));
+
+        return String.format("%s(%s) %s", formattedDate, dayOfWeek, formattedTime);
+    }
+
     //25.01.01 식으로 생년월일을 변환해주는 함수
     public static String formatBirthDate(String birthDate) {
         if (birthDate == null || birthDate.length() != 8) {
@@ -203,6 +212,12 @@ public class Formatter {
         return decimalFormat.format(bigDecimal) + "원";
     }
 
+    //BigDecimal을 원단위와 원을 붙여주는 함수 그리고 원이 없음
+    public static String BigDecimalFormat2(BigDecimal bigDecimal) {
+        DecimalFormat decimalFormat = new DecimalFormat("###,###");
+        return decimalFormat.format(bigDecimal) ;
+    }
+
     //몇박 몇일 계산 해주는 함수
     public static String TripDuration(LocalDate startDate, LocalDate endDate) {
 
@@ -215,6 +230,22 @@ public class Formatter {
 
         return tripDuration;
     }
+
+    //일수를 몇박 몇일로 바꿔 주는 함수
+    public static String TripDate(int date) {
+
+        // 몇 박
+        long nights = date - 1;
+
+        //몇박 몇일로 출력
+        String tripDuration = nights + "박 " + date + "일";
+
+        return tripDuration;
+    }
+
+
+
+
 
 
     //--Han Part2 끝--

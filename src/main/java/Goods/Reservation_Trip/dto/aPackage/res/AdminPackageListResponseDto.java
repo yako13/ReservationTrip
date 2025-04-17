@@ -20,7 +20,7 @@ public class AdminPackageListResponseDto {
 
     private String mainImagePath;
 
-    private BigDecimal fuelSurchargeIncluded;
+    private String fuelSurchargeIncluded;
 
     private String departurePointOut;
 
@@ -36,5 +36,5 @@ public class AdminPackageListResponseDto {
 
     private String modifiedAt;
 
-    private String airlineOut;
+    private String packageStatus;
 }

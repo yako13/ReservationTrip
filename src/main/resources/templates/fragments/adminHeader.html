@@ -31,6 +31,7 @@
                         <span>🔔알림</span>
                         <span id="closeIcon">X</span>
                     </div>
+                    <button id="clear-notifications" class="btn-secondary">알림 초기화</button>
                     <ul id="notification-items">
                     </ul> <!-- 알림 목록 -->
                 </div>
@@ -74,6 +75,8 @@
                 <div class="dropdown-content">
                     <a th:href="@{/admin/package/list}">상품 목록</a>
                     <a th:href="@{/admin/package/new}">상품 추가</a>
+                    <a th:href="@{/admin/package/category/new}">카테고리 관리</a>
+                    <a th:href="@{/admin/package/airport/new}">공항 관리</a>
                 </div>
             </div>
 
@@ -90,7 +93,6 @@
                     <i class="arrow fa fa-angle-down"></i></button>
                 <div class="dropdown-content">
                     <a th:href="@{/admin/chart}">매출 차트</a>
-                    <a th:href="@{/admin/chart/report}">매출 보고서</a>
                 </div>
             </div>
             <div class="SlideNavCloseDiv">

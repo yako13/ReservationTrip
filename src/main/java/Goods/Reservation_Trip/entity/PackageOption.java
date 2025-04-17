@@ -1,6 +1,7 @@
 package Goods.Reservation_Trip.entity;
 
 import Goods.Reservation_Trip.base.BaseTime;
+import Goods.Reservation_Trip.dto.aPackage.req.PackageOptionRequestDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,7 +22,7 @@ public class PackageOption extends BaseTime {
     private Long id;
 
     @JoinColumn(name = "package_id")
-    @ManyToOne
+    @OneToOne
     private Package aPackage;
 
     @Column(nullable = false, columnDefinition = "BOOLEAN")
@@ -39,4 +40,11 @@ public class PackageOption extends BaseTime {
     @Column(name = "no_shopping",nullable = false, columnDefinition = "BOOLEAN")
     @Comment("쇼핑 여부")
     private boolean noShopping;
+
+    public void update(PackageOptionRequestDto requestDto) {
+        this.guide = requestDto.isGuide();
+        this.hotelFee = requestDto.isHotelFee();
+        this.airfare = requestDto.isAirFare();
+        this.noShopping = requestDto.isShopping();
+    }
 }

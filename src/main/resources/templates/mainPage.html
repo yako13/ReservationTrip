@@ -4,13 +4,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>냥만여행:홈</title>
+    <title>🐾냥만여행 홈</title>
 
     <link rel="stylesheet" th:href="@{https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css}">
 
     <link rel="stylesheet" th:href="@{/css/mainPage.css}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <style>
+        body {
+            margin: 0;
+            padding: 0;
+
+        }
+
         /* 요일 헤더 중 일요일 (첫 번째 열) 빨간색 */
         .tui-calendar th:nth-child(1) {
             color: #e26d69 !important;
@@ -25,62 +34,210 @@
         .tui-datepicker.tui-rangepicker .tui-is-selectable.tui-is-selected {
             background-color: #5eccff;
         }
+
+        .HanStarOn {
+            font-size: 22px;
+            margin-right: 7px;
+            color: #ffd900;
+        }
+
+        .HanStarOn2 {
+            font-size: 28px;
+            margin-right: 10px;
+            color: #ffd900;
+        }
+
+
+        /* 검색창 드롭박스 시작 */
+
+        .HanSerachDropdown {
+            position: relative;
+            display: inline-block;
+
+        }
+
+        .HanSerachDropdown-toggle {
+            box-sizing: border-box;
+            padding: 20px 16px;
+            /* border: 1px solid #ccc; */
+            width: 260px;
+            height: 60px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 17px;
+            background-color: #f9f9f9;
+            /* 기본 글자색 회색 */
+            color: #7e7e7e;
+        }
+
+
+        .HanSerachDropdown-toggle.HanImg {
+            box-sizing: border-box;
+            padding: 20px 16px;
+            width: 260px;
+            height: 60px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 17px;
+            background-color: #f9f9f9;
+            /* 기본 글자색 회색 */
+            color: #7e7e7e;
+            display: flex;
+            align-items: center;
+        }
+
+        .HanSerachDropdown-toggle.selected {
+            color: black;
+            /* 선택된 후 일반 색상 */
+        }
+
+
+        .HanSerachDropdown-menu {
+            display: none;
+            position: absolute;
+            top: 110%;
+            left: 0;
+            /* width: 100%; */
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+            overflow: hidden
+        }
+
+        .HanSerachDropdown-flex {
+            display: inline-flex;
+            flex-wrap: wrap;
+            /* ✨ 줄바꿈 허용 */
+            gap: 0px;
+
+
+        }
+
+
+        .HanSerachDropdown-menu .HanSerachDivCol {
+            width: 260px;
+            text-align: center;
+            box-sizing: border-box;
+            padding: 15px 16px;
+            cursor: pointer;
+        }
+
+        .HanSerachDropdown-menu .HanSerachDivCol:hover {
+            background-color: #f0f0f0;
+        }
+
+
+        .HanSerachDropdown.open .dropdown-menu {
+            display: block;
+        }
+
+
+
+        .HanSerachDropdown.open .HanSerachDropdown-menu {
+            display: block;
+        }
+
+
+        /* 검색창 드롭박스 끝 */
+
+
+        .wideOverflow {
+            left: -90px;
+
+        }
+
+        .textBox1 {
+            max-height: 64px;
+            overflow: hidden;
+            line-height: 1.4;
+            font-size: 25px;
+            /* 초기 폰트 크기 */
+        }
     </style>
 
 </head>
 
 <body>
-    <input type="hidden" id="flashMessage" th:value="${data}">    
-    <div class="HanSection" id="section1">
+    <!-- 알람용 input -->
+    <input type="hidden" id="flashMessage" th:value="${data}">
+
+    <div class="HanSection" id="section1" style="height: 99vh;">
         <header th:replace="/fragments/memberHeader::memberHeader"></header>
 
 
         <div class="HanCarouselMainDiv">
 
             <!-- 캐러셀 검색창 시작 -->
-            <form action="" id="HanCalSerachForm" class="HanCalSerachMain">
+            <form th:action="@{/packages}" id="HanCalSerachForm" class="HanCalSerachMain" th:method="get">
 
 
                 <!-- 목적지 -->
-                <div class="HanSerachDropdown">
+
+                <input type="hidden" name="categoryId" id="destinationInput" data-type="destination" />
+                <input type="hidden" name="categoryDepth" value="3" />
+                <input type="hidden" name="categoryName" id="categoryNameId" />
+
+                <div class="HanSerachDropdown setCategoryName" data-input-id="destinationInput" id="destinationDiv">
+
                     <div class="HanSerachDropdown-toggle HanImg">
                         <img th:src="@{/images/airplan2.svg}" width="20px" height="20px" style="margin-right: 5px;">
                         <span>어디로 갈거냥?</span>
                     </div>
+
                     <div class="HanSerachDropdown-menu">
-                        <div class="HanTop">전체</div>
-                        <div>서울</div>
-                        <div>부산</div>
-                        <div>강릉</div>
-                        <div>여수</div>
-                        <div class="HanBottom">포항</div>
+
+                        <div class="HanSerachDropdown-flex">
+                            <div class=" HanSerachDivCol" data-value="">전체</div>
+
+                            <div class="HanSerachDivCol" th:each="cityList, iterStat : ${cityList}"
+                                th:data-value="${cityList.id}" th:data-name="${cityList.name}"
+                                th:text="${cityList.name}">
+
+                            </div>
+
+                        </div>
                     </div>
+
                 </div>
 
 
-                <!-- 출발지-->
-                <div class="HanSerachDropdown">
-                    <div class="HanSerachDropdown-toggle HanImg">
-                        <img th:src="@{/images/map.svg}" width="30px" height="30px" style="margin-bottom: 3px;">
-                        <span>출발지</span>
+
+
+                <div class="PackTitleSerach">
+
+                    <!-- 실제 form에 전달할 hidden input -->
+                    <input type="hidden" name="airportId" id="airlineIdInput" />
+
+                    <div class="HanSerachDropdown" id="airportDiv" data-input-id="airlineIdInput">
+                        <div class="HanSerachDropdown-toggle  HanImg">
+                            <img th:src="@{/images/map.svg}" width="30px" height="30px" style="margin-bottom: 3px;">
+
+                            <span>출발지</span>
+
+                        </div>
+
+                        <div class="HanSerachDropdown-menu">
+                            <div class="HanSerachDropdown-flex">
+                                <div data-value="" class=" HanSerachDivCol">전체</div>
+
+                                <div class="HanSerachDivCol" th:each="airport, iterStat : ${airportList}"
+                                    th:data-value="${airport.id}" th:text="${airport.name}">
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="HanSerachDropdown-menu">
-                        <div class="HanTop">전체</div>
-                        <div>인천/김포</div>
-                        <div>부산</div>
-                        <div>대구</div>
-                        <div>청주</div>
-                        <div>광주</div>
-                        <div>제주</div>
-                        <div class="HanBottom">양양</div>
-                    </div>
+
                 </div>
+
 
 
                 <div class="HanSerachDate">
                     <!-- 날짜 입력 input -->
                     <img th:src="@{/images/calendar.svg}" width="20px" height="20px" style="margin-left: 3px;">
                     <input type="text" id="departure-input" placeholder="출발일을 선택하세요" readonly />
+                    <input type="hidden" id="tripStartHidden" name="startDate" />
 
                     <!-- 달력 표시용 컨테이너 -->
                     <div id="tui-datepicker"></div>
@@ -126,21 +283,7 @@
                                     alt="3" /></a>
                         </div>
                         <!-- /setting -->
-                        <!-- <div class="HanTrackSlide">
-                  <a href="/product/details/7"
-                    ><img th:src="@{images/carousel1.png}" alt="1"
-                  /></a>
-                </div>
-                <div class="HanTrackSlide">
-                  <a href="/product/details/8"
-                    ><img th:src="@{images/carousel2.png}" alt="2"
-                  /></a>
-                </div>
-                <div class="HanTrackSlide">
-                  <a href="/product/details/9"
-                    ><img th:src="@{images/carousel3.png}" alt="3"
-                  /></a>
-                </div> -->
+
                     </div>
 
                     <!-- 인디케이터 -->
@@ -163,94 +306,33 @@
 
         <div id="section2" class="HanSection">
             <div class="HanMainBodyTitle">
-                <a id="showBest">베스트</a>
+                <a id="showBest">베스트 여행</a>
             </div>
             <hr class="HanProductHr" />
 
             <div class="HanMainNewDiv">
 
-                <div class="HanMainNewDivCard">
+                <div class="HanMainNewDivCard" th:each="BestTop4 :${BestTop4}">
                     <div class="HanMainNewDivCardSort">
-                        <p>1.</p>
+                        <p>[[${BestTop4.index}]].</p>
                     </div>
 
                     <div class="HanMainNewDivCardImg">
-                        <a>
-                            <img th:src="@{/images/pr1.jpg}" alt="상품이미지" />
+                        <a th:href="@{/package/details/{id}(id=${BestTop4.id})}">
+                            <img th:src="@{'/productImages/'+ ${BestTop4.mainImage.getImageFullName}}" />
                         </a>
                     </div>
 
                     <div class="HanMainNewDivCardPDiv">
-                        <p class="HanMainNewDivCardPDivName">
+                        <p class="HanMainNewDivCardPDivName textBox1" th:text="${BestTop4.packageName}">
                             [출발확정] 오사카 유니버설스튜디오 재팬 1일
                         </p>
-                        <p class="HanMainNewDivCardPDivPrice">
-                            140,000원
-                        </p>
-                    </div>
-                </div>
-
-
-                <div class="HanMainNewDivCard">
-                    <div class="HanMainNewDivCardSort">
-                        <p>2.</p>
-                    </div>
-
-                    <div class="HanMainNewDivCardImg">
-                        <a>
-                            <img th:src="@{/images/pr2.jpg}" alt="상품이미지" />
-                        </a>
-                    </div>
-
-                    <div class="HanMainNewDivCardPDiv">
-                        <p class="HanMainNewDivCardPDivName">
-                            [예약대기] 다낭 3박 4일
+                        <p class="HanMainNewDivCardPDivName2">
+                            <i class="fa-solid fa-star HanStarOn"></i>
+                            <span th:text="${BestTop4.averageRating}">4.5</span>
                         </p>
                         <p class="HanMainNewDivCardPDivPrice">
-                            620,000원
-                        </p>
-                    </div>
-                </div>
-
-
-                <div class="HanMainNewDivCard">
-                    <div class="HanMainNewDivCardSort">
-                        <p>3.</p>
-                    </div>
-
-                    <div class="HanMainNewDivCardImg">
-                        <a>
-                            <img th:src="@{/images/pr3.jpg}" alt="상품이미지" />
-                        </a>
-                    </div>
-
-                    <div class="HanMainNewDivCardPDiv">
-                        <p class="HanMainNewDivCardPDivName">
-                            다낭 불꽃축제 1일
-                        </p>
-                        <p class="HanMainNewDivCardPDivPrice">
-                            220,000원
-                        </p>
-                    </div>
-                </div>
-
-                <div class="HanMainNewDivCard">
-                    <div class="HanMainNewDivCardSort">
-                        <p>4.</p>
-                    </div>
-
-                    <div class="HanMainNewDivCardImg">
-                        <a>
-                            <img th:src="@{/images/pr4.jpg}" alt="상품이미지" />
-                        </a>
-                    </div>
-
-                    <div class="HanMainNewDivCardPDiv">
-                        <p class="HanMainNewDivCardPDivName">
-                            런던 3박 4일 패키지 여행
-                        </p>
-                        <p class="HanMainNewDivCardPDivPrice">
-                            2,000,000원
+                            [[${BestTop4.fuelSurchargeIncluded}]]원
                         </p>
                     </div>
                 </div>
@@ -262,98 +344,39 @@
         <!--  /베스트 상품 순  -->
 
 
-        <!-- 여행사 pick 시작 -->
+        <!-- 리뷰 별점순 시작 -->
 
         <div id="section3" class="HanSection" style="background-color: #f3f3f3;">
             <div class="HanMainBodyTitle">
-                <a>여행사 Pick</a>
+                <a>평점 높은 여행</a>
             </div>
             <hr class="HanProductHr" />
 
             <div class="HanMainNewDiv">
 
-                <div class="HanMainNewDivCard">
+                <div class="HanMainNewDivCard" th:each="ReviewTop4 :${ReviewTop4}">
                     <div class="HanMainNewDivCardSort">
-                        <p>1.</p>
+                        <p>[[${ReviewTop4.index}]].</p>
                     </div>
 
                     <div class="HanMainNewDivCardImg2">
-                        <a>
-                            <img th:src="@{/images/pick1.jpg}" alt="상품이미지" />
+                        <a th:href="@{/package/details/{id}(id=${ReviewTop4.id})}">
+                            <img th:src="@{'/productImages/'+ ${ReviewTop4.mainImage.getImageFullName}}" />
                         </a>
                     </div>
 
                     <div class="HanMainNewDivCardPDiv2">
-                        <p class="HanMainNewDivCardPDivName">
-                            [출발확정] 오키나와 3박 4일
+                        <p class="HanMainNewDivCardPDivName textBox1" th:text="${ReviewTop4.packageName}">
+                            [출발확정] 오키나와오키나와
                         </p>
-                        <p class="HanMainNewDivCardPDivPrice">
-                            1,140,000원
-                        </p>
-                    </div>
-                </div>
 
+                        <div class="HanMainNewDivCardPDivName3" style="padding-right: 25px; padding-bottom: 20px;">
+                            <i class="fa-solid fa-star HanStarOn2"></i>
+                            <span th:text="${ReviewTop4.averageRating}">4.5</span>
+                        </div>
 
-                <div class="HanMainNewDivCard">
-                    <div class="HanMainNewDivCardSort">
-                        <p>2.</p>
-                    </div>
-
-                    <div class="HanMainNewDivCardImg2">
-                        <a>
-                            <img th:src="@{/images/pick2.jpg}" alt="상품이미지" />
-                        </a>
-                    </div>
-
-                    <div class="HanMainNewDivCardPDiv2">
-                        <p class="HanMainNewDivCardPDivName">
-                            [예약대기]동유럽 3박 4일
-                        </p>
-                        <p class="HanMainNewDivCardPDivPrice">
-                            2,620,000원
-                        </p>
-                    </div>
-                </div>
-
-
-                <div class="HanMainNewDivCard">
-                    <div class="HanMainNewDivCardSort">
-                        <p>3.</p>
-                    </div>
-
-                    <div class="HanMainNewDivCardImg2">
-                        <a>
-                            <img th:src="@{/images/pick3.jpg}" alt="상품이미지" />
-                        </a>
-                    </div>
-
-                    <div class="HanMainNewDivCardPDiv2">
-                        <p class="HanMainNewDivCardPDivName">
-                            시드니 여행 1일
-                        </p>
-                        <p class="HanMainNewDivCardPDivPrice">
-                            620,000원
-                        </p>
-                    </div>
-                </div>
-
-                <div class="HanMainNewDivCard">
-                    <div class="HanMainNewDivCardSort">
-                        <p>4.</p>
-                    </div>
-
-                    <div class="HanMainNewDivCardImg2">
-                        <a>
-                            <img th:src="@{/images/pick4.jpg}" alt="상품이미지" />
-                        </a>
-                    </div>
-
-                    <div class="HanMainNewDivCardPDiv2">
-                        <p class="HanMainNewDivCardPDivName">
-                            사이판 1박 2일
-                        </p>
-                        <p class="HanMainNewDivCardPDivPrice">
-                            1,000,000원
+                        <p class="HanMainNewDivCardPDivPrice" style=" font-size: 23px;">
+                            [[${ReviewTop4.fuelSurchargeIncluded}]]원
                         </p>
                     </div>
                 </div>
@@ -363,7 +386,7 @@
         </div>
 
 
-        <!-- 여행사 pick 끝 -->
+        <!-- 리뷰 별점순 끝 -->
 
 
         <!--  신상품 순  -->
@@ -372,7 +395,7 @@
 
             <div class="HanMainBodyTitle">
 
-                <a id="showNew">신상품</a>
+                <a id="showNew">따끈 따끈 신상 여행</a>
             </div>
 
             <hr class="HanProductHr" />
@@ -380,96 +403,37 @@
             <div class="HanMainNewDivAera">
                 <div class="HanMainNewDiv">
 
-                    <div class="HanMainNewDivCard">
+                    <div class="HanMainNewDivCard" th:each="NewTop4 :${NewTop4}">
                         <div class="HanMainNewDivCardSort">
-                            <p style="text-align: left">1.</p>
+                            <p style="text-align: left">[[${NewTop4.index}]].</p>
                         </div>
 
                         <div class="HanMainNewDivCardImg">
-                            <a>
-                                <img th:src="@{/images/pr5.jpg}" alt="상품이미지" />
+                            <a th:href="@{/package/details/{id}(id=${NewTop4.id})}">
+                                <img th:src="@{'/productImages/'+ ${NewTop4.mainImage.getImageFullName}}" />
                             </a>
                         </div>
 
                         <div class="HanMainNewDivCardPDiv">
-                            <p class="HanMainNewDivCardPDivName">
+                            <p class="HanMainNewDivCardPDivName textBox1" th:text="${NewTop4.packageName}">
                                 프랑스 파리 미식 로드
                             </p>
+
+                            <p class="HanMainNewDivCardPDivName2">
+                                <i class="fa-solid fa-star HanStarOn "></i>
+                                <span th:text="${NewTop4.averageRating}">4.5</span>
+                            </p>
+
                             <p class="HanMainNewDivCardPDivPrice">
-                                3,120,000원
+                                [[${NewTop4.fuelSurchargeIncluded}]]원
                             </p>
                         </div>
                     </div>
-
-
-                    <div class="HanMainNewDivCard">
-                        <div class="HanMainNewDivCardSort">
-                            <p style="text-align: left">2.</p>
-                        </div>
-
-                        <div class="HanMainNewDivCardImg">
-                            <a>
-                                <img th:src="@{/images/pr6.jpg}" alt="상품이미지" />
-                            </a>
-                        </div>
-
-                        <div class="HanMainNewDivCardPDiv">
-                            <p class="HanMainNewDivCardPDivName">
-                                부산 해운대 해수욕장 1박
-                            </p>
-                            <p class="HanMainNewDivCardPDivPrice">
-                                120,000원
-                            </p>
-                        </div>
-                    </div>
-
-
-                    <div class="HanMainNewDivCard">
-                        <div class="HanMainNewDivCardSort">
-                            <p style="text-align: left">3.</p>
-                        </div>
-
-                        <div class="HanMainNewDivCardImg">
-                            <a>
-                                <img th:src="@{/images/pr7.jpg}" alt="상품이미지" />
-                            </a>
-                        </div>
-
-                        <div class="HanMainNewDivCardPDiv">
-                            <p class="HanMainNewDivCardPDivName">
-                                방콕 3박 4일
-                            </p>
-                            <p class="HanMainNewDivCardPDivPrice">
-                                420,000원
-                            </p>
-                        </div>
-                    </div>
-
-
-                    <div class="HanMainNewDivCard">
-                        <div class="HanMainNewDivCardSort">
-                            <p style="text-align: left">4.</p>
-                        </div>
-
-                        <div class="HanMainNewDivCardImg">
-                            <a>
-                                <img th:src="@{/images/pr8.jpg}" alt="상품이미지" />
-                            </a>
-                        </div>
-
-                        <div class="HanMainNewDivCardPDiv">
-                            <p class="HanMainNewDivCardPDivName">
-                                이집트 카이로 탐방 4박 5일
-                            </p>
-                            <p class="HanMainNewDivCardPDivPrice">
-                                2,420,000원
-                            </p>
-                        </div>
-                    </div>
-
 
                 </div>
+
             </div>
+
         </div>
 
         <!--  /신상품 순  -->
@@ -483,27 +447,17 @@
     <footer th:replace="/fragments/memberFooter::memberFooter"></footer>
 
     <!-- 푸터 끝 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const msgInput = document.getElementById('flashMessage');
-            const message = msgInput?.value;
-    
-            if (message) {
-                Swal.fire({
-                    icon: 'error',
-                    title: '오류 발생',
-                    text: message,
-                    confirmButtonText: '확인'
-                });
-            }
-        });
-    </script>
     <!-- 제이쿼리 -->
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 
-    <!-- 추가한 부분 끝 -->
+    <!-- ========================= scroll-top ========================= -->
+    <button id="scrollToTopBtn">
+
+    </button>
+
+    <!-- 탑 스크롤 스크립트 -->
+    <script th:src="@{/js/scrollTop.js}"></script>
 
     <script>
 
@@ -528,11 +482,12 @@
         }
 
         // 다른 곳을 클릭하면 드롭다운 닫기
+        // 다른 곳을 클릭하면 .HanSerachDropdown 드롭다운 닫기
         document.addEventListener("click", function () {
             document
-                .querySelectorAll(".HandropdownBox, .HanDrodBoxName")
+                .querySelectorAll(".HanSerachDropdown")
                 .forEach((menu) => {
-                    menu.classList.remove("HanHeadershow");
+                    menu.classList.remove("open");
                 });
         });
 
@@ -655,45 +610,6 @@
 
     </script>
 
-    <!-- 캐러셀 검색창 드롭박스 커스텀 시작 -->
-
-    <script>
-
-        // 모든 드롭다운 처리
-        document.querySelectorAll('.HanSerachDropdown').forEach(dropdown => {
-
-            const toggle = dropdown.querySelector('.HanSerachDropdown-toggle');
-            const menuItems = dropdown.querySelectorAll('.HanSerachDropdown-menu div');
-
-            toggle.addEventListener('click', (e) => {
-
-                e.stopPropagation();
-                // 다른 드롭다운은 닫기
-                document.querySelectorAll('.HanSerachDropdown').forEach(d => {
-                    if (d !== dropdown) d.classList.remove('open');
-                });
-                dropdown.classList.toggle('open');
-            });
-
-            menuItems.forEach(item => {
-                item.addEventListener('click', () => {
-                    toggle.querySelector('span').textContent = item.textContent;
-                    toggle.classList.add('selected'); // 선택되면 글자색 바꾸기
-                    dropdown.classList.remove('open');
-                });
-            });
-        });
-
-
-
-        // 외부 클릭 시 모두 닫기
-        document.addEventListener('click', () => {
-            document.querySelectorAll('.HanSerachDropdown').forEach(d => d.classList.remove('open'));
-        });
-
-    </script>
-
-    <!-- 캐러셀 검색창 드롭박스 커스텀 끝 -->
 
 
     <script>
@@ -792,6 +708,120 @@
     </script>
 
 
+    <!-- 드롭다운 함수 -->
+    <script>
+        document.querySelectorAll('.HanSerachDropdown').forEach(dropdown => {
+            const toggle = dropdown.querySelector('.HanSerachDropdown-toggle');
+            const menuItems = dropdown.querySelectorAll('.HanSerachDropdown-flex div');
+            const inputId = dropdown.getAttribute('data-input-id');
+            const hiddenInput = inputId ? document.getElementById(inputId) : null;
+            const categoryNameInput = document.getElementById('categoryNameId');
+            const isCategoryNameTarget = dropdown.classList.contains('setCategoryName'); // 체크 포인트
+
+            toggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                document.querySelectorAll('.HanSerachDropdown').forEach(d => {
+                    if (d !== dropdown) d.classList.remove('open');
+                });
+                dropdown.classList.toggle('open');
+            });
+
+            menuItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const selectedValue = item.getAttribute('data-value');
+                    const selectedName = item.getAttribute('data-name') || item.textContent.trim();
+
+                    toggle.querySelector('span').textContent = selectedName;
+                    toggle.classList.add('selected');
+                    dropdown.classList.remove('open');
+
+                    if (hiddenInput) hiddenInput.value = selectedValue;
+
+                    // 목적지 드롭다운일 때만 categoryName 설정
+                    if (isCategoryNameTarget && categoryNameInput && selectedName) {
+                        categoryNameInput.value = selectedName;
+                    }
+                });
+            });
+        });
+
+
+
+
+    </script>
+
+
+    <!-- 드롭다운 너비 조정 -->
+    <script>
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const destinationDropdown = document.getElementById('destinationDiv');
+            const destinationMenu = destinationDropdown.querySelector('.HanSerachDropdown-menu');
+            const destinationFlex = destinationMenu.querySelector('.HanSerachDropdown-flex');
+            const destinationItems = destinationFlex.querySelectorAll('.HanSerachDivCol');
+
+            const totalItems = destinationItems.length;
+
+            let totalWidth;
+
+            if (totalItems <= 8) {
+                totalWidth = 260;
+            } else {
+                const baseItemCount = 8;
+                const widthStep = 260;
+
+
+
+
+                // 8개 초과 항목에 대해 8개 단위로 증가 (9~16 → 1단계, 17~24 → 2단계 ...)
+                const multiplier = Math.ceil((totalItems - baseItemCount) / baseItemCount) + 1;
+
+                totalWidth = multiplier * widthStep;
+
+                if (multiplier >= 5) {
+                    destinationMenu.classList.add('wideOverflow');
+
+                    totalWidth - 310;
+                }
+
+
+            }
+
+
+            destinationFlex.style.width = `${totalWidth}px`;
+
+        });
+
+    </script>
+
+
+    <script>
+
+        window.addEventListener('DOMContentLoaded', () => {
+
+            const boxes = document.querySelectorAll('.textBox1');
+
+            boxes.forEach(box => {
+                let fontSize = 24; // 초기 폰트 크기
+                box.style.fontSize = fontSize + 'px';
+
+                // 넘칠 경우 줄이기
+                while (box.scrollHeight > box.clientHeight && fontSize > 10) {
+                    fontSize--;
+                    box.style.fontSize = fontSize + 'px';
+                }
+            });
+
+        });
+    </script>
+
+
+
+
+
+
+
+
     <!-- TOAST UI Date Picker JS -->
     <script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
 
@@ -824,8 +854,14 @@
             const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
             const day = String(selectedDate.getDate()).padStart(2, '0');
             const weekday = weekdays[selectedDate.getDay()];
-            const formatted = `${year}.${month}.${day}(${weekday})`;
-            document.getElementById('departure-input').value = formatted;
+
+            // 보여줄 형식
+            const formattedDisplay = `${year}.${month}.${day}(${weekday})`;
+            document.getElementById('departure-input').value = formattedDisplay;
+
+            // 서버 전송용 hidden input
+            const formattedRaw = `${year}-${month}-${day}`;
+            document.getElementById('tripStartHidden').value = formattedRaw;
         });
 
         document.getElementById('departure-input').value = '';
@@ -845,11 +881,13 @@
     </script>
 
 
-
     <!-- 달력 스크립트 끝 -->
 
 
+    <!-- rttr data 알람 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <script th:src="@{/js/alert.js}"></script>
 
 
 </body>

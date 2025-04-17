@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>냥만여행 약관동의</title>
+    <title>🐾냥만여행 약관동의</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/mainPage.css}"/>
     <style>
@@ -65,6 +65,7 @@
             transition: all 0.3s ease;
             font-size: 1.2rem;
             border-radius: 4px;
+            cursor: pointer;
 
             &:hover {
                 background-color: #3e8cf1;
@@ -83,6 +84,13 @@
 
         .titleArea{
             margin-bottom: 5rem;
+        }
+
+        #check01,
+        #check02,
+        #check03 {
+            cursor: pointer;
+
         }
     </style>
 </head>
@@ -151,6 +159,7 @@
         </div>
     </main>
     <footer th:replace="/fragments/memberFooter::memberFooter"></footer>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         // 약관 동의 시작
         let bol = true;
@@ -242,7 +251,7 @@
             const isPrivacyChecked = check03.classList.contains("fa-solid");
 
             if (!isTermsChecked || !isPrivacyChecked) {
-                alert("필수 약관에 동의해야 회원가입을 진행할 수 있습니다.");
+                Swal.fire({ text: "필수 약관에 동의해야 회원가입을 진행할 수 있습니다.", confirmButtonColor: "#43BFF8" });
                 return; // 이동 차단
             }
 

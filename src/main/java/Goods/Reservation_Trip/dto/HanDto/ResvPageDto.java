@@ -18,6 +18,9 @@ public class ResvPageDto { //예약 페이지를 보여주기위한 dto
     //성인 유아 아동 인원수 및 출발일 패키지 회원pk
     private PackResvDto packResvDto;
 
+    //여행일정 pk
+    private Long packageSchedulePk;
+
     //여행 출발일 변환된것
     private String tripStartString;
     //여행 도착일 변환된것
@@ -37,6 +40,9 @@ public class ResvPageDto { //예약 페이지를 보여주기위한 dto
     //회원 전화번호 변환
     private String phoneNum;
 
+    //회원 생년월일 변환
+    private String birth;
+
     //패키지 엔티티
     private Package packageEntity;
 
@@ -44,7 +50,7 @@ public class ResvPageDto { //예약 페이지를 보여주기위한 dto
     private PackageSchedule packageSchedule;
 
     //성인 가격 총합
-    //Package의 유류할증료 포함 가격이 성인 가격
+    //Package의 유류할증료 포함 가격이 성인 가격 합
     private BigDecimal adultSumPrice;
 
     //아동 가격 총합
@@ -60,6 +66,9 @@ public class ResvPageDto { //예약 페이지를 보여주기위한 dto
 
     //---formatter로 변환된 값---
 
+    //Package의 유류할증료 포함 성인 가격
+    private String adultPriceString;
+
     //성인 가격 총합
     //Package의 유류할증료 포함 가격이 성인 가격
     private String adultSumPriceString;
@@ -74,6 +83,12 @@ public class ResvPageDto { //예약 페이지를 보여주기위한 dto
 
     //총 가격
     private String totalPriceString;
+
+    //로그인 여부
+    private boolean loginNo;
+
+    //예약이 만석인지 여부
+    private boolean resvFull;
 
 
 

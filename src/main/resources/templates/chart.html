@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🐾냥만여행 매출 통계</title>
+  <link th:href="@{/css/admin/header.css}" rel="stylesheet">
+  </link>
+  <style>
+    #main {
+      padding: 70px 20px 0px 50px;
+    }
+
+    .rwd-table {
+      border: 1px #a39485 solid;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+      width: 600px;
+      border-collapse: collapse;
+      border-radius: 5px;
+      overflow: hidden;
+      text-align: center;
+
+      td {
+        border-bottom: #ccc solid 1px;
+        padding: 5px;
+        font-size: 1.3rem;
+      }
+
+      td:not(:last-child) {
+        border-right: #ccc solid 1px;
+      }
+    }
+
+    .rwd-table th {
+      border-top: none;
+      color: #fff;
+      background-color: #33415c;
+      height: 3rem;
+      font-size: 1.3rem;
+    }
+
+    .tableArea {
+      display: flex;
+      padding: 10px;
+    }
+
+    .tH {
+      width: 100px;
+    }
+
+    h2,
+    h3 {
+      color: #444;
+    }
+
+    canvas {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+      margin-bottom: 50px;
+      padding: 20px;
+    }
+
+    .HanChartBody {
+      margin-top: 50px;
+      width: 100%;
+    }
+
+    .HanChartDiv {
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .HanChartDiv2 {
+      width: 100%;
+    }
+
+    .graph {
+      height: 500px;
+      width: 50%;
+      margin-right: 50px;
+    }
+
+    .dayAreaInner,
+    .monthAreaInner,
+    .yearAreaInner,
+    .dayOfWeekAreaInner {
+      display: flex;
+      margin-bottom: 50px;
+    }
+
+    #yearSelect,
+    #monthSelect {
+      font-size: 1rem;
+    }
+
+    .radioArea {
+      font-size: 1.2rem;
+      display: flex;
+      label{
+        margin-right: 5px;
+      }
+    }
+
+    [type="radio"],
+    span {
+      vertical-align: middle;
+    }
+
+    [type="radio"] {
+      appearance: none;
+      border: max(2px, 0.1em) solid gray;
+      border-radius: 50%;
+      width: 1.2em;
+      height: 1.2em;
+      transition: border 0.2s ease-in-out;
+    }
+
+    [type="radio"]:checked {
+      border: 0.4em solid #33415c;
+    }
+
+    [type="radio"]:focus-visible {
+      outline-offset: max(2px, 0.1em);
+      outline: max(2px, 0.1em) dotted #33415c;
+    }
+
+    [type="radio"]:hover {
+      box-shadow: 0 0 0 max(4px, 0.2em) lightgray;
+      cursor: pointer;
+    }
+
+    [type="radio"]:hover+span {
+      cursor: pointer;
+    }
+
+    [type="radio"]:disabled {
+      background-color: lightgray;
+      box-shadow: none;
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    [type="radio"]:disabled+span {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    .mainHeadArea {
+      display: flex;
+      align-items: center;
+    }
+
+    .dateArea {
+      margin: 0px 20px;
+      line-height: 80px;
+    }
+
+    .emptyCell {
+      border-bottom: none;
+    }
+
+    .yearTable,.weekendTable{
+      height: 10rem;
+    }
+  </style>
+</head>
+
+<body>
+  <header th:replace="fragments/adminHeader::masterHeader"></header>
+  <nav th:replace="fragments/adminHeader::masterNav"></nav>
+  <main id="main">
+    <div class="mainHeadArea">
+      <h2>매출 현황</h2>
+      <div class="dateArea">
+        <select name="year" id="yearSelect" onchange=""></select>
+        <select name="month" id="monthSelect" onchange="">
+          <option value="1" th:selected="${monthSelect==1}">1월</option>
+          <option value="2" th:selected="${monthSelect==2}">2월</option>
+          <option value="3" th:selected="${monthSelect==3}">3월</option>
+          <option value="4" th:selected="${monthSelect==4}">4월</option>
+          <option value="5" th:selected="${monthSelect==5}">5월</option>
+          <option value="6" th:selected="${monthSelect==6}">6월</option>
+          <option value="7" th:selected="${monthSelect==7}">7월</option>
+          <option value="8" th:selected="${monthSelect==8}">8월</option>
+          <option value="9" th:selected="${monthSelect==9}">9월</option>
+          <option value="10" th:selected="${monthSelect==10}">10월</option>
+          <option value="11" th:selected="${monthSelect==11}">11월</option>
+          <option value="12" th:selected="${monthSelect==12}">12월</option>
+        </select>
+      </div>
+
+      <div class="radioArea">
+        <input type="radio" id="dayTotalSales" name="sales" checked />
+        <label for="dayTotalSales">일간</label>
+        <input type="radio" id="monthTotalSales" name="sales" />
+        <label for="monthTotalSales">월간</label>
+        <input type="radio" id="yearTotalSales" name="sales" />
+        <label for="yearTotalSales">연간</label>
+        <input type="radio" id="dayOfWeekTotalSales" name="sales" />
+        <label for="dayOfWeekTotalSales">요일</label>
+      </div>
+
+
+    </div>
+    <hr />
+
+    <div class="HanChartBody">
+      <div class="HanChartDiv">
+        <div class="HanChartDiv2">
+          <div class="dayArea">
+            <h2>
+              📅 일별 매출 ([[${yearSelect}]]년 [[${monthSelect}]]월)
+            </h2>
+            <div class="dayAreaInner">
+              <div class="graph">
+                <canvas id="dayChart"></canvas>
+              </div>
+
+              <table class="rwd-table">
+                <thead>
+                  <tr>
+                    <th class="tH">날짜</th>
+                    <th>일일 매출</th>
+                    <th class="tH">날짜</th>
+                    <th>일일 매출</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:each="i : ${#numbers.sequence(0, 15)}">
+                    <!-- 첫 번째 날짜와 매출 (1~16일) -->
+                    <td th:text="${i + 1} + '일'"></td> <!-- 날짜 (1부터 시작) -->
+                    <td th:text="${day.get(i).totalSales}" class="dayPrice"></td>
+
+                    <!-- 두 번째 날짜와 매출 (17~31일) -->
+                    <td th:if="${i + 16 < day.size()}" th:text="${i + 17} + '일'"></td> <!-- 날짜 (17부터 시작) -->
+                    <td th:if="${i + 16 < day.size()}" th:text="${day.get(i + 16).totalSales}" class="dayPrice"></td>
+
+                    <!-- 빈 셀 처리 (날짜가 28일, 29일일 때) -->
+                    <td th:if="${i + 16 >= day.size()}" class="emptyCell"></td>
+                    <td th:if="${i + 16 >= day.size()}" class="emptyCell"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="monthArea">
+            <h2>📆 월별 매출 ([[${yearSelect}]]년)</h2>
+            <div class="monthAreaInner">
+              <div class="graph">
+                <canvas id="monthChart"></canvas>
+              </div>
+              <table class="rwd-table">
+                <thead>
+                  <tr>
+                    <th class="tH">날짜</th>
+                    <th>월별 매출</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:each="month : ${month}">
+                    <td th:text="${month.date}"></td>
+                    <td th:text="${month.totalSales}" class="dayPrice"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="yearArea">
+            <h2>📈 연도별 매출</h2>
+            <h3>총 매출 : [[${totalSales}]]</h3>
+            <div class="yearAreaInner">
+              <div class="graph">
+                <canvas id="yearChart"></canvas>
+              </div>
+              <table class="rwd-table yearTable">
+                <thead>
+                  <tr>
+                    <th class="tH">날짜</th>
+                    <th>연별 매출</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:each="year : ${year}">
+                    <td th:text="${year.date}"></td>
+                    <td th:text="${year.totalSales}" class="dayPrice"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="dayOfWeekArea">
+            <h2>📈 연간 요일별 매출 ([[${yearSelect}]]년)</h2>
+            <div class="dayOfWeekAreaInner">
+              <div class="graph">
+                <canvas id="dayOfWeekChart"></canvas>
+              </div>
+              <table class="rwd-table">
+                <thead>
+                  <tr>
+                    <th class="tH">날짜</th>
+                    <th>연간 요일별 매출</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:each="dayOfWeek : ${dayOfWeek}">
+                    <td th:text="${dayOfWeek.date}"></td>
+                    <td th:text="${dayOfWeek.totalSales}" class="dayPrice"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="dayOfWeekAreaInner">
+              <div class="graph">
+                <canvas id="weekendChart"></canvas>
+              </div>
+              <table class="rwd-table weekendTable">
+                <thead>
+                  <tr>
+                    <th class="tH">날짜</th>
+                    <th>연간 평일 및 주말 매출</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:each="weekend : ${weekend}">
+                    <td th:text="${weekend.date}"></td>
+                    <td th:text="${weekend.totalSales}" class="dayPrice"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <button id="scrollToTopBtn">
+
+  </button>
+
+  <!-- 탑 스크롤 스크립트 -->
+  <script th:src="@{/js/scrollTop.js}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script th:inline="javascript">
+    // Thymeleaf에서 전달된 SalesDto 리스트
+    const dayList = [[${ day }]];
+    const monthList = [[${ month }]];
+    const yearList = [[${ year }]];
+    const dayOfWeekList = [[${ dayOfWeek }]];
+    const weekendList = [[${ weekend }]];
+
+    // 날짜와 매출 데이터 추출
+    // 일별 데이터
+    const dayLabels = dayList.map(item => item.date); // 날짜 배열
+    const dayData = dayList.map(item => item.totalSales); // 매출 배열
+
+    // 월별 데이터
+    const monthLabels = monthList.map(item => item.date);
+    const monthData = monthList.map(item => item.totalSales);
+
+    // 연도별 데이터
+    const yearLabels = yearList.map(item => item.date);
+    const yearData = yearList.map(item => item.totalSales);
+
+    //요일별 데이터
+    const dayOfWeekLabels = dayOfWeekList.map(item => item.date);
+    const dayOfWeekData = dayOfWeekList.map(item => item.totalSales);
+
+    const weekendLabels = weekendList.map(item => item.date);
+    const weekendData = weekendList.map(item => item.totalSales);
+
+    const commonOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'top' },
+        tooltip: {
+          callbacks: {
+            label: function (context) {
+              return context.dataset.label + ': ' + context.parsed.y.toLocaleString() + '₩';
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: function (value) {
+              return value.toLocaleString() + '₩';
+            }
+          }
+        }
+      }
+    };
+
+    // 일별 차트
+    new Chart(document.getElementById('dayChart'), {
+      type: 'line',
+      data: {
+        labels: dayLabels,
+        datasets: [{
+          label: '일별 매출',
+          data: dayData,
+          borderColor: 'rgba(75, 192, 192, 1)',
+          backgroundColor: 'rgba(75, 192, 192)',
+          tension: 0.3,
+          fill: true
+        }]
+      },
+      options: commonOptions
+    });
+
+    // 월별 차트
+    new Chart(document.getElementById('monthChart'), {
+      type: 'bar',
+      data: {
+        labels: monthLabels,
+        datasets: [{
+          label: '월별 매출',
+          data: monthData,
+          backgroundColor: 'rgba(153, 102, 255)'
+        }]
+      },
+      options: {
+        commonOptions,
+        scales: {
+          x: {
+            offset: true // 요기! 양끝에 여백을 추가해줘
+          }
+        }
+      }
+    });
+
+    // 연도별 차트
+    new Chart(document.getElementById('yearChart'), {
+      type: 'bar',
+      data: {
+        labels: yearLabels,
+        datasets: [{
+          label: '연도별 매출',
+          data: yearData,
+          backgroundColor: 'rgba(255, 159, 64)'
+        }]
+      },
+      options: {
+        commonOptions,
+        scales: {
+          x: {
+            offset: true // 요기! 양끝에 여백을 추가해줘
+          }
+        }
+      }
+    });
+
+    // 요일별 차트
+    new Chart(document.getElementById('dayOfWeekChart'), {
+      type: 'bar',
+      data: {
+        labels: dayOfWeekLabels,
+        datasets: [{
+          label: '연간 요일별 매출',
+          data: dayOfWeekData,
+          backgroundColor: 'rgb(255, 102, 153)',
+          tension: 0.3,
+          fill: true
+        }]
+      },
+      options: {
+        commonOptions,
+        scales: {
+          x: {
+            offset: true // 요기! 양끝에 여백을 추가해줘
+          }
+        }
+      }
+    });
+
+    //평일 및 주말 차트
+    new Chart(document.getElementById('weekendChart'), {
+      type: 'bar',
+      data: {
+        labels: weekendLabels,
+        datasets: [{
+          label: '연간 평일 및 주말 매출',
+          data: weekendData,
+          backgroundColor: 'rgb(105, 22, 153)',
+          tension: 0.3,
+          fill: true
+        }]
+      },
+      options: {
+        commonOptions,
+        scales: {
+          x: {
+            offset: true // 요기! 양끝에 여백을 추가해줘
+          }
+        }
+      }
+    });
+
+    /*]]>*/
+  </script>
+  <script th:src="@{/js/adminNav.js}"></script>
+  <script th:src="@{/js/master/masterNavigation.js}"></script>
+  <script>
+    ////// year 동적으로 생성
+    const selectEl = document.querySelector("#yearSelect");
+
+    function createOptionEl(text) {
+      // option 엘리먼트 생성
+      const optionEl = document.createElement("option");
+
+      // 텍스트 넣기
+      optionEl.innerText = text;
+      optionEl.value = text;
+      optionEl.id = text;
+
+      // select 엘리먼트에 option 엘리먼트 붙이기
+      selectEl.append(optionEl);
+    }
+
+    // 현재 년도 가져오기
+    const currentYear = new Date(Date.now()).getFullYear();
+
+    // select 엘리먼트 참조
+
+    for (let year = 2024; year <= currentYear; year++) {
+      const isSelected = year === currentYear; // 현재 년도에 해당하는 option을 selected로 설정
+      createOptionEl(year);
+    }
+
+    //// 매출 포맷
+    const dayPriceElements = document.querySelectorAll(".dayPrice");
+
+    function formatPrice(price) {
+      return price.toLocaleString(); //1000단위로 콤마 추가
+    }
+
+    dayPriceElements.forEach((dayPriceElement, index) => {
+      const dayPrice = parseFloat(dayPriceElement.textContent);
+      dayPriceElement.textContent = formatPrice(dayPrice) + "원";
+    });
+
+    //// select 선택
+    const monthSelect = document.getElementById("monthSelect");
+    const yearSelect = document.getElementById("yearSelect");
+
+    const currentYear2 = `[[${yearSelect}]]`;
+    const currentMonth = `[[${monthSelect}]]`;
+
+    monthSelect.addEventListener("change", function () {
+      const selectedMonth = this.value;
+      window.location.href = `/admin/chart?page=0&month=${selectedMonth}&year=${currentYear2}`;
+    });
+
+    yearSelect.addEventListener("change", function () {
+      const selectedYear = yearSelect.value;
+      window.location.href = `/admin/chart?page=0&month=${currentMonth}&year=${selectedYear}`;
+    });
+    window.addEventListener("load", function () {
+      document.getElementById(currentYear2).selected = true;
+    });
+
+    //// radio 선택
+
+    yearRadio = document.getElementById("yearTotalSales");
+    monthRadio = document.getElementById("monthTotalSales");
+    dayRadio = document.getElementById("dayTotalSales");
+    dayOfWeekRadio = document.getElementById("dayOfWeekTotalSales");
+
+    dayArea = document.querySelector(".dayArea");
+    monthArea = document.querySelector(".monthArea");
+    yearArea = document.querySelector(".yearArea");
+    dayOfWeekArea = document.querySelector(".dayOfWeekArea");
+
+    // 라디오 버튼에 클릭 이벤트 리스너 추가
+    yearRadio.addEventListener("click", checkRadio);
+    monthRadio.addEventListener("click", checkRadio);
+    dayRadio.addEventListener("click", checkRadio);
+    dayOfWeekRadio.addEventListener("click", checkRadio);
+
+    // 라디오 버튼에 따라 해당 영역을 보이거나 숨기는 함수
+    function checkRadio() {
+      // 라디오 버튼의 체크 여부를 확인하고, 그에 맞게 영역을 설정
+      if (dayRadio.checked) {
+        dayArea.style.display = "block"; // dayArea만 보이도록 설정
+        monthArea.style.display = "none";
+        yearArea.style.display = "none";
+        dayOfWeekArea.style.display = "none";
+      } else if (monthRadio.checked) {
+        dayArea.style.display = "none";
+        monthArea.style.display = "block"; // monthArea만 보이도록 설정
+        yearArea.style.display = "none";
+        dayOfWeekArea.style.display = "none";
+      } else if (yearRadio.checked) {
+        dayArea.style.display = "none";
+        monthArea.style.display = "none";
+        yearArea.style.display = "block"; // yearArea만 보이도록 설정
+        dayOfWeekArea.style.display = "none";
+      }
+      else if (dayOfWeekRadio.checked) {
+        dayArea.style.display = "none";
+        monthArea.style.display = "none";
+        yearArea.style.display = "none";
+        dayOfWeekArea.style.display = "block";
+      }
+    }
+
+    // 페이지 로드 시, 체크된 라디오 버튼에 맞게 초기 상태를 설정
+    document.addEventListener("DOMContentLoaded", function () {
+      checkRadio(); // 페이지가 로드되면 체크된 라디오 버튼 상태에 맞게 초기화
+    });
+  </script>
+</body>
+
+</html>

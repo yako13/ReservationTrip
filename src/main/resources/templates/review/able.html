@@ -13,8 +13,11 @@
         }
 
         .imageArea {
-            p{width: 100%;}
-            padding: 5rem 0;
+            p {
+                width: 100%;
+            }
+
+            padding: 10rem 0;
             text-align: center;
             border-bottom: solid 1px #c2c2c2;
         }
@@ -122,9 +125,8 @@
         }
 
         .HanCkListImgDiv img {
-            max-height: 200px;
             width: 200px;
-            height: auto;
+            height: 150px;
         }
 
         .HanCkListProductName {
@@ -136,7 +138,7 @@
         }
 
         .HanCkListProductDate {
-            font-size: 13px;
+            font-size: 1rem;
             color: #939393;
             margin: 9px 0;
             margin-top: 0;
@@ -159,7 +161,7 @@
         }
 
         .HanCkListProductNameP {
-            font-size: 15px;
+            font-size: 1.3rem;
             margin: 0;
         }
 
@@ -265,11 +267,11 @@
             border: none;
             border-radius: 7px;
             transition: all 0.3s ease;
-            width: 6rem;
+            width: 8rem;
             height: 2rem;
             text-align: center;
             line-height: 2rem;
-            font-size: 0.9rem;
+            font-size: 1.2rem;
             font-weight: 600;
 
             &:hover {
@@ -285,6 +287,7 @@
             margin-bottom: 3rem;
 
             a {
+                font-size: 1.5rem;
                 display: inline-block;
                 background-color: white;
                 height: 3rem;
@@ -390,12 +393,14 @@
 
 
     </div>
-    <img th:src="@{/images/topBtn.png}" id="topBtn">
+    <button id="scrollToTopBtn"></button>
+    
     </div>
 
 
     <!-- 메인 끝 -->
     <footer th:replace="/fragments/memberFooter::memberFooter"></footer>
+    <script th:src="@{/js/scrollTop.js}"></script>
 </body>
 
 </html>

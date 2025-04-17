@@ -5,7 +5,7 @@ table {
 
 .rwd-table {
     border: 1px #a39485 solid;
-    font-size: 0.9em;
+    font-size: 1.05em;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
     width: 100%;
     border-collapse: collapse;
@@ -271,6 +271,16 @@ select {
 #requestAlert {
     color: rgb(63, 141, 243);
     transform: scaleX(-1);
+}
+
+#infoImage {
+    width: 8rem;
+}
+
+.imageArea {
+    padding: 5rem 0;
+    text-align: center;
+    border-bottom: solid 1px #c2c2c2;
 }
 
 /* 메인끝 */

@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface ReviewRepository extends JpaRepository<Review,Long> {
 
-    List<Review> findByMemberId(Long memberId);
+    List<Review> findByMemberIdOrderByCreatedAtDesc(Long memberId);
 }

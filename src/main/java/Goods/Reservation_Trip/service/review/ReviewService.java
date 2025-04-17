@@ -4,12 +4,14 @@ import Goods.Reservation_Trip.config.ImageManager;
 import Goods.Reservation_Trip.dto.reservation.res.ReservationDetailsResponseDto;
 import Goods.Reservation_Trip.dto.review.req.ReviewDto;
 import Goods.Reservation_Trip.dto.review.res.ReviewResponseDto;
+import Goods.Reservation_Trip.entity.Package;
 import Goods.Reservation_Trip.entity.Reservation;
 import Goods.Reservation_Trip.entity.Review;
 import Goods.Reservation_Trip.entity.ReviewImage;
 import Goods.Reservation_Trip.repository.ReservationRepository;
 import Goods.Reservation_Trip.repository.ReviewImageRepository;
 import Goods.Reservation_Trip.repository.ReviewRepository;
+import Goods.Reservation_Trip.repository.aPackage.PackageRepository;
 import Goods.Reservation_Trip.util.FileStorageService;
 import Goods.Reservation_Trip.util.Formatter;
 import lombok.RequiredArgsConstructor;
@@ -49,12 +51,62 @@ public class ReviewService {
         Reservation reservation = optionalReservation.get();
 
         //리뷰는 1개만 가능
-        if (!reservation.getReviewList().isEmpty()) return null;
+        if (reservation.getReview() != null) return null;
 
         return ReviewResponseDto.builder()
+                .packagePK(reservation.getAPackage().getId())
                 .packageMainImage(imageManager.createImageUrl(reservation.getAPackage().getMainImage().getImageFullName()))
                 .packageName(reservation.getAPackage().getPackageName())
                 .build();
+    }
+
+    /**
+     * 평점 등록
+     */
+    public double setAverageRating(Package aPackage, int reviewRating) {
+
+        int totalRating = 0;
+
+        for (Review review : aPackage.getReviewList()) {
+            totalRating += review.getRating();
+        }
+        //첫째자리까지 반올림
+        return Math.round(((double) (totalRating + reviewRating) / (aPackage.getReviewList().size() + 1)) * 10) / 10.0;
+
+    }
+
+    /**
+     * 평점 수정
+     */
+    public double editAverageRating(Package aPackage, int reviewRating, int newReviewRating) {
+
+        int totalRating = 0;
+
+        for (Review review : aPackage.getReviewList()) {
+            totalRating += review.getRating();
+        }
+
+        totalRating = totalRating - reviewRating + newReviewRating; // 총 평점 = 기존 총 평점 - 기존 리뷰 평점 + 새 리뷰 평점
+
+        //첫째자리까지 반올림
+        return Math.round(((double) (totalRating) / (aPackage.getReviewList().size())) * 10) / 10.0;
+
+    }
+
+    /**
+     * 평점 삭제
+     */
+    public double deleteAverageRating(Package aPackage, int reviewRating) {
+
+        int totalRating = 0;
+
+        for (Review review : aPackage.getReviewList()) {
+            totalRating += review.getRating();
+        }
+
+        //첫째자리까지 반올림
+        return Math.round(((double) (totalRating - reviewRating) / (aPackage.getReviewList().size() - 1)) * 10) / 10.0;
+
     }
 
     /**
@@ -71,16 +123,25 @@ public class ReviewService {
         if (!memberId.equals(reservation.getMember().getId())) {
             throw new RuntimeException("잘못된 접근");
         }
+        Review review = new Review();
 
         //리뷰는 1개만 가능
-        if (!reservation.getReviewList().isEmpty()) throw new RuntimeException("리뷰는 한개만 등록가능");
+        if (reservation.getReview() != null) {
+            throw new RuntimeException("리뷰는 한개만 등록가능");
+        }
 
-        Review review = new Review();
-        review.setAPackage(reservation.getAPackage());
+        Package aPackage = reservation.getAPackage();
+
+        //평균 평점 등록
+        double averageRating = setAverageRating(aPackage, reviewDto.getRating());
+        aPackage.setAverageRating(averageRating);
+
+        review.setAPackage(aPackage);
         review.setMember(reservation.getMember());
         review.setContent(reviewDto.getContent());
         review.setRating(reviewDto.getRating());
         review.setReservation(reservation);
+
 
         reviewRepository.save(review);
 
@@ -113,18 +174,13 @@ public class ReviewService {
 
         Review review = optionalReview.get();
 
-        List<String> images = new ArrayList<>();
-
-        for (ReviewImage reviewImage : review.getReviewImageList()) {
-            images.add(imageManager.createImageUrl(reviewImage.getImageFullName()));
-        }
-
         return ReviewResponseDto.builder()
                 .packageMainImage(imageManager.createImageUrl(review.getAPackage().getMainImage().getImageFullName()))
+                .packagePK(review.getAPackage().getId())
                 .packageName(review.getAPackage().getPackageName())
                 .content(review.getContent())
                 .rating(review.getRating())
-                .imagesURL(images)
+                .reviewImageList(review.getReviewImageList())
                 .reviewId(reviewId)
                 .build();
     }
@@ -142,6 +198,13 @@ public class ReviewService {
         //다른 사람의 예약 리뷰 수정을 시도할 경우
         if (!review.getMember().getId().equals(memberId)) throw new RuntimeException("잘못된 접근");
 
+        Package aPackage = review.getAPackage();
+
+        //평균 평점 수정
+        double averageRating = editAverageRating(aPackage, review.getRating(), reviewDto.getRating());
+        aPackage.setAverageRating(averageRating);
+
+        review.setAPackage(aPackage);
         review.setContent(reviewDto.getContent());
         review.setRating(reviewDto.getRating());
 
@@ -156,18 +219,18 @@ public class ReviewService {
             for (String deletedImage : deletedImageList) {
                 if (deletedImage.isEmpty()) continue;
 
-                if (deletedImage.startsWith("subImage")) {
-                    try {
-                        int index = Integer.parseInt(deletedImage.replace("subImage", ""));
-                        if (index < reviewImageList.size()) {
-                            ReviewImage imageToDelete = reviewImageList.get(index);
-                            fileStorageService.deleteFile(imageToDelete.getImageFullName());
+                if (deletedImage.startsWith("subImage|")) {
+                    String imageName = deletedImage.replace("subImage|", "");
 
-                            reviewImageRepository.delete(imageToDelete); // DB에서 삭제
-                            review.getReviewImageList().remove(imageToDelete); // 리스트에서 제거
-                        }
-                    } catch (NumberFormatException e) {
-                        System.err.println("Invalid subImage index: " + deletedImage);
+                    Optional<ReviewImage> imageToDeleteOpt = review.getReviewImageList().stream()
+                            .filter(img -> img.getImageFullName().equals(imageName))
+                            .findFirst();
+
+                    if (imageToDeleteOpt.isPresent()) {
+                        ReviewImage imageToDelete = imageToDeleteOpt.get();
+                        fileStorageService.deleteFile(imageToDelete.getImageFullName());
+                        reviewImageRepository.delete(imageToDelete);
+                        review.getReviewImageList().remove(imageToDelete);
                     }
                 }
             }
@@ -196,7 +259,7 @@ public class ReviewService {
      */
     public List<ReservationDetailsResponseDto> getReviewAblePage(Long memberId) {
         //리뷰 리스트가 0이며, 여행 마지막날이 현재 날짜를 지나고, ID 기준 내림차순으로 정렬
-        List<Reservation> reservationList = reservationRepository.findByEndDateBeforeAndReviewListIsNullOrderByIdDesc(LocalDate.now());
+        List<Reservation> reservationList = reservationRepository.findByEndDateBeforeAndReviewIsNullAndMemberIdOrderByIdDesc(LocalDate.now(), memberId);
 
         if (reservationList.isEmpty()) return null;
 
@@ -222,7 +285,7 @@ public class ReviewService {
      * 리뷰 리스트
      */
     public List<ReviewResponseDto> getReviewList(Long memberId) {
-        List<Review> reviewList = reviewRepository.findByMemberId(memberId);
+        List<Review> reviewList = reviewRepository.findByMemberIdOrderByCreatedAtDesc(memberId);
 
         List<ReviewResponseDto> responseDtoList = new ArrayList<>();
 
@@ -242,6 +305,7 @@ public class ReviewService {
             }
 
             ReviewResponseDto reviewResponseDto = ReviewResponseDto.builder()
+                    .packagePK(review.getAPackage().getId())
                     .reviewId(review.getId())
                     .packageMainImage(imageManager.createImageUrl(review.getAPackage().getMainImage().getImageFullName()))
                     .packageName(review.getAPackage().getPackageName())
@@ -260,6 +324,7 @@ public class ReviewService {
     /**
      * 리뷰삭제
      */
+    @Transactional
     public String deleteReview(Long id, Long memberId) {
         Optional<Review> optionalReview = reviewRepository.findById(id);
         if (optionalReview.isEmpty()) return "500";
@@ -269,7 +334,22 @@ public class ReviewService {
         //다른 사람 리뷰 삭제 불가
         if (!review.getMember().getId().equals(memberId)) return "500";
 
+        Package aPackage = review.getAPackage();
+
+        double averageRating = deleteAverageRating(aPackage, review.getRating());
+        aPackage.setAverageRating(averageRating);
+
+        aPackage.getReviewList().remove(review);
+        Reservation reservation = review.getReservation();
+
+        reservation.setReview(null);
+
+        reservationRepository.save(reservation);
+
+        review.setAPackage(null);
+
         reviewRepository.delete(review);
+
 
         return "1000";
     }

@@ -22,6 +22,21 @@ public class PackageScheduleRequestDto {
     private Long id;
 
     /**
+     * 최대 에약 가능 인원
+     */
+    private int maximumMember;
+
+    /**
+     * 출발에 필요한 최소 예약 인원
+     */
+    private int minimumRequired;
+
+    /**
+     * 일정을 예약한 인원수
+     */
+    private int reservedMemberCount;
+
+    /**
      * 예약 가능 상태
      */
     @Enumerated(EnumType.STRING)

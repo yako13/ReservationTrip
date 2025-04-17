@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>🐾냥만여행 상품 카테고리생성</title>
+    <link th:href="@{/css/admin/header.css}" rel="stylesheet">
+    </link>
+    <style>
+        table {
+            font-size: 12px;
+        }
+
+        .rwd-table {
+            border: 1px #a39485 solid;
+            font-size: 1.1rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .rwd-table th {
+            border-top: none;
+            color: white;
+            background-color: #2c394b;
+            width: 10rem;
+        }
+
+        .rwd-table tr {
+            border-top: 1px solid #808080;
+            border-bottom: 1px solid #808080;
+            background-color: #ffffff;
+        }
+
+        .rwd-table tr:nth-child(odd):not(:first-child) {
+            background-color: #ffffff;
+        }
+
+        .rwd-table th {
+            display: none;
+        }
+
+        .rwd-table td {
+            display: block;
+            height: 2rem;
+        }
+
+        .rwd-table td:first-child {
+            margin-top: 0.5em;
+        }
+
+
+
+        .rwd-table {
+            color: #333;
+            border-radius: 0.4em;
+            overflow: hidden;
+        }
+
+        .rwd-table tr {
+            border-color: #ccc;
+        }
+
+        .rwd-table th,
+        .rwd-table td {
+            padding: 0.5em 1em;
+        }
+
+        @media screen and (max-width: 601px) {
+            .rwd-table tr:nth-child(2) {
+                border-top: none;
+            }
+        }
+
+        @media screen and (min-width: 600px) {
+
+
+            .rwd-table td:before {
+                display: none;
+            }
+
+            .rwd-table th,
+            .rwd-table td {
+                display: table-cell;
+                padding: 0.25em 0.5em;
+            }
+
+            .rwd-table th:first-child,
+            .rwd-table td:first-child {
+                padding-left: 0;
+            }
+
+            .rwd-table th:last-child,
+            .rwd-table td:last-child {
+                padding-right: 0;
+            }
+
+            .rwd-table th,
+            .rwd-table td {
+                padding: 1em;
+            }
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 20px;
+            margin-bottom: 10px;
+
+
+            li {
+                padding-left: 20px;
+                margin-bottom: 5px;
+            }
+        }
+
+        .folder {
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .container {
+            display: block;
+            min-height: 800px;
+            margin-left: 32px;
+            margin-right: 50px;
+        }
+
+        h2 {
+            text-align: left;
+            margin-top: 80px;
+        }
+
+        .innerContainer {
+            padding-top: 30px;
+            display: flex;
+        }
+
+        .categoryArea {
+            width: 40rem;
+
+        }
+
+        .formArea {
+            width: 100%;
+            margin-left: 5rem;
+        }
+
+        #treeArea {
+            border: 1px solid #8b8b8b;
+            min-height: 30rem;
+        }
+
+        .categoryBtn {
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .categoryBtnArea {
+            text-align: end;
+            background-color: #f4f6f8;
+
+            button {
+                font-size: 1.1rem;
+                margin-top: 10px;
+                padding-left: 0.5rem;
+                padding-right: 1rem;
+
+                i {
+                    color: #2c394b;
+                }
+            }
+        }
+
+        input[type="text"] {
+            width: 24rem;
+            border: none;
+            height: 1.5rem;
+            padding: 5px;
+            font-size: 1.1rem;
+
+            &:focus {
+                outline: none;
+            }
+        }
+
+        [type="radio"] {
+            appearance: none;
+            border: max(2px, 0.1em) solid gray;
+            border-radius: 50%;
+            width: 1.2em;
+            height: 1.2em;
+            transition: border 0.2s ease-in-out;
+
+        }
+
+        [type="radio"]:checked {
+            border: 0.6em solid #3e82ff;
+        }
+
+        [type="radio"]:focus-visible {
+            outline-offset: max(4px, 0.1em);
+            outline: max(2px, 0.1em) dotted #3e82ff;
+        }
+
+        [type="radio"]:hover {
+            box-shadow: 0 0 0 max(2px, 0.2em) lightgray;
+            cursor: pointer;
+        }
+
+        [type="radio"]:hover+span {
+            cursor: pointer;
+        }
+
+        [type="radio"]:disabled {
+            background-color: lightgray;
+            box-shadow: none;
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        [type="radio"]:disabled+span {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        #parents {
+            display: none;
+        }
+
+        label {
+            margin-right: 10px;
+        }
+
+        .btnArea {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        #submitBtn {
+            background-color: #43bff8;
+            color: #ffffff;
+            border: none;
+            transition: all 0.3s ease;
+            width: 7rem;
+            font-size: 1.3rem;
+            height: 3rem;
+            border-radius: 7px;
+
+            &:hover {
+                background-color: #3e8cf1;
+                transform: scale(0.98);
+
+            }
+
+        }
+
+        #deleteBtn {
+            background-color: #ff7979;
+            color: #ffffff;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 1.3rem;
+            width: 7rem;
+            height: 3rem;
+            margin-left: 2rem;
+            border-radius: 7px;
+
+            &:hover {
+                transform: scale(0.98);
+                background-color: #ff4b4b;
+            }
+        }
+
+        .tree,
+        .tree ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            position: relative;
+            font-family: sans-serif;
+            font-size: 14px;
+        }
+
+        /* 세로 줄 */
+        .tree ul::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0.6rem;
+            bottom: 0;
+            width: 1px;
+            background: #ccc;
+        }
+
+        /* 트리 항목 */
+        .tree li {
+            position: relative;
+            padding-left: 1.2rem;
+            line-height: 1.6;
+        }
+
+        /* 가로 줄 */
+        .tree li::before {
+            content: "";
+            position: absolute;
+            top: 0.8em;
+            left: 0.6rem;
+            width: 0.6rem;
+            height: 1px;
+            background: #ccc;
+        }
+
+        /* 마지막 요소 아래 세로줄 안 보이게 */
+        .tree li:last-child::after {
+            content: "";
+            position: absolute;
+            left: 0.6rem;
+            top: 0.8em;
+            bottom: 0;
+            background: white;
+            width: 1px;
+            z-index: 1;
+        }
+
+        .tree>li::before {
+            display: none;
+        }
+
+        .node {
+            cursor: pointer;
+        }
+
+        .majorText {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .mediumText {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .subText {
+            font-size: 0.9rem;
+        }
+
+        i {
+            margin-right: 5px;
+        }
+
+        #subCategory,
+        #smallCategory {
+            display: none;
+            font-size: 1.2rem;
+            height: 2.5rem;
+            border: none;
+
+            &:focus {
+                outline: none;
+            }
+        }
+
+        #mainCategory {
+            border: none;
+            height: 2.5rem;
+            font-size: 1.2rem;
+
+            &:focus {
+                outline: none;
+            }
+        }
+
+        .editArea{
+            display:  flex;
+            justify-content: space-between;
+            a{
+                text-decoration: none;
+                line-height: 62px;
+                color: #3e82ff;
+                font-size: 1rem;
+                font-weight: 600;
+                &:hover{
+                    color: #2354b1;
+                }
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header th:replace="fragments/adminHeader::masterHeader"></header>
+    <nav th:replace="fragments/adminHeader::masterNav"></nav>
+    <!-- 메인 시작 -->
+    <main id="main">
+        <div class="container">
+            <h2>카테고리 관리</h2>
+            <hr />
+            <div class="innerContainer">
+                <div class="categoryArea">
+                    <div id="treeArea">
+                        <div class="categoryBtnArea">
+                            <span style="margin-right: 15rem;"><b>카테고리 목록</b></span>
+                            <button onclick="toggleAll(true)" class="categoryBtn">
+                                <i class="fa-solid fa-bars"></i></button>
+                            <button onclick="toggleAll(false)" class="categoryBtn">
+                                <i class="fa-solid fa-ellipsis-vertical"></i></button>
+                            <hr>
+                        </div>
+                        <ul class="tree">
+                            <li th:each="category : ${categoryList}">
+                                <span class="folder majorText" onclick="toggle(this)"><i
+                                        class="fa-solid fa-caret-down"></i>[[${category.major}]]</span>
+                                <ul>
+                                    <li th:each="medium,stat : ${category.medium}">
+                                        <span class="folder mediumText" onclick="toggle(this)"><i
+                                                class="fa-solid fa-caret-down"></i>[[${medium}]]</span>
+                                        <ul>
+                                            <li th:each="sub : ${category.sub[__${stat.index}__]}" class="subText">
+                                                [[${sub.sub}]]</li>
+
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="formArea">
+                    <div class="editArea">
+                    <h4><i class="fa-solid fa-list-ul"></i> 카테고리 추가·삭제</h4>
+                    <a th:href="@{/admin/package/category/edit}">✏️ 카테고리 수정</a>
+                    </div>
+                    <table class="rwd-table">
+                        <form id="categoryForm">
+                            <tbody>
+                                <tr>
+                                    <th>카테고리명</th>
+                                    <td>
+                                        <input type="text" maxlength="20" placeholder="등록할 카테고리명을 입력하세요."
+                                            id="categoryName" name="categoryName">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>분류</th>
+                                    <td>
+                                        <form id="filterForm">
+                                            <select id="mainCategory" name="mainCategoryId">
+                                                <option value="대분류" selected>대분류</option>
+                                            </select>
+                                            <select id="subCategory" name="subCategoryId">
+                                                <option value="중분류">중분류</option>
+                                            </select>
+                                            <select id="smallCategory" name="smallCategoryId">
+                                                <option value="소분류">소분류</option>
+                                            </select>
+                                        </form>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                    </table>
+                    <div class="btnArea">
+                        <button type="button" id="submitBtn">등록</button>
+                        <button type="button" id="deleteBtn">삭제</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+    <button id="scrollToTopBtn">
+
+    </button>
+
+    <!-- 탑 스크롤 스크립트 -->
+    <script th:src="@{/js/scrollTop.js}"></script>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            await loadCategories();
+
+        });
+        async function loadCategories() {
+            const response = await fetch("/api/categories");
+            const data = await response.json();
+
+            const mainCategorySelect = document.getElementById("mainCategory");
+            resetSelect(mainCategorySelect, "대분류", "대분류");
+
+            data.forEach((mainCategory) => {
+                const option = document.createElement("option");
+                option.value = mainCategory.name;
+                option.textContent = mainCategory.name;
+                mainCategorySelect.appendChild(option);
+            });
+
+            mainCategorySelect.addEventListener("change", () => {
+                const selected = data.find((c) => c.name == mainCategorySelect.value);
+
+                if (mainCategorySelect.value !== "대분류") {
+                    document.getElementById("subCategory").style.display = "inline-block";
+                    loadSubCategories(selected?.children || []);
+                } else {
+                    document.getElementById("subCategory").style.display = "none";
+                    document.getElementById("smallCategory").style.display = "none";
+                }
+
+
+            });
+        }
+
+        function loadSubCategories(subCategories) {
+            const subCategorySelect = document.getElementById("subCategory");
+            resetSelect(subCategorySelect, "중분류", "중분류");
+
+            const smallCategorySelect = document.getElementById("smallCategory");
+            resetSelect(smallCategorySelect, "소분류", "소분류");
+
+            subCategories.forEach((subCategory) => {
+                const option = document.createElement("option");
+                option.value = subCategory.name;
+                option.textContent = subCategory.name;
+                subCategorySelect.appendChild(option);
+            });
+
+            subCategorySelect.addEventListener("change", () => {
+                const selected = subCategories.find(
+                    (c) => c.name == subCategorySelect.value
+                );
+
+                if (subCategorySelect.value !== "중분류") {
+                    document.getElementById("smallCategory").style.display = "inline-block";
+                    loadSmallCategories(selected?.children || []);
+                } else {
+                    document.getElementById("smallCategory").style.display = "none";
+                }
+
+
+            });
+        }
+
+        function loadSmallCategories(smallCategories) {
+            const smallCategorySelect = document.getElementById("smallCategory");
+            resetSelect(smallCategorySelect, "소분류", "소분류");
+
+            smallCategories.forEach((smallCategory) => {
+                const option = document.createElement("option");
+                option.value = smallCategory.name;
+                option.textContent = smallCategory.name;
+                smallCategorySelect.appendChild(option);
+            });
+
+            smallCategorySelect.addEventListener("change", fetchFilteredList);
+        }
+
+        function resetSelect(selectElement, placeholderText, placeholderValue = "") {
+            selectElement.innerHTML = "";
+            const option = document.createElement("option");
+            option.value = placeholderValue;
+            option.textContent = placeholderText;
+            option.disabled = false;
+            option.selected = true;
+            selectElement.appendChild(option);
+        }
+
+        function toggle(element) {
+            const nextUl = element.nextElementSibling;
+
+            const icon = element.querySelector("i");
+            if (icon) {
+                icon.classList.toggle("fa-caret-down");
+                icon.classList.toggle("fa-caret-right");
+            }
+            if (nextUl) nextUl.classList.toggle("hidden");
+        }
+
+        function toggleAll(open) {
+            document.querySelectorAll("#treeArea ul ul").forEach(ul => {
+                if (open) ul.classList.remove("hidden");
+                else ul.classList.add("hidden");
+            });
+        }
+
+
+
+
+        //카테고리 등록
+        $("#submitBtn").click(function () {
+
+            if (document.getElementById("categoryName").value == "") {
+                Swal.fire({ text: "등록 하실 카테고리명을 입력해주세요.", confirmButtonColor: "#43bff8" });
+                return;
+            }
+            const selectedMain = document.getElementById("mainCategory");
+
+            const mainVal = selectedMain.options[selectedMain.selectedIndex].text;
+
+            let subVal = '';
+            let smallVal = '';
+            const selectedSub = document.getElementById("subCategory");
+            const subStyle = window.getComputedStyle(selectedSub);
+            if (subStyle.display !== "none") {
+                subVal = selectedSub.options[selectedSub.selectedIndex].text;
+            }
+
+            const selectedSmall = document.getElementById("smallCategory");
+            const smallStyle = window.getComputedStyle(selectedSmall);
+            if (smallStyle.display !== "none") {
+                smallVal = selectedSmall.options[selectedSmall.selectedIndex].text;
+            }
+
+            if (selectedSmall.options[selectedSmall.selectedIndex].text !== "소분류") {
+                Swal.fire({ text: "소분류로 등록하시기 위해선 옵션을 소분류로 선택하셔야 합니다.", confirmButtonColor: "#43bff8" });
+                selectedSmall.value = "소분류";
+                return;
+            }
+
+            Swal.fire({
+                html: `등록하실 위치가 ${mainVal}${subVal ? ' > ' + subVal : ''}${smallVal ? ' > ' + smallVal : ''}(이)가 맞습니까?`,
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "확인",
+                cancelButtonText: "취소",
+                confirmButtonColor: "#43bff8"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    ajax();
+                }
+            });
+
+        })
+
+        function ajax() {
+            var params = {
+                categoryName: $("#categoryName").val(),
+                main: $("#mainCategory").val(),
+                sub: $("#subCategory").val(),
+                small: $("#smallCategory").val()
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/admin/package/category/new",
+                data: params,
+                success: function (res) {
+                    if (res == 1000) {
+                        Swal.fire({ text: "등록이 완료되었습니다.", confirmButtonColor: "#43bff8" }).then(() => {
+                            location.reload();
+                        });
+                    }
+                    else if (res == 100) {
+                        Swal.fire({ text: "동일한 이름의 카테고리가 있습니다.", confirmButtonColor: "#43bff8" });
+                    }
+                    else {
+                        Swal.fire({ text: "상위 카테고리가 존재하지 않습니다.", confirmButtonColor: "#43bff8" });
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    Swal.fire({ icon: 'error', text: "통신불가." , confirmButtonColor: "#43BFF8"});
+                }
+            })
+        }
+
+        //카테고리 삭제
+        $("#deleteBtn").click(deleteCategory);
+
+        function deleteCategory() {
+
+            const selectedMain = document.getElementById("mainCategory");
+            const selectedSub = document.getElementById("subCategory");
+            const selectedSmall = document.getElementById("smallCategory");
+
+            const mainText = selectedMain.options[selectedMain.selectedIndex].text;
+            const subText = selectedSub.options[selectedSub.selectedIndex].text;
+            const smallText = selectedSmall.options[selectedSmall.selectedIndex].text;
+
+            if (mainText === "대분류") {
+                Swal.fire({ html: "삭제하실 카테고리를 선택해주세요.", confirmButtonColor: "#43bff8" });
+                return;
+            }
+
+            let displayText = "";
+
+            if (smallText !== "소분류") {
+                // 소분류가 선택됐으면 그것만
+                displayText = smallText;
+            } else if (subText !== "중분류") {
+                // 중분류만 선택됐으면 그것만
+                displayText = subText;
+            } else {
+                // 대분류만 있는 경우
+                displayText = mainText;
+            }
+
+            Swal.fire({
+                html: `삭제하실 카테고리가 ${displayText}(이)가 맞습니까?`,
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "확인",
+                cancelButtonText: "취소",
+                confirmButtonColor: "#43bff8"
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    var params = {
+                        main: $("#mainCategory").val(),
+                        sub: $("#subCategory").val(),
+                        small: $("#smallCategory").val()
+                    }
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/admin/package/category/delete",
+                        data: params,
+                        success: function (res) {
+                            if (res == 1000) {
+                                Swal.fire({ text: "삭제가 완료되었습니다." , confirmButtonColor: "#43BFF8"}).then(() => {
+                                    location.reload();
+                                });
+                            }
+                            else if (res == 200) {
+                                Swal.fire({ text: "삭제하실 카테고리를 선택해주세요." , confirmButtonColor: "#43BFF8"});
+                            }
+                            else if (res == 300) {
+                                Swal.fire({ text: "삭제 할 카테고리를 찾지 못했습니다." , confirmButtonColor: "#43BFF8" });
+                            }
+                            else if (res == 700) {
+                                Swal.fire({ text: "하위 카테고리가 존재하여 삭제 할 수 없습니다." , confirmButtonColor: "#43BFF8"});
+                            }
+                            else {
+                                Swal.fire({ text: "이미 해당 카테고리의 패키지가 존재 할 경우 삭제가 불가합니다.", confirmButtonColor: "#43BFF8" });
+                            }
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            Swal.fire({ icon: 'error', text: "통신불가." , confirmButtonColor: "#43BFF8" });
+                        }
+                    })
+
+                }
+            });
+
+
+        }
+
+
+
+
+    </script>
+    <script th:src="@{/js/adminNav.js}"></script>
+
+</body>
+
+</html>

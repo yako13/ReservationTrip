@@ -121,7 +121,6 @@
 
 }
 
-.HanCartCheckbox {}
 
 .HanCartCheckbox input[type="checkbox"] {
   /* 기본 스타일 제거 */
@@ -144,9 +143,6 @@
 
 
 
-
-
-
 .HanCartInfo {
   display: flex;
   align-items: center;
@@ -164,8 +160,9 @@
 }
 
 .HanCartImgDiv img {
-  max-width: 90px;
-  max-height: 90px;
+  border-radius: 3px;
+  width: 80px;
+  height: 80px;
 
 }
 
@@ -182,8 +179,6 @@
 
 .HanCartProductName span {
   margin: 0;
-  margin-bottom: 3px;
-
 }
 
 

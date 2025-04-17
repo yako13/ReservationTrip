@@ -1,9 +1,13 @@
 package Goods.Reservation_Trip.controller;
 
+import Goods.Reservation_Trip.dto.HanDto.HeaderDto;
 import Goods.Reservation_Trip.dto.member.res.MemberResponseDto;
 import Goods.Reservation_Trip.dto.reservation.req.MemberReservationSearchDto;
 import Goods.Reservation_Trip.dto.reservation.res.ReservationDetailsResponseDto;
 import Goods.Reservation_Trip.dto.reservation.res.ReservationResponseDto;
+import Goods.Reservation_Trip.dto.reservation.res.SalesDto;
+import Goods.Reservation_Trip.service.HanService.HanHeaderService;
+import Goods.Reservation_Trip.service.HanService.HanMemberService;
 import Goods.Reservation_Trip.service.member.MemberService;
 import Goods.Reservation_Trip.service.reservation.ReservationService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,6 +18,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -26,6 +31,43 @@ public class ReservationController {
     private final ReservationService reservationService;
 
     private final MemberService memberService;
+
+    private final HanHeaderService hanHeaderService;
+
+    /**
+     * 관리자 차트
+     */
+
+    @GetMapping("/admin/chart")
+    public String chartPage(
+            @RequestParam(required = false) Integer month,
+            @RequestParam(required = false) Integer year,
+            Model model){
+
+        int currentMonth = (month != null) ? month : LocalDate.now().getMonthValue();
+
+
+        int currentYear = (month != null) ? year : LocalDate.now().getYear();
+
+        List<SalesDto> dayChart = reservationService.getCheckoutChartDay(currentMonth,currentYear);
+        List<SalesDto> monthChart = reservationService.getCheckoutChartMonth(currentYear);
+        List<SalesDto> yearChart = reservationService.getCheckoutChartYear();
+        List<SalesDto> dayOfWeekChart = reservationService.getCheckoutChartDayOfWeek(currentYear);
+        List<SalesDto> weekendChart = reservationService.getCheckoutWeekend(currentYear);
+        String totalSales = reservationService.totalSales();
+
+        model.addAttribute("monthSelect",currentMonth);
+        model.addAttribute("yearSelect",currentYear);
+
+        model.addAttribute("month",monthChart);
+        model.addAttribute("day",dayChart);
+        model.addAttribute("year",yearChart);
+        model.addAttribute("dayOfWeek",dayOfWeekChart);
+        model.addAttribute("weekend",weekendChart);
+        model.addAttribute("totalSales",totalSales);
+
+        return "chart";
+    }
 
     /**
      * 관리자 주문 리스트
@@ -99,7 +141,9 @@ public class ReservationController {
     @GetMapping("/member/reservation/list")
     public String memberReservationListPage(HttpServletRequest request, Model model
     ) {
+        HeaderDto headerDto = hanHeaderService.HeaderCategoryAndMember(request);
 
+        model.addAttribute("headerDto",headerDto);
         MemberResponseDto memberResponseDto = memberService.getMember(request);
         List<ReservationDetailsResponseDto> reservationDetails = reservationService.getReservationList(memberResponseDto.getId());
 
@@ -113,6 +157,9 @@ public class ReservationController {
      */
     @GetMapping("/member/reservation/search")
     public String memberReservationSearchPage(MemberReservationSearchDto searchDto,HttpServletRequest request,Model model){
+        HeaderDto headerDto = hanHeaderService.HeaderCategoryAndMember(request);
+
+        model.addAttribute("headerDto",headerDto);
         MemberResponseDto memberResponseDto = memberService.getMember(request);
         List<ReservationDetailsResponseDto> reservationDetails = reservationService.getReservationSearchList(memberResponseDto.getId(),searchDto);
 
@@ -132,6 +179,14 @@ public class ReservationController {
     @ResponseBody
     public String editReservationState(ReservationResponseDto reservationResponseDto){
         return reservationService.editReservationState(reservationResponseDto);
+    }
+
+    @PostMapping("/member/{reservationCode}/cancel")
+    public String cancelReservation(@PathVariable String reservationCode, HttpServletRequest request, RedirectAttributes rttr) {
+        MemberResponseDto memberResponseDto = memberService.getMember(request);
+        reservationService.sendCancelNotification(reservationCode, memberResponseDto.getId());
+        rttr.addFlashAttribute("data","예약 취소요청이 완료되었습니다.");
+        return "redirect:/member/reservation/list";
     }
 
 }

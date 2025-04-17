@@ -18,4 +18,7 @@ public class PackageCategoryService {
     public List<PackageCategory> getMainCategories() {
         return packageCategoryRepository.findByParentIsNull();
     }
+    public List<PackageCategory> getSubCategories(int depth) {
+        return packageCategoryRepository.findByDepth(depth);
+    }
 }

@@ -23,7 +23,7 @@ public class Review extends BaseTime {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name="package_id",nullable = false)
+    @JoinColumn(name="package_id")
     @Comment("패키지 PK")
     private Package aPackage;
 
@@ -45,7 +45,7 @@ public class Review extends BaseTime {
     @Comment("리뷰 내용")
     private String content;
 
-    @OneToMany(mappedBy = "review", orphanRemoval = true)
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReviewImage> reviewImageList = new ArrayList<>();
 
 }

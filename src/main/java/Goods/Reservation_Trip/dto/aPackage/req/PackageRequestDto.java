@@ -1,5 +1,6 @@
 package Goods.Reservation_Trip.dto.aPackage.req;
 
+import Goods.Reservation_Trip.enums.PackageStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,16 +22,6 @@ public class PackageRequestDto {
      * 패키지명
      */
     private String packageName;
-
-    /**
-     * 최대 에약 가능 인원
-     */
-    private int maximumMember;
-
-    /**
-     * 출발에 필요한 최소 예약 인원
-     */
-    private int minimumRequired;
 
     /**
      * 성인 1인당 금액
@@ -101,6 +92,11 @@ public class PackageRequestDto {
      * 소분류 ID
      */
     private Long smallCategoryId;
+
+    /**
+     * 예약 상태
+     */
+    private PackageStatus packageStatus;
 
     /**
      * 1개의 패키지의 일정 리스트
