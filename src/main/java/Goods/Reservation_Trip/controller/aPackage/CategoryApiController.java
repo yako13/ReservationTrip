@@ -55,7 +55,7 @@ public class CategoryApiController {
             @RequestParam(required = false) Long mainCategoryId,
             @RequestParam(required = false) Long subCategoryId,
             @RequestParam(required = false) Long smallCategoryId,
-            @RequestParam(value = "keywordQuery", required = false, defaultValue = "") String name) {
+            @RequestParam(value = "keyword", required = false, defaultValue = "") String name) {
         return combinePackageService.getAdminPackageSearchList(page, size, mainCategoryId, subCategoryId, smallCategoryId, sort, name);
     }
 }

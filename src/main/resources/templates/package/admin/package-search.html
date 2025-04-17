@@ -264,7 +264,8 @@
                     type="text"
                     class="searchForm"
                     placeholder="상품명을 입력하세요."
-                    name="keyword" />
+                    name="keyword"
+                    th:value="${keywordQuery}" />
                   <button class="btn-submit" type="submit">
                     <i class="fa-solid fa-magnifying-glass"></i>
                   </button>
@@ -275,6 +276,10 @@
           <div class="sort__container">
             <div>
               <form action="/admin/package/list" method="get" id="filterForm">
+                <input
+                  type="hidden"
+                  name="keyword"
+                  th:value="${keywordQuery}" />
                 <select id="mainCategory" name="mainCategoryId">
                   <option value="" selected>대분류</option>
                 </select>
@@ -690,13 +695,13 @@
     params.append("page", 0); // 첫 페이지부터 시작
     params.append("size", size);
     params.append("sort", sort);
-    if (keyword) params.append("keywordQuery", keyword);
+    if (keyword) params.append("keyword", keyword);
     if (mainId) params.append("mainCategoryId", mainId);
     if (subId) params.append("subCategoryId", subId);
     if (smallId) params.append("smallCategoryId", smallId);
 
     const response = await fetch(
-      `/admin/package/list/json?${params.toString()}`
+      `/admin/package/search/json?${params.toString()}`
     );
     const data = await response.json();
 
@@ -917,7 +922,11 @@
           cancelButtonText: "취소",
         }).then((result) => {
           if (result.isConfirmed) {
-            location.href = `/admin/package/delete12/${packageId}`;
+            let currentQuery = window.location.search;
+            // if (!currentQuery.startsWith("?")) {
+            //   currentQuery = "?" + currentQuery;
+            // }
+            location.href = `/admin/package/delete12/${packageId}${currentQuery}`;
           }
         });
       }
