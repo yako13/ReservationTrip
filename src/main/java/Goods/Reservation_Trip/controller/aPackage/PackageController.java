@@ -4,9 +4,7 @@ import Goods.Reservation_Trip.dto.aPackage.req.PageSaveRequestDto;
 import Goods.Reservation_Trip.dto.aPackage.res.AdminPackageListResponseDto;
 import Goods.Reservation_Trip.dto.aPackage.res.PackageEditResponseDto;
 import Goods.Reservation_Trip.dto.aPackage.res.PackageImageUrlDto;
-import Goods.Reservation_Trip.entity.Package;
 import Goods.Reservation_Trip.entity.PackageCategory;
-import Goods.Reservation_Trip.entity.PackageOption;
 import Goods.Reservation_Trip.service.aPackage.CombinePackageService;
 import Goods.Reservation_Trip.service.aPackage.PackageCategoryService;
 import Goods.Reservation_Trip.service.aPackage.PackageImageService;
@@ -19,7 +17,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Controller
@@ -72,13 +69,14 @@ public class PackageController {
                                          @RequestParam(required = false) Long subCategoryId,
                                          @RequestParam(required = false) Long smallCategoryId,
                                          Model model) {
-        model.getAttribute("name");
+
         Page<AdminPackageListResponseDto> adminPackageListResponseDtoPage = combinePackageService.getAdminPackageSearchList(page, size, mainCategoryId, subCategoryId, smallCategoryId, sort, name);
         model.addAttribute("packageList", adminPackageListResponseDtoPage.getContent());
         model.addAttribute("page", adminPackageListResponseDtoPage);
         model.addAttribute("currentPage", adminPackageListResponseDtoPage.getNumber());
         model.addAttribute("size", size);
         model.addAttribute("keywordQuery", name);
+        model.addAttribute("name", name);
         model.addAttribute("sort", sort);
 
         return "package/admin/package-search";

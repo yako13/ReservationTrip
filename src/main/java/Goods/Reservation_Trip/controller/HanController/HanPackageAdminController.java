@@ -28,7 +28,7 @@ public class HanPackageAdminController {
             rttr.addFlashAttribute("data", "잘못된 접근입니다");
         }
 
-        //패키지 삭제하는 서비스 (PackageStatus.DELETE로 변경)
+        //패키지 삭제하는 서비스 (PackageStatus.CLOSED로 변경)
         int check = hanPackageService.packDeleteService(id);
 
         //check 가 0 ,1 실패 , 2 성공
@@ -54,17 +54,36 @@ public class HanPackageAdminController {
 
 
     @GetMapping("/admin/package/delete12/{id}")
-    public String packDelete(@PathVariable("id") Long id,
-                             @RequestParam(value = "keyword",required = false,defaultValue = "") String name,
-                             RedirectAttributes rttr) {
-        rttr.addFlashAttribute("keywordQuery", name);
+    public String packDelete2(@PathVariable("id") Long id,
+                              @RequestParam(defaultValue = "0") int page,
+                              @RequestParam(defaultValue = "20") int size,
+                              @RequestParam(value = "keyword", required = false, defaultValue = "") String name,
+                              @RequestParam(defaultValue = "default") String sort,
+                              @RequestParam(required = false) Long mainCategoryId,
+                              @RequestParam(required = false) Long subCategoryId,
+                              @RequestParam(required = false) Long smallCategoryId,
+                              RedirectAttributes rttr) {
+
+
+        log.info("delete12 부분 호출");
+        log.info("delete12 부분 호출 키워드 : " +  name);
 
         if (id == null) {
             log.error("id =null 입니다");
             rttr.addFlashAttribute("data", "잘못된 접근입니다");
         }
 
-        //패키지 삭제하는 서비스 (PackageStatus.DELETE로 변경)
+        // 쿼리 파라미터로 전달
+        rttr.addAttribute("page", page);
+        rttr.addAttribute("size", size);
+        rttr.addAttribute("keyword", name);
+        rttr.addAttribute("sort", sort);
+        if (mainCategoryId != null) rttr.addAttribute("mainCategoryId", mainCategoryId);
+        if (subCategoryId != null) rttr.addAttribute("subCategoryId", subCategoryId);
+        if (smallCategoryId != null) rttr.addAttribute("smallCategoryId", smallCategoryId);
+
+
+        //패키지 삭제하는 서비스 (PackageStatus.CLOSED 변경)
         int check = hanPackageService.packDeleteService(id);
 
         //check 가 0 ,1 실패 , 2 성공
