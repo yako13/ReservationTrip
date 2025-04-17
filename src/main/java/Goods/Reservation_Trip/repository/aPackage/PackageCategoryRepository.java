@@ -27,4 +27,5 @@ public interface PackageCategoryRepository extends JpaRepository<PackageCategory
     @Query("SELECT COUNT(p) FROM Package p WHERE p.mainCategory.id = :id OR p.subCategory.id = :id OR p.smallCategory.id = :id")
     int countByAnyCategory(@Param("id") Long id);
 
+    List<PackageCategory> findByParentId(Long parentId);
 }

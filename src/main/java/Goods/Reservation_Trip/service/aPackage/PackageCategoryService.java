@@ -21,4 +21,12 @@ public class PackageCategoryService {
     public List<PackageCategory> getSubCategories(int depth) {
         return packageCategoryRepository.findByDepth(depth);
     }
+
+    public List<PackageCategory> getSubCategory(Long mainCategoryId) {
+        return packageCategoryRepository.findByParentId(mainCategoryId);
+    }
+
+    public List<PackageCategory> getSmallCategoryId(Long subCategoryId) {
+        return packageCategoryRepository.findByParentId(subCategoryId);
+    }
 }

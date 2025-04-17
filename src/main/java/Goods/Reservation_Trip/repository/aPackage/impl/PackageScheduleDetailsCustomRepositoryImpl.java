@@ -31,12 +31,27 @@ public class PackageScheduleDetailsCustomRepositoryImpl implements PackageSchedu
 
 
     @Override
-    public Page<PackageScheduleDetails> findAvailableEarliestByPackageNameContaining(String name, Pageable pageable, String sort) {
+    public Page<PackageScheduleDetails> findAvailableEarliestByPackageNameContaining(String name,
+                                                                                     Pageable pageable,
+                                                                                     String sort,
+                                                                                     Long mainCategoryId,
+                                                                                     Long subCategoryId,
+                                                                                     Long smallCategoryId ) {
 
         BooleanBuilder whereBuilder = new BooleanBuilder();
         whereBuilder.and(schedule.packageStatus.eq(PackageStatus.AVAILABLE));
+
         if (name != null && !name.isEmpty()) {
             whereBuilder.and(aPackage.packageName.containsIgnoreCase(name));
+        }
+        if (mainCategoryId != null) {
+            whereBuilder.and(aPackage.mainCategory.id.eq(mainCategoryId));
+        }
+        if (subCategoryId != null) {
+            whereBuilder.and(aPackage.subCategory.id.eq(subCategoryId));
+        }
+        if (smallCategoryId != null) {
+            whereBuilder.and(aPackage.smallCategory.id.eq(smallCategoryId));
         }
 
         // sort 적용하기

@@ -48,7 +48,7 @@ public class PackageController {
 
     @GetMapping("/admin/package/list")
     public String adminPackageList(@RequestParam(defaultValue = "0") int page,
-                                   @RequestParam(defaultValue = "20") int size,
+                                   @RequestParam(defaultValue = "5") int size,
                                    @RequestParam(defaultValue = "default") String sort,
                                    @RequestParam(required = false) Long mainCategoryId,
                                    @RequestParam(required = false) Long subCategoryId,
@@ -65,11 +65,14 @@ public class PackageController {
 
     @GetMapping("/admin/package/search/index")
     public String adminPackageSearchList(@RequestParam(defaultValue = "0") int page,
-                                         @RequestParam(defaultValue = "20") int size,
+                                         @RequestParam(defaultValue = "5") int size,
                                          @RequestParam(value = "keyword", required = false, defaultValue = "") String name,
                                          @RequestParam(defaultValue = "default") String sort,
+                                         @RequestParam(required = false) Long mainCategoryId,
+                                         @RequestParam(required = false) Long subCategoryId,
+                                         @RequestParam(required = false) Long smallCategoryId,
                                          Model model) {
-        Page<AdminPackageListResponseDto> adminPackageListResponseDtoPage = combinePackageService.getAdminPackageSearchList(page, size, name, sort);
+        Page<AdminPackageListResponseDto> adminPackageListResponseDtoPage = combinePackageService.getAdminPackageSearchList(page, size, mainCategoryId, subCategoryId, smallCategoryId, sort, name);
         model.addAttribute("packageList", adminPackageListResponseDtoPage.getContent());
         model.addAttribute("page", adminPackageListResponseDtoPage);
         model.addAttribute("currentPage", adminPackageListResponseDtoPage.getNumber());
@@ -77,7 +80,7 @@ public class PackageController {
         model.addAttribute("keywordQuery", name);
         model.addAttribute("sort", sort);
 
-        return "package/admin/package-search";
+        return "package/admin/package-search copy";
     }
 
     @GetMapping("/admin/package/edit/{id}")

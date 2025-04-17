@@ -124,7 +124,7 @@
         padding-top: 30px;
       }
     }
-    #red {
+    .red {
       color: red;
     }
     .alarm {
@@ -202,6 +202,9 @@
     a {
       color: #111111;
     }
+    .tr-size {
+      max-width: 130px;
+    }
   </style>
   <body>
     <header th:replace="fragments/adminHeader::masterHeader"></header>
@@ -209,7 +212,14 @@
     <main id="main" class="main">
       <div>
         <div class="orderList">
-          <p><b>등록 내역</b> : <b id="red">[[${page.totalElements}]]</b>건</p>
+          <!-- 정적 데이터 -->
+          <p>
+            <b>등록 내역</b> :
+            <b class="red" id="staticTotal">[[${page.totalElements}]]</b>
+            <!-- 동적 데이터 -->
+            <b id="redTotalCount" class="red"></b>
+            <span>건</span>
+          </p>
         </div>
         <div>
           <div class="btnAndSearch">
@@ -252,6 +262,7 @@
               </form>
             </div>
             <select name="size" id="size" onchange="">
+              <option value="5" th:selected="${size==5}">5개</option>
               <option value="10" th:selected="${size==10}">10개</option>
               <option value="20" th:selected="${size==20}">20개</option>
               <option value="30" th:selected="${size==30}">30개</option>
@@ -278,7 +289,13 @@
                 나중 등록순
               </option>
             </select>
-            <span th:if="${page.totalElements != 0}" class="text__right">
+            <!-- 동적 데이터 -->
+            <span id="resultCount" class="text__right"></span>
+            <!-- 정적 데이터 -->
+            <span
+              th:if="${page.totalElements != 0}"
+              id="staticTotal2"
+              class="text__right">
               <span th:text="${page.totalElements + '건의 상품 / '}"></span>
               <span
                 th:text="${(page.number + 1) + (page.number * size) - page.totalPages + (page.totalPages - page.number)}"></span>
@@ -293,65 +310,96 @@
           <div th:unless="${page.totalElements != 0}" class="text__center">
             <h3>등록하신 상품이 없습니다.</h3>
           </div>
-          <table th:if="${page.totalElements != 0}">
-            <thead class="packageList">
-              <tr>
-                <th>순번</th>
-                <th>이미지</th>
-                <th>상품명</th>
-                <th>가격</th>
-                <th>출발지</th>
-                <th>도착지</th>
-                <th>출국일자</th>
-                <th>귀국일자</th>
-                <th>예약상태</th>
-                <th>생성일자</th>
-                <th>수정일자</th>
-                <th>수정</th>
-                <th>삭제</th>
-              </tr>
-            </thead>
-            <!-- 테이블은 동적오로 js로 생성함 -->
-            <tbody id="packageList" class="packageList">
-              <tr th:each="aPackage : ${packageList}">
-                <td th:text="${aPackage.id}"></td>
-                <td>
-                  <a th:href="@{/package/details/{id}(id=${aPackage.id})}">
-                    <img th:src="${aPackage.mainImagePath}" class="image__set"
-                  /></a>
-                </td>
-                <td>
-                  <a
-                    th:href="@{/package/details/{id}(id=${aPackage.id})}"
-                    th:text="${aPackage.name}"></a>
-                </td>
-                <td th:text="${aPackage.fuelSurchargeIncluded}"></td>
-                <td th:text="${aPackage.departurePointOut}"></td>
-                <td th:text="${aPackage.arrivalPointOut}"></td>
-                <td th:text="${aPackage.departureDateOut}"></td>
-                <td th:text="${aPackage.arrivalDateReturn}"></td>
-                <td th:text="${aPackage.packageStatus}"></td>
-                <td th:text="${aPackage.createdAt}"></td>
-                <td th:text="${aPackage.modifiedAt}"></td>
-                <td>
-                  <button
-                    type="button"
-                    class="btn1 btn-edit"
-                    th:onclick="|location.href='/admin/package/edit/' + ${aPackage.id}|">
-                    수정하기
-                  </button>
-                </td>
-                <td>
-                  <button type="button" class="btn1 btn-delete">
-                    삭제하기
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div id="staticList">
+            <table th:if="${page.totalElements != 0}">
+              <thead>
+                <tr>
+                  <th>순번</th>
+                  <th>이미지</th>
+                  <th>상품명</th>
+                  <th>가격</th>
+                  <th>출발지</th>
+                  <th>도착지</th>
+                  <th>출국일자</th>
+                  <th>귀국일자</th>
+                  <th>예약상태</th>
+                  <th>생성일자</th>
+                  <th>수정일자</th>
+                  <th>수정</th>
+                  <th>삭제</th>
+                </tr>
+              </thead>
+              <tbody id="packageList" class="packageList">
+                <tr th:each="aPackage : ${packageList}">
+                  <td th:text="${aPackage.id}"></td>
+                  <td>
+                    <a th:href="@{/package/details/{id}(id=${aPackage.id})}">
+                      <img
+                        th:src="${aPackage.mainImagePath}"
+                        class="image__set"
+                    /></a>
+                  </td>
+                  <td class="detailsLink">
+                    <a
+                      th:href="@{/package/details/{id}(id=${aPackage.id})}"
+                      th:text="${aPackage.name}"></a>
+                  </td>
+                  <td th:text="${aPackage.fuelSurchargeIncluded}"></td>
+                  <td th:text="${aPackage.departurePointOut}"></td>
+                  <td
+                    th:text="${aPackage.arrivalPointOut}"
+                    class="tr-size"></td>
+                  <td th:text="${aPackage.departureDateOut}"></td>
+                  <td th:text="${aPackage.arrivalDateReturn}"></td>
+                  <td th:text="${aPackage.packageStatus}"></td>
+                  <td th:text="${aPackage.createdAt}"></td>
+                  <td th:text="${aPackage.modifiedAt}"></td>
+                  <td>
+                    <button
+                      type="button"
+                      class="btn1 btn-edit"
+                      th:onclick="|location.href='/admin/package/edit/' + ${aPackage.id}|">
+                      수정하기
+                    </button>
+                  </td>
+                  <td>
+                    <button type="button" class="btn1 btn-delete">
+                      삭제하기
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div id="dynamicList" style="display: none">
+            <table th:if="${page.totalElements != 0}">
+              <thead>
+                <tr>
+                  <th>순번</th>
+                  <th>이미지</th>
+                  <th>상품명</th>
+                  <th>가격</th>
+                  <th>출발지</th>
+                  <th>도착지</th>
+                  <th>출국일자</th>
+                  <th>귀국일자</th>
+                  <th>예약상태</th>
+                  <th>생성일자</th>
+                  <th>수정일자</th>
+                  <th>수정</th>
+                  <th>삭제</th>
+                </tr>
+              </thead>
+              <!-- js 에서 테이블은 동적오로 생성하는 부분 -->
+              <tbody id="dynamicTableBody" class="packageList"></tbody>
+            </table>
+          </div>
         </div>
+        <!-- js 에서 페이지를 동적으로 생성하는 부분 -->
+        <div id="pagination" style="display: none"></div>
         <!-- 페이지네이션 -->
         <nav
+          id="staticPagination"
           aria-label="Page navigation"
           th:unless="${page.totalElements == 0}">
           <ul class="pagination">
@@ -422,16 +470,29 @@
 </html>
 <script th:src="@{/js/adminNav.js}"></script>
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    loadCategories();
+  document
+    .getElementById("filterForm")
+    .addEventListener("submit", function (e) {
+      e.preventDefault(); // 폼 제출 막기
+      fetchFilteredList(); // 대신 Ajax 호출
+    });
 
-    document
-      .getElementById("sort")
-      .addEventListener("change", fetchFilteredList);
-    document
-      .getElementById("size")
-      .addEventListener("change", fetchFilteredList);
+  document.getElementById("subCategory").addEventListener("change", () => {
+    const selected = subCategories.find((c) => c.id == subCategorySelect.value);
+    loadSmallCategories(selected?.children || []);
+    fetchFilteredList(0);
+    enableDynamicMode();
   });
+
+  document
+    .getElementById("smallCategory")
+    .addEventListener("change", () => fetchFilteredList(0));
+  document
+    .getElementById("sort")
+    .addEventListener("change", () => fetchFilteredList(0));
+  document
+    .getElementById("size")
+    .addEventListener("change", () => fetchFilteredList(0));
 
   async function loadCategories() {
     const response = await fetch("/api/categories");
@@ -447,6 +508,27 @@
       mainCategorySelect.appendChild(option);
     });
 
+    // 메인 카테고리 선택 시 동작
+    document
+      .getElementById("mainCategory")
+      .addEventListener("change", async function () {
+        const mainId = this.value;
+
+        if (mainId) {
+          // 동적 리스트 fetch
+          const response = await fetch(
+            `/admin/package/list/json?mainCategoryId=${mainId}`
+          );
+          const data = await response.json();
+
+          toggleListView(true);
+          renderPackageList(data.content);
+          renderPagination(data);
+        } else {
+          toggleListView(false);
+        }
+      });
+
     const newMain = mainCategorySelect.cloneNode(true);
     mainCategorySelect.replaceWith(newMain);
 
@@ -454,6 +536,7 @@
       const selected = data.find((c) => c.id == newMain.value);
       loadSubCategories(selected?.children || []);
       fetchFilteredList();
+      enableDynamicMode();
     });
   }
 
@@ -479,6 +562,7 @@
       const selected = subCategories.find((c) => c.id == newSub.value);
       loadSmallCategories(selected?.children || []);
       fetchFilteredList();
+      enableDynamicMode();
     });
   }
 
@@ -495,7 +579,10 @@
       newSmall.appendChild(option);
     });
 
-    newSmall.addEventListener("change", fetchFilteredList);
+    newSmall.addEventListener("change", () => {
+      enableDynamicMode();
+      fetchFilteredList();
+    });
   }
 
   function resetSelect(selectElement, placeholderText) {
@@ -508,7 +595,7 @@
     selectElement.appendChild(option);
   }
 
-  async function fetchFilteredList() {
+  async function fetchFilteredList(page = 0) {
     const mainId = document.getElementById("mainCategory")?.value;
     const subId = document.getElementById("subCategory")?.value;
     const smallId = document.getElementById("smallCategory")?.value;
@@ -516,7 +603,7 @@
     const size = document.getElementById("size")?.value || "20";
 
     const params = new URLSearchParams();
-    params.append("page", 0); // 첫 페이지부터 시작
+    params.append("page", page); // 첫 페이지부터 시작
     params.append("size", size);
     params.append("sort", sort);
     if (mainId) params.append("mainCategoryId", mainId);
@@ -528,11 +615,52 @@
     );
     const data = await response.json();
 
+    toggleListView(true);
+    updateResultCount(data);
+
     renderPackageList(data.content);
+    renderPagination(data);
+  }
+
+  function toggleListView(useDynamic) {
+    document.getElementById("staticList").style.display = useDynamic
+      ? "none"
+      : "block";
+    document.getElementById("staticPagination").style.display = useDynamic
+      ? "none"
+      : "block";
+    document.getElementById("dynamicList").style.display = useDynamic
+      ? "block"
+      : "none";
+    document.getElementById("pagination").style.display = useDynamic
+      ? "block"
+      : "none";
+    document.getElementById("staticTotal").style.display = useDynamic
+      ? "none"
+      : "block";
+    document.getElementById("staticTotal2").style.display = useDynamic
+      ? "none"
+      : "block";
+  }
+
+  function updateResultCount(pageData) {
+    const resultCountEl = document.getElementById("resultCount");
+    const redTotalCountEl = document.getElementById("redTotalCount");
+
+    const total = pageData.totalElements;
+    const size = pageData.size;
+    const currentPage = pageData.number;
+    const currentContentCount = pageData.content.length;
+
+    const start = total === 0 ? 0 : currentPage * size + 1;
+    const end = currentPage * size + currentContentCount;
+
+    resultCountEl.textContent = `${total}건의 상품 / ${start} - ${end}건`;
+    redTotalCountEl.textContent = total;
   }
 
   function renderPackageList(packages) {
-    const container = document.getElementById("packageList");
+    const container = document.getElementById("dynamicTableBody");
     container.innerHTML = "";
 
     if (packages.length === 0) {
@@ -550,7 +678,7 @@
       <td class="detailsLink">${package.name}</td>
       <td>${package.fuelSurchargeIncluded}</td>
       <td>${package.departurePointOut}</td>
-      <td>${package.arrivalPointOut}</td>
+      <td class="tr-size">${package.arrivalPointOut}</td>
       <td>${package.departureDateOut}</td>
       <td>${package.arrivalDateReturn}</td>
       <td>${package.packageStatus}</td>
@@ -574,7 +702,7 @@
   });
 
   document
-    .getElementById("packageList")
+    .getElementById("dynamicList")
     .addEventListener("click", function (e) {
       const isImageClicked = e.target.classList.contains("image__set");
       const isTextClicked = e.target.classList.contains("detailsLink");
@@ -588,32 +716,81 @@
       }
     });
 
+  function renderPagination(pageData) {
+    const pagination = document.getElementById("pagination");
+    if (!pagination) return;
+
+    pagination.innerHTML = ""; // 초기화
+
+    const currentPage = pageData.number;
+    const totalPages = pageData.totalPages;
+    const size = pageData.size;
+
+    const ul = document.createElement("ul");
+    ul.className = "pagination";
+
+    // 유틸 함수: 페이지 버튼 만들기
+    const createPageItem = (label, page, disabled, isActive = false) => {
+      const li = document.createElement("li");
+      li.className = "page-item";
+      if (disabled) li.classList.add("disabled");
+      if (isActive) li.classList.add("active");
+
+      const a = document.createElement("a");
+      a.className = "page-link";
+      a.href = "#";
+      a.textContent = label;
+      a.addEventListener("click", (e) => {
+        e.preventDefault();
+        if (!disabled && page !== currentPage) {
+          fetchFilteredList(page); // 페이지 이동
+        }
+      });
+
+      li.appendChild(a);
+      return li;
+    };
+
+    const hasPrevious = pageData.number > 0;
+    const hasNext = pageData.number < pageData.totalPages - 1;
+
+    // 첫 페이지 버튼 («)
+    ul.appendChild(createPageItem("«", 0, pageData.first));
+
+    // 이전 페이지 버튼 (<)
+    ul.appendChild(createPageItem("<", currentPage - 1, !hasPrevious));
+
+    // 페이지 번호 (currentPage - 2 ~ currentPage + 2)
+    const start = Math.max(currentPage - 2, 0);
+    const end = Math.min(currentPage + 2, totalPages - 1);
+
+    for (let i = start; i <= end; i++) {
+      ul.appendChild(
+        createPageItem((i + 1).toString(), i, false, i === currentPage)
+      );
+    }
+
+    // 다음 페이지 버튼 (>)
+    ul.appendChild(createPageItem(">", currentPage + 1, !hasNext));
+
+    // 마지막 페이지 버튼 (»)
+    ul.appendChild(createPageItem("»", totalPages - 1, pageData.last));
+
+    pagination.appendChild(ul);
+  }
+
+  let currentPage = 0;
+
   document.addEventListener("DOMContentLoaded", async () => {
     await loadCategories();
-    await fetchFilteredList(); // 초기 데이터도 표시
   });
 
-  // sort 관련 설정
-  const sizeSelect = document.getElementById("size");
-  const sortSelect = document.getElementById("sort");
-  // const categorySelect = document.getElementById("categorySelect");
+  let isDynamicMode = false; // 동적 모드 여부 판단
 
-  const currentSize = `[[${size}]]`;
-  const currentSort = `[[${sort}]]`;
-  const currentCategory = `[[${categorySelect}]]`;
-
-  sizeSelect.addEventListener("change", function () {
-    const selectedSize = this.value;
-    window.location.href = `/admin/package/list?page=0&size=${selectedSize}&sort=${currentSort}`;
-  });
-
-  sortSelect.addEventListener("change", function () {
-    const selectedSort = this.value;
-    window.location.href = `/admin/package/list?page=0&size=${currentSize}&sort=${selectedSort}`;
-  });
-  // categorySelect.addEventListener("change", function () {
-  //   const selectedCategory = this.value;
-  //   window.location.href = `/admin/package/list/?page=0&size=${currentSize}&sort=${currentSort}`;
-  //   window.location.href = `/amdin/package/list/category?category=${selectedCategory}&page=0&size=${currentSize}&sort=${currentSort}`;
-  // });
+  function enableDynamicMode() {
+    if (!isDynamicMode) {
+      isDynamicMode = true;
+      toggleListView(true); // 동적 리스트만 보이도록
+    }
+  }
 </script>
