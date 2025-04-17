@@ -50,6 +50,7 @@ public class PackageService {
         PackageCategory smallCategory = packageCategoryRepository.findById(requestDto.getSmallCategoryId())
                 .orElseThrow(() -> new IllegalArgumentException("소분류 카테고리를 찾을 수 없습니다."));
 
+
         Package aPackage = Package.builder()
                 .packageName(requestDto.getPackageName())
                 .adultPrice(requestDto.getAdultPrice())
@@ -71,6 +72,11 @@ public class PackageService {
             PackageImage mainPackageImage = packageImageService.create(requestDto, aPackage);
             aPackage.setMainImage(mainPackageImage);
         }
+
+        mainCategory.getMainCategoryPackages().add(aPackage);
+        subCategory.getSubCategoryPackages().add(aPackage);
+        smallCategory.getSmallCategoryPackages().add(aPackage);
+
         // 패키지 기본 정보 저장
         packageRepository.save(aPackage);
         // 선택 옵션 저장

@@ -23,4 +23,11 @@ public class PackageCategoryDto {
 
     //소분류
     private String small;
+
+    //수정할 대분류
+    private String mainEdit;
+
+    //수정할 중분류
+    private String subEdit;
+
 }

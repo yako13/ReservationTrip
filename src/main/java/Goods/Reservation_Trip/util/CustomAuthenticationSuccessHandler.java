@@ -29,32 +29,33 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         SavedRequest savedRequest = new HttpSessionRequestCache().getRequest(request, response);
         String redirectUrl = "/";
 
-        String masterRedirectUrl = "/master/checkout/list";
+        String masterRedirectUrl = "/admin/reservation/list";
 
         CustomOauth2UserDetails oAuth2User = (CustomOauth2UserDetails) authentication.getPrincipal();
         Member member = oAuth2User.getMember();
 
-        if (checkBirth(member)) {
 
-            Collection<? extends GrantedAuthority> grantedAuthorities = authentication.getAuthorities();
+        Collection<? extends GrantedAuthority> grantedAuthorities = authentication.getAuthorities();
 
-            String role = "";
-            for (GrantedAuthority authority : grantedAuthorities) {
-                role = authority.getAuthority();
-            }
+        String role = "";
+        for (GrantedAuthority authority : grantedAuthorities) {
+            role = authority.getAuthority();
+        }
 
-            if (role.equals("ROLE_MEMBER") && savedRequest != null) {
+
+        if (role.equals("ROLE_MEMBER") && savedRequest != null) {
+            if (checkBirth(member)) {
                 redirectUrl = savedRequest.getRedirectUrl();
                 response.sendRedirect(redirectUrl);
-            } else if (role.equals("ROLE_MEMBER")) {
+            } else response.sendRedirect("/member/edit");
+        } else if (role.equals("ROLE_MEMBER")) {
+            if (checkBirth(member)) {
                 response.sendRedirect(redirectUrl);
-            } else if (role.equals("ROLE_ADMIN")) {
-                response.sendRedirect(masterRedirectUrl);
-            } else if (role.equals("ROLE_CANCELLATION")) {
-                response.sendRedirect("/");
-            }
-        } else {
-            response.sendRedirect("/member/edit");
+            } else response.sendRedirect("/member/edit");
+        } else if (role.equals("ROLE_ADMIN")) {
+            response.sendRedirect(masterRedirectUrl);
+        } else if (role.equals("ROLE_CANCELLATION")) {
+            response.sendRedirect("/");
         }
     }
 
