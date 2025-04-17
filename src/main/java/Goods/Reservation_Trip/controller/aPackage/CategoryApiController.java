@@ -6,10 +6,7 @@ import Goods.Reservation_Trip.service.aPackage.CombinePackageService;
 import Goods.Reservation_Trip.service.aPackage.PackageCategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,6 +24,16 @@ public class CategoryApiController {
         return packageCategoryService.getMainCategories();
     }
 
+    @GetMapping("/api/categories/{mainCategoryId}/subcategories")
+    public List<PackageCategory> getSubCategories(@PathVariable Long mainCategoryId) {
+        return packageCategoryService.getSubCategory(mainCategoryId);
+    }
+
+    @GetMapping("/api/categories/{subCategoryId}/smallcategories")
+    public List<PackageCategory> getSmallCategories(@PathVariable Long subCategoryId) {
+        return packageCategoryService.getSmallCategoryId(subCategoryId);
+    }
+
     @ResponseBody
     @GetMapping("/admin/package/list/json")
     public Page<AdminPackageListResponseDto> getFilteredPackageListJson(
@@ -37,5 +44,18 @@ public class CategoryApiController {
             @RequestParam(required = false) Long subCategoryId,
             @RequestParam(required = false) Long smallCategoryId) {
         return combinePackageService.getAdminPackageAndScheduleList(page, size, mainCategoryId, subCategoryId, smallCategoryId, sort);
+    }
+
+    @ResponseBody
+    @GetMapping("/admin/package/search/json")
+    public Page<AdminPackageListResponseDto> getFilteredPackageListJson(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "default") String sort,
+            @RequestParam(required = false) Long mainCategoryId,
+            @RequestParam(required = false) Long subCategoryId,
+            @RequestParam(required = false) Long smallCategoryId,
+            @RequestParam(value = "keywordQuery", required = false, defaultValue = "") String name) {
+        return combinePackageService.getAdminPackageSearchList(page, size, mainCategoryId, subCategoryId, smallCategoryId, sort, name);
     }
 }
