@@ -101,9 +101,6 @@ public class Package extends BaseTime {
     @OneToOne(mappedBy = "aPackage",cascade = CascadeType.ALL, orphanRemoval = true)
     private PackageOption packageOption;
 
-    @OneToMany(mappedBy = "aPackage",cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PackageCategory> packageCategory = new ArrayList<>();
-
     public void addPackageSchedules(List<PackageSchedule> schedules) {
         this.packageScheduleList.addAll(schedules);
         for (PackageSchedule schedule : schedules) {

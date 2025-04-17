@@ -73,9 +73,9 @@ public class PackageService {
             aPackage.setMainImage(mainPackageImage);
         }
 
-        mainCategory.setAPackage(aPackage);
-        subCategory.setAPackage(aPackage);
-        smallCategory.setAPackage(aPackage);
+        mainCategory.getMainCategoryPackages().add(aPackage);
+        subCategory.getSubCategoryPackages().add(aPackage);
+        smallCategory.getSmallCategoryPackages().add(aPackage);
 
         // 패키지 기본 정보 저장
         packageRepository.save(aPackage);
