@@ -80,7 +80,7 @@ public class PackageController {
         model.addAttribute("keywordQuery", name);
         model.addAttribute("sort", sort);
 
-        return "package/admin/package-search copy";
+        return "package/admin/package-search";
     }
 
     @GetMapping("/admin/package/edit/{id}")
