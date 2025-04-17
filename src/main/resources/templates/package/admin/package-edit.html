@@ -73,7 +73,7 @@
       border: 1px solid #5c5c5c;
       border-radius: 7px;
       padding: 20px;
-      height: 430px;
+      height: 500px;
     }
 
     .a7 {
@@ -803,6 +803,35 @@
     .subImageContainer {
       display: flex;
     }
+
+    #tag {
+    width: 230px;
+    margin-right: 20px;
+  }
+
+  #tagBtn {
+    width: 60px;
+    background-color: #2cafec;
+    color: white;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    border: none;
+
+    &:hover {
+      background-color: #3e8cf1;
+    }
+  }
+
+  .tag {
+    display: flex;
+    width: 414px;
+  }
+
+  #tagSelect {
+    width: 80px;
+    margin-right: 15px;
+  }
   </style>
 
   <body>
@@ -857,7 +886,30 @@
                     type="text"
                     name="aPackage.packageName"
                     th:value="${package.packageName}"
-                    class="HanPackInput" />
+                    class="HanPackInput"  id="name"/>
+                </div>
+                <div class="input__flex">
+                  <label>태그</label>
+                  <div class="tag">
+                    <!-- //수정부분 시작 -->
+                    <select id="tagSelect" name="tag" class="form-select"
+                      style="border: 1px solid #ccc;   border-radius: 3px;">
+                      <!-- //수정부분 끝 -->
+                      <option value="" disabled selected>선택</option>
+                      <option value="힐링여행">힐링여행</option>
+                      <option value="자유여행">자유여행</option>
+                      <option value="가족여행">가족여행</option>
+                      <option value="커플추천">커플추천</option>
+                      <option value="맛집투어">맛집투어</option>
+                      <option value="명소투어">명소투어</option>
+                      <option value="럭셔리">럭셔리</option>
+                      <option value="실속형">실속형</option>
+                      <option value="액티비티">액티비티</option>
+                      <option value="계절테마">계절테마</option>
+                    </select>
+                    <input type="text" id="tag" class="HanPackInput" placeholder="또는 직접 입력">
+                    <button type="button" id="tagBtn">추가</button>
+                  </div>
                 </div>
 
                 <div class="input__flex">
@@ -1673,7 +1725,6 @@
                   th:value="${package.hotelName}"
                   placeholder="호텔명을 등록해주세요" />
               </div>
-              <button type="button" class="btn1 btn-hotel">일정 추가</button>
             </div>
             <!-- 상품 옵션 -->
             <div>옵션</div>
@@ -1757,9 +1808,63 @@
     </main>
   </body>
 </html>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <!-- 탑 스크롤 스크립트 -->
 <script th:src="@{/js/scrollTop.js}"></script>
+<script>
+    let tagBtn = document.getElementById("tagBtn");
+  let tag = document.getElementById("tag");
+  let name = document.getElementById("name");
+  let tagSelect = document.getElementById("tagSelect");
+
+  tagBtn.addEventListener("click", function () {
+    if (tag.value.length !== 0) {
+      if (name.value.length + tag.value.length > 40) {
+        Swal.fire({ text: "패키지명은 40자 이하입니다.", confirmButtonColor: "#43bff8" });
+        return;
+      }
+      name.value = name.value + "#" + tag.value + " ";
+      tag.value = null;
+    }
+
+    if (name.value.length > 40) {
+      Swal.fire({ text: "패키지명은 40자 이하입니다.", confirmButtonColor: "#43bff8" });
+      return;
+    }
+  })
+
+  tagSelect.addEventListener("change", function () {
+    if (name.value.length + tagSelect.value.length > 40) {
+      Swal.fire({ text: "패키지명은 40자 이하입니다.", confirmButtonColor: "#43bff8" });
+      return;
+    }
+    name.value = name.value + "#" + tagSelect.value + " ";;
+
+  })
+
+  let smallCategorySelect = document.getElementById("smallCategory");
+
+  smallCategorySelect.addEventListener("change", function () {
+    const prefix = `[${smallCategorySelect.options[smallCategorySelect.selectedIndex].text}]`;
+
+    const maxLength = 50;
+
+    const cleanedName = name.value.replace(/^\[.*?\]/, '').trim();
+
+    let fullName = prefix + cleanedName;
+
+    if (fullName.length > maxLength) {
+      // prefix 길이만큼은 그대로 유지하고, 나머지 부분을 잘라줌
+      Swal.fire({ text: "패키지명이 너무 깁니다.", confirmButtonColor: "#43bff8" });
+      const remainingLength = maxLength - prefix.length;
+      fullName = prefix + name.value.substring(0, remainingLength);
+      return;
+    }
+
+    name.value = fullName;
+
+  })
+</script>
 
 <script th:src="@{/js/adminNav.js}"></script>
 <script>
