@@ -233,6 +233,15 @@
     <script>
         //메일 전송
         $("#findBtn").click(function () {
+            if($("#userName").val() == ""){
+                Swal.fire({ text: "이름을 작성해주세요.", confirmButtonColor: "#43BFF8" });
+                return;
+            }
+            if($("#phoneNumber").val() == "" || $("#phoneNumber").val().length < 10){
+                Swal.fire({ text: "휴대전화번호(10~11자)를 작성해주세요.", confirmButtonColor: "#43BFF8" });
+                return;
+            }
+
             var params = {
                 name: $("#userName").val(),
                 phoneNumber: $("#phoneNumber").val()
