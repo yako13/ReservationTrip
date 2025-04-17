@@ -328,6 +328,7 @@
         .editLinkArea {
             width: 100px;
             font-size: 1.2rem;
+
             a {
                 color: #43bff8;
                 font-weight: 600;
@@ -373,6 +374,16 @@
         .contentArea {
             width: 100%;
         }
+
+        #tag {
+            color: rgba(255, 41, 70, 0.904);
+        }
+
+        .nameArea{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
     </style>
 </head>
 
@@ -413,8 +424,12 @@
 
                                         <b>
                                             <a th:href="@{'/package/details/'+${reviewList.packagePK}}">
+                                                <div class="nameArea">
                                                 <p class="HanCkListProductNameP" th:text="${reviewList.packageName}">
                                                 </p>
+                                                <p class="HanCkListProductNameP" id="tag" th:text="${reviewList.tag}">
+                                                </p>
+                                            </div>
                                             </a>
                                         </b>
 

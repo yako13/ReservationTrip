@@ -44,6 +44,7 @@ public class ReviewController {
         model.addAttribute("packageName", reviewResponseDto.getPackageName());
         model.addAttribute("reservationId", reservationId);
         model.addAttribute("packagePK",reviewResponseDto.getPackagePK());
+        model.addAttribute("tag",reviewResponseDto.getTag());
 
         return "review/new";
     }
@@ -76,6 +77,7 @@ public class ReviewController {
         model.addAttribute("rating", reviewResponseDto.getRating());
         model.addAttribute("reviewId", reviewId);
         model.addAttribute("packagePK",reviewResponseDto.getPackagePK());
+        model.addAttribute("tag",reviewResponseDto.getTag());
 
         return "review/edit";
     }

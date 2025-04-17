@@ -55,8 +55,9 @@ public class ReviewService {
 
         return ReviewResponseDto.builder()
                 .packagePK(reservation.getAPackage().getId())
+                .tag(Formatter.getTag(reservation.getAPackage().getPackageName()))
                 .packageMainImage(imageManager.createImageUrl(reservation.getAPackage().getMainImage().getImageFullName()))
-                .packageName(reservation.getAPackage().getPackageName())
+                .packageName(Formatter.getPackageNameWithoutTag(reservation.getAPackage().getPackageName()))
                 .build();
     }
 
@@ -177,7 +178,8 @@ public class ReviewService {
         return ReviewResponseDto.builder()
                 .packageMainImage(imageManager.createImageUrl(review.getAPackage().getMainImage().getImageFullName()))
                 .packagePK(review.getAPackage().getId())
-                .packageName(review.getAPackage().getPackageName())
+                .tag(Formatter.getTag(review.getAPackage().getPackageName()))
+                .packageName(Formatter.getPackageNameWithoutTag(review.getAPackage().getPackageName()))
                 .content(review.getContent())
                 .rating(review.getRating())
                 .reviewImageList(review.getReviewImageList())
@@ -308,7 +310,8 @@ public class ReviewService {
                     .packagePK(review.getAPackage().getId())
                     .reviewId(review.getId())
                     .packageMainImage(imageManager.createImageUrl(review.getAPackage().getMainImage().getImageFullName()))
-                    .packageName(review.getAPackage().getPackageName())
+                    .packageName(Formatter.getPackageNameWithoutTag(review.getAPackage().getPackageName()))
+                    .tag(Formatter.getTag(review.getAPackage().getPackageName()))
                     .content(review.getContent())
                     .rating(review.getRating())
                     .createdAt(Formatter.getLocalDate(review.getCreatedAt()))
