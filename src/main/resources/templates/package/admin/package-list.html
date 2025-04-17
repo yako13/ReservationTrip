@@ -210,6 +210,13 @@
     }
   </style>
   <body>
+    <!-- 수정한 부분 시작 -->
+
+    <!-- 알람용 input -->
+    <input type="hidden" id="flashMessage8" th:value="${data}">
+
+        <!-- 수정한 부분 끝-->
+
     <header th:replace="fragments/adminHeader::masterHeader"></header>
     <nav th:replace="fragments/adminHeader::masterNav"></nav>
     <main id="main" class="main">
@@ -369,10 +376,7 @@
                     </button>
                   </td>
                   <td>
-                    <button
-                      type="button"
-                      th:data-name="${aPackage.name}"
-                      class="btn1 btn-delete">
+                    <button type="button" th:data-name="${aPackage.name}" th:data-id="${aPackage.id}" class="btn1 btn-delete">
                       삭제하기
                     </button>
                   </td>
@@ -483,9 +487,6 @@
 
 <!--스위트 알람2 라이브러리-->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<!-- 리다이렉트 알람 -->
-<script th:src="@{/js/alert.js}"></script>
 
 <!-- 수정한 부분끝 -->
 <script>
@@ -816,16 +817,30 @@
 <!-- 수정한 부분시작 -->
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    const container = document.getElementById("packageList");
+    // 정적 테이블 삭제 이벤트
+    const staticContainer = document.getElementById("packageList");
 
-    container.addEventListener("click", function (e) {
+    if (staticContainer) {
+      staticContainer.addEventListener("click", handleDeleteClick);
+    }
+
+    // 동적 테이블 삭제 이벤트
+    const dynamicContainer = document.getElementById("dynamicTableBody");
+
+    if (dynamicContainer) {
+      dynamicContainer.addEventListener("click", handleDeleteClick);
+    }
+
+    // 공통 삭제 처리 함수
+    function handleDeleteClick(e) {
       if (e.target.classList.contains("btn-delete")) {
-        const packageId = e.target.closest("tr").dataset.id;
+        const tr = e.target.closest("tr");
+        const packageId = tr?.dataset.id || e.target.dataset.id;
         const packageName = e.target.dataset.name;
 
         Swal.fire({
           title: "정말 삭제하시겠습니까?",
-          text: ` ${packageName}를 삭제하려고 합니다.`,
+          text: `${packageName}를 삭제하려고 합니다.`,
           icon: "warning",
           showCancelButton: true,
           confirmButtonColor: "#ff8080",
@@ -838,7 +853,27 @@
           }
         });
       }
-    });
+    }
   });
+</script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+  const msgInput8 = document.getElementById('flashMessage8');
+  const message8 = msgInput8?.value;
+
+
+  if (message8) {
+    Swal.fire({
+      icon: 'success',
+      title: '삭제 완료!',
+      text: message8,
+      confirmButtonText: '확인'
+    });
+  }
+});
+
 </script>
 <!-- 수정한 부분끝 -->

@@ -204,29 +204,33 @@
     }
 
     #infoImage {
-    width: 8rem;
-  }
+      width: 8rem;
+    }
 
-  .imageArea {
-    padding: 5rem 0;
-    text-align: center;
-    border-bottom: solid 1px #c2c2c2;
-  }
+    .imageArea {
+      padding: 5rem 0;
+      text-align: center;
+      border-bottom: solid 1px #c2c2c2;
+    }
 
-  .inner{
-    padding: 60px 40px;
-  }
+    .inner {
+      padding: 60px 40px;
+    }
     .tr-size {
       max-width: 130px;
     }
   </style>
   <body>
+    <input type="hidden" id="flashMessage8" th:value="${data}" />
     <header th:replace="fragments/adminHeader::masterHeader"></header>
     <nav th:replace="fragments/adminHeader::masterNav"></nav>
     <main id="main" class="main">
       <div class="inner">
-            <h2 th:if="${keywordQuery!=null}" th:text="'검색어 : '+ ${keywordQuery}" class="search-name"></h2>
-            <hr />
+        <h2
+          th:if="${keywordQuery!=null}"
+          th:text="'검색어 : '+ ${keywordQuery}"
+          class="search-name"></h2>
+        <hr />
         <div class="orderList">
           <p>
             <b>등록 내역</b> :
@@ -329,7 +333,7 @@
             </span>
           </div>
           <div th:unless="${page.totalElements != 0}" class="imageArea">
-            <img th:src="@{/images/info.svg}" id="infoImage">
+            <img th:src="@{/images/info.svg}" id="infoImage" />
             <p>예약내역이 없습니다.</p>
           </div>
           <!-- 정적 데이터 -->
@@ -386,7 +390,11 @@
                     </button>
                   </td>
                   <td>
-                    <button type="button" class="btn1 btn-delete">
+                    <button
+                      type="button"
+                      th:data-name="${aPackage.name}"
+                      th:data-id="${aPackage.id}"
+                      class="btn1 btn-delete">
                       삭제하기
                     </button>
                   </td>
@@ -493,6 +501,10 @@
   </body>
 </html>
 <script th:src="@{/js/adminNav.js}"></script>
+
+<!-- 수정한 부분 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
   document.addEventListener("DOMContentLoaded", async () => {
     await loadCategories();
@@ -758,7 +770,7 @@
       <td>${package.createdAt}</td>
       <td>${package.modifiedAt}</td>
       <td><button type="button" class="btn1 btn-edit" data-id="${package.id}">수정하기</button></td>
-      <td><button type="button" class="btn1 btn-delete">삭제하기</button></td>
+      <td><button type="button" class="btn1 btn-delete" data-id="${package.id}" data-name="${package.name}">삭제하기</button></td>
     `;
       container.appendChild(tr);
     });
@@ -867,3 +879,64 @@
     }
   }
 </script>
+
+<!-- 수정한 부분시작 -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // 정적 테이블 삭제 이벤트
+    const staticContainer = document.getElementById("packageList");
+
+    if (staticContainer) {
+      staticContainer.addEventListener("click", handleDeleteClick);
+    }
+
+    // 동적 테이블 삭제 이벤트
+    const dynamicContainer = document.getElementById("dynamicTableBody");
+
+    if (dynamicContainer) {
+      dynamicContainer.addEventListener("click", handleDeleteClick);
+    }
+
+    // 공통 삭제 처리 함수
+    function handleDeleteClick(e) {
+      if (e.target.classList.contains("btn-delete")) {
+        const tr = e.target.closest("tr");
+        const packageId = tr?.dataset.id || e.target.dataset.id;
+        const packageName = e.target.dataset.name;
+
+        Swal.fire({
+          title: "정말 삭제하시겠습니까?",
+          text: `${packageName}를 삭제하려고 합니다.`,
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#ff8080",
+          cancelButtonColor: "#aaa",
+          confirmButtonText: "삭제",
+          cancelButtonText: "취소",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            location.href = `/admin/package/delete12/${packageId}`;
+          }
+        });
+      }
+    }
+  });
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const msgInput8 = document.getElementById("flashMessage8");
+    const message8 = msgInput8?.value;
+
+    if (message8) {
+      Swal.fire({
+        icon: "success",
+        title: "삭제 완료!",
+        text: message8,
+        confirmButtonText: "확인",
+      });
+    }
+  });
+</script>
+
+<!-- 수정한 부분끝 -->
