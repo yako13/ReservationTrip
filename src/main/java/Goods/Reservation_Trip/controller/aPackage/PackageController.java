@@ -72,6 +72,7 @@ public class PackageController {
                                          @RequestParam(required = false) Long subCategoryId,
                                          @RequestParam(required = false) Long smallCategoryId,
                                          Model model) {
+        model.getAttribute("name");
         Page<AdminPackageListResponseDto> adminPackageListResponseDtoPage = combinePackageService.getAdminPackageSearchList(page, size, mainCategoryId, subCategoryId, smallCategoryId, sort, name);
         model.addAttribute("packageList", adminPackageListResponseDtoPage.getContent());
         model.addAttribute("page", adminPackageListResponseDtoPage);
