@@ -98,6 +98,8 @@ public class PackageScheduleDetailsCustomRepositoryImpl implements PackageSchedu
         BooleanBuilder whereBuilder = new BooleanBuilder();
         whereBuilder.and(schedule.packageStatus.eq(PackageStatus.AVAILABLE));
 
+        whereBuilder.and(aPackage.packageStatus.ne(PackageStatus.CLOSED));
+
         if (mainCategoryId != null) {
             whereBuilder.and(aPackage.mainCategory.id.eq(mainCategoryId));
         }

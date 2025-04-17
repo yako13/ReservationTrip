@@ -823,8 +823,11 @@
               <div class="input__flex">
                 <label>태그</label>
                 <div class="tag">
-                  <select id="tagSelect" name="tag" class="form-select">
-                    <option value="" disabled>태그 선택</option>
+                  <!-- //수정부분 시작 -->
+                  <select id="tagSelect" name="tag" class="form-select"
+                    style="border: 1px solid #ccc;   border-radius: 3px;">
+                    <!-- //수정부분 끝 -->
+                    <option value="" disabled selected>선택</option>
                     <option value="힐링여행">힐링여행</option>
                     <option value="자유여행">자유여행</option>
                     <option value="가족여행">가족여행</option>
@@ -965,15 +968,15 @@
               <div>
                 <label>도시 카테고리</label><br />
                 <select id="mainCategory" name="aPackage.mainCategoryId" class="category__container"
-                  style="margin-top: 6px;">
+                  style="margin-top: 6px; border: 1px solid #ccc; border-radius: 3px;">
                   <option value="" selected></option>
                 </select>
                 <select id="subCategory" name="aPackage.subCategoryId" class="category__container"
-                  style="margin-top: 4px;">
+                  style="margin-top: 4px; border: 1px solid #ccc; border-radius: 3px;">
                   <option value="#">-- 중분류 --</option>
                 </select>
                 <select id="smallCategory" name="aPackage.smallCategoryId" class="category__container"
-                  style="margin-top: 4px;">
+                  style="margin-top: 4px; border: 1px solid #ccc; border-radius: 3px;">
                   <option value="#">-- 소분류 --</option>
                 </select>
               </div>
@@ -1269,7 +1272,7 @@
             <div class="input__flex">
               <label for="hotelName" style>호텔명</label>
               <input type="text" id="hotelName" name="aPackage.hotelName" class="HanPackInput2"
-                placeholder="호텔명을 등록해주세요" / maxlength="20">
+                placeholder="호텔명을 등록해주세요"  maxlength="20">
             </div>
           </div>
           <!-- 상품 옵션 -->
@@ -1381,6 +1384,7 @@
 
 </script>
 <script th:src="@{/js/adminNav.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
   // 스크롤바 크기 계산
   function getBodyScrollbarWidth() {
@@ -1686,14 +1690,35 @@
       'input[name$=".details.flightNumberReturn"]'
     );
 
-    if (hotelName.value.trim() === "") {
-      alert("호텔명을 입력하세요");
+    // 이미지 업로드 필수 체크
+    const mainImageInput = document.getElementById("mainImage");
+    if (!mainImageInput || !mainImageInput.files || mainImageInput.files.length === 0) {
+      Swal.fire({
+        icon: "warning",
+        text: "메인 이미지를 업로드해주세요.",
+        confirmButtonColor: "#43bff8"
+      });
       return false;
     }
 
+
+    // 호텔명 체크
+    if (hotelName.value.trim() === "") {
+      Swal.fire({
+        icon: "warning",
+        text: "호텔명을 입력하세요.",
+        confirmButtonColor: "#43bff8"
+      });
+      return false;
+    }
+
+    // 항공편 자동 추가 여부 체크
     if (!flightNumberReturn || flightNumberReturn.length === 0) {
-      alert("항공편 자동 추가를 눌러 여행일정을 추가하세요");
-      console.log("⚠️ 항공편 번호 input이 아직 없음");
+      Swal.fire({
+        icon: "warning",
+        text: "항공편 자동 추가를 눌러 여행일정을 추가하세요.",
+        confirmButtonColor: "#43bff8"
+      });
       return false;
     }
     return true;

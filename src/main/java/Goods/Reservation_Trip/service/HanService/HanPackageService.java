@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static Goods.Reservation_Trip.enums.PackageImageType.DESC;
-import static Goods.Reservation_Trip.enums.PackageStatus.AVAILABLE;
+import static Goods.Reservation_Trip.enums.PackageStatus.*;
 
 
 @Slf4j
@@ -59,13 +59,19 @@ public class HanPackageService {
             loginYes = false;
         }
 
-
         Package PackageEntity = packageRepository.findById(id).orElse(null);
 
         //패키지 엔티티가 없을경우
         if (PackageEntity == null) {
 
             log.error("패키지 엔티티가 없습니다");
+            return null;
+
+        }
+
+        if (PackageEntity.getPackageStatus().equals(CLOSED)) {
+
+            log.error("삭제된 패키지입니다");
             return null;
 
         }
@@ -480,7 +486,7 @@ public class HanPackageService {
 
         List<Airport> airportList = hanAirportRepository.findAllAirportsWithTopCategoryNamedKorea();
 
-        if (airportList ==null &&  airportList.isEmpty()) {
+        if (airportList == null && airportList.isEmpty()) {
             log.error("공항 정보가 하나도 없습니다");
             return null;
         }
@@ -619,5 +625,33 @@ public class HanPackageService {
         return packPageListDtoList;
     }
 
+    public int packDeleteService(Long id) {
+
+        Package packageEntity = hanPackageRepository.findById(id).orElse(null);
+
+        if (packageEntity == null) {
+
+            log.error("packageEntity가 없습니다");
+            return 0;
+        }
+
+        //패키지 엔티티의 PackageStatus가 이미 DELETE 일 경우
+        if (packageEntity.getPackageStatus().equals(CLOSED)) {
+
+            log.error("packageEntity가 이미 삭제 처리 상태입니다");
+
+            return 1;
+        }
+
+        packageEntity.setPackageStatus(CLOSED);
+
+        hanPackageRepository.save(packageEntity);
+
+        return 2;
+    }
 
 }
+
+
+
+

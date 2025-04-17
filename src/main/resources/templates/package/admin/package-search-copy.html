@@ -212,12 +212,12 @@
     <main id="main" class="main">
       <div>
         <div class="orderList">
-          <!-- 정적 데이터 -->
           <p>
             <b>등록 내역</b> :
+            <!-- 정적 데이터 -->
             <b class="red" id="staticTotal">[[${page.totalElements}]]</b>
             <!-- 동적 데이터 -->
-            <b id="redTotalCount" class="red"></b>
+            <b id="redTotalCount" class="red" style="display: none"></b>
             <span>건</span>
           </p>
         </div>
@@ -229,6 +229,11 @@
               onclick="location.href='/admin/package/new'">
               등록
             </button>
+            <input
+              type="hidden"
+              th:value="${keywordQuery}"
+              id="keywordQuery"
+              name="keywordQuery" />
             <div class="form__search">
               <div>
                 <form
@@ -290,7 +295,10 @@
               </option>
             </select>
             <!-- 동적 데이터 -->
-            <span id="resultCount" class="text__right"></span>
+            <span
+              id="resultCount"
+              class="text__right"
+              style="display: none"></span>
             <!-- 정적 데이터 -->
             <span
               th:if="${page.totalElements != 0}"
@@ -310,6 +318,7 @@
           <div th:unless="${page.totalElements != 0}" class="text__center">
             <h3>등록하신 상품이 없습니다.</h3>
           </div>
+          <!-- 정적 데이터 -->
           <div id="staticList">
             <table th:if="${page.totalElements != 0}">
               <thead>
@@ -342,8 +351,7 @@
                   <td class="detailsLink">
                     <a
                       th:href="@{/package/details/{id}(id=${aPackage.id})}"
-                      th:text="${aPackage.name}"
-                      th:data-name="${aPackage.name}"></a>
+                      th:text="${aPackage.name}"></a>
                   </td>
                   <td th:text="${aPackage.fuelSurchargeIncluded}"></td>
                   <td th:text="${aPackage.departurePointOut}"></td>
@@ -364,7 +372,7 @@
                     </button>
                   </td>
                   <td>
-                    <button type="button" th:data-name="${aPackage.name}" class="btn1 btn-delete">
+                    <button type="button" class="btn1 btn-delete">
                       삭제하기
                     </button>
                   </td>
@@ -372,6 +380,7 @@
               </tbody>
             </table>
           </div>
+          <!-- 동적 데이터 -->
           <div id="dynamicList" style="display: none">
             <table th:if="${page.totalElements != 0}">
               <thead>
@@ -397,12 +406,13 @@
           </div>
         </div>
         <!-- js 에서 페이지를 동적으로 생성하는 부분 -->
-        <div id="pagination" style="display: none"></div>
+        <div id="pagination"></div>
         <!-- 페이지네이션 -->
         <nav
           id="staticPagination"
           aria-label="Page navigation"
-          th:unless="${page.totalElements == 0}">
+          th:unless="${page.totalElements == 0}"
+          style="display: none">
           <ul class="pagination">
             <!-- 첫 페이지 버튼 -->
             <li
@@ -470,17 +480,15 @@
   </body>
 </html>
 <script th:src="@{/js/adminNav.js}"></script>
-
-<!-- 수정한 부분시작 -->
-
-<!--스위트 알람2 라이브러리-->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<!-- 리다이렉트 알람 -->
-<script th:src="@{/js/alert.js}"></script>
-
-<!-- 수정한 부분끝 -->
 <script>
+  document
+    .getElementById("searchForm")
+    .addEventListener("submit", function (e) {
+      e.preventDefault();
+      fetchFilteredList(0); // 검색어 반영된 fetch 호출
+      enableDynamicMode();
+    });
+
   document
     .getElementById("filterForm")
     .addEventListener("submit", function (e) {
@@ -528,7 +536,7 @@
         if (mainId) {
           // 동적 리스트 fetch
           const response = await fetch(
-            `/admin/package/list/json?mainCategoryId=${mainId}`
+            `/admin/package/search/json?mainCategoryId=${mainId}`
           );
           const data = await response.json();
 
@@ -591,6 +599,7 @@
     });
 
     newSmall.addEventListener("change", () => {
+      toggleListView(true);
       enableDynamicMode();
       fetchFilteredList();
     });
@@ -607,6 +616,7 @@
   }
 
   async function fetchFilteredList(page = 0) {
+    const keyword = document.getElementById("keywordQuery")?.value;
     const mainId = document.getElementById("mainCategory")?.value;
     const subId = document.getElementById("subCategory")?.value;
     const smallId = document.getElementById("smallCategory")?.value;
@@ -617,41 +627,44 @@
     params.append("page", page); // 첫 페이지부터 시작
     params.append("size", size);
     params.append("sort", sort);
+    if (keyword) params.append("keywordQuery", keyword);
     if (mainId) params.append("mainCategoryId", mainId);
     if (subId) params.append("subCategoryId", subId);
     if (smallId) params.append("smallCategoryId", smallId);
 
     const response = await fetch(
-      `/admin/package/list/json?${params.toString()}`
+      `/admin/package/search/json?${params.toString()}`
     );
     const data = await response.json();
 
     toggleListView(true);
-    updateResultCount(data);
-
     renderPackageList(data.content);
     renderPagination(data);
+    updateResultCount(data);
   }
 
   function toggleListView(useDynamic) {
+    // static
     document.getElementById("staticList").style.display = useDynamic
       ? "none"
       : "block";
     document.getElementById("staticPagination").style.display = useDynamic
       ? "none"
       : "block";
-    document.getElementById("dynamicList").style.display = useDynamic
-      ? "block"
-      : "none";
-    document.getElementById("pagination").style.display = useDynamic
-      ? "block"
-      : "none";
     document.getElementById("staticTotal").style.display = useDynamic
       ? "none"
       : "block";
     document.getElementById("staticTotal2").style.display = useDynamic
       ? "none"
       : "block";
+
+    //dynamic
+    document.getElementById("dynamicList").style.display = useDynamic
+      ? "block"
+      : "none";
+    document.getElementById("pagination").style.display = useDynamic
+      ? "block"
+      : "none";
   }
 
   function updateResultCount(pageData) {
@@ -678,7 +691,7 @@
       container.innerHTML = '<tr><td colspan="12">결과가 없습니다.</td></tr>';
       return;
     }
-    // 수정한 부분시작
+
     packages.forEach((package) => {
       const tr = document.createElement("tr");
       tr.classList.add("hover-tr");
@@ -696,7 +709,7 @@
       <td>${package.createdAt}</td>
       <td>${package.modifiedAt}</td>
       <td><button type="button" class="btn1 btn-edit" data-id="${package.id}">수정하기</button></td>
-      <td><button type="button" class="btn1 btn-delete" data-id="${package.id}" data-name="${package.name}">삭제하기</button></td>
+      <td><button type="button" class="btn1 btn-delete">삭제하기</button></td>
     `;
       container.appendChild(tr);
     });
@@ -805,35 +818,3 @@
     }
   }
 </script>
-<!-- 수정한 부분시작 -->
-<script>
-
-
-  document.addEventListener("DOMContentLoaded", function () {
-    const container = document.getElementById("packageList");
-
-    container.addEventListener("click", function (e) {
-      if (e.target.classList.contains("btn-delete")) {
-        const packageId = e.target.closest("tr").dataset.id;
-        const packageName = e.target.dataset.name;
-
-        Swal.fire({
-          title: '정말 삭제하시겠습니까?',
-          text: ` ${packageName}를 삭제하려고 합니다.`,
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#ff8080',
-          cancelButtonColor: '#aaa',
-          confirmButtonText: '삭제',
-          cancelButtonText: '취소',
-        }).then((result) => {
-          if (result.isConfirmed) {
-            location.href = `/admin/package/delete/${packageId}`;
-          }
-        });
-      }
-    });
-  });
-
-</script>
-<!-- 수정한 부분끝 -->
