@@ -289,156 +289,129 @@ public class PackageCategoryAndAirportService {
      */
     public int editCategoryLocation(PackageCategoryDto packageCategoryDto) {
 
-        //대분류가 이동
-        if (packageCategoryDto.getSub().equals("중분류")) {
-            Optional<PackageCategory> optMain = packageCategoryRepository.findByNameAndDepth(packageCategoryDto.getMain(), 3);
+        PackageCategory category = null;
 
-            //수정하고자 하는 카테고리가 없는 경우
-            if (optMain.isEmpty()) return 100;
+        if (packageCategoryDto.getCategoryName() != null && !packageCategoryDto.getCategoryName().trim().isEmpty()) {
+            // 이름이 입력된 경우 → 수정된 이름 기준으로 대상 찾기
+            Optional<PackageCategory> optCategory = packageCategoryRepository.findByName(packageCategoryDto.getCategoryName());
+            if (optCategory.isEmpty()) return 100;
+            category = optCategory.get();
+        } else {
+            // 이름 입력이 없는 경우 → 기존 값(main, sub, small)로 대상 찾기
+            if (!packageCategoryDto.getSmall().equals("소분류")) {
+                Optional<PackageCategory> opt = packageCategoryRepository.findByNameAndDepth(packageCategoryDto.getSmall(), 3);
+                if (opt.isEmpty()) return 100;
+                category = opt.get();
+            } else if (!packageCategoryDto.getSub().equals("중분류")) {
+                Optional<PackageCategory> opt = packageCategoryRepository.findByNameAndDepth(packageCategoryDto.getSub(), 2);
+                if (opt.isEmpty()) return 100;
+                category = opt.get();
+            } else {
+                Optional<PackageCategory> opt = packageCategoryRepository.findByNameAndDepth(packageCategoryDto.getMain(), 1);
+                if (opt.isEmpty()) return 100;
+                category = opt.get();
+            }
+        }
 
-            PackageCategory main = optMain.get();
+        int depth = category.getDepth();
 
-            //자식이 있는 경우
+
+        if (depth == 1) { // 대분류
+            PackageCategory main = category;
+            //자식이 존재할 경우
             if (!main.getChildren().isEmpty()) return 400;
-
-            //패키지가 있는 경우
             if (main.getAPackage() != null) return 500;
 
-            //대분류로 이동하고자 할 때
-            if (packageCategoryDto.getMainEdit().equals("대분류")) {
-                return 600; //이미 대분류임 
-            }
+            if (packageCategoryDto.getMainEdit().equals("대분류")) return 600;
 
-            //선택한 대분류의 중분류로 이동하고자 할 때
             if (packageCategoryDto.getSubEdit().equals("중분류")) {
-                //이동하고자하는 위치가 없을 때
                 Optional<PackageCategory> moveTo = packageCategoryRepository.findByNameAndDepth(packageCategoryDto.getMainEdit(), 1);
                 if (moveTo.isEmpty()) return 700;
 
                 PackageCategory parent = moveTo.get();
-
                 main.setDepth(2);
                 main.setParent(parent);
-
                 packageCategoryRepository.save(main);
                 return 1000;
             }
 
-            //소분류로 이동하고자 할 때
-            //이동하고자하는 위치가 없을 때
             Optional<PackageCategory> moveTo = packageCategoryRepository.findByNameAndDepth(packageCategoryDto.getSubEdit(), 2);
             if (moveTo.isEmpty()) return 700;
 
             PackageCategory parent = moveTo.get();
-
             main.setDepth(3);
             main.setParent(parent);
-
             packageCategoryRepository.save(main);
-
             return 1000;
-
-
         }
 
-        // 중분류가 이동
-        if (packageCategoryDto.getSmall().equals("소분류")) {
-            Optional<PackageCategory> optSub = packageCategoryRepository.findByNameAndDepth(packageCategoryDto.getSub(), 2);
+        if (depth == 2) { // 중분류
+            PackageCategory sub = category;
 
-            if (optSub.isEmpty()) return 100; // 수정하고자 하는 중분류 항목 없음
+            if (!sub.getChildren().isEmpty()) return 400;
+            if (sub.getAPackage() != null) return 500;
 
-            PackageCategory sub = optSub.get();
-
-            if (!sub.getChildren().isEmpty()) return 400; // 자식(소분류)이 존재
-
-            if (sub.getAPackage() != null) return 500; // 패키지와 연결된 경우 이동 불가
-
-            // 같은 위치로 이동
-            if (packageCategoryDto.getMain().equals(packageCategoryDto.getMainEdit()) && packageCategoryDto.getMainEdit().equals("중분류")) {
-                return 600;
-            }
-
-            // 대분류로 이동 (depth = 1)
             if (packageCategoryDto.getMainEdit().equals("대분류")) {
                 sub.setDepth(1);
-                sub.setParent(null); // 대분류는 부모 없음
+                sub.setParent(null);
                 packageCategoryRepository.save(sub);
                 return 1000;
             }
 
-            // 중분류로 이동
             if (packageCategoryDto.getSubEdit().equals("중분류")) {
                 Optional<PackageCategory> mainOpt = packageCategoryRepository.findByNameAndDepth(packageCategoryDto.getMainEdit(), 1);
-
                 if (mainOpt.isEmpty()) return 700;
 
                 PackageCategory main = mainOpt.get();
-
                 sub.setParent(main);
-
+                sub.setDepth(2);
                 packageCategoryRepository.save(sub);
                 return 1000;
             }
 
-            //소분류로 이동
             Optional<PackageCategory> moveTo = packageCategoryRepository.findByNameAndDepth(packageCategoryDto.getSubEdit(), 2);
             if (moveTo.isEmpty()) return 700;
 
             PackageCategory parent = moveTo.get();
-
             sub.setDepth(3);
             sub.setParent(parent);
             packageCategoryRepository.save(sub);
             return 1000;
         }
 
-        //소분류가 이동
-        Optional<PackageCategory> optSmall = packageCategoryRepository.findByNameAndDepth(packageCategoryDto.getSmall(), 3);
+        if (depth == 3) { // 소분류
+            PackageCategory small = category;
 
-        if (optSmall.isEmpty()) return 100; // 소분류 없음
+            if (small.getAPackage() != null) return 500;
 
-        PackageCategory small = optSmall.get();
+            if (packageCategoryDto.getMainEdit().equals("대분류")) {
+                small.setDepth(1);
+                small.setParent(null);
+                packageCategoryRepository.save(small);
+                return 1000;
+            }
 
-        // 소분류는 자식 없으므로 children 체크 불필요
-        if (small.getAPackage() != null) return 500;
+            if (packageCategoryDto.getSubEdit().equals("중분류")) {
+                Optional<PackageCategory> moveTo = packageCategoryRepository.findByNameAndDepth(packageCategoryDto.getMainEdit(), 1);
+                if (moveTo.isEmpty()) return 700;
 
-        //같은곳으로 이동 불가
-        if (packageCategoryDto.getMain().equals(packageCategoryDto.getMainEdit())
-        && packageCategoryDto.getSubEdit().equals(packageCategoryDto.getSub()) ) return 600;
+                PackageCategory parent = moveTo.get();
+                small.setDepth(2);
+                small.setParent(parent);
+                packageCategoryRepository.save(small);
+                return 1000;
+            }
 
-        //대분류로 이동
-        if (packageCategoryDto.getMainEdit().equals("대분류")) {
-            small.setDepth(1);
-            small.setParent(null); // 대분류는 부모 없음
-            packageCategoryRepository.save(small);
-            return 1000;
-        }
-
-        // 중분류로 이동
-        if(packageCategoryDto.getSubEdit().equals("중분류")){
-            Optional<PackageCategory> moveTo = packageCategoryRepository.findByNameAndDepth(packageCategoryDto.getMainEdit(), 1);
+            Optional<PackageCategory> moveTo = packageCategoryRepository.findByNameAndDepth(packageCategoryDto.getSubEdit(), 2);
             if (moveTo.isEmpty()) return 700;
 
             PackageCategory parent = moveTo.get();
-
-            small.setDepth(2);
+            small.setDepth(3);
             small.setParent(parent);
             packageCategoryRepository.save(small);
-
             return 1000;
         }
-        
-        //소분류로 이동
-        Optional<PackageCategory> moveTo = packageCategoryRepository.findByNameAndDepth(packageCategoryDto.getSubEdit(), 2);
-        if (moveTo.isEmpty()) return 700;
-
-        PackageCategory parent = moveTo.get();
-
-        small.setDepth(3);
-        small.setParent(parent);
-        packageCategoryRepository.save(small);
-
-        return 1000;
+        else return 1500;
 
     }
 

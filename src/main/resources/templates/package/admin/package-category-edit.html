@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>냥만여행 상품 카테고리생성</title>
+    <title>🐾냥만여행 상품 카테고리 수정</title>
     <link th:href="@{/css/admin/header.css}" rel="stylesheet">
     </link>
     <style>
@@ -392,6 +392,23 @@
             display: inline-block;
             width: 350px;
         }
+
+        .editArea {
+            display: flex;
+            justify-content: space-between;
+
+            a {
+                text-decoration: none;
+                line-height: 62px;
+                color: #3e82ff;
+                font-size: 1rem;
+                font-weight: 600;
+
+                &:hover {
+                    color: #2354b1;
+                }
+            }
+        }
     </style>
 </head>
 
@@ -434,7 +451,10 @@
                     </div>
                 </div>
                 <div class="formArea">
-                    <h4><i class="fa-solid fa-list-ul"></i> 카테고리 수정</h4>
+                    <div class="editArea">
+                        <h4><i class="fa-solid fa-list-ul"></i> 카테고리 수정</h4>
+                        <a th:href="@{/admin/package/category/new}">✏️ 카테고리 추가·삭제</a>
+                    </div>
                     <table class="rwd-table">
                         <form id="categoryForm">
                             <tbody>
@@ -455,6 +475,7 @@
                                         <input type="text" maxlength="20" placeholder="수정할 카테고리명을 입력하세요."
                                             id="categoryName" name="categoryName">
                                         <button type="button" id="editNameBtn">이름만 수정</button>
+                                        <input type="hidden" id="originalCategoryName">
                                     </td>
                                 </tr>
                                 <tr>
@@ -465,10 +486,10 @@
                                                 <option value="대분류2" selected>대분류</option>
                                             </select>
                                             <select id="subCategory2">
-                                                <option value="중분류2">중분류</option>
+                                                <option value="중분류">중분류</option>
                                             </select>
                                             <select id="smallCategory2">
-                                                <option value="소분류2">소분류</option>
+                                                <option value="소분류">소분류</option>
                                             </select>
                                         </form>
                                     </td>
@@ -674,13 +695,15 @@
 
         })
 
-        function changeName(callback) {
+        function changeName(callback, extraParams = {}) {
             var params = {
+                originName: $("#originalCategoryName").val(),
                 categoryName: $("#categoryName").val(),
                 main: $("#mainCategory").val(),
                 sub: $("#subCategory").val(),
-                small: $("#smallCategory").val()
-            }
+                small: $("#smallCategory").val(),
+                ...extraParams // 이동 정보가 있을 경우 병합
+            };
 
             $.ajax({
                 type: "POST",
@@ -757,6 +780,8 @@
                 displayText = mainText;
             }
 
+            $("#originalCategoryName").val($("#categoryName").val());
+
             let categoryName = document.getElementById("categoryName");
 
             if (categoryName.value.trim() === "") {
@@ -773,8 +798,7 @@
 
                 Swal.fire({
                     html: `${displayText} (을)를
-                <br> ${mainVal2}${subVal2 ? ' > ' + subVal2 : ''}${smallVal2 ? ' > ' + smallVal2 : ''}
-                의 하위 항목으로 이동하시겠습니까?`,
+                <br> ${mainVal2}${subVal2 ? ' > ' + subVal2 : ''}${smallVal2 ? ' > ' + smallVal2 : ''}의 하위 항목으로 이동하시겠습니까?`,
                     icon: "question",
                     showCancelButton: true,
                     confirmButtonText: "확인",
@@ -811,7 +835,11 @@
                         if (result.isConfirmed) {
                             changeName(() => {
                                 ajax(); // 이름 수정 후 위치 이동
-                            });
+                            },{
+                                mainEdit: $("#mainCategory2").val(),
+                                subEdit: $("#subCategory2").val()
+                            }
+                        );
                         }
                     }
                 });
@@ -820,6 +848,7 @@
 
         function ajax() {
             var params = {
+                originName: $("#originalCategoryName").val(),
                 categoryName: $("#categoryName").val(),
                 main: $("#mainCategory").val(),
                 sub: $("#subCategory").val(),
@@ -834,7 +863,7 @@
                 data: params,
                 success: function (res) {
                     if (res == 1000) {
-                        Swal.fire({ text: "등록이 완료되었습니다.", confirmButtonColor: "#43bff8" }).then(() => {
+                        Swal.fire({ text: "이동이 완료되었습니다.", confirmButtonColor: "#43bff8" }).then(() => {
                             location.reload();
                         });
                     }
