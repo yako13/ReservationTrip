@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="UTF-8" />
-    <title>Title</title>
+    <title>🐾냥만여행 상품 패키지 목록</title>
     <link th:href="@{/css/admin/header.css}" rel="stylesheet" />
   </head>
   <style>
@@ -17,9 +17,7 @@
     * {
       font-family: "SUIT-Regular";
     }
-    .main {
-      margin-top: 50px;
-    }
+
     body {
       margin: 0;
     }
@@ -208,6 +206,20 @@
     .inner {
       padding: 60px 40px;
     }
+
+    #infoImage {
+     width: 8rem;
+   }
+ 
+   .imageArea {
+     padding: 5rem 0;
+     text-align: center;
+     border-bottom: solid 1px #c2c2c2;
+   }
+ 
+   .inner{
+     padding: 60px 40px;
+   }
   </style>
   <body>
     <!-- 수정한 부분 시작 -->
@@ -319,9 +331,10 @@
               <span>0건의 상품</span>
             </span>
           </div>
-          <div th:unless="${page.totalElements != 0}" class="text__center">
-            <h3>등록하신 상품이 없습니다.</h3>
-          </div>
+            <div th:unless="${page.totalElements != 0}" class="imageArea">
+              <img th:src="@{/images/info.svg}" id="infoImage">
+              <p>예약내역이 없습니다.</p>
+            </div>
           <div id="staticList">
             <table th:if="${page.totalElements != 0}">
               <thead>
@@ -481,6 +494,8 @@
     </main>
   </body>
 </html>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <script th:src="@{/js/adminNav.js}"></script>
 
 <!-- 수정한 부분시작 -->
@@ -840,7 +855,7 @@
 
         Swal.fire({
           title: "정말 삭제하시겠습니까?",
-          text: `${packageName}를 삭제하려고 합니다.`,
+          text: `${packageName}(을)를 삭제하려고 합니다.`,
           icon: "warning",
           showCancelButton: true,
           confirmButtonColor: "#ff8080",
@@ -871,6 +886,7 @@ document.addEventListener('DOMContentLoaded', function () {
       title: '삭제 완료!',
       text: message8,
       confirmButtonText: '확인'
+      , confirmButtonColor: "#43BFF8"
     });
   }
 });

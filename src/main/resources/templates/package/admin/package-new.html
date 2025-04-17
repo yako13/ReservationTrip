@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>관리자 상품 등록</title>
+  <title>🐾냥만여행 관리자 상품 등록</title>
   <link th:href="@{/css/admin/header.css}" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -818,7 +818,7 @@
             <div class="a2">
               <div class="input__flex">
                 <label>상품명</label>
-                <input type="text" name="aPackage.packageName" class="HanPackInput" id="name"  maxlength="50"/>
+                <input type="text" name="aPackage.packageName" class="HanPackInput" id="name" maxlength="50" />
               </div>
               <div class="input__flex">
                 <label>태그</label>
@@ -947,15 +947,13 @@
             <div class="a3">
               <div class="input__flex">
                 <label>예약 가능 인원수</label>
-                <input type="number" name="packageSchedule.maximumMember" id="maximumMember" class="HanPackInput" 
-                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                />
+                <input type="number" name="packageSchedule.maximumMember" id="maximumMember" class="HanPackInput"
+                  maxlength="4"/>
               </div>
               <div class="input__flex">
                 <label>최소 출발 인원</label>
-                <input type="number" name="packageSchedule.minimumRequired" id="minimumRequired" class="HanPackInput" 
-                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                />
+                <input type="number" name="packageSchedule.minimumRequired" id="minimumRequired" class="HanPackInput"
+                  maxlength="4"/>
               </div>
 
               <div class="input__flex">
@@ -1032,8 +1030,7 @@
                   <div>
                     <label for="period">여행 기간</label><br />
                     <input type="text" name="aPackage.period" id="period" placeholder="여행기간을 입력하세요"
-                    oninput="this.value = this.value.replace(/[^0-9]/g, '')" maxlength="2"
-                      style="margin-top: 4px;" />
+                      oninput="this.value = this.value.replace(/[^0-9]/g, '')" maxlength="2" style="margin-top: 4px;" />
                   </div>
 
 
@@ -1272,7 +1269,7 @@
             <div class="input__flex">
               <label for="hotelName" style>호텔명</label>
               <input type="text" id="hotelName" name="aPackage.hotelName" class="HanPackInput2"
-                placeholder="호텔명을 등록해주세요"  maxlength="20">
+                placeholder="호텔명을 등록해주세요" maxlength="20">
             </div>
           </div>
           <!-- 상품 옵션 -->
@@ -1323,8 +1320,11 @@
 </body>
 <!-- 탑 스크롤 스크립트 -->
 <script th:src="@{/js/scrollTop.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+
   let tagBtn = document.getElementById("tagBtn");
   let tag = document.getElementById("tag");
   let name = document.getElementById("name");
@@ -1935,6 +1935,13 @@
     return `${year}.${month}.${day}(${weekday})`;
   }
 
+  function formatDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}.${month}.${day}`;
+  }
+
   // setStart (사용자가 설정하는 시작일) DatePicker
   const datePickerSetStart = new tui.DatePicker("#tui-datepicker-setStart", {
     input: {
@@ -1981,32 +1988,60 @@
 
   // setStart 변경 시 출발일 및 귀국일 계산
   datePickerSetStart.on("change", () => {
-    const startDate = datePickerSetStart.getDate();
+    const startDate = normalizeDate(datePickerSetStart.getDate());
+    const lastDateRaw = datePickerSetLast.getDate();
     const period = Number(document.getElementById("period").value);
 
-    if (!startDate || isNaN(period)) return;
+    // 종료일이 선택되지 않은 경우는 비교하지 않음
+    if (lastDateRaw) {
+      const lastDate = normalizeDate(lastDateRaw);
+
+      if (startDate > lastDate) {
+        Swal.fire({
+          text: "시작일은 종료일보다 이전이어야 합니다.",
+          confirmButtonColor: "#43BFF8"
+        });
+        datePickerSetStart.setDate(prevSetStart);
+        document.getElementById("setStart").value = formatDate(prevSetStart);
+        return;
+      }
+    }
+
+    // 문제 없으면 계속 진행
+    prevSetStart = startDate;
 
     // 출발일 반영
     datePickerOut.setDate(startDate);
-    document.getElementById("departureDateOut").value =
-      formatDateWithWeekday(startDate);
+    document.getElementById("departureDateOut").value = formatDate(startDate);
 
     // 귀국일 계산 및 반영
-    const returnDate = new Date(startDate);
-    returnDate.setDate(returnDate.getDate() + period - 1);
-    datePickerReturn.setDate(returnDate);
-    document.getElementById("departureDateReturn").value =
-      formatDateWithWeekday(returnDate);
+    if (!isNaN(period)) {
+      const returnDate = new Date(startDate);
+      returnDate.setDate(returnDate.getDate() + period - 1);
+      datePickerReturn.setDate(returnDate);
+      document.getElementById("departureDateReturn").value = formatDate(returnDate);
+    }
   });
+
+  function normalizeDate(date) {
+    const normalized = new Date(date);
+    normalized.setHours(0, 0, 0, 0);
+    return normalized;
+  }
 
   // setLast를 수동으로 선택한 경우 귀국일 직접 지정
   datePickerSetLast.on("change", () => {
-    const endDate = datePickerSetLast.getDate();
-    if (!endDate) return;
+    const startDate = normalizeDate(datePickerSetStart.getDate());
+    const lastDate = normalizeDate(datePickerSetLast.getDate());
 
-    datePickerReturn.setDate(endDate);
-    document.getElementById("departureDateReturn").value =
-      formatDateWithWeekday(endDate);
+    if (startDate > lastDate) {
+      Swal.fire({ text: "종료일은 시작일보다 이후여야 합니다.", confirmButtonColor: "#43BFF8" });
+      datePickerSetLast.setDate(prevSetLast);
+      document.getElementById("setLast").value = formatDate(prevSetLast);
+      return;
+    }
+
+    prevSetLast = lastDate;
   });
 
   // 출발일 수동 선택 시에도 포맷 적용
