@@ -944,11 +944,15 @@
             <div class="a3">
               <div class="input__flex">
                 <label>예약 가능 인원수</label>
-                <input type="number" name="packageSchedule.maximumMember" id="maximumMember" class="HanPackInput" />
+                <input type="number" name="packageSchedule.maximumMember" id="maximumMember" class="HanPackInput" 
+                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                />
               </div>
               <div class="input__flex">
                 <label>최소 출발 인원</label>
-                <input type="number" name="packageSchedule.minimumRequired" id="minimumRequired" class="HanPackInput" />
+                <input type="number" name="packageSchedule.minimumRequired" id="minimumRequired" class="HanPackInput" 
+                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                />
               </div>
 
               <div class="input__flex">
@@ -1025,6 +1029,7 @@
                   <div>
                     <label for="period">여행 기간</label><br />
                     <input type="text" name="aPackage.period" id="period" placeholder="여행기간을 입력하세요"
+                    oninput="this.value = this.value.replace(/[^0-9]/g, '')" maxlength="2"
                       style="margin-top: 4px;" />
                   </div>
 
@@ -1264,9 +1269,8 @@
             <div class="input__flex">
               <label for="hotelName" style>호텔명</label>
               <input type="text" id="hotelName" name="aPackage.hotelName" class="HanPackInput2"
-                placeholder="호텔명을 등록해주세요" />
+                placeholder="호텔명을 등록해주세요" / maxlength="20">
             </div>
-            <button type="button" class="btn1 btn-hotel">일정 추가</button>
           </div>
           <!-- 상품 옵션 -->
           <div>
