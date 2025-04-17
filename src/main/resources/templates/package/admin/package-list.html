@@ -205,12 +205,17 @@
     .tr-size {
       max-width: 130px;
     }
+    .inner {
+      padding: 60px 40px;
+    }
   </style>
   <body>
     <header th:replace="fragments/adminHeader::masterHeader"></header>
     <nav th:replace="fragments/adminHeader::masterNav"></nav>
     <main id="main" class="main">
-      <div>
+      <div class="inner">
+        <h2>전체 패키지</h2>
+        <hr />
         <div class="orderList">
           <!-- 정적 데이터 -->
           <p>
@@ -364,7 +369,10 @@
                     </button>
                   </td>
                   <td>
-                    <button type="button" th:data-name="${aPackage.name}" class="btn1 btn-delete">
+                    <button
+                      type="button"
+                      th:data-name="${aPackage.name}"
+                      class="btn1 btn-delete">
                       삭제하기
                     </button>
                   </td>
@@ -807,8 +815,6 @@
 </script>
 <!-- 수정한 부분시작 -->
 <script>
-
-
   document.addEventListener("DOMContentLoaded", function () {
     const container = document.getElementById("packageList");
 
@@ -818,14 +824,14 @@
         const packageName = e.target.dataset.name;
 
         Swal.fire({
-          title: '정말 삭제하시겠습니까?',
+          title: "정말 삭제하시겠습니까?",
           text: ` ${packageName}를 삭제하려고 합니다.`,
-          icon: 'warning',
+          icon: "warning",
           showCancelButton: true,
-          confirmButtonColor: '#ff8080',
-          cancelButtonColor: '#aaa',
-          confirmButtonText: '삭제',
-          cancelButtonText: '취소',
+          confirmButtonColor: "#ff8080",
+          cancelButtonColor: "#aaa",
+          confirmButtonText: "삭제",
+          cancelButtonText: "취소",
         }).then((result) => {
           if (result.isConfirmed) {
             location.href = `/admin/package/delete/${packageId}`;
@@ -834,6 +840,5 @@
       }
     });
   });
-
 </script>
 <!-- 수정한 부분끝 -->

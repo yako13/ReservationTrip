@@ -48,7 +48,7 @@ public class PackageController {
 
     @GetMapping("/admin/package/list")
     public String adminPackageList(@RequestParam(defaultValue = "0") int page,
-                                   @RequestParam(defaultValue = "5") int size,
+                                   @RequestParam(defaultValue = "20") int size,
                                    @RequestParam(defaultValue = "default") String sort,
                                    @RequestParam(required = false) Long mainCategoryId,
                                    @RequestParam(required = false) Long subCategoryId,
@@ -65,7 +65,7 @@ public class PackageController {
 
     @GetMapping("/admin/package/search/index")
     public String adminPackageSearchList(@RequestParam(defaultValue = "0") int page,
-                                         @RequestParam(defaultValue = "5") int size,
+                                         @RequestParam(defaultValue = "20") int size,
                                          @RequestParam(value = "keyword", required = false, defaultValue = "") String name,
                                          @RequestParam(defaultValue = "default") String sort,
                                          @RequestParam(required = false) Long mainCategoryId,
