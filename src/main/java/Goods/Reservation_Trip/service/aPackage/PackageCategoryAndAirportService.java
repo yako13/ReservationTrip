@@ -320,7 +320,8 @@ public class PackageCategoryAndAirportService {
             PackageCategory main = category;
             //자식이 존재할 경우
             if (!main.getChildren().isEmpty()) return 400;
-            if (main.getAPackage() != null) return 500;
+            //패키지가 존재 할 경우
+            if (!main.getMainCategoryPackages().isEmpty()) return 500;
 
             if (packageCategoryDto.getMainEdit().equals("대분류")) return 600;
 
@@ -349,7 +350,7 @@ public class PackageCategoryAndAirportService {
             PackageCategory sub = category;
 
             if (!sub.getChildren().isEmpty()) return 400;
-            if (sub.getAPackage() != null) return 500;
+            if (!sub.getSubCategoryPackages().isEmpty() ) return 500;
 
             if (packageCategoryDto.getMainEdit().equals("대분류")) {
                 sub.setDepth(1);
@@ -382,7 +383,7 @@ public class PackageCategoryAndAirportService {
         if (depth == 3) { // 소분류
             PackageCategory small = category;
 
-            if (small.getAPackage() != null) return 500;
+            if (!small.getSmallCategoryPackages().isEmpty()) return 500;
 
             if (packageCategoryDto.getMainEdit().equals("대분류")) {
                 small.setDepth(1);

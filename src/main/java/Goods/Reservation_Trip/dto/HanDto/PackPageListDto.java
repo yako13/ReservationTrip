@@ -22,7 +22,7 @@ public class PackPageListDto {
     //상품명
     private String packageName;
     //상품 평균 평점
-    private double averageRating =0.;
+    private double averageRating = 0.;
     //상품 가격 (성인 1인 기준 fuelSurchargeIncluded 이 필드)
     private String fuelSurchargeIncluded;
     //상품 옵션
@@ -63,7 +63,6 @@ public class PackPageListDto {
     private int index;
 
 
-
     public static PackPageListDto fromEntity(Package packageEntity) {
         return PackPageListDto.builder()
                 //상품 pk
@@ -93,13 +92,17 @@ public class PackPageListDto {
                 .smallCategory(packageEntity.getSmallCategory())
 
                 //패키지 카테고리 리스트
-                .packageCategory(packageEntity.getPackageCategory())
+                .packageCategory(List.of(
+                        packageEntity.getMainCategory(),
+                        packageEntity.getSubCategory(),
+                        packageEntity.getSmallCategory()))
                 //리뷰수
                 .reviewCnt(packageEntity.getReviewList().size())
 
                 .build();
     }
-    public static PackPageListDto fromEntity2(Package packageEntity,int index) {
+
+    public static PackPageListDto fromEntity2(Package packageEntity, int index) {
         return PackPageListDto.builder()
                 //상품 pk
                 .id(packageEntity.getId())
@@ -128,7 +131,10 @@ public class PackPageListDto {
                 .smallCategory(packageEntity.getSmallCategory())
 
                 //패키지 카테고리 리스트
-                .packageCategory(packageEntity.getPackageCategory())
+                .packageCategory(List.of(
+                        packageEntity.getMainCategory(),
+                        packageEntity.getSubCategory(),
+                        packageEntity.getSmallCategory()))
                 //리뷰수
                 .reviewCnt(packageEntity.getReviewList().size())
                 .index(index)
