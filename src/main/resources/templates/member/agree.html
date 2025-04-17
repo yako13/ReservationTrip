@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🐾냥만여행 약관동의</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/css/mainPage.css}"/>
+    <link rel="stylesheet" th:href="@{/css/mainPage.css}" />
     <style>
         /* main{
             background-color: #f1f0f1;
@@ -78,11 +78,11 @@
             color: red;
         }
 
-        i{
-            color: #43bff8;
+        i {
+            color: #6d6d6d;
         }
 
-        .titleArea{
+        .titleArea {
             margin-bottom: 5rem;
         }
 
@@ -167,9 +167,6 @@
         let check02 = document.getElementById("check02");
         let check03 = document.getElementById("check03");
 
-        let privacyAgreement = document.getElementById("privacyAgreement");
-        let termsAgreement = document.getElementById("termsAgreement");
-
         function check() {
             bol = !bol;
         }
@@ -180,15 +177,11 @@
                 check02.className = "fa-solid fa-circle-check fa-xl";
                 check03.className = "fa-solid fa-circle-check fa-xl";
                 check();
-                termsAgreement.value = true;
-                privacyAgreement.value = true;
             } else {
                 check01.className = "fa-regular fa-circle-check fa-xl";
                 check02.className = "fa-regular fa-circle-check fa-xl";
                 check03.className = "fa-regular fa-circle-check fa-xl";
                 check();
-                termsAgreement.value = false;
-                privacyAgreement.value = false;
             }
         });
 
@@ -203,26 +196,23 @@
         }
 
         check02.addEventListener("click", () => {
+            bol_2();
             if (bol2) {
                 check02.className = "fa-solid fa-circle-check fa-xl";
-                termsAgreement.value = true;
             } else {
                 check02.className = "fa-regular fa-circle-check fa-xl";
-                termsAgreement.value = false;
             }
-            bol_2();
             updateAllCheck();
         });
 
         check03.addEventListener("click", () => {
+            bol_3();
             if (bol3) {
                 check03.className = "fa-solid fa-circle-check fa-xl";
-                privacyAgreement.value = true;
             } else {
                 check03.className = "fa-regular fa-circle-check fa-xl";
-                privacyAgreement.value = false;
             }
-            bol_3();
+           
             updateAllCheck();
         });
 
@@ -233,10 +223,7 @@
             ) {
                 check01.className = "fa-solid fa-circle-check fa-xl";
                 bol = false;
-            } else if (
-                check02.className === "fa-regular fa-circle-check fa-xl" &&
-                check03.className === "fa-regular fa-circle-check fa-xl"
-            ) {
+            } else {
                 check01.className = "fa-regular fa-circle-check fa-xl";
                 bol = true;
             }
