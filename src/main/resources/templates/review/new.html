@@ -58,7 +58,8 @@
             border: 1px solid #ccc;
             padding: 1rem;
             cursor: pointer;
-            h3{
+
+            h3 {
                 width: 100%;
                 margin: auto;
                 max-height: 4rem;
@@ -67,6 +68,7 @@
 
         #packageImg {
             width: 11rem;
+            height: 7rem;
             margin-right: 1.1rem;
         }
 
@@ -194,6 +196,21 @@
         #textLength {
             text-align: end;
         }
+
+        .tag {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+            h3 {
+                margin: 0;
+            }
+        }
+
+        #tag {
+            color: rgba(255, 41, 70, 0.904);
+            margin: 0;
+        }
     </style>
 </head>
 
@@ -206,7 +223,10 @@
             </div>
             <div class="packageArea" th:onclick="window.location.href='/package/details/'+[[${packagePK}]]">
                 <img th:src="@{${packageMainImage}}" alt="" id="packageImg">
-                <h3 th:text="${packageName}"></h3>
+                <div class="tag">
+                    <h3 th:text="${packageName}"></h3>
+                    <h4 th:text="${tag}" id="tag"></h4>
+                </div>
             </div>
             <form id="reviewForm" th:action="@{/member/review/new}" th:method="post" enctype="multipart/form-data">
                 <input type="hidden" name="reservationId" th:value="${reservationId}">
@@ -391,12 +411,12 @@
             document.getElementById("score").value = scoreLength.length;
 
             if (imageboxCount.length > 5) {
-                Swal.fire({ text: "후기 사진은 최대 5장까지 가능합니다." , confirmButtonColor: "#43BFF8"});
+                Swal.fire({ text: "후기 사진은 최대 5장까지 가능합니다.", confirmButtonColor: "#43BFF8" });
                 return;
             }
 
             if (content.value.length < 10 || content.value.length > 500) {
-                Swal.fire({ text: "후기 내용은 최소 10자 이상 500자 이하여야 합니다." , confirmButtonColor: "#43BFF8"});
+                Swal.fire({ text: "후기 내용은 최소 10자 이상 500자 이하여야 합니다.", confirmButtonColor: "#43BFF8" });
                 return;
             }
 
@@ -412,7 +432,7 @@
         function getContentLength() {
             textLength.innerText = "(" + content.value.length + "/500)"
             if (content.value.length > 500) {
-                Swal.fire({ text: "후기 내용은 500자를 초과할 수 없습니다." , confirmButtonColor: "#43BFF8"});
+                Swal.fire({ text: "후기 내용은 500자를 초과할 수 없습니다.", confirmButtonColor: "#43BFF8" });
             }
         }
 

@@ -17,8 +17,11 @@ public class ReviewResponseDto {
     //패키지 대표이미지 경로
     private String packageMainImage;
 
-    //패키지 명
+    //패키지명(태그 없는)
     private String packageName;
+
+    //태그
+    private String tag;
 
     //패키지 아이디
     private Long packagePK;

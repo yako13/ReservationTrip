@@ -9,8 +9,8 @@
     <title>냥만여행 리뷰수정</title>
     <style>
         .thumbnail {
-            max-width: 150px;
-            max-height: 150px;
+            width: 150px;
+            height: 150px;
             display: block;
             margin-bottom: 10px;
         }
@@ -58,17 +58,19 @@
             border: 1px solid #ccc;
             padding: 1.5rem;
             cursor: pointer;
-            h3{
+
+            h3 {
                 width: 100%;
                 margin: auto;
                 max-height: 4rem;
             }
-  
+
         }
 
         #packageImg {
             width: 11rem;
             margin-right: 2rem;
+            height: 7rem;
         }
 
         #content {
@@ -202,6 +204,20 @@
             cursor: pointer;
 
         }
+
+        .tag{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            h3{
+                margin: 0;
+            }
+        }
+
+        #tag {
+            color: rgba(255, 41, 70, 0.904);
+            margin: 0;
+        }
     </style>
 </head>
 
@@ -215,7 +231,10 @@
 
             <div class="packageArea" th:onclick="window.location.href='/package/details/'+[[${packagePK}]]">
                 <img th:src="@{${packageMainImage}}" alt="" id="packageImg">
+                <div class="tag">
                 <h3 th:text="${packageName}"></h3>
+                <h4 th:text="${tag}" id="tag"></h4>
+            </div>
             </div>
 
             <form id="reviewForm" th:action="@{/member/review/edit}" th:method="post" enctype="multipart/form-data">

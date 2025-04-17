@@ -30,8 +30,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         if (optionalMember.isPresent()) {
             Member member = optionalMember.get();
-            HttpSession session = httpServletRequest.getSession(true);
-            session.setAttribute("memberId",member.getId());
             return new CustomOauth2UserDetails(member);
         }
 

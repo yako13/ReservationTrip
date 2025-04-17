@@ -163,7 +163,7 @@
             <div class="container">
                 <input type="hidden" th:if="${param.error}" value="로그인에 실패하였습니다." id="flashMessage">
                 <input type="hidden" th:value="${alert}" id="flashMessage2">
-                <input type="hidden" th:value="${session.memberId}" id="session">
+                <input type="hidden" id="session" th:value="${session.memberId != null ? session.memberId : ''}">
                 <div class="logoArea">
                     <img th:src="@{/images/logoFull130.png}" id="logoImg">
                 </div>
@@ -204,10 +204,9 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script th:src="@{/js/alert.js}"></script>
     <script>
-        let session = document.getElementById("session");
 
 
-        window.addEventListener("load", function () {
+        document.addEventListener("DOMContentLoaded", function () {
             let session = document.getElementById("session");
 
             // 현재 페이지가 로그인 페이지일 때만 체크하도록

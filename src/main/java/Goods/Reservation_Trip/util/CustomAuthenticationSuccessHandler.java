@@ -6,6 +6,7 @@ import Goods.Reservation_Trip.repository.MemberRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -57,6 +58,9 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         } else if (role.equals("ROLE_CANCELLATION")) {
             response.sendRedirect("/");
         }
+
+        HttpSession session = request.getSession(true);
+        session.setAttribute("memberId",member.getId());
     }
 
     //생년월일이나 휴대전화번호가 비어있는지 체크
