@@ -210,7 +210,7 @@ public class HanPackageService {
                 //유류할증료
                 .fuelSurcharge(Formatter.BigDecimalFormat(PackageEntity.getFuelSurcharge()))
                 //여행 일정
-                .tripDate(Formatter.TripDuration(tripStartUp, tripEndDown))
+                .tripDate(Formatter.TripDate(PackageEntity.getPeriod()))
 
                 //여행 출발 비행기 이륙 날짜 및 시간
                 .tripStartUp(Formatter.formatDayAndTime(tripStartUp, tripStartUpTime))
