@@ -413,7 +413,7 @@
                 </tr>
               </thead>
               <tbody id="packageList" class="packageList">
-                <tr th:each="aPackage : ${packageList}">
+                <tr th:each="aPackage : ${packageList} " class="hover-tr">
                   <td th:text="${aPackage.id}"></td>
                   <td>
                     <a th:href="@{/package/details/{id}(id=${aPackage.id})}">
