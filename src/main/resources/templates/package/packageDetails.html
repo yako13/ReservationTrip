@@ -1137,13 +1137,13 @@
                 updateHanPackDate(previousDate);
                 return;
             }
-
+            let previousDate = selected;
             const formattedDate = formatDate(selected);
             const packagePk = document.getElementById('packagePk').value;
 
             $.ajax({
                 type: 'POST',
-                url: '/reservation/select-date',
+                url: '/package/select-date',
                 data: {
                     selectedDate: formattedDate,
                     packagePk: packagePk

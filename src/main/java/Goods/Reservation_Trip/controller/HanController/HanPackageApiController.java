@@ -22,7 +22,7 @@ public class HanPackageApiController {
     private final PackageRepository packageRepository;
     private final HanPackageService hanPackageService;
 
-    @PostMapping("/reservation/select-date")
+    @PostMapping("/package/select-date")
     @ResponseBody
     public ResponseEntity<PackApiDto> handleDateSelection(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate selectedDate,
                                                       @RequestParam Long packagePk) {
