@@ -84,6 +84,9 @@ public class Member extends BaseTime {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviewList;
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Notification> notificationList;
+
     public void setPassword(String password){
         this.password = password;
     }
