@@ -1,6 +1,7 @@
 package Goods.Reservation_Trip.initializer;
 
 import Goods.Reservation_Trip.entity.Airport;
+import Goods.Reservation_Trip.entity.PackageCategory;
 import Goods.Reservation_Trip.repository.aPackage.AirportRepository;
 import Goods.Reservation_Trip.repository.aPackage.PackageCategoryRepository;
 import jakarta.transaction.Transactional;
@@ -36,33 +37,49 @@ public class AirPortInitializer implements CommandLineRunner {
                 airportRepository.save(new Airport(null, "ICN", "인천국제공항", List.of(incheon)));
             }
         });
-        packageCategoryRepository.findByName("대구").ifPresent(daegu->{
-        if (!airportRepository.existsByCode("TAE")) {
-            airportRepository.save(new Airport(null, "TAE", "대구국제공항", List.of(daegu)));
-        }
+        packageCategoryRepository.findByName("대구").ifPresent(daegu -> {
+            if (!airportRepository.existsByCode("TAE")) {
+                airportRepository.save(new Airport(null, "TAE", "대구국제공항", List.of(daegu)));
+            }
         });
-        packageCategoryRepository.findByName("부산").ifPresent(busan->{
-        if (!airportRepository.existsByCode("PUS")) {
-            airportRepository.save(new Airport(null, "PUS", "부산국제공항", List.of(busan)));
-        }
+        packageCategoryRepository.findByName("부산").ifPresent(busan -> {
+            if (!airportRepository.existsByCode("PUS")) {
+                airportRepository.save(new Airport(null, "PUS", "부산국제공항", List.of(busan)));
+            }
         });
 
         // 해외 국제 공항
         // 카테고리에 해당 이름이 있으면 연결
         packageCategoryRepository.findByName("도쿄").ifPresent(tokyo -> {
-            if (!airportRepository.existsByCode("NRT")) {
-                airportRepository.save(new Airport(null, "NRT", "나리타국제공항", List.of(tokyo)));
-            }
-            if (!airportRepository.existsByCode("HND")) {
-                airportRepository.save(new Airport(null, "HND", "하네다국제공항", List.of(tokyo)));
-            }
+            saveAirportIfNotExistsOrAddCategory("NRT", "나리타국제공항", tokyo);
+            saveAirportIfNotExistsOrAddCategory("HND", "하네다국제공항", tokyo);
+        });
+        packageCategoryRepository.findByName("시즈오카").ifPresent(sizuoka -> {
+            saveAirportIfNotExistsOrAddCategory("NRT", "나리타국제공항", sizuoka);
+            saveAirportIfNotExistsOrAddCategory("HND", "하네다국제공항", sizuoka);
+        });
+        packageCategoryRepository.findByName("하코네").ifPresent(hakone -> {
+            saveAirportIfNotExistsOrAddCategory("NRT", "나리타국제공항", hakone);
+            saveAirportIfNotExistsOrAddCategory("HND", "하네다국제공항", hakone);
+        });
+        packageCategoryRepository.findByName("요코하마").ifPresent(yokohama -> {
+            saveAirportIfNotExistsOrAddCategory("NRT", "나리타국제공항", yokohama);
+            saveAirportIfNotExistsOrAddCategory("HND", "하네다국제공항", yokohama);
         });
 
         packageCategoryRepository.findByName("오사카").ifPresent(osaka -> {
-            if (!airportRepository.existsByCode("KIX")) {
-                airportRepository.save(new Airport(null, "KIX", "간사이국제공항", List.of(osaka)));
-            }
+            saveAirportIfNotExistsOrAddCategory("KIX", "간사이국제공항", osaka);
         });
+        packageCategoryRepository.findByName("교토").ifPresent(kyoto -> {
+            saveAirportIfNotExistsOrAddCategory("KIX", "간사이국제공항", kyoto);
+        });
+        packageCategoryRepository.findByName("고베").ifPresent(kobe -> {
+            saveAirportIfNotExistsOrAddCategory("KIX", "간사이국제공항", kobe);
+        });
+        packageCategoryRepository.findByName("와카야마").ifPresent(wakayama -> {
+            saveAirportIfNotExistsOrAddCategory("KIX", "간사이국제공항", wakayama);
+        });
+
 
         packageCategoryRepository.findByName("삿포로").ifPresent(sapporo -> {
             if (!airportRepository.existsByCode("CTS")) { // 신치토세 공항
@@ -206,5 +223,17 @@ public class AirPortInitializer implements CommandLineRunner {
                 airportRepository.save(new Airport(null, "HNL", "다니엘 K. 이노우에 국제공항", List.of(honolulu)));
             }
         });
+
     }
+
+    private void saveAirportIfNotExistsOrAddCategory(String code, String name, PackageCategory category) {
+        Airport airport = airportRepository.findByCode(code).orElseGet(() ->
+                airportRepository.save(new Airport(null, code, name, new ArrayList<>())));
+
+        if (!airport.getCategoryList().contains(category)) {
+            airport.getCategoryList().add(category);
+            airportRepository.save(airport);
+        }
+    }
+
 }
