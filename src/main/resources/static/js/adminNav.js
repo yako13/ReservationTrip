@@ -1,8 +1,66 @@
-window.addEventListener('DOMContentLoaded', (event) => {
+
+
+document.addEventListener("DOMContentLoaded", function () {
     openNav();
+    activateDropdown();
+    initNotificationUI();
+    connectWebSocket();
+    fetchNotifications();
+});
 
+// API로 알림 목록 요청
+function fetchNotifications() {
+    fetch("/api/notification")
+        .then(response => response.json())
+        .then(data => {
+            const count = data.totalNonReadCount;
+            const notifications = data.notificationResponseDtoList;
+
+            updateNotificationBadge(count);
+            updateNotificationList(notifications);
+        })
+        .catch(error => {
+            console.error("알림 불러오기 실패:", error);
+        });
+}
+
+// 사이드 네비 열기
+function openNav() {
+    document.getElementById("mySidenav").style.width = "200px";
+    document.getElementById("main").style.marginLeft = "200px";
+    document.querySelector(".SlideNavOpenDiv").classList.remove("SlideShow");
+}
+
+// 사이드 네비 닫기
+function closeNav() {
+    document.getElementById("mySidenav").style.width = "0";
+    document.getElementById("main").style.marginLeft = "0";
+    setTimeout(delay, 300);
+}
+
+function delay() {
+    document.querySelector(".SlideNavOpenDiv").classList.add("SlideShow");
+}
+
+// 드롭다운 메뉴 토글
+function toggleDropdown(button) {
+    const dropdown = button.parentElement;
+    const content = dropdown.querySelector(".dropdown-content");
+
+    if (dropdown.classList.contains("active")) {
+        content.style.maxHeight = "0px";
+        content.style.opacity = "0";
+        setTimeout(() => dropdown.classList.remove("active"), 300);
+    } else {
+        dropdown.classList.add("active");
+        content.style.maxHeight = content.scrollHeight + "px";
+        content.style.opacity = "1";
+    }
+}
+
+// 현재 페이지 제목에 따라 드롭다운 자동 펼침
+function activateDropdown() {
     const title = document.title;
-
     let targetDropdownId = null;
 
     if (title.includes("상품")) {
@@ -20,177 +78,226 @@ window.addEventListener('DOMContentLoaded', (event) => {
         content.style.maxHeight = content.scrollHeight + "px";
         content.style.opacity = "1";
     }
-});
-
-function openNav() {
-
-    document.getElementById("mySidenav").style.width = "200px";
-    document.getElementById("main").style.marginLeft = "200px";
-    document.querySelector(".SlideNavOpenDiv").classList.remove("SlideShow");
 }
 
+const badge = document.getElementById("notification-badge");
+const listItems = document.getElementById("notification-items");
+const bell = document.getElementById("bell");
+const listContainer = document.getElementById("notification-list");
+const closeIcon = document.getElementById("closeIcon");
+const clearBtn = document.getElementById("clear-notifications");
 
-function closeNav() {
-
-    document.getElementById("mySidenav").style.width = "0";
-    document.getElementById("main").style.marginLeft = "0";
-    setTimeout(delay, 300);
-}
-
-function toggleDropdown(button) {
-    let dropdown = button.parentElement;
-    let content = dropdown.querySelector(".dropdown-content");
-
-    if (dropdown.classList.contains("active")) {
-        content.style.maxHeight = "0px";
-        content.style.opacity = "0";
-        setTimeout(() => {
-            dropdown.classList.remove("active");
-        }, 300); // transition 시간 후 active 제거
-    } else {
-        dropdown.classList.add("active");
-        content.style.maxHeight = content.scrollHeight + "px"; // 실제 높이로 설정
-        content.style.opacity = "1";
-    }
-}
+// 알림 기능 초기화
+function initNotificationUI() {
 
 
-function delay() {
-    document.querySelector(".SlideNavOpenDiv").classList.add("SlideShow");
-}
-
-const notificationList = document.getElementById("notification-list");
-
-document.addEventListener("DOMContentLoaded", function () {
-    // 알림 개수 및 목록을 LocalStorage에서 불러오기
-    let notifications = JSON.parse(localStorage.getItem("notifications")) || [];
-    let notificationCount = parseInt(localStorage.getItem("notificationCount")) || 0;
-
-    notifications = notifications.map(item => {
-        if (typeof item === "string") {
-            return {
-                message: item,
-                time: new Date().toLocaleString()
-            };
-        }
-        return item;
+    // 알림 아이콘 클릭 시 알림 불러오기
+    bell.addEventListener("click", () => {
+        fetchNotifications(); // 알림 불러오고
+        listContainer.classList.remove("hidden"); // 알림창 열기
+        listContainer.style.display = "block";
     });
 
-    updateNotificationBadge();
-    updateNotificationList();
+    // X 버튼 누르면 알림 목록 닫기
+    closeIcon.addEventListener("click", () => {
+        listContainer.classList.add("hidden");
+        listContainer.style.display = "none";
+    });
 
-    // WebSocket 연결
-    const socket = new SockJS('/ws');
+    // 초기화 버튼 클릭 시 알림 목록 및 배지 초기화
+    clearBtn.addEventListener("click", () => {
+        markAllNotificationsAsRead();
+
+    });
+
+
+
+    function markAllNotificationsAsRead() {
+        // Ajax 요청을 보내어 알림을 읽음 처리
+        fetch("/api/notification/markAllAsRead", {
+            method: "POST"
+        })
+            .then(response => {
+                if (response.ok) {
+                    // 알림 목록 초기화 및 UI 업데이트
+                    const liCount = listItems.getElementsByTagName("li").length;
+
+                    if (liCount > 0) {
+                        listItems.innerHTML = "";
+                        const emptyItem = document.createElement("li");
+                        emptyItem.innerText = "알림이 없습니다.";
+                        listItems.appendChild(emptyItem);
+
+                    }
+
+                    badge.innerText = "";
+                    badge.style.display = "none";
+                } else {
+                    alert("알림 읽음 처리 실패");
+                }
+            })
+            .catch(error => {
+                console.error("알림 읽음 처리 실패:", error);
+            });
+    }
+
+
+
+
+}
+// 알림 개수 뱃지 업데이트
+function updateNotificationBadge(count) {
+    if (count > 0) {
+        badge.innerText = `${count}건`;
+        badge.style.display = "block";
+    } else {
+        badge.style.display = "none";
+    }
+}
+// 알림 목록 UI 업데이트
+function updateNotificationList(notifications) {
+    listItems.innerHTML = "";
+
+    if (!notifications || notifications.length === 0) {
+        const emptyItem = document.createElement("li");
+        emptyItem.innerText = "알림이 없습니다.";
+        listItems.appendChild(emptyItem);
+    } else {
+        notifications.forEach(item => {
+            const li = document.createElement("li");
+
+            // 알림 내용 텍스트
+            const content = document.createElement("span");
+            content.textContent = item.content;
+
+            // createdAt 날짜를 한 줄 띄워서 회색으로 표시
+            const createdAt = document.createElement("span");
+            createdAt.textContent = item.createdAt; // 이 부분은 실제 `createdAt` 값을 넣어줘야 함
+            createdAt.style.color = "gray";
+            createdAt.classList.add("createdAt");
+            createdAt.style.display = "inline-block"; // 한 줄 띄우기
+            createdAt.style.fontSize = "0.9em"; // 작은 글씨 크기
+
+            // 예약 상세 페이지 링크 추가
+            const reservationLink = document.createElement("a");
+            reservationLink.href = `/admin/reservation/details/${item.reservationPK}`;
+            reservationLink.textContent = "예약 상세보기";
+            reservationLink.style.display = "inline-block"; // 새 줄로 표시
+
+            reservationLink.addEventListener("click", function (e) {
+                e.preventDefault();
+
+                fetch(`/api/notification/mark-read/${item.notificationPK}`, {
+                    method: "POST"
+                })
+                    .then(() => {
+                        window.location.href = reservationLink.href;
+                    })
+                    .catch(err => console.error("읽음 처리 실패", err));
+
+            });
+
+            // 링크와 알림 텍스트, 날짜를 리스트 항목에 추가
+            li.appendChild(content);
+            li.appendChild(createdAt);
+            li.appendChild(reservationLink);
+
+            // 리스트에 추가
+            listItems.appendChild(li);
+        });
+    }
+
+}
+function connectWebSocket() {
+    const socket = new SockJS('/ws'); // ✅ 백엔드에서 열어둔 엔드포인트 맞춰야 해
     const stompClient = Stomp.over(socket);
 
     stompClient.connect({}, function (frame) {
+        console.log("📡 WebSocket 연결됨:", frame);
+
         stompClient.subscribe('/topic/admin', function (notification) {
-            const message = JSON.parse(notification.body);
-            showNotification(message.message);
-            refreshReservationList(); // 예약 리스트 새로고침
+            const body = JSON.parse(notification.body);
+
+            appendNotification(body); // 통째로 전달
+            increaseNotificationCount();
+
         });
     });
+}
 
-    // 알림 표시 함수
-    function showNotification(msg) {
-        const now = new Date();
-        const formattedTime = now.toLocaleString(); // 실제 도착한 시각
+function appendNotification(notificationDto) {
+    const listItems = document.getElementById("notification-items");
 
-        const newNotification = {
-            message: msg,
-            time: formattedTime
-        };
+    const li = document.createElement("li");
 
-        notifications.unshift(newNotification);
-        if (notifications.length > 5) {
-            notifications.pop();
-        }
+    // 알림 텍스트
+    const content = document.createElement("span");
+    content.textContent = notificationDto.content;
 
-        notificationCount++;
-        localStorage.setItem("notifications", JSON.stringify(notifications));
-        localStorage.setItem("notificationCount", notificationCount);
+    // 날짜
+    const createdAt = document.createElement("span");
+    createdAt.textContent = notificationDto.createdAt;
+    createdAt.style.color = "gray";
+    createdAt.classList.add("createdAt");
+    createdAt.style.display = "inline-block";
+    createdAt.style.fontSize = "0.9em";
 
-        updateNotificationBadge();
-        updateNotificationList();
-    }
+    // 상세보기 링크
+    const reservationLink = document.createElement("a");
+    reservationLink.href = `/admin/reservation/details/${notificationDto.reservationPK}`;
+    reservationLink.textContent = "예약 상세보기";
+    reservationLink.style.display = "inline-block";
 
-    // 알림 개수 UI 업데이트
-    function updateNotificationBadge() {
-        const notificationBadge = document.getElementById("notification-badge");
-        if (notificationCount > 0) {
-            notificationBadge.innerText = notificationCount + "건의 예약취소요청이 있습니다.";
-            notificationBadge.style.display = "block";
-        } else {
-            notificationBadge.style.display = "none";
-        }
-    }
+    reservationLink.addEventListener("click", function (e) {
+        e.preventDefault();
 
-    // 알림 목록 UI 업데이트
-    function updateNotificationList() {
-        const notificationList = document.getElementById("notification-items");
-        notificationList.innerHTML = "";
-
-        if (notifications.length === 0) {
-            notificationList.style.display = "none";
-            return;
-        }
-
-        notificationList.style.display = "block";
-
-        notifications.forEach((item) => {
-            const listItem = document.createElement("li");
-            const date = document.createElement("span");
-
-            listItem.innerText = item.message;
-            date.innerText = " (" + item.time + ")";
-            date.style.fontSize = "12px";
-            date.style.color = "gray";
-
-            listItem.appendChild(date);
-            notificationList.appendChild(listItem);
-        });
-    }
-
-    // 배지 클릭 시 알림 목록 보이기/숨기기 + 개수 초기화
-    document.getElementById("notification-badge").addEventListener("click", function () {
-        if (notificationList.classList.contains("hidden")) {
-            notificationList.classList.remove("hidden");
-            notificationList.style.display = "block";
-
-            // 개수 초기화 & LocalStorage 반영
-            notificationCount = 0;
-            localStorage.setItem("notificationCount", notificationCount);
-            updateNotificationBadge();
-        } else {
-            notificationList.classList.add("hidden");
-            notificationList.style.display = "none";
-        }
+        fetch(`/api/notification/mark-read/${notificationDto.notificationPK}`, {
+            method: "POST"
+        })
+            .then(() => {
+                window.location.href = reservationLink.href;
+            })
+            .catch(err => console.error("읽음 처리 실패", err));
     });
 
-    // 초기화 버튼 클릭 시 알림 목록과 개수 초기화
-    document.getElementById("clear-notifications").addEventListener("click", function () {
-        // 알림 목록 초기화
-        localStorage.removeItem("notifications");
-        localStorage.setItem("notificationCount", 0);
+    li.appendChild(content);
+    li.appendChild(createdAt);
+    li.appendChild(reservationLink);
 
-        // UI 업데이트
-        notifications = [];
-        notificationCount = 0;
-        updateNotificationBadge();
-        updateNotificationList();
-    });
+    listItems.insertBefore(li, listItems.firstChild);
+
+    // 5개 이상이면 마지막 제거
+    if (listItems.children.length > 5) {
+        listItems.removeChild(listItems.lastElementChild);
+    }
+}
+
+function increaseNotificationCount() {
+    const badge = document.getElementById("notification-badge");
+
+    let current = parseInt(badge.innerText) || 0;
+    current++;
+
+    badge.innerText = `${current}건`;
+    badge.style.display = "block";
+}
+
+const reservationStateElements = document.querySelectorAll(".reservationState");
+
+
+//예약에 따라 색깔 다르게 적용
+reservationStateElements.forEach((checkoutStepElement, index) => {
+    const checkoutStep = checkoutStepElement.textContent;
+
+    if (checkoutStep == "예약완료") {
+        checkoutStepElement.style.color = "blue";
+    }
+    else if (checkoutStep == "예약보류") {
+        checkoutStepElement.style.color = "green";
+    }
+    else {
+        checkoutStepElement.style.color = "red";
+    }
 });
 
 
-
-let closeIcon = document.getElementById("closeIcon");
-closeIcon.addEventListener("click", function () {
-    notificationList.classList.add("hidden");
-    notificationList.style.display = "none";
-})
-
-let bell = document.getElementById("bell");
-bell.addEventListener("click", function () {
-    notificationList.classList.remove("hidden");
-    notificationList.style.display = "block";
-})

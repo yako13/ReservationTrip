@@ -36,8 +36,6 @@ public class ReservationService {
 
     private final ImageManager imageManager;
 
-    private final SimpMessagingTemplate messagingTemplate;
-
     private final PackageOptionRepository packageOptionRepository;
 
     public Page<ReservationResponseDto> pageReservation(int page, int size, String sort, String reservationState) {
@@ -476,20 +474,7 @@ public class ReservationService {
     }
 
 
-    public void sendCancelNotification(String reservationCode, Long memberId) {
-        Optional<Reservation> optionalReservation = reservationRepository.findByMemberIdAndCode(memberId, reservationCode);
 
-        if (optionalReservation.isEmpty()) throw new RuntimeException("잘못된 접근");
-
-        Reservation reservation = optionalReservation.get();
-
-        reservation.setReservationState(ReservationState.REQUEST);
-
-        reservationRepository.save(reservation);
-
-        NotificationMessage message = new NotificationMessage("예약번호 " + reservationCode + "의 예약취소 요청이 있습니다. ", "cancel");
-        messagingTemplate.convertAndSend("/topic/admin", message);
-    }
 
     /**
      * 연간 일별 매출

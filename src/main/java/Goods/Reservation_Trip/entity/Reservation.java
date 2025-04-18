@@ -4,6 +4,7 @@ import Goods.Reservation_Trip.base.BaseTime;
 import Goods.Reservation_Trip.enums.ReservationState;
 import jakarta.persistence.*;
 import lombok.*;
+import org.aspectj.weaver.ast.Not;
 import org.hibernate.annotations.Comment;
 
 import java.math.BigDecimal;
@@ -98,6 +99,9 @@ public class Reservation extends BaseTime {
 
     @OneToMany(mappedBy = "reservation",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReservationDetails> reservationDetailsList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "reservation",cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Notification> notificationList = new ArrayList<>();
 
     @OneToOne(mappedBy = "reservation",cascade = CascadeType.ALL, orphanRemoval = true)
     private Review review;
