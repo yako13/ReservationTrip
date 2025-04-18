@@ -24,6 +24,15 @@ public class MemberService {
 
     private final PasswordEncoder passwordEncoder;
 
+    public Member getMemberEntity(HttpServletRequest request){
+        HttpSession session = request.getSession(false);
+        Long memberId = (Long) session.getAttribute("memberId");
+
+        Optional<Member> optionalMember = memberRepository.findById(memberId);
+        return optionalMember.orElse(null);
+
+    }
+
     //이메일 중복 확인
     public boolean duplicatedEmail(String email) {
         Optional<Member> member = memberRepository.findByEmail(email);
