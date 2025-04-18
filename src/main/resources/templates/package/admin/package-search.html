@@ -219,8 +219,64 @@
     .tr-size {
       max-width: 130px;
     }
+    .td-width {
+      max-width: 100px;
+    }
+    /*---- 로딩 관련 CSS 시작---- */
+
+    /* 로딩 오버레이 */
+    #loadingOverlay {
+      display: flex;
+      /* 처음부터 보이게 설정 */
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.13);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      opacity: 1;
+      transition: opacity 0.7s ease;
+    }
+
+    #loadingOverlay.hide {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* style.css */
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 5px solid #3498db;
+      border-top: 5px solid transparent;
+      border-radius: 50%;
+      animation: rotate 1s linear infinite;
+    }
+
+    @keyframes rotate {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    body.loading {
+      overflow: hidden;
+    }
+    /*---- 로딩 관련 CSS 끝---- */
   </style>
   <body>
+    <!-- 로딩 오버레이 -->
+    <div id="loadingOverlay">
+      <div class="loading-spinner"></div>
+    </div>
     <input type="hidden" id="flashMessage8" th:value="${data}" />
     <header th:replace="fragments/adminHeader::masterHeader"></header>
     <nav th:replace="fragments/adminHeader::masterNav"></nav>
@@ -384,8 +440,8 @@
                   <td th:text="${aPackage.departureDateOut}"></td>
                   <td th:text="${aPackage.arrivalDateReturn}"></td>
                   <td th:text="${aPackage.packageStatus}"></td>
-                  <td th:text="${aPackage.createdAt}"></td>
-                  <td th:text="${aPackage.modifiedAt}"></td>
+                  <td class="td-width" th:text="${aPackage.createdAt}"></td>
+                  <td class="td-width" th:text="${aPackage.modifiedAt}"></td>
                   <td>
                     <button
                       type="button"
@@ -508,6 +564,26 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <script th:src="@{/js/adminNav.js}"></script>
+<script>
+  window.addEventListener("load", () => {
+    const overlay = document.getElementById("loadingOverlay");
+    if (overlay) {
+      // 로딩중일때 스크롤 막기
+      document.body.classList.add("loading");
+      // 300ms 후에 투명도 낮추고
+      setTimeout(() => {
+        overlay.classList.add("hide");
+      }, 800); // 원하는 만큼 기다렸다가 사라지게 (0.5초~1초 추천)
+
+      // 완전히 사라진 후 display: none 처리
+      setTimeout(() => {
+        overlay.style.display = "none";
+        // 스크롤 풀기
+        document.body.classList.remove("loading");
+      }, 1000);
+    }
+  });
+</script>
 
 <!-- 수정한 부분 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -774,8 +850,8 @@
       <td>${package.departureDateOut}</td>
       <td>${package.arrivalDateReturn}</td>
       <td>${package.packageStatus}</td>
-      <td>${package.createdAt}</td>
-      <td>${package.modifiedAt}</td>
+      <td class="td-width">${package.createdAt}</td>
+      <td class="td-width">${package.modifiedAt}</td>
       <td><button type="button" class="btn1 btn-edit" data-id="${package.id}">수정하기</button></td>
       <td><button type="button" class="btn1 btn-delete" data-id="${package.id}" data-name="${package.name}">삭제하기</button></td>
     `;
