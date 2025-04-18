@@ -433,22 +433,54 @@ public class HanPackageService {
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<Package> entityPage;
 
+        switch (dto.getSortType()) {
+            case "rating":
+                entityPage = hanPackageRepository.filterOrderByRating(dto.getAirfare(), dto.getHotelFee(), dto.getGuide(), dto.getNoShopping(),
+                        dto.getStartDate(), dto.getEndDate(), dto.getCategoryId(), dto.getCategoryDepth(),
+                        dto.getPeriod(), keyword, dto.getAirportId(), pageable
+                );
+                break;
+            case "highPrice":
+                entityPage = hanPackageRepository.filterOrderByHighPrice(dto.getAirfare(), dto.getHotelFee(), dto.getGuide(), dto.getNoShopping(),
+                        dto.getStartDate(), dto.getEndDate(), dto.getCategoryId(), dto.getCategoryDepth(),
+                        dto.getPeriod(), keyword, dto.getAirportId(), pageable
+                );
+                break;
+            case "lowPrice":
+                entityPage = hanPackageRepository.filterOrderByLowPrice(dto.getAirfare(), dto.getHotelFee(), dto.getGuide(), dto.getNoShopping(),
+                        dto.getStartDate(), dto.getEndDate(), dto.getCategoryId(), dto.getCategoryDepth(),
+                        dto.getPeriod(), keyword, dto.getAirportId(), pageable
+                );
+                break;
+            case "reservation":
+                entityPage = hanPackageRepository.filterByReservationCount(dto.getAirfare(), dto.getHotelFee(), dto.getGuide(), dto.getNoShopping(),
+                        dto.getStartDate(), dto.getEndDate(), dto.getCategoryId(), dto.getCategoryDepth(),
+                        dto.getPeriod(), keyword, dto.getAirportId(), pageable
+                );
+                break;
+            default:
+                entityPage = hanPackageRepository.filterPackagesWithConditions(dto.getAirfare(), dto.getHotelFee(), dto.getGuide(), dto.getNoShopping(),
+                        dto.getStartDate(), dto.getEndDate(), dto.getCategoryId(), dto.getCategoryDepth(),
+                        dto.getPeriod(), keyword, dto.getAirportId(), pageable
+                );// 기본정렬 (id ASC)
+                break;
+        }
 
         // 3. 예약 많은 순 정렬일 경우 별도 쿼리 실행
-        if ("reservation".equals(dto.getSortType())) {
-            entityPage = hanPackageRepository.filterPackagesWithConditions(
-                    dto.getAirfare(), dto.getHotelFee(), dto.getGuide(), dto.getNoShopping(),
-                    dto.getStartDate(), dto.getEndDate(), dto.getCategoryId(), dto.getCategoryDepth(),
-                    dto.getPeriod(), keyword, dto.getAirportId(), pageable
-            );
-        } else {
-            entityPage = hanPackageRepository.filterByReservationCount(
-                    dto.getAirfare(), dto.getHotelFee(), dto.getGuide(), dto.getNoShopping(),
-                    dto.getStartDate(), dto.getEndDate(), dto.getCategoryId(), dto.getCategoryDepth(),
-                    dto.getPeriod(), keyword, dto.getAirportId(), pageable
-            );
-
-        }
+//        if ("reservation".equals(dto.getSortType())) {
+//            entityPage = hanPackageRepository.filterPackagesWithConditions(
+//                    dto.getAirfare(), dto.getHotelFee(), dto.getGuide(), dto.getNoShopping(),
+//                    dto.getStartDate(), dto.getEndDate(), dto.getCategoryId(), dto.getCategoryDepth(),
+//                    dto.getPeriod(), keyword, dto.getAirportId(), pageable
+//            );
+//        } else {
+//            entityPage = hanPackageRepository.filterByReservationCount(
+//                    dto.getAirfare(), dto.getHotelFee(), dto.getGuide(), dto.getNoShopping(),
+//                    dto.getStartDate(), dto.getEndDate(), dto.getCategoryId(), dto.getCategoryDepth(),
+//                    dto.getPeriod(), keyword, dto.getAirportId(), pageable
+//            );
+//
+//        }
 
         // 4. entity → dto 변환
         List<PackPageListDto> dtoList = new ArrayList<>();
