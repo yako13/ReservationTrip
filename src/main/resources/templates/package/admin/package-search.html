@@ -300,6 +300,16 @@
 
             <select name="sort" id="sort" onchange="">
               <option value="default" th:selected="${sort == 'default'}">
+                최근 등록순
+              </option>
+              <option
+                value="createdAt_asc"
+                th:selected="${sort == 'createdAt_asc'}">
+                나중 등록순
+              </option>
+              <option
+                value="departureDateOut_asc"
+                th:selected="${departureDateOut_asc}">
                 출발 빠른순
               </option>
               <option value="price_asc" th:selected="${sort == 'price_asc'}">
@@ -307,16 +317,6 @@
               </option>
               <option value="price_desc" th:selected="${sort == 'price_desc'}">
                 가격 높은순
-              </option>
-              <option
-                value="createdAt_desc"
-                th:selected="${sort == 'createdAt_desc'}">
-                최근 등록순
-              </option>
-              <option
-                value="createdAt_asc"
-                th:selected="${sort == 'createdAt_asc'}">
-                나중 등록순
               </option>
             </select>
             <!-- 동적 데이터 -->
@@ -945,7 +945,7 @@
         title: "삭제 완료!",
         text: message8,
         confirmButtonText: "확인",
-        confirmButtonColor: "#43BFF8"
+        confirmButtonColor: "#43BFF8",
       });
     }
   });

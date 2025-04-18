@@ -16,14 +16,15 @@ public class QuerydslSortUtil {
             case "price_desc" -> {
                 return qPackage.fuelSurchargeIncluded.desc();
             }
-            case "createdAt_desc" -> {
-                return qPackage.createdAt.desc();
-            }
             case "createdAt_asc" -> {
                 return qPackage.createdAt.asc();
             }
-            default -> {
+            case "departureDateOut_asc" -> {
                 return qPackageSchedule.departureDateOut.asc();
+            }
+            default -> {
+                return qPackage.createdAt.desc();
+
             }
         }
     }

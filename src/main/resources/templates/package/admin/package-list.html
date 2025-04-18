@@ -208,26 +208,26 @@
     }
 
     #infoImage {
-     width: 8rem;
-   }
- 
-   .imageArea {
-     padding: 5rem 0;
-     text-align: center;
-     border-bottom: solid 1px #c2c2c2;
-   }
- 
-   .inner{
-     padding: 60px 40px;
-   }
+      width: 8rem;
+    }
+
+    .imageArea {
+      padding: 5rem 0;
+      text-align: center;
+      border-bottom: solid 1px #c2c2c2;
+    }
+
+    .inner {
+      padding: 60px 40px;
+    }
   </style>
   <body>
     <!-- 수정한 부분 시작 -->
 
     <!-- 알람용 input -->
-    <input type="hidden" id="flashMessage8" th:value="${data}">
+    <input type="hidden" id="flashMessage8" th:value="${data}" />
 
-        <!-- 수정한 부분 끝-->
+    <!-- 수정한 부분 끝-->
 
     <header th:replace="fragments/adminHeader::masterHeader"></header>
     <nav th:replace="fragments/adminHeader::masterNav"></nav>
@@ -294,6 +294,16 @@
 
             <select name="sort" id="sort" onchange="">
               <option value="default" th:selected="${sort == 'default'}">
+                최근 등록순
+              </option>
+              <option
+                value="createdAt_asc"
+                th:selected="${sort == 'createdAt_asc'}">
+                나중 등록순
+              </option>
+              <option
+                value="departureDateOut_asc"
+                th:selected="${departureDateOut_asc}">
                 출발 빠른순
               </option>
               <option value="price_asc" th:selected="${sort == 'price_asc'}">
@@ -301,16 +311,6 @@
               </option>
               <option value="price_desc" th:selected="${sort == 'price_desc'}">
                 가격 높은순
-              </option>
-              <option
-                value="createdAt_desc"
-                th:selected="${sort == 'createdAt_desc'}">
-                최근 등록순
-              </option>
-              <option
-                value="createdAt_asc"
-                th:selected="${sort == 'createdAt_asc'}">
-                나중 등록순
               </option>
             </select>
             <!-- 동적 데이터 -->
@@ -331,10 +331,10 @@
               <span>0건의 상품</span>
             </span>
           </div>
-            <div th:unless="${page.totalElements != 0}" class="imageArea">
-              <img th:src="@{/images/info.svg}" id="infoImage">
-              <p>예약내역이 없습니다.</p>
-            </div>
+          <div th:unless="${page.totalElements != 0}" class="imageArea">
+            <img th:src="@{/images/info.svg}" id="infoImage" />
+            <p>예약내역이 없습니다.</p>
+          </div>
           <div id="staticList">
             <table th:if="${page.totalElements != 0}">
               <thead>
@@ -389,7 +389,11 @@
                     </button>
                   </td>
                   <td>
-                    <button type="button" th:data-name="${aPackage.name}" th:data-id="${aPackage.id}" class="btn1 btn-delete">
+                    <button
+                      type="button"
+                      th:data-name="${aPackage.name}"
+                      th:data-id="${aPackage.id}"
+                      class="btn1 btn-delete">
                       삭제하기
                     </button>
                   </td>
@@ -872,24 +876,20 @@
   });
 </script>
 
-
 <script>
-document.addEventListener('DOMContentLoaded', function () {
+  document.addEventListener("DOMContentLoaded", function () {
+    const msgInput8 = document.getElementById("flashMessage8");
+    const message8 = msgInput8?.value;
 
-  const msgInput8 = document.getElementById('flashMessage8');
-  const message8 = msgInput8?.value;
-
-
-  if (message8) {
-    Swal.fire({
-      icon: 'success',
-      title: '삭제 완료!',
-      text: message8,
-      confirmButtonText: '확인'
-      , confirmButtonColor: "#43BFF8"
-    });
-  }
-});
-
+    if (message8) {
+      Swal.fire({
+        icon: "success",
+        title: "삭제 완료!",
+        text: message8,
+        confirmButtonText: "확인",
+        confirmButtonColor: "#43BFF8",
+      });
+    }
+  });
 </script>
 <!-- 수정한 부분끝 -->

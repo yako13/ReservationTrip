@@ -568,7 +568,7 @@ public class HanPackageService {
     //베스트 상품 4개 가져오는 서비스
     public List<PackPageListDto> packBestTop4() {
 
-        List<Package> top4BestPackage = hanPackageRepository.findTop4ByLatestIdNative();
+        List<Package> top4BestPackage = hanPackageRepository.findTop4ByReservationSumNative();
 
         if (top4BestPackage == null && top4BestPackage.isEmpty()) {
             log.error("가져온 패키지가 없습니다");
