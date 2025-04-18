@@ -6,9 +6,11 @@ import Goods.Reservation_Trip.dto.reservation.req.MemberReservationSearchDto;
 import Goods.Reservation_Trip.dto.reservation.res.ReservationDetailsResponseDto;
 import Goods.Reservation_Trip.dto.reservation.res.ReservationResponseDto;
 import Goods.Reservation_Trip.dto.reservation.res.SalesDto;
+import Goods.Reservation_Trip.entity.Member;
 import Goods.Reservation_Trip.service.HanService.HanHeaderService;
 import Goods.Reservation_Trip.service.HanService.HanMemberService;
 import Goods.Reservation_Trip.service.member.MemberService;
+import Goods.Reservation_Trip.service.reservation.NotificationService;
 import Goods.Reservation_Trip.service.reservation.ReservationService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +35,8 @@ public class ReservationController {
     private final MemberService memberService;
 
     private final HanHeaderService hanHeaderService;
+
+    private final NotificationService notificationService;
 
     /**
      * 관리자 차트
@@ -183,8 +187,9 @@ public class ReservationController {
 
     @PostMapping("/member/{reservationCode}/cancel")
     public String cancelReservation(@PathVariable String reservationCode, HttpServletRequest request, RedirectAttributes rttr) {
-        MemberResponseDto memberResponseDto = memberService.getMember(request);
-        reservationService.sendCancelNotification(reservationCode, memberResponseDto.getId());
+        Member member = memberService.getMemberEntity(request);
+
+        notificationService.sendCancelNotification(reservationCode,member);
         rttr.addFlashAttribute("data","예약 취소요청이 완료되었습니다.");
         return "redirect:/member/reservation/list";
     }

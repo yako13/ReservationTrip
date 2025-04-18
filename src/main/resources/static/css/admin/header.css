@@ -195,8 +195,6 @@ p {
     color: white;
     font-size: 14px;
     font-weight: bold;
-    display: none;
-    cursor: pointer;
 
 }
 
@@ -223,10 +221,26 @@ p {
 
 #notification-list li {
     padding: 8px;
-    height: 3.5rem;
+    height: 4rem;
     border-bottom: 1px solid #a8a8a8;
     font-size: 14px;
     line-height: 2rem;
+}
+
+#notification-items {
+    a {
+        width: 100px;
+        text-align: end;
+        color: rgb(49, 157, 245);
+
+        &:hover {
+            font-weight: 600;
+        }
+    }
+
+    .createdAt {
+        width: 250px;
+    }
 }
 
 #notification-list li:last-child {
@@ -238,6 +252,7 @@ p {
     text-align: end;
     font-size: 1.2rem;
     height: 1.5rem;
+    cursor: pointer;
 }
 
 .alertHead {
