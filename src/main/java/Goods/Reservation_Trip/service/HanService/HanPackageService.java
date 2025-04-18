@@ -11,6 +11,7 @@ import Goods.Reservation_Trip.repository.HanPart.HanPackageRepository;
 import Goods.Reservation_Trip.repository.HanPart.HanPackageScheduleRepository;
 import Goods.Reservation_Trip.repository.aPackage.AirportRepository;
 import Goods.Reservation_Trip.repository.aPackage.PackageCategoryRepository;
+import Goods.Reservation_Trip.repository.aPackage.PackageOptionRepository;
 import Goods.Reservation_Trip.repository.aPackage.PackageRepository;
 import Goods.Reservation_Trip.util.Formatter;
 import jakarta.servlet.http.HttpServletRequest;
@@ -43,7 +44,7 @@ public class HanPackageService {
     private final AirportRepository airportRepository;
     private final HanAirportRepository hanAirportRepository;
     private final HanPackageCategoryRepository hanPackageCategoryRepository;
-    private final PackageCategoryRepository packageCategoryRepository;
+   private final PackageOptionRepository packageOptionRepository;
 
 
     //상품 상세페이지로 가는 서비스
@@ -188,8 +189,14 @@ public class HanPackageService {
             infoImgYes = false;
         }
 
-        PackPageDto packPageDto = PackPageDto.builder()
+        Optional<PackageOption> optionalPackageOption = packageOptionRepository.findByaPackageId(id);
 
+        if(optionalPackageOption.isEmpty()) return null;
+
+        PackageOption packageOption = optionalPackageOption.get();
+
+        PackPageDto packPageDto = PackPageDto.builder()
+                .airfare(packageOption.isAirfare())
                 //패키지 엔티티
                 .packageEntity(PackageEntity)
                 //여행 일정 디테일 (인덱스 0번 꺼의 디테일 / 맨처음 패키지 상세 갈시)
@@ -331,6 +338,9 @@ public class HanPackageService {
         //여행 귀국 도착 날짜 (여행 도착일) , 여행 도착 비행기 착륙 날짜
         LocalDate tripEndDown = packageScheduleCheck.getArrivalDateReturn();
         LocalTime tripEndDownTime = packageScheduleCheck.getPackageScheduleDetails().getArrivalTimeReturn();
+
+        Optional<PackageOption> optionalPackageOption = packageOptionRepository.findByaPackageId(id);
+
 
 
         PackApiDto packApiDto = PackApiDto.builder()
