@@ -183,23 +183,6 @@
     <button id="scrollToTopBtn"></button>
     <script th:src="@{/js/scrollTop.js}"></script>
     <script>
-        const reservationStateElements = document.querySelectorAll(".reservationState");
-
-
-        //예약에 따라 색깔 다르게 적용
-        reservationStateElements.forEach((checkoutStepElement, index) => {
-            const checkoutStep = checkoutStepElement.textContent;
-
-            if (checkoutStep == "예약완료") {
-                checkoutStepElement.style.color = "blue";
-            }
-            else if (checkoutStep == "예약보류") {
-                checkoutStepElement.style.color = "green";
-            }
-            else {
-                checkoutStepElement.style.color = "red";
-            }
-        });
 
         // 검색 단어기준 상품개수 정렬
         const searchSelect = document.getElementById("searchSelect");
