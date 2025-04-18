@@ -208,6 +208,57 @@
   }
 
   /* 페이지 네이션 css 끝 */
+
+
+  /*---- 로딩 관련 CSS 시작---- */
+
+  /* 로딩 오버레이 */
+  #loadingOverlay {
+    display: flex;
+    /* 처음부터 보이게 설정 */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.13);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    opacity: 1;
+    transition: opacity 0.7s ease;
+  }
+
+  #loadingOverlay.hide {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+
+  /* style.css */
+
+
+  .loading-spinner {
+
+    width: 40px;
+    height: 40px;
+    border: 5px solid #3498db;
+    border-top: 5px solid transparent;
+    border-radius: 50%;
+    animation: rotate 1s linear infinite;
+  }
+
+  @keyframes rotate {
+    from {
+      transform: rotate(0deg);
+    }
+
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /*---- 로딩 관련 CSS 끝---- */
 </style>
 
 <body>
@@ -242,8 +293,8 @@
           <div class="HanSerachDropdown">
             <div class="HanSerachDropdown-toggle  HanImg">
               <img th:src="@{/images/map.svg}" width="30px" height="30px" style="margin-bottom: 3px;">
-    
-                <span th:text="${selectAirport}">출발지</span>
+
+              <span th:text="${selectAirport}">출발지</span>
 
             </div>
 
@@ -271,8 +322,8 @@
 
             <img th:src="@{/images/cal4.svg}" width="18px" class="PackImg2">
 
-            <input type="text" id="end-date" class="PackDateInput" readonly name="endDate"
-              th:value="${param.endDate}" onchange="this.form.submit()"  />
+            <input type="text" id="end-date" class="PackDateInput" readonly name="endDate" th:value="${param.endDate}"
+              onchange="this.form.submit()" />
 
             <div id="start-calendar" class="calendar-box"></div>
             <div id="end-calendar" class="calendar-box"></div>
@@ -370,8 +421,7 @@
 
 
                 <div class="icon-check-group">
-                  <input type="radio" id="period2" class="icon-check-input" name="period" value="2"
-                    onchange="this.form.submit()" />
+                  <input type="radio" id="period2" class="icon-check-input" name="period" value="2" />
 
                   <label for="period2" class="icon-check-label PackIconBox2">
                     <div class="icon-box cal"></div>
@@ -382,8 +432,7 @@
 
                 <div class="icon-check-group">
 
-                  <input type="radio" id="period3" class="icon-check-input" name="period" value="3"
-                    onchange="this.form.submit()" />
+                  <input type="radio" id="period3" class="icon-check-input" name="period" value="3" />
 
                   <label for="period3" class="icon-check-label PackIconBox2">
                     <div class="icon-box cal"></div>
@@ -393,8 +442,7 @@
 
                 <div class="icon-check-group">
 
-                  <input type="radio" id="period4" class="icon-check-input" name="period" value="4"
-                    onchange="this.form.submit()" />
+                  <input type="radio" id="period4" class="icon-check-input" name="period" value="4" />
 
                   <label for="period4" class="icon-check-label PackIconBox2">
                     <div class="icon-box cal"></div>
@@ -404,8 +452,7 @@
 
 
                 <div class="icon-check-group">
-                  <input type="radio" id="period5" class="icon-check-input" name="period" value="5"
-                    onchange="this.form.submit()" />
+                  <input type="radio" id="period5" class="icon-check-input" name="period" value="5" />
 
                   <label for="period5" class="icon-check-label PackIconBox2">
                     <div class="icon-box cal"></div>
@@ -579,8 +626,7 @@
 
         <!-- 이전 버튼 -->
         <li th:classappend="${packPageListDto.hasPrevious()} ? '' : 'disabled'">
-          <a
-            th:href="@{/packages(page=${packPageListDto.number - 1}, size=${packPageListDto.size})}">&lsaquo;</a>
+          <a th:href="@{/packages(page=${packPageListDto.number - 1}, size=${packPageListDto.size})}">&lsaquo;</a>
         </li>
 
         <!-- 페이지 번호 버튼 (최대 10개) -->
@@ -592,14 +638,12 @@
 
         <!-- 다음 버튼 -->
         <li th:classappend="${packPageListDto.hasNext()} ? '' : 'disabled'">
-          <a
-            th:href="@{/packages(page=${packPageListDto.number + 1}, size=${packPageListDto.size})}">&rsaquo;</a>
+          <a th:href="@{/packages(page=${packPageListDto.number + 1}, size=${packPageListDto.size})}">&rsaquo;</a>
         </li>
 
         <!-- 마지막 페이지 버튼 -->
         <li th:classappend="${packPageListDto.last} ? 'disabled'">
-          <a
-            th:href="@{/packages(page=${packPageListDto.totalPages - 1}, size=${packPageListDto.size})}">&raquo;</a>
+          <a th:href="@{/packages(page=${packPageListDto.totalPages - 1}, size=${packPageListDto.size})}">&raquo;</a>
         </li>
 
       </ul>
@@ -611,6 +655,8 @@
     <!-- 푸터 끝 -->
 
   </form>
+
+
 
   <!-- 날짜 불러오는 input -->
   <input type="hidden" id="startDateHidden" th:value="${param.startDate}">
@@ -626,6 +672,13 @@
   <button id="scrollToTopBtn">
 
   </button>
+
+
+  <!-- 로딩 오버레이 -->
+  <div id="loadingOverlay">
+    <div class="loading-spinner"></div>
+  </div>
+
 
   <!-- 탑 스크롤 스크립트 -->
   <script th:src="@{/js/scrollTop.js}"></script>
@@ -820,6 +873,66 @@
       document.querySelectorAll('.HanSerachDropdown').forEach(d => d.classList.remove('open'));
     });
   </script>
+
+  <!-- 라디오버튼 한번더 누르면 해제하는 함수 및 선택마다 필터링 -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const radios = document.querySelectorAll('input[type="radio"][name="period"]');
+      const hiddenInput = document.getElementById('selectedPeriod');
+      const form = document.getElementById('filter-form');
+      let lastSelectedValue = hiddenInput.value;
+
+      radios.forEach(radio => {
+        radio.addEventListener('click', function (e) {
+          const isUnchecking = lastSelectedValue === this.value;
+
+          if (isUnchecking) {
+            // 체크 해제 시: 이 라디오를 서버에 안 보내게 name 제거
+            this.removeAttribute('name');
+            this.checked = false;
+
+            // hiddenInput 값도 비우기
+            hiddenInput.value = '';
+            lastSelectedValue = '';
+
+          } else {
+            // 새로 선택한 값
+            radios.forEach(r => r.setAttribute('name', 'period')); // name 복원
+            hiddenInput.value = this.value;
+            lastSelectedValue = this.value;
+          }
+
+
+          // 폼 제출
+          setTimeout(() => {
+            form.submit();
+          }, 50);
+        });
+      });
+    });
+
+
+
+
+  </script>
+
+  <script>
+    window.addEventListener('load', () => {
+      const overlay = document.getElementById('loadingOverlay');
+      if (overlay) {
+        // 300ms 후에 투명도 낮추고
+        setTimeout(() => {
+          overlay.classList.add('hide');
+        }, 800); // 원하는 만큼 기다렸다가 사라지게 (0.5초~1초 추천)
+
+        // 완전히 사라진 후 display: none 처리
+        setTimeout(() => {
+          overlay.style.display = 'none';
+        }, 1000);
+      }
+    });
+  </script>
+
 
 
 
