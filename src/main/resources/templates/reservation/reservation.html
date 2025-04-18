@@ -304,7 +304,7 @@
                         </div>
                         <p class="HanRedPName">이름을 입력해주세요</p>
                         <p class="HanRedPGender">성별을 입력해주세요</p>
-                        <p class="HanRedPNameCheck">이름을 한글로 입력해주세요</p>
+                        <p class="HanRedPNameCheck">한글 2~5자 또는 영문 이름 2~10자 이내 입니다.</p>
 
 
                         <p>생년월일</p>
@@ -367,7 +367,7 @@
 
                         <p class="HanRedPName">이름을 입력해주세요</p>
                         <p class="HanRedPGender">성별을 입력해주세요</p>
-                        <p class="HanRedPNameCheck">이름을 한글로 입력해주세요</p>
+                        <p class="HanRedPNameCheck">한글 2~5자 또는 영문 이름 2~10자 이내 입니다.</p>
 
 
                         <p>생년월일</p>
@@ -430,7 +430,7 @@
 
                         <p class="HanRedPName">이름을 입력해주세요</p>
                         <p class="HanRedPGender">성별을 입력해주세요</p>
-                        <p class="HanRedPNameCheck">이름을 한글로 입력해주세요</p>
+                        <p class="HanRedPNameCheck">한글 2~5자 또는 영문 이름 2~10자 이내 입니다.</p>
 
 
                         <p>생년월일</p>
@@ -601,7 +601,7 @@
                 const value = input.value.trim();
                 const wrapper = input.closest('.HanNameDiv');
 
-                if (value === '' || !/^[가-힣]+$/.test(value)) {
+                if (value === '' || !/^[가-힣]{2,5}$|^[a-zA-Z]{1,10}\s[a-zA-Z]{1,10}$/.test(value)) {
                     if (wrapper) wrapper.classList.add('HanRedName');
                     if (value === '') {
                         emptyNameFields.push(input);
@@ -688,7 +688,7 @@
             // 에러 메시지 처리
             let errorMsg = '';
             if (emptyNameFields.length > 0 || invalidKoreanFields.length > 0) {
-                errorMsg += '이름은 한글로 입력해주세요.<br>';
+                errorMsg += '한글 2~5자 또는 영문 이름 2~10자 이내 입니다.<br>';
             }
             if (invalidBirthFields.length > 0) {
                 errorMsg += '생년월일은 숫자 8자리로 입력해주세요.<br>';
