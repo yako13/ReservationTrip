@@ -151,7 +151,7 @@ body {
 /* 네비 css 시작 */
 
 .HanNaviMain {
-    min-width: 90%
+  min-width: 90%;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -257,7 +257,7 @@ body {
 }
 
 .HanDrodBoxNameBox {
-padding-top:10px;
+  padding-top: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1080,118 +1080,118 @@ body {
 
 
 
-        /* 메뉴바 css */
+/* 메뉴바 css */
 
 
-        .HanNaviMain {
-            display: flex;
-            background-color: #fff;
-            border-bottom: 1px solid #ddd;
-        }
+.HanNaviMain {
+  display: flex;
+  background-color: #fff;
+  border-bottom: 1px solid #ddd;
+}
 
-        .HanNaviBarADiv {
-            position: relative;
-            margin-right: 20px;
-        }
+.HanNaviBarADiv {
+  position: relative;
+  margin-right: 20px;
+}
 
-        .HanMenuTopBtn {
-            background: none;
-            border: none;
-            padding: 15px;
-            font-size: 16px;
-            cursor: pointer;
-        }
+.HanMenuTopBtn {
+  background: none;
+  border: none;
+  padding: 15px;
+  font-size: 16px;
+  cursor: pointer;
+}
 
-        .megaDropdown {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease, padding 0.3s ease;
-            position: fixed;
-            top: 180px;
-            left: 0;
-            width: 100%;
-            background: #fff;
-            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
-            padding: 0 60px;
-            z-index: 10;
-            border-bottom-left-radius: 10px;
-            border-bottom-right-radius: 10px;
-            pointer-events: none;
-        }
-
-
-        .megaDropdown.show {
-            max-height: 500px;
-            /* 예상 최대 높이 설정 (조정 가능) */
-            padding: 30px 60px;
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .megaDropdownCenter {
-            min-width: 1000px;
-            display: flex;
-            align-items: flex-start;
-            justify-content: center;
-            gap: 30px;
-        }
+.megaDropdown {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+  position: fixed;
+  top: 180px;
+  left: 0;
+  width: 100%;
+  background: #fff;
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+  padding: 0 60px;
+  z-index: 10;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  pointer-events: none;
+}
 
 
-        .megaCol {
-            min-width: 200px;
-        }
+.megaDropdown.show {
+  max-height: 500px;
+  /* 예상 최대 높이 설정 (조정 가능) */
+  padding: 30px 60px;
+  opacity: 1;
+  pointer-events: auto;
+}
 
-        .megaCol button.HanStrongButton {
-            cursor: pointer;
-            outline: none;
-            border: none;
-            background-color: white;
-            display: block;
-            font-weight: bold;
-            font-size: 20px;
-            margin-bottom: 10px;
-        }
-
-        .megaCol button.HanLightButton {
-            cursor: pointer;
-            outline: none;
-            border: none;
-            background-color: white;
-            display: block;
-            font-weight: lighter;
-            font-size: 16px;
-            margin-bottom: 10px;
-        }
-
-        .megaCol ul {
-            list-style: none;
-            padding: 0;
-            padding-left: 7px;
-        }
-
-        .megaCol li {
-            margin: 5px 0;
-        }
+.megaDropdownCenter {
+  min-width: 1000px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 30px;
+}
 
 
-        /* 위로 스크롤해주는 버튼 */
+.megaCol {
+  min-width: 200px;
+}
 
-        #scrollToTopBtn {
-            display: none;
-            /* 기본적으로 숨김 */
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            z-index: 100;
-            border: none;
-            width: 90px;
-            height: 90px;
-            background: url(/images/upArrow1.svg) no-repeat center center;
-            cursor: pointer;
-            transition: all 0.3s ease-in-out;
-        }
+.megaCol button.HanStrongButton {
+  cursor: pointer;
+  outline: none;
+  border: none;
+  background-color: white;
+  display: block;
+  font-weight: bold;
+  font-size: 20px;
+  margin-bottom: 10px;
+}
 
-        #scrollToTopBtn:hover {
-            transform: translateY(-3px);
+.megaCol button.HanLightButton {
+  cursor: pointer;
+  outline: none;
+  border: none;
+  background-color: white;
+  display: block;
+  font-weight: lighter;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
 
-        }
+.megaCol ul {
+  list-style: none;
+  padding: 0;
+  padding-left: 7px;
+}
+
+.megaCol li {
+  margin: 5px 0;
+}
+
+
+/* 위로 스크롤해주는 버튼 */
+
+#scrollToTopBtn {
+  display: none;
+  /* 기본적으로 숨김 */
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 100;
+  border: none;
+  width: 90px;
+  height: 90px;
+  background: url(/images/upArrow1.svg) no-repeat center center;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+#scrollToTopBtn:hover {
+  transform: translateY(-3px);
+
+}

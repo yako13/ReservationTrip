@@ -1745,7 +1745,9 @@
               </div>
             </div>
             <!-- 상품 옵션 -->
-            <div>옵션</div>
+            <div>
+              <p class="AdminPackTitleP">상품 옵션</p>
+            </div>
             <div class="b1">
               <!-- <input type="hidden" name="packageOption.guide" value="false" /> -->
               <input
@@ -2511,6 +2513,13 @@
     return true;
   }
 
+  function formatDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
   // 가격 자동 계산 함수
   function updatePrices() {
     const adultPrice =
@@ -2768,6 +2777,36 @@
     selectableRanges: [[new Date(), new Date("2030-12-31")]],
     disabledDate: (date) =>
       fullyBooked.includes(date.toISOString().split("T")[0]),
+  });
+
+  let prevSetLast = ""; // prevSetLast 변수를 선언
+
+  datePickerSetLast.on("change", () => {
+    const startDate = normalizeDate(datePickerSetStart.getDate()); // 출발일
+    const lastDate = normalizeDate(datePickerSetLast.getDate()); // 종료일
+
+    // 종료일이 출발일보다 이전일 경우
+    if (startDate > lastDate) {
+      Swal.fire({
+        text: "종료일은 시작일보다 이후여야 합니다.",
+        confirmButtonColor: "#43BFF8",
+      });
+
+      if (prevSetLast !== null && prevSetLast !== "") {
+        // 이전 값이 존재하면 복원
+        datePickerSetLast.setDate(prevSetLast);
+        document.getElementById("setLast").value = formatDate(prevSetLast);
+      } else {
+        // 이전 값이 없으면 종료일 초기화
+        datePickerSetLast.setDate(null); // flatpickr 객체라면 이 메서드 사용
+        document.getElementById("setLast").value = ""; // 입력란 값 초기화
+      }
+
+      return; // 종료일을 올바르게 선택하지 못한 경우
+    }
+
+    // 정상적으로 종료일이 선택되면 이전 값을 업데이트
+    prevSetLast = lastDate;
   });
 
   // setStart 변경 시 출발일 및 귀국일 계산

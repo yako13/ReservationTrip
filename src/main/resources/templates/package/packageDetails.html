@@ -405,8 +405,10 @@
 
                             </div>
 
-
-                            <div class="HanPackAirline">
+                            <div th:if="${!packPageDto.airfare}">
+                                <p>항공료 미포함 상품입니다.</p>
+                            </div>
+                            <div class="HanPackAirline" th:if="${packPageDto.airfare}">
 
 
                                 <p class="HanPackHanP HanPackHanPCenter2">
@@ -521,8 +523,6 @@
 
                     <p>본 상품의 예약과 취소는 국외여행 특별약관이 적용됨을 알려드립니다.</p>
                     <p>특별약관 적용 시 표준약관보다 높은 취소수수료가 부과될 수 있으며 이 경우 동의절차를 구합니다.</p>
-                    <p><strong>계약금 규정</strong></p>
-                    <p>예약일 기준 3일 이내에 1인당 200,000원을 납입하셔야합니다.</p>
                     <p><strong>취소료 규정</strong></p>
                     <p>이 상품은 항공(또는 선박)좌석 또는 호텔객실에 대한 비용을 선납해 놓은 상품으로서, 취소시 하단의 취소료가 적용됨을 양해해 주시기 바랍니다.
                     </p>

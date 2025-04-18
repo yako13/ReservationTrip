@@ -67,7 +67,6 @@ public class PackPageDto {
     //만석 여부
     private boolean resvFull;
 
-
     //현재 예약 되어있는 인원
     private int resvMember;
 
@@ -77,6 +76,8 @@ public class PackPageDto {
     //현재 가능 예약 인원
     private int resvOkMember;
 
+    //항공료 포함인지
+    private boolean airfare;
 
 
 

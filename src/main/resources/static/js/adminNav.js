@@ -300,29 +300,4 @@ reservationStateElements.forEach((checkoutStepElement, index) => {
     }
 });
 
-// 검색 단어기준 상품개수 정렬
-const searchSelect = document.getElementById("searchSelect");
-const sizeSelect = document.getElementById("sizeSelect");
-const sortSelect = document.getElementById("sortSelect");
-const reservationStateSelect = document.getElementById("reservationStateSelect");
 
-const keywordQuery = encodeURIComponent(`[[${keywordQuery}]]`);
-const currentSearch = `[[${searchSelect}]]`; //현재 검색 기준
-const currentSize = `[[${size}]]`; // 현재 사이즈
-const currentSort = `[[${sortSelect}]]`; // 현재 정렬 방식
-const currentReservationState = `[[${reservationState}]]`; //현재 주문상태
-
-reservationStateSelect.addEventListener("change", function () {
-    const selectedReservationState = this.value;
-    window.location.href = `?page=0&search=${currentSearch}&reservationState=${selectedReservationState}&size=${currentSize}&sort=${currentSort}`;
-});
-
-sizeSelect.addEventListener("change", function () {
-    const selectedSize = this.value;
-    window.location.href = `?page=0&search=${currentSearch}&reservationState=${currentReservationState}&size=${selectedSize}&sort=${currentSort}`;
-});
-
-sortSelect.addEventListener("change", function () {
-    const selectedSort = this.value;
-    window.location.href = `?page=0&search=${currentSearch}&reservationState=${currentReservationState}&size=${currentSize}&sort=${selectedSort}`;
-});
