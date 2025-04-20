@@ -18,12 +18,31 @@ public class CustomErrorController implements ErrorController {
             int statusCode = Integer.parseInt(status.toString());
             model.addAttribute("status", statusCode); // 상태 코드 추가
 
-            if (statusCode == HttpStatus.NOT_FOUND.value()) {
-                model.addAttribute("message", "페이지를 찾을 수 없습니다.");
-            } else if (statusCode == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
-                model.addAttribute("message", "서버 오류가 발생했습니다.");
-            } else {
-                model.addAttribute("message", "예기치 않은 오류가 발생했습니다.");
+            switch (statusCode) {
+                case 400 -> {
+                    model.addAttribute("message", "잘못된 요청입니다.");
+                    break;
+                }
+                case 401 -> {
+                    model.addAttribute("message", "인증이 필요합니다. 로그인 해주세요.");
+                    break;
+                }
+                case 403 -> {
+                    model.addAttribute("message", "접근 권한이 없습니다.");
+                    break;
+                }
+                case 404 -> {
+                    model.addAttribute("message", "페이지를 찾을 수 없습니다");
+                    break;
+                }
+                case 500 -> {
+                    model.addAttribute("message", "서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+                    break;
+                }
+                default -> {
+                    model.addAttribute("message", "예기치 못한 오류가 발생했습니다. (오류 코드 : " + statusCode + ")");
+                    break;
+                }
             }
         }
         return "error/custom-error";

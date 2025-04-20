@@ -73,11 +73,11 @@ public class KakaoPayService {
         //비과세
         params.put("tax_free_amount", 0);
         //성공시 url
-        params.put("approval_url", "http://192.168.106.89:8080/pay/approve");
+        params.put("approval_url", "http://localhost:8080/pay/approve");
         //실패시 url
-        params.put("fail_url", "http://192.168.106.89:8080/pay/fail");
+        params.put("fail_url", "http://localhost:8080/pay/fail");
         //취소 시 url
-        params.put("cancel_url", "http://192.168.106.89:8080/pay/cancel");
+        params.put("cancel_url", "http://localhost:8080/pay/cancel");
 
         HttpEntity<Map<String, Object>> request = new HttpEntity<>(params, headers);
 

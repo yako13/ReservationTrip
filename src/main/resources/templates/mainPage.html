@@ -1,445 +1,464 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>🐾냥만여행 홈</title>
 
-    <link rel="stylesheet" th:href="@{https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css}">
+    <link
+      rel="stylesheet"
+      th:href="@{https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css}" />
 
     <link rel="stylesheet" th:href="@{/css/mainPage.css}" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+      integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
 
     <style>
-        body {
-            margin: 0;
-            padding: 0;
+      body {
+        margin: 0;
+        padding: 0;
+      }
 
-        }
+      /* 요일 헤더 중 일요일 (첫 번째 열) 빨간색 */
+      .tui-calendar th:nth-child(1) {
+        color: #e26d69 !important;
+      }
 
-        /* 요일 헤더 중 일요일 (첫 번째 열) 빨간색 */
-        .tui-calendar th:nth-child(1) {
-            color: #e26d69 !important;
-        }
+      /* 날짜 셀 중 일요일 (첫 번째 열) 빨간색 */
+      .tui-calendar td:nth-child(1) {
+        color: #e26d69 !important;
+      }
 
-        /* 날짜 셀 중 일요일 (첫 번째 열) 빨간색 */
-        .tui-calendar td:nth-child(1) {
-            color: #e26d69 !important;
-        }
+      .tui-datepicker .tui-is-selectable.tui-is-selected,
+      .tui-datepicker.tui-rangepicker .tui-is-selectable.tui-is-selected {
+        background-color: #5eccff;
+      }
 
-        .tui-datepicker .tui-is-selectable.tui-is-selected,
-        .tui-datepicker.tui-rangepicker .tui-is-selectable.tui-is-selected {
-            background-color: #5eccff;
-        }
+      .HanStarOn {
+        font-size: 22px;
+        margin-right: 7px;
+        color: #ffd900;
+      }
 
-        .HanStarOn {
-            font-size: 22px;
-            margin-right: 7px;
-            color: #ffd900;
-        }
+      .HanStarOn2 {
+        font-size: 28px;
+        margin-right: 10px;
+        color: #ffd900;
+      }
 
-        .HanStarOn2 {
-            font-size: 28px;
-            margin-right: 10px;
-            color: #ffd900;
-        }
+      /* 검색창 드롭박스 시작 */
 
+      .HanSerachDropdown {
+        position: relative;
+        display: inline-block;
+      }
 
-        /* 검색창 드롭박스 시작 */
+      .HanSerachDropdown-toggle {
+        box-sizing: border-box;
+        padding: 20px 16px;
+        /* border: 1px solid #ccc; */
+        width: 260px;
+        height: 60px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 17px;
+        background-color: #f9f9f9;
+        /* 기본 글자색 회색 */
+        color: #7e7e7e;
+      }
 
-        .HanSerachDropdown {
-            position: relative;
-            display: inline-block;
+      .HanSerachDropdown-toggle.HanImg {
+        box-sizing: border-box;
+        padding: 20px 16px;
+        width: 260px;
+        height: 60px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 17px;
+        background-color: #f9f9f9;
+        /* 기본 글자색 회색 */
+        color: #7e7e7e;
+        display: flex;
+        align-items: center;
+      }
 
-        }
+      .HanSerachDropdown-toggle.selected {
+        color: black;
+        /* 선택된 후 일반 색상 */
+      }
 
-        .HanSerachDropdown-toggle {
-            box-sizing: border-box;
-            padding: 20px 16px;
-            /* border: 1px solid #ccc; */
-            width: 260px;
-            height: 60px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 17px;
-            background-color: #f9f9f9;
-            /* 기본 글자색 회색 */
-            color: #7e7e7e;
-        }
+      .HanSerachDropdown-menu {
+        display: none;
+        position: absolute;
+        top: 110%;
+        left: 0;
+        /* width: 100%; */
+        background-color: white;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        z-index: 10;
+        overflow: hidden;
+      }
 
+      .HanSerachDropdown-flex {
+        display: inline-flex;
+        flex-wrap: wrap;
+        /* ✨ 줄바꿈 허용 */
+        gap: 0px;
+      }
 
-        .HanSerachDropdown-toggle.HanImg {
-            box-sizing: border-box;
-            padding: 20px 16px;
-            width: 260px;
-            height: 60px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 17px;
-            background-color: #f9f9f9;
-            /* 기본 글자색 회색 */
-            color: #7e7e7e;
-            display: flex;
-            align-items: center;
-        }
+      .HanSerachDropdown-menu .HanSerachDivCol {
+        width: 260px;
+        text-align: center;
+        box-sizing: border-box;
+        padding: 15px 16px;
+        cursor: pointer;
+      }
 
-        .HanSerachDropdown-toggle.selected {
-            color: black;
-            /* 선택된 후 일반 색상 */
-        }
+      .HanSerachDropdown-menu .HanSerachDivCol:hover {
+        background-color: #f0f0f0;
+      }
 
+      .HanSerachDropdown.open .dropdown-menu {
+        display: block;
+      }
 
-        .HanSerachDropdown-menu {
-            display: none;
-            position: absolute;
-            top: 110%;
-            left: 0;
-            /* width: 100%; */
-            background-color: white;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            z-index: 10;
-            overflow: hidden
-        }
+      .HanSerachDropdown.open .HanSerachDropdown-menu {
+        display: block;
+      }
 
-        .HanSerachDropdown-flex {
-            display: inline-flex;
-            flex-wrap: wrap;
-            /* ✨ 줄바꿈 허용 */
-            gap: 0px;
+      /* 검색창 드롭박스 끝 */
 
+      .wideOverflow {
+        left: -90px;
+      }
 
-        }
-
-
-        .HanSerachDropdown-menu .HanSerachDivCol {
-            width: 260px;
-            text-align: center;
-            box-sizing: border-box;
-            padding: 15px 16px;
-            cursor: pointer;
-        }
-
-        .HanSerachDropdown-menu .HanSerachDivCol:hover {
-            background-color: #f0f0f0;
-        }
-
-
-        .HanSerachDropdown.open .dropdown-menu {
-            display: block;
-        }
-
-
-
-        .HanSerachDropdown.open .HanSerachDropdown-menu {
-            display: block;
-        }
-
-
-        /* 검색창 드롭박스 끝 */
-
-
-        .wideOverflow {
-            left: -90px;
-
-        }
-
-        .textBox1 {
-            max-height: 64px;
-            overflow: hidden;
-            line-height: 1.4;
-            font-size: 25px;
-            /* 초기 폰트 크기 */
-        }
+      .textBox1 {
+        max-height: 64px;
+        overflow: hidden;
+        line-height: 1.4;
+        font-size: 25px;
+        /* 초기 폰트 크기 */
+      }
+      .HanMainNewDivCardSort {
+        margin-bottom: 20px;
+      }
     </style>
+  </head>
 
-</head>
-
-<body>
+  <body>
     <!-- 알람용 input -->
-    <input type="hidden" id="flashMessage" th:value="${data}">
+    <input type="hidden" id="flashMessage" th:value="${data}" />
 
-    <div class="HanSection" id="section1" style="height: 99vh;">
-        <header th:replace="/fragments/memberHeader::memberHeader"></header>
+    <div class="HanSection" id="section1" style="height: 99vh">
+      <header th:replace="/fragments/memberHeader::memberHeader"></header>
 
+      <div class="HanCarouselMainDiv">
+        <!-- 캐러셀 검색창 시작 -->
+        <form
+          th:action="@{/packages}"
+          id="HanCalSerachForm"
+          class="HanCalSerachMain"
+          th:method="get">
+          <!-- 목적지 -->
 
-        <div class="HanCarouselMainDiv">
+          <input
+            type="hidden"
+            name="categoryId"
+            id="destinationInput"
+            data-type="destination" />
+          <input type="hidden" name="categoryDepth" value="3" />
+          <input type="hidden" name="categoryName" id="categoryNameId" />
 
-            <!-- 캐러셀 검색창 시작 -->
-            <form th:action="@{/packages}" id="HanCalSerachForm" class="HanCalSerachMain" th:method="get">
-
-
-                <!-- 목적지 -->
-
-                <input type="hidden" name="categoryId" id="destinationInput" data-type="destination" />
-                <input type="hidden" name="categoryDepth" value="3" />
-                <input type="hidden" name="categoryName" id="categoryNameId" />
-
-                <div class="HanSerachDropdown setCategoryName" data-input-id="destinationInput" id="destinationDiv">
-
-                    <div class="HanSerachDropdown-toggle HanImg">
-                        <img th:src="@{/images/airplan2.svg}" width="20px" height="20px" style="margin-right: 5px;">
-                        <span>어디로 갈거냥?</span>
-                    </div>
-
-                    <div class="HanSerachDropdown-menu">
-
-                        <div class="HanSerachDropdown-flex">
-                            <div class=" HanSerachDivCol" data-value="">전체</div>
-
-                            <div class="HanSerachDivCol" th:each="cityList, iterStat : ${cityList}"
-                                th:data-value="${cityList.id}" th:data-name="${cityList.name}"
-                                th:text="${cityList.name}">
-
-                            </div>
-
-                        </div>
-                    </div>
-
-                </div>
-
-
-
-
-                <div class="PackTitleSerach">
-
-                    <!-- 실제 form에 전달할 hidden input -->
-                    <input type="hidden" name="airportId" id="airlineIdInput" />
-
-                    <div class="HanSerachDropdown" id="airportDiv" data-input-id="airlineIdInput">
-                        <div class="HanSerachDropdown-toggle  HanImg">
-                            <img th:src="@{/images/map.svg}" width="30px" height="30px" style="margin-bottom: 3px;">
-
-                            <span>출발지</span>
-
-                        </div>
-
-                        <div class="HanSerachDropdown-menu">
-                            <div class="HanSerachDropdown-flex">
-                                <div data-value="" class=" HanSerachDivCol">전체</div>
-
-                                <div class="HanSerachDivCol" th:each="airport, iterStat : ${airportList}"
-                                    th:data-value="${airport.id}" th:text="${airport.name}">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-
-
-                <div class="HanSerachDate">
-                    <!-- 날짜 입력 input -->
-                    <img th:src="@{/images/calendar.svg}" width="20px" height="20px" style="margin-left: 3px;">
-                    <input type="text" id="departure-input" placeholder="출발일을 선택하세요" readonly />
-                    <input type="hidden" id="tripStartHidden" name="startDate" />
-
-                    <!-- 달력 표시용 컨테이너 -->
-                    <div id="tui-datepicker"></div>
-                </div>
-
-                <div class="HanCalSerachButtonDiv">
-                    <button type="submit" form="HanCalSerachForm">
-                        <img th:src="@{/images/search2.svg}" width="21px" height="21px" style="margin-top: 2px;">검색
-                    </button>
-                </div>
-            </form>
-            <!-- 캐러셀 검색창 끝 -->
-
-            <!-- 캐러셀 시작 -->
-
-            <div class="HanCarouselBody">
-
-
-                <div class="HanCarousel">
-                    <div class="HanCarouselButton">
-                        <!-- 왼쪽 버튼 -->
-                        <div class="HanCarouselDivLeft">
-                            <button class="HanArrow HanArrowLeft"></button>
-                        </div>
-                        <!-- 오른쪽 버튼 -->
-                        <div class="HanCarouselDivRight">
-                            <button class="HanArrow HanArrowRight"></button>
-                        </div>
-                    </div>
-
-                    <div class="HanTrack">
-                        <!-- setting -->
-                        <div class="HanTrackSlide">
-                            <a>
-                                <img th:src="@{images/carousel1.png}" alt="1" />
-                            </a>
-                        </div>
-                        <div class="HanTrackSlide">
-                            <a><img th:src="@{images/carousel2.png}" alt="2" /></a>
-                        </div>
-                        <div class="HanTrackSlide">
-                            <a href="/product/search/index?keyword=그루밍데이"><img th:src="@{images/carousel3.png}"
-                                    alt="3" /></a>
-                        </div>
-                        <!-- /setting -->
-
-                    </div>
-
-                    <!-- 인디케이터 -->
-
-                    <div class="HanDots"></div>
-                </div>
+          <div
+            class="HanSerachDropdown setCategoryName"
+            data-input-id="destinationInput"
+            id="destinationDiv">
+            <div class="HanSerachDropdown-toggle HanImg">
+              <img
+                th:src="@{/images/airplan2.svg}"
+                width="20px"
+                height="20px"
+                style="margin-right: 5px" />
+              <span>어디로 갈거냥?</span>
             </div>
 
-            <!-- 캐러셀 끝 -->
+            <div class="HanSerachDropdown-menu">
+              <div class="HanSerachDropdown-flex">
+                <div class="HanSerachDivCol" data-value="">전체</div>
 
+                <div
+                  class="HanSerachDivCol"
+                  th:each="cityList, iterStat : ${cityList}"
+                  th:data-value="${cityList.id}"
+                  th:data-name="${cityList.name}"
+                  th:text="${cityList.name}"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="PackTitleSerach">
+            <!-- 실제 form에 전달할 hidden input -->
+            <input type="hidden" name="airportId" id="airlineIdInput" />
+
+            <div
+              class="HanSerachDropdown"
+              id="airportDiv"
+              data-input-id="airlineIdInput">
+              <div class="HanSerachDropdown-toggle HanImg">
+                <img
+                  th:src="@{/images/map.svg}"
+                  width="30px"
+                  height="30px"
+                  style="margin-bottom: 3px" />
+
+                <span>출발지</span>
+              </div>
+
+              <div class="HanSerachDropdown-menu">
+                <div class="HanSerachDropdown-flex">
+                  <div data-value="" class="HanSerachDivCol">전체</div>
+
+                  <div
+                    class="HanSerachDivCol"
+                    th:each="airport, iterStat : ${airportList}"
+                    th:data-value="${airport.id}"
+                    th:text="${airport.name}"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="HanSerachDate">
+            <!-- 날짜 입력 input -->
+            <img
+              th:src="@{/images/calendar.svg}"
+              width="20px"
+              height="20px"
+              style="margin-left: 3px" />
+            <input
+              type="text"
+              id="departure-input"
+              placeholder="출발일을 선택하세요"
+              readonly />
+            <input type="hidden" id="tripStartHidden" name="startDate" />
+
+            <!-- 달력 표시용 컨테이너 -->
+            <div id="tui-datepicker"></div>
+          </div>
+
+          <div class="HanCalSerachButtonDiv">
+            <button type="submit" form="HanCalSerachForm">
+              <img
+                th:src="@{/images/search2.svg}"
+                width="21px"
+                height="21px"
+                style="margin-top: 2px" />검색
+            </button>
+          </div>
+        </form>
+        <!-- 캐러셀 검색창 끝 -->
+
+        <!-- 캐러셀 시작 -->
+
+        <div class="HanCarouselBody">
+          <div class="HanCarousel">
+            <div class="HanCarouselButton">
+              <!-- 왼쪽 버튼 -->
+              <div class="HanCarouselDivLeft">
+                <button class="HanArrow HanArrowLeft"></button>
+              </div>
+              <!-- 오른쪽 버튼 -->
+              <div class="HanCarouselDivRight">
+                <button class="HanArrow HanArrowRight"></button>
+              </div>
+            </div>
+
+            <div class="HanTrack">
+              <!-- setting -->
+              <div class="HanTrackSlide">
+                <a>
+                  <img th:src="@{images/carousel1.png}" alt="1" />
+                </a>
+              </div>
+              <div class="HanTrackSlide">
+                <a><img th:src="@{images/carousel2.png}" alt="2" /></a>
+              </div>
+              <div class="HanTrackSlide">
+                <a href="/product/search/index?keyword=그루밍데이"
+                  ><img th:src="@{images/carousel3.png}" alt="3"
+                /></a>
+              </div>
+              <!-- /setting -->
+            </div>
+
+            <!-- 인디케이터 -->
+
+            <div class="HanDots"></div>
+          </div>
         </div>
 
-        <div class="HanMainMidDiv"></div>
-    </div>
+        <!-- 캐러셀 끝 -->
+      </div>
 
+      <div class="HanMainMidDiv"></div>
+    </div>
 
     <div class="HanMainBody">
+      <!--  베스트 상품 순  -->
 
-        <!--  베스트 상품 순  -->
+      <div id="section2" class="HanSection">
+        <div class="HanMainBodyTitle">
+          <a id="showBest">베스트 여행</a>
+        </div>
+        <hr class="HanProductHr" />
 
-        <div id="section2" class="HanSection">
-            <div class="HanMainBodyTitle">
-                <a id="showBest">베스트 여행</a>
-            </div>
-            <hr class="HanProductHr" />
-
-            <div class="HanMainNewDiv">
-
-                <div class="HanMainNewDivCard" th:each="BestTop4 :${BestTop4}">
-                    <div class="HanMainNewDivCardSort">
-                        <p>[[${BestTop4.index}]].</p>
-                    </div>
-
-                    <div class="HanMainNewDivCardImg">
-                        <a th:href="@{/package/details/{id}(id=${BestTop4.id})}">
-                            <img th:src="@{'/productImages/'+ ${BestTop4.mainImage.getImageFullName}}" />
-                        </a>
-                    </div>
-
-                    <div class="HanMainNewDivCardPDiv">
-                        <p class="HanMainNewDivCardPDivName textBox1" th:text="${BestTop4.packageName}">
-                            [출발확정] 오사카 유니버설스튜디오 재팬 1일
-                        </p>
-                        <p class="HanMainNewDivCardPDivName2">
-                            <i class="fa-solid fa-star HanStarOn"></i>
-                            <span th:text="${BestTop4.averageRating}">4.5</span>
-                        </p>
-                        <p class="HanMainNewDivCardPDivPrice">
-                            [[${BestTop4.fuelSurchargeIncluded}]]원
-                        </p>
-                    </div>
-                </div>
-
+        <div class="HanMainNewDiv">
+          <div class="HanMainNewDivCard" th:each="BestTop4 :${BestTop4}">
+            <div class="HanMainNewDivCardSort">
+              <!-- <p>[[${BestTop4.index}]].</p> -->
+              <div th:switch="${BestTop4.index}">
+                <div th:case="1"><i class="fa-solid fa-1"></i></div>
+                <div th:case="2"><i class="fa-solid fa-2"></i></div>
+                <div th:case="3"><i class="fa-solid fa-3"></i></div>
+                <div th:case="4"><i class="fa-solid fa-4"></i></div>
+              </div>
             </div>
 
+            <div class="HanMainNewDivCardImg">
+              <a th:href="@{/package/details/{id}(id=${BestTop4.id})}">
+                <img
+                  th:src="@{'/productImages/'+ ${BestTop4.mainImage.getImageFullName}}" />
+              </a>
+            </div>
+
+            <div class="HanMainNewDivCardPDiv">
+              <p
+                class="HanMainNewDivCardPDivName textBox1"
+                th:text="${BestTop4.packageName}">
+                [출발확정] 오사카 유니버설스튜디오 재팬 1일
+              </p>
+              <p class="HanMainNewDivCardPDivName2">
+                <i class="fa-solid fa-star HanStarOn"></i>
+                <span th:text="${BestTop4.averageRating}">4.5</span>
+              </p>
+              <p class="HanMainNewDivCardPDivPrice">
+                [[${BestTop4.fuelSurchargeIncluded}]]원
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--  /베스트 상품 순  -->
+
+      <!-- 리뷰 별점순 시작 -->
+
+      <div id="section3" class="HanSection" style="background-color: #f3f3f3">
+        <div class="HanMainBodyTitle">
+          <a>평점 높은 여행</a>
+        </div>
+        <hr class="HanProductHr" />
+
+        <div class="HanMainNewDiv">
+          <div class="HanMainNewDivCard" th:each="ReviewTop4 :${ReviewTop4}">
+            <div class="HanMainNewDivCardSort">
+              <!-- <p>[[${ReviewTop4.index}]].</p> -->
+              <div th:switch="${ReviewTop4.index}">
+                <div th:case="1"><i class="fa-solid fa-1"></i></div>
+                <div th:case="2"><i class="fa-solid fa-2"></i></div>
+                <div th:case="3"><i class="fa-solid fa-3"></i></div>
+                <div th:case="4"><i class="fa-solid fa-4"></i></div>
+              </div>
+            </div>
+
+            <div class="HanMainNewDivCardImg2">
+              <a th:href="@{/package/details/{id}(id=${ReviewTop4.id})}">
+                <img
+                  th:src="@{'/productImages/'+ ${ReviewTop4.mainImage.getImageFullName}}" />
+              </a>
+            </div>
+
+            <div class="HanMainNewDivCardPDiv2">
+              <p
+                class="HanMainNewDivCardPDivName textBox1"
+                th:text="${ReviewTop4.packageName}">
+                [출발확정] 오키나와오키나와
+              </p>
+
+              <div
+                class="HanMainNewDivCardPDivName3"
+                style="padding-right: 25px; padding-bottom: 20px">
+                <i class="fa-solid fa-star HanStarOn2"></i>
+                <span th:text="${ReviewTop4.averageRating}">4.5</span>
+              </div>
+
+              <p class="HanMainNewDivCardPDivPrice" style="font-size: 23px">
+                [[${ReviewTop4.fuelSurchargeIncluded}]]원
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 리뷰 별점순 끝 -->
+
+      <!--  신상품 순  -->
+
+      <div id="section4" class="HanSection">
+        <div class="HanMainBodyTitle">
+          <a id="showNew">따끈 따끈 신상 여행</a>
         </div>
 
-        <!--  /베스트 상품 순  -->
+        <hr class="HanProductHr" />
 
-
-        <!-- 리뷰 별점순 시작 -->
-
-        <div id="section3" class="HanSection" style="background-color: #f3f3f3;">
-            <div class="HanMainBodyTitle">
-                <a>평점 높은 여행</a>
-            </div>
-            <hr class="HanProductHr" />
-
-            <div class="HanMainNewDiv">
-
-                <div class="HanMainNewDivCard" th:each="ReviewTop4 :${ReviewTop4}">
-                    <div class="HanMainNewDivCardSort">
-                        <p>[[${ReviewTop4.index}]].</p>
-                    </div>
-
-                    <div class="HanMainNewDivCardImg2">
-                        <a th:href="@{/package/details/{id}(id=${ReviewTop4.id})}">
-                            <img th:src="@{'/productImages/'+ ${ReviewTop4.mainImage.getImageFullName}}" />
-                        </a>
-                    </div>
-
-                    <div class="HanMainNewDivCardPDiv2">
-                        <p class="HanMainNewDivCardPDivName textBox1" th:text="${ReviewTop4.packageName}">
-                            [출발확정] 오키나와오키나와
-                        </p>
-
-                        <div class="HanMainNewDivCardPDivName3" style="padding-right: 25px; padding-bottom: 20px;">
-                            <i class="fa-solid fa-star HanStarOn2"></i>
-                            <span th:text="${ReviewTop4.averageRating}">4.5</span>
-                        </div>
-
-                        <p class="HanMainNewDivCardPDivPrice" style=" font-size: 23px;">
-                            [[${ReviewTop4.fuelSurchargeIncluded}]]원
-                        </p>
-                    </div>
+        <div class="HanMainNewDivAera">
+          <div class="HanMainNewDiv">
+            <div class="HanMainNewDivCard" th:each="NewTop4 :${NewTop4}">
+              <div class="HanMainNewDivCardSort">
+                <!-- <p style="text-align: left">[[${NewTop4.index}]].</p> -->
+                <div th:switch="${NewTop4.index}">
+                  <div th:case="1"><i class="fa-solid fa-1"></i></div>
+                  <div th:case="2"><i class="fa-solid fa-2"></i></div>
+                  <div th:case="3"><i class="fa-solid fa-3"></i></div>
+                  <div th:case="4"><i class="fa-solid fa-4"></i></div>
                 </div>
+              </div>
 
+              <div class="HanMainNewDivCardImg">
+                <a th:href="@{/package/details/{id}(id=${NewTop4.id})}">
+                  <img
+                    th:src="@{'/productImages/'+ ${NewTop4.mainImage.getImageFullName}}" />
+                </a>
+              </div>
+
+              <div class="HanMainNewDivCardPDiv">
+                <p
+                  class="HanMainNewDivCardPDivName textBox1"
+                  th:text="${NewTop4.packageName}">
+                  프랑스 파리 미식 로드
+                </p>
+
+                <p class="HanMainNewDivCardPDivName2">
+                  <i class="fa-solid fa-star HanStarOn"></i>
+                  <span th:text="${NewTop4.averageRating}">4.5</span>
+                </p>
+
+                <p class="HanMainNewDivCardPDivPrice">
+                  [[${NewTop4.fuelSurchargeIncluded}]]원
+                </p>
+              </div>
             </div>
-
+          </div>
         </div>
+      </div>
 
-
-        <!-- 리뷰 별점순 끝 -->
-
-
-        <!--  신상품 순  -->
-
-        <div id="section4" class="HanSection">
-
-            <div class="HanMainBodyTitle">
-
-                <a id="showNew">따끈 따끈 신상 여행</a>
-            </div>
-
-            <hr class="HanProductHr" />
-
-            <div class="HanMainNewDivAera">
-                <div class="HanMainNewDiv">
-
-                    <div class="HanMainNewDivCard" th:each="NewTop4 :${NewTop4}">
-                        <div class="HanMainNewDivCardSort">
-                            <p style="text-align: left">[[${NewTop4.index}]].</p>
-                        </div>
-
-                        <div class="HanMainNewDivCardImg">
-                            <a th:href="@{/package/details/{id}(id=${NewTop4.id})}">
-                                <img th:src="@{'/productImages/'+ ${NewTop4.mainImage.getImageFullName}}" />
-                            </a>
-                        </div>
-
-                        <div class="HanMainNewDivCardPDiv">
-                            <p class="HanMainNewDivCardPDivName textBox1" th:text="${NewTop4.packageName}">
-                                프랑스 파리 미식 로드
-                            </p>
-
-                            <p class="HanMainNewDivCardPDivName2">
-                                <i class="fa-solid fa-star HanStarOn "></i>
-                                <span th:text="${NewTop4.averageRating}">4.5</span>
-                            </p>
-
-                            <p class="HanMainNewDivCardPDivPrice">
-                                [[${NewTop4.fuelSurchargeIncluded}]]원
-                            </p>
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <!--  /신상품 순  -->
-    </div>
-
-
+      <!--  /신상품 순  -->
     </div>
 
     <!-- 푸터 시작 -->
@@ -452,375 +471,364 @@
     <script src="https://code.jquery.com/jquery-latest.min.js"></script>
 
     <!-- ========================= scroll-top ========================= -->
-    <button id="scrollToTopBtn">
-
-    </button>
+    <button id="scrollToTopBtn"></button>
 
     <!-- 탑 스크롤 스크립트 -->
     <script th:src="@{/js/scrollTop.js}"></script>
 
     <script>
+      // 캐러셀 함수
 
-        // 캐러셀 함수
+      function toggleDropdown(event, dropdownId) {
+        event.preventDefault();
+        event.stopPropagation(); // 클릭한 요소에서 이벤트 전파 중지
 
-        function toggleDropdown(event, dropdownId) {
-            event.preventDefault();
-            event.stopPropagation(); // 클릭한 요소에서 이벤트 전파 중지
-
-            // 모든 드롭다운 닫기 (현재 선택된 것 제외)
-            document
-                .querySelectorAll(".HandropdownBox, .HanDrodBoxName")
-                .forEach((menu) => {
-                    if (menu.id !== dropdownId) {
-                        menu.classList.remove("HanHeadershow");
-                    }
-                });
-
-            // 현재 드롭다운 열기/닫기
-            const dropdown = document.getElementById(dropdownId);
-            dropdown.classList.toggle("HanHeadershow");
-        }
-
-        // 다른 곳을 클릭하면 드롭다운 닫기
-        // 다른 곳을 클릭하면 .HanSerachDropdown 드롭다운 닫기
-        document.addEventListener("click", function () {
-            document
-                .querySelectorAll(".HanSerachDropdown")
-                .forEach((menu) => {
-                    menu.classList.remove("open");
-                });
-        });
-
-        // 드롭다운 안에서 클릭해도 닫히지 않도록 설정
+        // 모든 드롭다운 닫기 (현재 선택된 것 제외)
         document
-            .querySelectorAll(".HandropdownBox, .HanDrodBoxName")
-            .forEach((menu) => {
-                menu.addEventListener("click", function (event) {
-                    event.stopPropagation();
-                });
-            });
+          .querySelectorAll(".HandropdownBox, .HanDrodBoxName")
+          .forEach((menu) => {
+            if (menu.id !== dropdownId) {
+              menu.classList.remove("HanHeadershow");
+            }
+          });
 
-        const track = document.querySelector(".HanTrack");
-        const slides = document.querySelectorAll(".HanTrackSlide");
-        const prevBtn = document.querySelector(".HanArrowLeft");
-        const nextBtn = document.querySelector(".HanArrowRight");
-        const dotsContainer = document.querySelector(".HanDots");
+        // 현재 드롭다운 열기/닫기
+        const dropdown = document.getElementById(dropdownId);
+        dropdown.classList.toggle("HanHeadershow");
+      }
 
-        let index = 0;
-        const totalSlides = slides.length;
+      // 다른 곳을 클릭하면 드롭다운 닫기
+      // 다른 곳을 클릭하면 .HanSerachDropdown 드롭다운 닫기
+      document.addEventListener("click", function () {
+        document.querySelectorAll(".HanSerachDropdown").forEach((menu) => {
+          menu.classList.remove("open");
+        });
+      });
 
-        // 인디케이터 생성
-        for (let i = 0; i < totalSlides; i++) {
-            const dot = document.createElement("div");
-            dot.classList.add("HanDot");
-            if (i === 0) dot.classList.add("HanActive");
-            dotsContainer.appendChild(dot);
-        }
-        const dots = document.querySelectorAll(".HanDot");
+      // 드롭다운 안에서 클릭해도 닫히지 않도록 설정
+      document
+        .querySelectorAll(".HandropdownBox, .HanDrodBoxName")
+        .forEach((menu) => {
+          menu.addEventListener("click", function (event) {
+            event.stopPropagation();
+          });
+        });
 
-        //움직이는지 체크
-        let move = 1;
+      const track = document.querySelector(".HanTrack");
+      const slides = document.querySelectorAll(".HanTrackSlide");
+      const prevBtn = document.querySelector(".HanArrowLeft");
+      const nextBtn = document.querySelector(".HanArrowRight");
+      const dotsContainer = document.querySelector(".HanDots");
 
-        // 초기 스타일 설정
+      let index = 0;
+      const totalSlides = slides.length;
+
+      // 인디케이터 생성
+      for (let i = 0; i < totalSlides; i++) {
+        const dot = document.createElement("div");
+        dot.classList.add("HanDot");
+        if (i === 0) dot.classList.add("HanActive");
+        dotsContainer.appendChild(dot);
+      }
+      const dots = document.querySelectorAll(".HanDot");
+
+      //움직이는지 체크
+      let move = 1;
+
+      // 초기 스타일 설정
+      slides.forEach((slide, i) => {
+        slide.style.position = "absolute";
+        slide.style.top = "0";
+        slide.style.left = "0";
+        slide.style.width = "100%";
+        slide.style.opacity = i === 0 ? "1" : "0";
+        slide.style.transition = "opacity 1.8s ease";
+        slide.style.zIndex = i === 0 ? "1" : "0";
+      });
+
+      function updateSlide(newIndex) {
         slides.forEach((slide, i) => {
-            slide.style.position = "absolute";
-            slide.style.top = "0";
-            slide.style.left = "0";
-            slide.style.width = "100%";
-            slide.style.opacity = i === 0 ? "1" : "0";
-            slide.style.transition = "opacity 1.8s ease";
-            slide.style.zIndex = i === 0 ? "1" : "0";
+          slide.style.opacity = i === newIndex ? "1" : "0";
+          slide.style.zIndex = i === newIndex ? "1" : "0";
         });
+      }
 
-        function updateSlide(newIndex) {
-            slides.forEach((slide, i) => {
-                slide.style.opacity = i === newIndex ? "1" : "0";
-                slide.style.zIndex = i === newIndex ? "1" : "0";
-            });
-        }
-
-        function updateDots() {
-            dots.forEach((dot, i) => {
-                dot.classList.toggle("HanActive", i === index);
-            });
-        }
-
-        //다음 페이지
-        function nextSlide() {
-            if (move == 2) {
-                return;
-            }
-
-            move = 2;
-
-            restartAutoPlay();
-
-            //화면 전환 시간보다 빠르게 넘기지 못하도록 딜레이주는 함수
-            setTimeout(() => {
-                index = (index + 1) % totalSlides;
-                move = 1;
-            }, 800);
-
-            updateSlide(index);
-            updateDots();
-        }
-
-        //이전 페이지
-        function prevSlide() {
-            if (move == 2) {
-                return;
-            }
-
-            move = 2;
-
-            restartAutoPlay();
-
-            //화면 전환 시간보다 빠르게 넘기지 못하도록 딜레이주는 함수
-            setTimeout(() => {
-                index = (index - 1 + totalSlides) % totalSlides;
-                move = 1;
-            }, 800);
-
-            updateSlide(index);
-            updateDots();
-        }
-
-        function goToSlide(i) {
-            restartAutoPlay();
-            index = i;
-            updateSlide(index);
-            updateDots();
-        }
-
-        nextBtn.addEventListener("click", nextSlide);
-        prevBtn.addEventListener("click", prevSlide);
-        dots.forEach((dot, i) =>
-            dot.addEventListener("click", () => goToSlide(i))
-        );
-
-        // 자동 슬라이드
-        let autoPlay = setInterval(nextSlide, 5000);
-        let autoPlayTimeout;
-
-        function restartAutoPlay() {
-            clearInterval(autoPlay);
-            clearTimeout(autoPlayTimeout);
-            autoPlayTimeout = setInterval(nextSlide, 5000);
-        }
-
-    </script>
-
-
-
-    <script>
-        //수정부분------------------------시작
-
-        window.addEventListener(
-            "wheel",
-            function (e) {
-                e.preventDefault();
-            },
-            { passive: false }
-        );
-
-        var mHtml = $("html");
-        var page = 1;
-
-        mHtml.animate({ scrollTop: 0 }, 10);
-
-        $(window).on("wheel", function (e) {
-            if (mHtml.is(":animated")) return;
-            if (e.originalEvent.deltaY > 0) {
-                if (page == 5) return;
-                page++;
-            } else if (e.originalEvent.deltaY < 0) {
-                if (page == 1) return;
-                page--;
-            }
-            var posTop = (page - 1) * $(window).height();
-            mHtml.animate({ scrollTop: posTop });
+      function updateDots() {
+        dots.forEach((dot, i) => {
+          dot.classList.toggle("HanActive", i === index);
         });
+      }
 
-        //창 로드시 상품 하나 하나 보이게 설정
-        document.addEventListener("DOMContentLoaded", function () {
-            observeCards();
-        });
-
-        function observeCards() {
-            const cards = document.querySelectorAll(".HanMainNewDivCard");
-
-            const observer = new IntersectionObserver(
-                (entries, observer) => {
-                    entries.forEach((entry) => {
-                        if (entry.isIntersecting) {
-                            entry.target.classList.add("show");
-                            observer.unobserve(entry.target); // 한 번만 실행
-                        }
-                    });
-                },
-                {
-                    threshold: 0.1, // 10%라도 보이면 작동
-                }
-            );
-
-            cards.forEach((card) => observer.observe(card));
+      //다음 페이지
+      function nextSlide() {
+        if (move == 2) {
+          return;
         }
+
+        move = 2;
+
+        restartAutoPlay();
+
+        //화면 전환 시간보다 빠르게 넘기지 못하도록 딜레이주는 함수
+        setTimeout(() => {
+          index = (index + 1) % totalSlides;
+          move = 1;
+        }, 800);
+
+        updateSlide(index);
+        updateDots();
+      }
+
+      //이전 페이지
+      function prevSlide() {
+        if (move == 2) {
+          return;
+        }
+
+        move = 2;
+
+        restartAutoPlay();
+
+        //화면 전환 시간보다 빠르게 넘기지 못하도록 딜레이주는 함수
+        setTimeout(() => {
+          index = (index - 1 + totalSlides) % totalSlides;
+          move = 1;
+        }, 800);
+
+        updateSlide(index);
+        updateDots();
+      }
+
+      function goToSlide(i) {
+        restartAutoPlay();
+        index = i;
+        updateSlide(index);
+        updateDots();
+      }
+
+      nextBtn.addEventListener("click", nextSlide);
+      prevBtn.addEventListener("click", prevSlide);
+      dots.forEach((dot, i) =>
+        dot.addEventListener("click", () => goToSlide(i))
+      );
+
+      // 자동 슬라이드
+      let autoPlay = setInterval(nextSlide, 5000);
+      let autoPlayTimeout;
+
+      function restartAutoPlay() {
+        clearInterval(autoPlay);
+        clearTimeout(autoPlayTimeout);
+        autoPlayTimeout = setInterval(nextSlide, 5000);
+      }
     </script>
 
     <script>
-        function scrollToCenter(el) {
-            const rect = el.getBoundingClientRect();
-            const offset = rect.top + window.scrollY - (window.innerHeight / 2) + (rect.height / 2) + 100;
+      //수정부분------------------------시작
+
+      window.addEventListener(
+        "wheel",
+        function (e) {
+          e.preventDefault();
+        },
+        { passive: false }
+      );
+
+      var mHtml = $("html");
+      var page = 1;
+
+      mHtml.animate({ scrollTop: 0 }, 10);
+
+      $(window).on("wheel", function (e) {
+        if (mHtml.is(":animated")) return;
+        if (e.originalEvent.deltaY > 0) {
+          if (page == 5) return;
+          page++;
+        } else if (e.originalEvent.deltaY < 0) {
+          if (page == 1) return;
+          page--;
+        }
+        var posTop = (page - 1) * $(window).height();
+        mHtml.animate({ scrollTop: posTop });
+      });
+
+      //창 로드시 상품 하나 하나 보이게 설정
+      document.addEventListener("DOMContentLoaded", function () {
+        observeCards();
+      });
+
+      function observeCards() {
+        const cards = document.querySelectorAll(".HanMainNewDivCard");
+
+        const observer = new IntersectionObserver(
+          (entries, observer) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("show");
+                observer.unobserve(entry.target); // 한 번만 실행
+              }
+            });
+          },
+          {
+            threshold: 0.1, // 10%라도 보이면 작동
+          }
+        );
+
+        cards.forEach((card) => observer.observe(card));
+      }
+    </script>
+
+    <script>
+      function scrollToCenter(el) {
+        const rect = el.getBoundingClientRect();
+        const offset =
+          rect.top +
+          window.scrollY -
+          window.innerHeight / 2 +
+          rect.height / 2 +
+          100;
+        window.scrollTo({
+          top: offset,
+          behavior: "smooth",
+        });
+      }
+
+      // 목적지 / 출발지 드롭다운 클릭 시 가운데 정렬
+      document
+        .querySelectorAll(".HanSerachDropdown-toggle")
+        .forEach((toggle) => {
+          toggle.addEventListener("click", () => {
+            scrollToCenter(toggle);
+          });
+        });
+
+      // 날짜 input 클릭 시 가운데 정렬
+      const dateInput = document.getElementById("departure-input");
+      if (dateInput) {
+        dateInput.addEventListener("click", () => {
+          scrollToCenter(dateInput);
+        });
+      }
+
+      //  드롭다운 열려 있을 때 휠을 위로 굴리면 최상단으로 스크롤
+      window.addEventListener(
+        "wheel",
+        function (e) {
+          const dropdownOpen = document.querySelector(
+            ".HanSerachDropdown.open"
+          );
+          const deltaY = e.deltaY;
+
+          if (dropdownOpen && deltaY < 0) {
+            // 맨 위로 스크롤 (부드럽게)
             window.scrollTo({
-                top: offset,
-                behavior: 'smooth'
+              top: 0,
+              behavior: "smooth",
             });
-        }
-
-        // 목적지 / 출발지 드롭다운 클릭 시 가운데 정렬
-        document.querySelectorAll('.HanSerachDropdown-toggle').forEach(toggle => {
-            toggle.addEventListener('click', () => {
-                scrollToCenter(toggle);
-            });
-        });
-
-        // 날짜 input 클릭 시 가운데 정렬
-        const dateInput = document.getElementById('departure-input');
-        if (dateInput) {
-            dateInput.addEventListener('click', () => {
-                scrollToCenter(dateInput);
-            });
-        }
-
-        //  드롭다운 열려 있을 때 휠을 위로 굴리면 최상단으로 스크롤
-        window.addEventListener('wheel', function (e) {
-            const dropdownOpen = document.querySelector('.HanSerachDropdown.open');
-            const deltaY = e.deltaY;
-
-            if (dropdownOpen && deltaY < 0) {
-                // 맨 위로 스크롤 (부드럽게)
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
-            }
-        }, { passive: true });
+          }
+        },
+        { passive: true }
+      );
     </script>
-
 
     <!-- 드롭다운 함수 -->
     <script>
-        document.querySelectorAll('.HanSerachDropdown').forEach(dropdown => {
-            const toggle = dropdown.querySelector('.HanSerachDropdown-toggle');
-            const menuItems = dropdown.querySelectorAll('.HanSerachDropdown-flex div');
-            const inputId = dropdown.getAttribute('data-input-id');
-            const hiddenInput = inputId ? document.getElementById(inputId) : null;
-            const categoryNameInput = document.getElementById('categoryNameId');
-            const isCategoryNameTarget = dropdown.classList.contains('setCategoryName'); // 체크 포인트
+      document.querySelectorAll(".HanSerachDropdown").forEach((dropdown) => {
+        const toggle = dropdown.querySelector(".HanSerachDropdown-toggle");
+        const menuItems = dropdown.querySelectorAll(
+          ".HanSerachDropdown-flex div"
+        );
+        const inputId = dropdown.getAttribute("data-input-id");
+        const hiddenInput = inputId ? document.getElementById(inputId) : null;
+        const categoryNameInput = document.getElementById("categoryNameId");
+        const isCategoryNameTarget =
+          dropdown.classList.contains("setCategoryName"); // 체크 포인트
 
-            toggle.addEventListener('click', (e) => {
-                e.stopPropagation();
-                document.querySelectorAll('.HanSerachDropdown').forEach(d => {
-                    if (d !== dropdown) d.classList.remove('open');
-                });
-                dropdown.classList.toggle('open');
-            });
-
-            menuItems.forEach(item => {
-                item.addEventListener('click', () => {
-                    const selectedValue = item.getAttribute('data-value');
-                    const selectedName = item.getAttribute('data-name') || item.textContent.trim();
-
-                    toggle.querySelector('span').textContent = selectedName;
-                    toggle.classList.add('selected');
-                    dropdown.classList.remove('open');
-
-                    if (hiddenInput) hiddenInput.value = selectedValue;
-
-                    // 목적지 드롭다운일 때만 categoryName 설정
-                    if (isCategoryNameTarget && categoryNameInput && selectedName) {
-                        categoryNameInput.value = selectedName;
-                    }
-                });
-            });
+        toggle.addEventListener("click", (e) => {
+          e.stopPropagation();
+          document.querySelectorAll(".HanSerachDropdown").forEach((d) => {
+            if (d !== dropdown) d.classList.remove("open");
+          });
+          dropdown.classList.toggle("open");
         });
 
+        menuItems.forEach((item) => {
+          item.addEventListener("click", () => {
+            const selectedValue = item.getAttribute("data-value");
+            const selectedName =
+              item.getAttribute("data-name") || item.textContent.trim();
 
+            toggle.querySelector("span").textContent = selectedName;
+            toggle.classList.add("selected");
+            dropdown.classList.remove("open");
 
+            if (hiddenInput) hiddenInput.value = selectedValue;
 
+            // 목적지 드롭다운일 때만 categoryName 설정
+            if (isCategoryNameTarget && categoryNameInput && selectedName) {
+              categoryNameInput.value = selectedName;
+            }
+          });
+        });
+      });
     </script>
-
 
     <!-- 드롭다운 너비 조정 -->
     <script>
+      window.addEventListener("DOMContentLoaded", () => {
+        const destinationDropdown = document.getElementById("destinationDiv");
+        const destinationMenu = destinationDropdown.querySelector(
+          ".HanSerachDropdown-menu"
+        );
+        const destinationFlex = destinationMenu.querySelector(
+          ".HanSerachDropdown-flex"
+        );
+        const destinationItems =
+          destinationFlex.querySelectorAll(".HanSerachDivCol");
 
-        window.addEventListener('DOMContentLoaded', () => {
-            const destinationDropdown = document.getElementById('destinationDiv');
-            const destinationMenu = destinationDropdown.querySelector('.HanSerachDropdown-menu');
-            const destinationFlex = destinationMenu.querySelector('.HanSerachDropdown-flex');
-            const destinationItems = destinationFlex.querySelectorAll('.HanSerachDivCol');
+        const totalItems = destinationItems.length;
 
-            const totalItems = destinationItems.length;
+        let totalWidth;
 
-            let totalWidth;
+        if (totalItems <= 8) {
+          totalWidth = 260;
+        } else {
+          const baseItemCount = 8;
+          const widthStep = 260;
 
-            if (totalItems <= 8) {
-                totalWidth = 260;
-            } else {
-                const baseItemCount = 8;
-                const widthStep = 260;
+          // 8개 초과 항목에 대해 8개 단위로 증가 (9~16 → 1단계, 17~24 → 2단계 ...)
+          const multiplier =
+            Math.ceil((totalItems - baseItemCount) / baseItemCount) + 1;
 
+          totalWidth = multiplier * widthStep;
 
+          if (multiplier >= 5) {
+            destinationMenu.classList.add("wideOverflow");
 
+            totalWidth - 310;
+          }
+        }
 
-                // 8개 초과 항목에 대해 8개 단위로 증가 (9~16 → 1단계, 17~24 → 2단계 ...)
-                const multiplier = Math.ceil((totalItems - baseItemCount) / baseItemCount) + 1;
-
-                totalWidth = multiplier * widthStep;
-
-                if (multiplier >= 5) {
-                    destinationMenu.classList.add('wideOverflow');
-
-                    totalWidth - 310;
-                }
-
-
-            }
-
-
-            destinationFlex.style.width = `${totalWidth}px`;
-
-        });
-
+        destinationFlex.style.width = `${totalWidth}px`;
+      });
     </script>
-
 
     <script>
+      window.addEventListener("DOMContentLoaded", () => {
+        const boxes = document.querySelectorAll(".textBox1");
 
-        window.addEventListener('DOMContentLoaded', () => {
+        boxes.forEach((box) => {
+          let fontSize = 24; // 초기 폰트 크기
+          box.style.fontSize = fontSize + "px";
 
-            const boxes = document.querySelectorAll('.textBox1');
-
-            boxes.forEach(box => {
-                let fontSize = 24; // 초기 폰트 크기
-                box.style.fontSize = fontSize + 'px';
-
-                // 넘칠 경우 줄이기
-                while (box.scrollHeight > box.clientHeight && fontSize > 10) {
-                    fontSize--;
-                    box.style.fontSize = fontSize + 'px';
-                }
-            });
-
+          // 넘칠 경우 줄이기
+          while (box.scrollHeight > box.clientHeight && fontSize > 10) {
+            fontSize--;
+            box.style.fontSize = fontSize + "px";
+          }
         });
+      });
     </script>
-
-
-
-
-
-
-
 
     <!-- TOAST UI Date Picker JS -->
     <script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
@@ -829,67 +837,69 @@
 
     <!-- 달력 라이브러리 -->
     <script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
-    <link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css">
+    <link
+      rel="stylesheet"
+      href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css" />
 
     <script th:inline="none">
-        const fullyBooked = [];
-        const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
+      const fullyBooked = [];
+      const weekdays = ["일", "월", "화", "수", "목", "금", "토"];
 
-        const datePicker = new tui.DatePicker('#tui-datepicker', {
-            input: {
-                element: document.getElementById('departure-input'),
-                format: 'yyyy.MM.dd'
-            },
-            language: 'ko',
-            selectableRanges: [[new Date(), new Date('2030-12-31')]],
-            disabledDate: function (date) {
-                const d = date.toISOString().split('T')[0];
-                return fullyBooked.includes(d);
-            }
-        });
+      const datePicker = new tui.DatePicker("#tui-datepicker", {
+        input: {
+          element: document.getElementById("departure-input"),
+          format: "yyyy.MM.dd",
+        },
+        language: "ko",
+        selectableRanges: [[new Date(), new Date("2030-12-31")]],
+        disabledDate: function (date) {
+          const d = date.toISOString().split("T")[0];
+          return fullyBooked.includes(d);
+        },
+      });
 
-        datePicker.on('change', () => {
-            const selectedDate = datePicker.getDate();
-            const year = selectedDate.getFullYear();
-            const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
-            const day = String(selectedDate.getDate()).padStart(2, '0');
-            const weekday = weekdays[selectedDate.getDay()];
+      datePicker.on("change", () => {
+        const selectedDate = datePicker.getDate();
+        const year = selectedDate.getFullYear();
+        const month = String(selectedDate.getMonth() + 1).padStart(2, "0");
+        const day = String(selectedDate.getDate()).padStart(2, "0");
+        const weekday = weekdays[selectedDate.getDay()];
 
-            // 보여줄 형식
-            const formattedDisplay = `${year}.${month}.${day}(${weekday})`;
-            document.getElementById('departure-input').value = formattedDisplay;
+        // 보여줄 형식
+        const formattedDisplay = `${year}.${month}.${day}(${weekday})`;
+        document.getElementById("departure-input").value = formattedDisplay;
 
-            // 서버 전송용 hidden input
-            const formattedRaw = `${year}-${month}-${day}`;
-            document.getElementById('tripStartHidden').value = formattedRaw;
-        });
+        // 서버 전송용 hidden input
+        const formattedRaw = `${year}-${month}-${day}`;
+        document.getElementById("tripStartHidden").value = formattedRaw;
+      });
 
-        document.getElementById('departure-input').value = '';
+      document.getElementById("departure-input").value = "";
 
-        // TOAST UI Date Picker가 열려 있고 휠을 위로 → 맨 위로 스크롤
-        window.addEventListener('wheel', function (e) {
-            const isDatePickerOpen = document.querySelector('.tui-datepicker') !== null;
-            const deltaY = e.deltaY;
+      // TOAST UI Date Picker가 열려 있고 휠을 위로 → 맨 위로 스크롤
+      window.addEventListener(
+        "wheel",
+        function (e) {
+          const isDatePickerOpen =
+            document.querySelector(".tui-datepicker") !== null;
+          const deltaY = e.deltaY;
 
-            if (isDatePickerOpen && deltaY < 0) {
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
-            }
-        }, { passive: true });
+          if (isDatePickerOpen && deltaY < 0) {
+            window.scrollTo({
+              top: 0,
+              behavior: "smooth",
+            });
+          }
+        },
+        { passive: true }
+      );
     </script>
 
-
     <!-- 달력 스크립트 끝 -->
-
 
     <!-- rttr data 알람 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script th:src="@{/js/alert.js}"></script>
-
-
-</body>
-
+  </body>
 </html>
