@@ -27,7 +27,7 @@ public class SecurityConfig {
 
         //접근 권한 설정
         http.authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/member/**", "/reservation/**", "/reservation", "/dib").hasRole(MemberRole.MEMBER.name())
+                        .requestMatchers("/member/**", "/reservation/**", "/reservation").hasRole(MemberRole.MEMBER.name())
                         .requestMatchers("/admin/**").hasRole(MemberRole.ADMIN.name())
                         .anyRequest().permitAll()
         );
