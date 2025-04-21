@@ -518,7 +518,7 @@ public class HanReservationService {
             String gender = "여";
 
             //ture = 남자 false = 여자
-            if (memberEntity.isGender()) {
+            if (ResDto.isGender()) {
 
                 gender = "남";
             }

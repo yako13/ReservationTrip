@@ -219,7 +219,7 @@
     <main>
         <div class="container">
             <div>
-                <h2>✏️후기 작성</h2>
+                <h2>✏️리뷰 작성</h2>
             </div>
             <div class="packageArea" th:onclick="window.location.href='/package/details/'+[[${packagePK}]]">
                 <img th:src="@{${packageMainImage}}" alt="" id="packageImg">
@@ -230,7 +230,7 @@
             </div>
             <form id="reviewForm" th:action="@{/member/review/new}" th:method="post" enctype="multipart/form-data">
                 <input type="hidden" name="reservationId" th:value="${reservationId}">
-                <textarea id="content" name="content" placeholder="후기를 작성해주세요. 후기 내용은 최소 10자 이상 500자 이하여야 합니다."
+                <textarea id="content" name="content" placeholder="리뷰를 작성해주세요. 리뷰 내용은 최소 10자 이상 500자 이하여야 합니다."
                     maxlength="500"></textarea>
                 <p id="textLength">(0/500)</p>
                 <input type="hidden" name="rating" id="score">
@@ -411,12 +411,12 @@
             document.getElementById("score").value = scoreLength.length;
 
             if (imageboxCount.length > 5) {
-                Swal.fire({ text: "후기 사진은 최대 5장까지 가능합니다.", confirmButtonColor: "#43BFF8" });
+                Swal.fire({ text: "리뷰 사진은 최대 5장까지 가능합니다.", confirmButtonColor: "#43BFF8" });
                 return;
             }
 
             if (content.value.length < 10 || content.value.length > 500) {
-                Swal.fire({ text: "후기 내용은 최소 10자 이상 500자 이하여야 합니다.", confirmButtonColor: "#43BFF8" });
+                Swal.fire({ text: "리뷰 내용은 최소 10자 이상 500자 이하여야 합니다.", confirmButtonColor: "#43BFF8" });
                 return;
             }
 
@@ -432,7 +432,7 @@
         function getContentLength() {
             textLength.innerText = "(" + content.value.length + "/500)"
             if (content.value.length > 500) {
-                Swal.fire({ text: "후기 내용은 500자를 초과할 수 없습니다.", confirmButtonColor: "#43BFF8" });
+                Swal.fire({ text: "리뷰 내용은 500자를 초과할 수 없습니다.", confirmButtonColor: "#43BFF8" });
             }
         }
 
